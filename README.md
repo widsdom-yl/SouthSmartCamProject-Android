@@ -1,0 +1,2 @@
+# SouthSmartCamProject-Android
+SouthSmartCamProject
