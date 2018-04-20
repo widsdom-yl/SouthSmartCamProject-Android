@@ -6,12 +6,25 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
+    <string name="action_Register">Register</string>
+    <string name="action_get_checknum">验证码</string>
+    <string name="action_get_checknum_sent">验证码已经发送至邮箱</string>
+    <string name="action_get_checknum_sent_failed">验证码发送失败</string>
+    <string name="action_get_checknum_aleady_register">此邮箱已经注册</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
+    <string name="error_invalid_checknum">请输入正确的验证码</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="title_activity_register">Sign in</string>
+
+    <string name="action_get_register_success">注册成功</string>
+    <string name="action_get_register_failed0">注册失败</string>
+    <string name="action_get_register_failed1">用户已存在</string>
+    <string name="action_get_register_failed2">校验码错误</string>
+    <string name="action_get_register_failed3">校验码超时</string>
 </resources>

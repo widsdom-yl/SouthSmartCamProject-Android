@@ -12,6 +12,7 @@ import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import southcam.southsmartcamproject.Config.Config;
 import southcam.southsmartcamproject.network.api.ServerCommandApi;
 
 /**
@@ -30,7 +31,7 @@ public class ServerNetWork {
     private static Converter.Factory gsonConverterFactory = GsonConverterFactory.create();
     private static CallAdapter.Factory rxJavaCallAdapterFactory = RxJavaCallAdapterFactory.create();
     private static DevModel currentDevModel;
-    public static ServerCommandApi getCommandApi(String serverIP,int serverPort) {
+    public static ServerCommandApi getCommandApi() {
         okHttpClient.connectTimeoutMillis();
 
         if (serverCommandApi == null) {
@@ -39,7 +40,7 @@ public class ServerNetWork {
 
             Retrofit retrofit = new Retrofit.Builder()
                     .client(okHttpClient)
-                    .baseUrl("http:"+serverIP+":"+serverPort)
+                    .baseUrl("http:"+ Config.ServerIP+":"+Config.ServerPort)
                     .addCallAdapterFactory(rxJavaCallAdapterFactory)
                     .addConverterFactory(gsonConverterFactory)
                     .build();
