@@ -25,7 +25,7 @@ public class ServerNetWork {
     private static OkHttpClient okHttpClient =  new OkHttpClient.Builder()
 //            .readTimeout(READ_TIMEOUT,TimeUnit.SECONDS)//
 //            .writeTimeout(WRITE_TIMEOUT,TimeUnit.SECONDS)//
-            .connectTimeout(2, TimeUnit.SECONDS)//
+            .connectTimeout(5, TimeUnit.SECONDS)//
             .build();  ;
 
     private static Converter.Factory gsonConverterFactory = GsonConverterFactory.create();
