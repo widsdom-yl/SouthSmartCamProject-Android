@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="southcam.southsmartcamproject">
+    package="stcam.stcamproject">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
 
@@ -15,6 +15,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name="stcam.stcamproject.Application.STApplication"
         android:theme="@style/AppTheme">
         <activity
             android:name=".Activity.SplashActivity"

@@ -1,6 +1,6 @@
 
 
-package southcam.southsmartcamproject.network.api;
+package stcam.stcamproject.network.api;
 
         import java.util.List;
 

@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "southcam.southsmartcamproject"
+        applicationId "stcam.stcamproject"
         minSdkVersion 24
         targetSdkVersion 26
         versionCode 1
@@ -13,6 +13,32 @@ android {
             cmake {
                 cppFlags ""
             }
+        }
+
+        ndk {
+            //选择要添加的对应cpu类型的.so库。
+            abiFilters 'armeabi', 'armeabi-v7a'
+            // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
+        }
+        manifestPlaceholders = [
+                JPUSH_PKGNAME : applicationId,
+                JPUSH_APPKEY : "e7a4318dfe0393afc10aec35", //JPush上注册的包名对应的appkey.
+                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+        ]
+
+    }
+    signingConfigs {
+        release {
+            storeFile file('southsmartcam')
+            storePassword "12345678"
+            keyAlias "southsmartcam"
+            keyPassword "12345678"
+        }
+        debug {
+            storeFile file('southsmartcam')
+            storePassword "12345678"
+            keyAlias "southsmartcam"
+            keyPassword "12345678"
         }
     }
     buildTypes {
@@ -39,7 +65,10 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.0.0'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0'
+    compile 'cn.jiguang.sdk:jpush:3.1.1'  // 此处以JPush 3.1.1 版本为例。
+    compile 'cn.jiguang.sdk:jcore:1.1.9'  // 此处以JCore 1.1.9 版本为例。
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
 }

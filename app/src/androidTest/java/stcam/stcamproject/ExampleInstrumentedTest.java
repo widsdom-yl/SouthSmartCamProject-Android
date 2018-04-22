@@ -1,4 +1,4 @@
-package southcam.southsmartcamproject;
+package stcam.stcamproject;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

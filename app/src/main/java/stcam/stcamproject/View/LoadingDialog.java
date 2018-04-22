@@ -1,11 +1,11 @@
-package southcam.southsmartcamproject.View;
+package stcam.stcamproject.View;
 
 
 import android.app.Dialog;
 import android.content.Context;
 import android.widget.TextView;
 
-import southcam.southsmartcamproject.R;
+import stcam.stcamproject.R;
 
 
 public class LoadingDialog {

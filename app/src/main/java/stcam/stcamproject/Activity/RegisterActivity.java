@@ -1,4 +1,4 @@
-package southcam.southsmartcamproject.Activity;
+package stcam.stcamproject.Activity;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -20,10 +20,10 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import southcam.southsmartcamproject.R;
-import southcam.southsmartcamproject.Util.SouthUtil;
-import southcam.southsmartcamproject.View.LoadingDialog;
-import southcam.southsmartcamproject.network.ServerNetWork;
+import stcam.stcamproject.R;
+import stcam.stcamproject.Util.SouthUtil;
+import stcam.stcamproject.View.LoadingDialog;
+import stcam.stcamproject.network.ServerNetWork;
 
 /**
  * A login screen that offers login via email/password.
@@ -73,10 +73,10 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         Button sender_check_button = (Button) findViewById(R.id.sender_check_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        sender_check_button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptRegitster();
+                getCheckNum();
             }
         });
     }
@@ -151,7 +151,8 @@ public class RegisterActivity extends AppCompatActivity {
             cancel = true;
         }
 
-        if (!TextUtils.isEmpty(checkNum)) {
+        if (TextUtils.isEmpty(checkNum)) {
+            Log.e(tag,checkNum);
             mChecknum.setError(getString(R.string.error_invalid_checknum));
             focusView = mChecknum;
             cancel = true;

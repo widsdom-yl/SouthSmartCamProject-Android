@@ -1,4 +1,4 @@
-package southcam.southsmartcamproject.Config;
+package stcam.stcamproject.Config;
 
 public class Config {
     public static  final  String ServerIP = "211.149.199.247";

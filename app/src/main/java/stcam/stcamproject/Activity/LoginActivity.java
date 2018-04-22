@@ -1,4 +1,4 @@
-package southcam.southsmartcamproject.Activity;
+package stcam.stcamproject.Activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -29,9 +29,10 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import southcam.southsmartcamproject.R;
-import southcam.southsmartcamproject.View.LoadingDialog;
-import southcam.southsmartcamproject.network.ServerNetWork;
+import stcam.stcamproject.Manager.JPushManager;
+import stcam.stcamproject.R;
+import stcam.stcamproject.View.LoadingDialog;
+import stcam.stcamproject.network.ServerNetWork;
 
 /**
  * A login screen that offers login via email/password.
@@ -53,6 +54,8 @@ public class LoginActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_login);
 
         requestPermisson();
+
+        Log.e(tag, "onCreate: "+ JPushManager.getJPushRegisterID());
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 

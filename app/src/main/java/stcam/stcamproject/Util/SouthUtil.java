@@ -1,4 +1,4 @@
-package southcam.southsmartcamproject.Util;
+package stcam.stcamproject.Util;
 
 import android.app.Activity;
 import android.app.AlertDialog;

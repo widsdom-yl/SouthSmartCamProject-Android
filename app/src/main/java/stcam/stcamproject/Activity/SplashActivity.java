@@ -1,4 +1,4 @@
-package southcam.southsmartcamproject.Activity;
+package stcam.stcamproject.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
-import southcam.southsmartcamproject.R;
+import stcam.stcamproject.R;
 
 public class SplashActivity extends AppCompatActivity implements View.OnClickListener {
 

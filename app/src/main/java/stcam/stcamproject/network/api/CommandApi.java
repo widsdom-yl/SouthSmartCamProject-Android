@@ -1,4 +1,4 @@
-package southcam.southsmartcamproject.network.api;
+package stcam.stcamproject.network.api;
 
 import com.model.LampStateModel;
 import com.model.RecordConfigModel;
@@ -24,7 +24,7 @@ public interface CommandApi {
 
 
     /**
-     * Ö»×ªÎª AP£¬²»ÐÞ¸Ä
+     * Ö»×ªÎª APï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½
      * @param User
      * @param admin
      * @param MsgID 38
@@ -42,7 +42,7 @@ public interface CommandApi {
     );
 
     /**
-     * Ö»×ªÎª AP£¬²»ÐÞ¸Ä
+     * Ö»×ªÎª APï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½
      * @param User
      * @param admin
      * @param MsgID 38
@@ -106,11 +106,11 @@ public interface CommandApi {
 
     /**
      * MsgID
-     * ÅÄÕÕ  20
-     * Â¼Ïñ
-     * ¿ªÊ¼Â¼Ïñ 21
-     * Í£Ö¹Â¼Ïñ 22
-     * ÊÇ·ñÂ¼Ïñ 85
+     * ï¿½ï¿½ï¿½ï¿½  20
+     * Â¼ï¿½ï¿½
+     * ï¿½ï¿½Ê¼Â¼ï¿½ï¿½ 21
+     * Í£Ö¹Â¼ï¿½ï¿½ 22
+     * ï¿½Ç·ï¿½Â¼ï¿½ï¿½ 85
      *
      */
 
@@ -124,7 +124,7 @@ public interface CommandApi {
 
 
     /**
-     * ¸üÐÂÉè±¸Ê±¼ä
+     * ï¿½ï¿½ï¿½ï¿½ï¿½è±¸Ê±ï¿½ï¿½
      * @param User
      * @param admin
      * @param MsgID 17
@@ -155,7 +155,7 @@ public interface CommandApi {
     );
 
     /**
-     * ÖØÆô
+     * ï¿½ï¿½ï¿½ï¿½
      * @param User
      * @param admin
      * @param MsgID 18
@@ -170,7 +170,7 @@ public interface CommandApi {
     );
 
     /**
-     * »ñÈ¡ÕÕÆ¬½â±í
+     * ï¿½ï¿½È¡ï¿½ï¿½Æ¬ï¿½ï¿½ï¿½
      * @param User
      * @param admin
      * @param MsgID 86
@@ -188,7 +188,7 @@ public interface CommandApi {
     );
 
     /**
-     * »ñÈ¡Â¼ÏñÁÐ±í
+     * ï¿½ï¿½È¡Â¼ï¿½ï¿½ï¿½Ð±ï¿½
      * @param User
      * @param admin
      * @param MsgID 5
@@ -206,7 +206,7 @@ public interface CommandApi {
     );
 
     /**
-     * É¾³ýÎÄ¼þ
+     * É¾ï¿½ï¿½ï¿½Ä¼ï¿½
      * @param User
      * @param admin
      * @param MsgID 77
@@ -222,7 +222,7 @@ public interface CommandApi {
     );
 
     /**
-     * »ñÈ¡LEDµÆ×´Ì¬
+     * ï¿½ï¿½È¡LEDï¿½ï¿½×´Ì¬
      * @param User
      * @param admin
      * @param MsgID
@@ -236,7 +236,7 @@ public interface CommandApi {
     );
 
     /**
-     * ÉèÖÃ¿ª¹ØµÆ
+     * ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½Øµï¿½
      * @param User
      * @param admin
      * @param MsgID
@@ -254,7 +254,7 @@ public interface CommandApi {
     );
 
     /**
-     * »ñÈ¡ÅÄÕÕÉèÖÃ
+     * ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      * @param User
      * @param admin
      * @param MsgID 87
@@ -268,7 +268,7 @@ public interface CommandApi {
     );
 
     /**
-     * »ñÈ¡Â¼ÏñÉèÖÃ
+     * ï¿½ï¿½È¡Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      * @param User
      * @param admin
      * @param MsgID 89
@@ -282,7 +282,7 @@ public interface CommandApi {
     );
 
     /**
-     * ÉèÖÃÂ¼ÏñÉèÖÃ
+     * ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      * @param User
      * @param admin
      * @param MsgID 90
@@ -298,7 +298,7 @@ public interface CommandApi {
     );
 
     /**
-     * ÉèÖÃÅÄÕÕÅäÖÃ
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      * @param User
      * @param admin
      * @param MsgID 88
@@ -319,7 +319,7 @@ public interface CommandApi {
 
 
     /**
-     * »ñÈ¡ssidÃû³Æ
+     * ï¿½ï¿½È¡ssidï¿½ï¿½ï¿½ï¿½
      * @param User
      * @param admin
      * @param MsgID 36
@@ -338,7 +338,7 @@ public interface CommandApi {
     //http://192.168.0.169/cfg1.cgi?User=admin&Psd=admin&MsgID=31&INFO_DevName=Hello,Ketty
 
     /**
-     * ÉèÖÃÉè±¸Ãû³Æ
+     * ï¿½ï¿½ï¿½ï¿½ï¿½è±¸ï¿½ï¿½ï¿½ï¿½
      * @param User
      * @param admin
      * @param MsgID 31
@@ -354,7 +354,7 @@ public interface CommandApi {
     );
 
     /**
-     * »ñÈ¡wifiÅäÖÃ
+     * ï¿½ï¿½È¡wifiï¿½ï¿½ï¿½ï¿½
      * @param User
      * @param admin
      * @param MsgID 37
@@ -369,7 +369,7 @@ public interface CommandApi {
 
     /**
      *
-     * È¡µÃ±£´æÔÚÅäÖÃÖÐ WIFI Â·ÓÉÆ÷ÁÐ±í
+     * È¡ï¿½Ã±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ WIFI Â·ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
      * @param User
      * @param admin
      * @param MsgID 70

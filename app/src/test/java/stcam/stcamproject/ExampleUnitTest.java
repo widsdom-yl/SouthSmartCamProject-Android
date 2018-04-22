@@ -1,4 +1,4 @@
-package southcam.southsmartcamproject;
+package stcam.stcamproject;
 
 import org.junit.Test;
 
