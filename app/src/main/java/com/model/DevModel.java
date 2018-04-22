@@ -20,14 +20,14 @@ public class DevModel implements Parcelable {
         IPUID = in.readString();
         WebPort = in.readInt();
         DataPort = in.readInt();
-        IsVideo = in.readByte() != 0;
-        IsHistory = in.readByte() != 0;
-        IsPush = in.readByte() != 0;
-        IsSetup = in.readByte() != 0;
-        IsControl = in.readByte() != 0;
-        IsShare = in.readByte() != 0;
-        IsRec = in.readByte() != 0;
-        IsSnapshot = in.readByte() != 0;
+        IsVideo = in.readInt();
+        IsHistory = in.readInt();
+        IsPush = in.readInt();
+        IsSetup = in.readInt();
+        IsControl = in.readInt();
+        IsShare = in.readInt();
+        IsRec = in.readInt();
+        IsSnapshot = in.readInt();
     }
 
     public static final Creator<DevModel> CREATOR = new Creator<DevModel>() {
@@ -57,14 +57,14 @@ public class DevModel implements Parcelable {
         parcel.writeString(IPUID);
         parcel.writeInt(WebPort);
         parcel.writeInt(DataPort);
-        parcel.writeByte((byte) (IsVideo ? 1 : 0));
-        parcel.writeByte((byte) (IsHistory ? 1 : 0));
-        parcel.writeByte((byte) (IsPush ? 1 : 0));
-        parcel.writeByte((byte) (IsSetup ? 1 : 0));
-        parcel.writeByte((byte) (IsControl ? 1 : 0));
-        parcel.writeByte((byte) (IsShare ? 1 : 0));
-        parcel.writeByte((byte) (IsRec ? 1 : 0));
-        parcel.writeByte((byte) (IsSnapshot ? 1 : 0));
+        parcel.writeInt(IsVideo );
+        parcel.writeInt(IsHistory);
+        parcel.writeInt(IsPush);
+        parcel.writeInt(IsSetup);
+        parcel.writeInt(IsControl);
+        parcel.writeInt(IsShare);
+        parcel.writeInt(IsRec);
+        parcel.writeInt(IsSnapshot);
     }
 
     public enum EnumOnlineState {
@@ -80,14 +80,14 @@ public class DevModel implements Parcelable {
     public String IPUID;
     public int WebPort;
     public int DataPort;
-    public boolean IsVideo;
-    public boolean IsHistory;
-    public boolean IsPush;
-    public boolean IsSetup;
-    public boolean IsControl;
-    public boolean IsShare;
-    public boolean IsRec;
-    public boolean IsSnapshot;
+    public int IsVideo;
+    public int IsHistory;
+    public int IsPush;
+    public int IsSetup;
+    public int IsControl;
+    public int IsShare;
+    public int IsRec;
+    public int IsSnapshot;
 
 
     public DevModel()

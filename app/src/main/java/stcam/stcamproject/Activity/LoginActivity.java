@@ -26,9 +26,9 @@ import com.model.RetModel;
 import java.util.ArrayList;
 
 import rx.Observer;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.JPushManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.View.LoadingDialog;
@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity  {
     private EditText mPasswordView;
 
     String[] permissions = new String[]{
-            Manifest.permission.ACCESS_WIFI_STATE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
     @Override
@@ -59,6 +59,7 @@ public class LoginActivity extends AppCompatActivity  {
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 
+
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -71,6 +72,8 @@ public class LoginActivity extends AppCompatActivity  {
             }
         });
 
+        mEmailView.setText("4719373@qq.com");
+        mPasswordView.setText("admin111");
         Button mEmailSignInButton = (Button) findViewById(R.id.email_login_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -183,13 +186,16 @@ public class LoginActivity extends AppCompatActivity  {
             // form field with an error.
             focusView.requestFocus();
         } else {
+//            Intent intent = new Intent(STApplication.getInstance(), MainDevListActivity.class);
+//            startActivity(intent);
+//            return;
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             if (lod == null){
                 lod = new LoadingDialog(this);
             }
             lod.dialogShow();
-            subscription = ServerNetWork.getCommandApi()
+            ServerNetWork.getCommandApi()
                     .app_user_login(email,password)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -226,11 +232,18 @@ public class LoginActivity extends AppCompatActivity  {
         public void onNext(RetModel m) {
             lod.dismiss();
             Log.e(tag,"---------------------0:"+m.ret);
+            if (1 == m.ret){
+                Intent intent = new Intent(STApplication.getInstance(), MainDevListActivity.class);
+                startActivity(intent);
+                LoginActivity.this.finish();
+            }
+            else{
+
+            }
+
         }
     };
 
-
-    protected Subscription subscription;
 
     final String tag = "LoginActivity";
     LoadingDialog lod;
