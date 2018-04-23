@@ -2,6 +2,8 @@ package stcam.stcamproject.Activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.model.DevModel;
@@ -12,6 +14,7 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import stcam.stcamproject.Adapter.DeviceListAdapter;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.SouthUtil;
@@ -20,18 +23,31 @@ import stcam.stcamproject.network.ServerNetWork;
 
 public class MainDevListActivity extends AppCompatActivity {
 
+    RecyclerView mRecyclerView;
+    DeviceListAdapter mAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_dev_list);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(R.string.title_main_dev_list);
-
+        initView();
+       // mAdapter = new DeviceListAdapter(this,null);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         loadDevList();
+    }
+
+    void initView(){
+        mRecyclerView = findViewById(R.id.recyler_device);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(layoutManager);
+
+
     }
 
 
@@ -68,6 +84,14 @@ public class MainDevListActivity extends AppCompatActivity {
                 DevModel model =  mlist.get(0);
                 SouthUtil.showToast(STApplication.getInstance(),"dev0 name"+model.DevName);
                 Log.e(tag,"---------------------1 dev0 name"+model.DevName);
+                if (mAdapter == null){
+                    mAdapter = new DeviceListAdapter(MainDevListActivity.this,mlist);
+                    mRecyclerView.setAdapter(mAdapter);
+                }
+                else{
+                    mAdapter.setmDatas(mlist);
+                }
+
             }
             else{
                 //MyContext.getInstance()
