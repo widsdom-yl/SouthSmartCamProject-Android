@@ -4,7 +4,7 @@
 extern "C" JNIEXPORT jstring
 
 JNICALL
-Java_southcam_southsmartcamproject_SplashActivity_stringFromJNI(
+Java_stcam_stcamproject_Activity_SplashActivity_stringFromJNI(
         JNIEnv *env,
         jobject /* this */) {
     std::string hello = "Hello from C++";

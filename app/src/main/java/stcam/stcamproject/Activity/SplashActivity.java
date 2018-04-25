@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 
 import stcam.stcamproject.R;
 
@@ -13,7 +14,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
 
     // Used to load the 'native-lib' library on application startup.
     static {
-        System.loadLibrary("native-lib");
+        System.loadLibrary("thSDK");
     }
 
     Button btnNext;
@@ -29,8 +30,8 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         btnNext.setOnClickListener(this);
 
         // Example of a call to a native method
-//        TextView tv = (TextView) findViewById(R.id.sample_text);
-//        tv.setText(stringFromJNI());
+        TextView tv = (TextView) findViewById(R.id.sample_text);
+        tv.setText(stringFromJNI());
     }
 
     @Override
@@ -39,4 +40,5 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         startActivity(intent);
         finish();
     }
+    public native String stringFromJNI();
 }
