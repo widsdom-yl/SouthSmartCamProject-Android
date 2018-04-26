@@ -4,14 +4,15 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "stcam.stcamproject"
-        minSdkVersion 24
-        targetSdkVersion 27
+        minSdkVersion 15
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
                 cppFlags ""
+                arguments "-DANDROID_DISABLE_FATAL_LINKER_WARNINGS=TRUE"
             }
         }
 
@@ -41,6 +42,10 @@ android {
             keyPassword "12345678"
         }
     }
+    lintOptions {
+        warningsAsErrors false
+
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -50,6 +55,11 @@ android {
     externalNativeBuild {
         cmake {
             path "CMakeLists.txt"
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
         }
     }
 }

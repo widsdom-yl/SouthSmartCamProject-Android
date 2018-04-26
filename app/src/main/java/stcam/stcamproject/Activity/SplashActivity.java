@@ -8,14 +8,14 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.thSDK.lib;
+
 import stcam.stcamproject.R;
 
 public class SplashActivity extends AppCompatActivity implements View.OnClickListener {
 
     // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("thSDK");
-    }
+
 
     Button btnNext;
 
@@ -31,7 +31,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
 
         // Example of a call to a native method
         TextView tv = (TextView) findViewById(R.id.sample_text);
-        tv.setText(stringFromJNI());
+        tv.setText(lib.testGetFfmpeg());
     }
 
     @Override
@@ -40,5 +40,5 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         startActivity(intent);
         finish();
     }
-    public native String stringFromJNI();
+
 }

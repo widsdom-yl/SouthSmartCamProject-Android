@@ -1,5 +1,6 @@
 #include "../include/libthSDK.h"
 #include "jni.h"
+#include "avDecode/thffmpeg.h"
 
 
 //-----------------------------------------------------------------------------
@@ -151,6 +152,14 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetGetAllCfg(JNIEnv* env, jclass 
   UcnvConvert(conv, sizeof(conv), tmpBuf, &pnErrC);
   if (tmpBuf) jtmpBuf = (*env)->NewStringUTF(env, conv);
   return jtmpBuf;
+}
+
+JNIEXPORT jstring JNICALL Java_com_thSDK_lib_testGetFfmpeg(JNIEnv* env, jclass obj)
+{
+  char info[10000] = {0};
+  sprintf(info, "%s\n", avcodec_configuration());
+  return (*env)->NewStringUTF(env, info);
+
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetTalkOpen(JNIEnv* env, jclass obj, u64 NetHandle)

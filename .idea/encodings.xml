@@ -2,6 +2,7 @@
 <project version="4">
   <component name="Encoding" defaultCharsetForPropertiesFiles="GB2312">
     <file url="file://$PROJECT_DIR$/app/src/main/cpp/avDecode/thVideoDec.c" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/app/src/main/cpp/avDecode/thffmpeg.h" charset="GB2312" />
     <file url="file://$PROJECT_DIR$/app/src/main/cpp/thSDK/thPlay.c" charset="GB2312" />
     <file url="file://$PROJECT_DIR$/app/src/main/cpp/thSDK/thPlay.h" charset="GB2312" />
     <file url="PROJECT" charset="UTF-8" />

@@ -28,4 +28,6 @@
     <string name="action_get_register_failed2">校验码错误</string>
     <string name="action_get_register_failed3">校验码超时</string>
     <string name="title_main_dev_list">设备列表</string>
+    <string name="action_search">搜索</string>
+
 </resources>

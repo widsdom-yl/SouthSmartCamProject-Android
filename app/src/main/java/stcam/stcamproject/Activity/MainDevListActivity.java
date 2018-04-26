@@ -1,12 +1,18 @@
 package stcam.stcamproject.Activity;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.model.DevModel;
+import com.thSDK.TMsg;
+import com.thSDK.lib;
 
 import java.util.List;
 
@@ -40,7 +46,35 @@ public class MainDevListActivity extends AppCompatActivity {
         super.onResume();
         loadDevList();
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+    String SearchMsg;
+    boolean IsSearching;
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_search) {
+
+            SouthUtil.showToast(this,"search");
+            new Thread()
+            {
+                @Override
+                public void run()
+                {
+                    SearchMsg = lib.thNetSearchDevice(3000, 1);
+                    ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_SearchOver, 0, 0, null));
+                    IsSearching = false;
+                }
+            }.start();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
     void initView(){
         mRecyclerView = findViewById(R.id.recyler_device);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -49,7 +83,39 @@ public class MainDevListActivity extends AppCompatActivity {
 
 
     }
+    public final Handler ipc = new Handler()
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
 
+
+            super.handleMessage(msg);
+            switch (msg.what)
+            {
+                case TMsg.Msg_NetConnSucceed:
+                      break;
+
+                case TMsg.Msg_NetConnFail:
+                    break;
+
+                case TMsg.Msg_GetConnInfoFromSvrOver:
+                    break;
+
+                case TMsg.Msg_SearchOver:
+                    if (SearchMsg.equals(""))
+                    {
+                        return;
+                    }
+                    SouthUtil.showToast(STApplication.getInstance(),SearchMsg);
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    };
 
     void loadDevList(){
         if (lod == null){
