@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.model.DevModel;
+import com.model.SearchDevModel;
 import com.thSDK.TMsg;
 import com.thSDK.lib;
 
@@ -23,6 +24,7 @@ import rx.schedulers.Schedulers;
 import stcam.stcamproject.Adapter.DeviceListAdapter;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
+import stcam.stcamproject.Util.DeviceParseUtil;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
@@ -107,7 +109,17 @@ public class MainDevListActivity extends AppCompatActivity {
                     {
                         return;
                     }
-                    SouthUtil.showToast(STApplication.getInstance(),SearchMsg);
+                    Log.e(tag,SearchMsg);
+                    //[{"SN":"80005556","DevModal":"401H","DevName":"IPCAM_80005556","DevMAC":"00:C1:A1:62:55:56",
+                    // "DevIP":"192.168.0.199","SubMask":"255.255.255.0","Gateway":"192.168.0.1","DNS1":"192.168.0.1",
+                    // "SoftVersion":"V7.113.1759.00","DataPort":7556,"HttpPort":8556,"rtspPort":554,
+                    // "DDNSServer":"211.149.199.247","DDNSHost":"80005556.southtech.xyz","UID":"NULL"}]
+                    List<SearchDevModel>lists = DeviceParseUtil.parseSearchMsg(SearchMsg);
+                    if (lists.size()>0){
+                        SearchDevModel model = lists.get(0);
+                        SouthUtil.showToast(STApplication.getInstance(),model.getSN());
+                    }
+
 
                     break;
 

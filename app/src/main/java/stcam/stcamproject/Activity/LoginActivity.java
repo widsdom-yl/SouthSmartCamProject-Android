@@ -72,8 +72,13 @@ public class LoginActivity extends AppCompatActivity  {
             }
         });
 
-        mEmailView.setText("4719373@qq.com");
-        mPasswordView.setText("admin111");
+//        mEmailView.setText("4719373@qq.com");
+//        mPasswordView.setText("admin111");
+
+        mEmailView.setText("807510889@qq.com");
+        mPasswordView.setText("111111");
+
+
         Button mEmailSignInButton = (Button) findViewById(R.id.email_login_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
