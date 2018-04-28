@@ -29,5 +29,8 @@
     <string name="action_get_register_failed3">校验码超时</string>
     <string name="title_main_dev_list">设备列表</string>
     <string name="action_search">搜索</string>
+    <string name="action_add">添加</string>
+    <string name="action_add_device">添加设备</string>
+    <string name="action_add_device_search">添加同一路由器下设备（局域网搜索）</string>
 
 </resources>

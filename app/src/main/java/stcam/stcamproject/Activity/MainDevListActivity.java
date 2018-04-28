@@ -1,8 +1,7 @@
 package stcam.stcamproject.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,9 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.model.DevModel;
-import com.model.SearchDevModel;
-import com.thSDK.TMsg;
-import com.thSDK.lib;
 
 import java.util.List;
 
@@ -24,7 +20,6 @@ import rx.schedulers.Schedulers;
 import stcam.stcamproject.Adapter.DeviceListAdapter;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
-import stcam.stcamproject.Util.DeviceParseUtil;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
@@ -59,19 +54,9 @@ public class MainDevListActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == R.id.action_search) {
-
-            SouthUtil.showToast(this,"search");
-            new Thread()
-            {
-                @Override
-                public void run()
-                {
-                    SearchMsg = lib.thNetSearchDevice(3000, 1);
-                    ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_SearchOver, 0, 0, null));
-                    IsSearching = false;
-                }
-            }.start();
+        if (item.getItemId() == R.id.action_add) {
+            Intent intent = new Intent(this, AddDeviceActivity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -85,49 +70,7 @@ public class MainDevListActivity extends AppCompatActivity {
 
 
     }
-    public final Handler ipc = new Handler()
-    {
-        @Override
-        public void handleMessage(Message msg)
-        {
 
-
-            super.handleMessage(msg);
-            switch (msg.what)
-            {
-                case TMsg.Msg_NetConnSucceed:
-                      break;
-
-                case TMsg.Msg_NetConnFail:
-                    break;
-
-                case TMsg.Msg_GetConnInfoFromSvrOver:
-                    break;
-
-                case TMsg.Msg_SearchOver:
-                    if (SearchMsg.equals(""))
-                    {
-                        return;
-                    }
-                    Log.e(tag,SearchMsg);
-                    //[{"SN":"80005556","DevModal":"401H","DevName":"IPCAM_80005556","DevMAC":"00:C1:A1:62:55:56",
-                    // "DevIP":"192.168.0.199","SubMask":"255.255.255.0","Gateway":"192.168.0.1","DNS1":"192.168.0.1",
-                    // "SoftVersion":"V7.113.1759.00","DataPort":7556,"HttpPort":8556,"rtspPort":554,
-                    // "DDNSServer":"211.149.199.247","DDNSHost":"80005556.southtech.xyz","UID":"NULL"}]
-                    List<SearchDevModel>lists = DeviceParseUtil.parseSearchMsg(SearchMsg);
-                    if (lists.size()>0){
-                        SearchDevModel model = lists.get(0);
-                        SouthUtil.showToast(STApplication.getInstance(),model.getSN());
-                    }
-
-
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    };
 
     void loadDevList(){
         if (lod == null){
@@ -135,7 +78,8 @@ public class MainDevListActivity extends AppCompatActivity {
         }
         lod.dialogShow();
         subscription = ServerNetWork.getCommandApi()
-                .app_user_get_devlst("4719373@qq.com","admin111")
+//                .app_user_get_devlst("4719373@qq.com","admin111")
+                .app_user_get_devlst("807510889@qq.com","111111")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer_get_devlst);

@@ -33,7 +33,9 @@
         <activity
             android:name=".Activity.RegisterActivity"
             android:label="@string/title_activity_register" />
-        <activity android:name=".Activity.MainDevListActivity"></activity>
+        <activity android:name=".Activity.MainDevListActivity" />
+        <activity android:name=".Activity.AddDeviceActivity" />
+        <activity android:name=".Activity.AddDeviceOneStepActivity"></activity>
     </application>
 
 </manifest>
