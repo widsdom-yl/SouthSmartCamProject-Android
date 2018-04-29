@@ -1572,6 +1572,7 @@ int thNet_GetConnectStatus(HANDLE NetHandle)
 //-----------------------------------------------------------------------------
 bool thNet_Play(HANDLE NetHandle, u32 VideoChlMask, u32 AudioChlMask, u32 SubVideoChlMask)
 {
+
   bool Result = false;
   TPlayParam* Play = (TPlayParam*)NetHandle;
   if (NetHandle == 0) return false;

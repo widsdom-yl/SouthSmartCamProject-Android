@@ -118,7 +118,19 @@ bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
                GL_UNSIGNED_SHORT_5_6_5,
                (char*)Info->FrameV565.data[0]//App.Video[Chl].bufferRGB565
   );
-  glDrawTexiOES(0, 0, 0, Info->ScreenWidth, Info->ScreenHeight);
+  int left,top,viewWidth,viewHeight;
+  if(Info->ScreenHeight > Info->ScreenWidth){
+    left = 0;
+    viewWidth = Info->ScreenWidth;
+    viewHeight = (int)(Info->ImgHeight*1.0f/Info->ImgWidth*viewWidth);
+    top = (Info->ScreenHeight - viewHeight)/2;
+  }else{
+    top = 0;
+    viewHeight = Info->ScreenHeight;
+    viewWidth = (int)(Info->ImgWidth*1.0f/Info->ImgHeight*viewHeight);
+    left = (Info->ScreenWidth - viewWidth)/2;
+  }
+  glDrawTexiOES(left, top, 0, viewWidth, viewHeight);
 
   return true;
 

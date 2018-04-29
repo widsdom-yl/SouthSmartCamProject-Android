@@ -2,14 +2,18 @@ package stcam.stcamproject.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.model.DevModel;
+import com.thSDK.TMsg;
 
 import java.util.List;
 
@@ -24,10 +28,11 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
-public class MainDevListActivity extends AppCompatActivity {
+public class MainDevListActivity extends AppCompatActivity implements DeviceListAdapter.OnItemClickListener {
 
     RecyclerView mRecyclerView;
     DeviceListAdapter mAdapter;
+    List<DevModel>mDevices;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,11 +108,18 @@ public class MainDevListActivity extends AppCompatActivity {
             lod.dismiss();
 
             if (mlist.size() > 0){
-                DevModel model =  mlist.get(0);
-                SouthUtil.showToast(STApplication.getInstance(),"dev0 name"+model.DevName);
-                Log.e(tag,"---------------------1 dev0 name"+model.DevName);
+                mDevices = mlist;
+                //DevModel model =  mlist.get(0);
+                //SouthUtil.showToast(STApplication.getInstance(),"dev0 name"+model.DevName);
+
+                for (DevModel model : mDevices){
+                    Log.e(tag,"---------------------1 dev0 name"+model.DevName);
+                    DevModel.threadConnect(ipc,model,false);
+                }
+
                 if (mAdapter == null){
                     mAdapter = new DeviceListAdapter(MainDevListActivity.this,mlist);
+                    mAdapter.setOnItemClickListener(MainDevListActivity.this);
                     mRecyclerView.setAdapter(mAdapter);
                 }
                 else{
@@ -128,4 +140,57 @@ public class MainDevListActivity extends AppCompatActivity {
 
     final String tag = "MainDevListActivity";
     LoadingDialog lod;
+
+    @Override
+    public void onItemClick(View view, int position) {
+        DevModel model = mDevices.get(position);
+        //192.168.0.199
+//        model.IPUID = "192.168.0.199";
+//        model.WebPort = 8556;
+//        model.DataPort = 7556;
+
+
+
+
+        Intent intent = new Intent(STApplication.getInstance(), PlayLiveActivity.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("devModel",model);
+
+        intent.putExtras(bundle);
+        Log.e(tag,"to vid devModel NetHandle:"+model.NetHandle);
+
+        startActivity(intent);
+
+    }
+    public final Handler ipc = new Handler()
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
+
+
+            super.handleMessage(msg);
+            DevModel model;
+            switch (msg.what)
+            {
+                case TMsg.Msg_NetConnSucceed:
+                    model = (DevModel) msg.obj;
+                    Log.e(tag,"NetConnSucceed:"+model.SN+"DevNode.NetHandle:"+model.NetHandle);
+                    break;
+                case TMsg.Msg_NetConnFail:
+                    model = (DevModel) msg.obj;
+                    Log.e(tag,"NetConnFail:"+model.SN+"DevNode.NetHandle:"+model.NetHandle);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    };
+
+    @Override
+    public void onLongClick(View view, int position) {
+
+    }
 }

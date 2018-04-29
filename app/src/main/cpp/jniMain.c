@@ -3,6 +3,7 @@
 #include "avDecode/thffmpeg.h"
 
 
+
 //-----------------------------------------------------------------------------
 void UcnvConvert(char* dst, unsigned long dstLen, const char* src, unsigned long *pnErrC)
 {
@@ -157,6 +158,7 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetGetAllCfg(JNIEnv* env, jclass 
 JNIEXPORT jstring JNICALL Java_com_thSDK_lib_testGetFfmpeg(JNIEnv* env, jclass obj)
 {
   char info[10000] = {0};
+  LOGE("=======Java_com_thSDK_lib_testGetFfmpeg");
   sprintf(info, "%s\n", avcodec_configuration());
   return (*env)->NewStringUTF(env, info);
 

@@ -6,7 +6,6 @@
 //-----------------------------------------------------------------------------
 #include "../include/TFun.h"
 #include "../include/skt.h"
-#include "axdllEx.h"
 #include "../include/libthSDK.h"
 #include "../include/avDecode.h"
 #include "../avDecode/thffmpeg.h"
@@ -26,6 +25,8 @@
 #include "../include/tutk/AVAPIs.h"
 #include "../include/tutk/AVFRAMEINFO.h"
 #include "../include/tutk/AVIOCTRLDEFs.h"
+#include "axdll.h"
+
 #ifdef WIN32
 #pragma comment (lib, "lib.win32/tutk/AVAPIs.lib")
 #pragma comment (lib, "lib.win32/tutk/IOTCAPIs.lib")
@@ -1576,14 +1577,17 @@ int thNet_GetConnectStatus(HANDLE NetHandle)
 //-----------------------------------------------------------------------------
 bool thNet_Play(HANDLE NetHandle, u32 VideoChlMask, u32 AudioChlMask, u32 SubVideoChlMask)
 {
+    LOGE("------------ %s(%d)\n", __FUNCTION__, __LINE__);
   bool Result = false;
   TPlayParam* Play = (TPlayParam*)NetHandle;
   if (NetHandle == 0) return false;
+    LOGE("------------ %s(%d)\n", __FUNCTION__, __LINE__);
   if (!Play->IsConnect) return false;
+    LOGE("------------ %s(%d)\n", __FUNCTION__, __LINE__);
 
   if (!(VideoChlMask == 0 && AudioChlMask == 0 && SubVideoChlMask == 0))
     PRINTF("%s(%s)(%s) VideoChlMask:%d AudioChlMask:%d SubVideoChlMask:%d\n", __FUNCTION__, Play->IPUID, Play->LocalIP, VideoChlMask, AudioChlMask, SubVideoChlMask);
-
+  LOGE("------------ %s(%d)\n", __FUNCTION__, __LINE__);
   Play->VideoChlMask = VideoChlMask;
   Play->AudioChlMask = AudioChlMask;
   Play->SubVideoChlMask = SubVideoChlMask;

@@ -35,7 +35,10 @@
             android:label="@string/title_activity_register" />
         <activity android:name=".Activity.MainDevListActivity" />
         <activity android:name=".Activity.AddDeviceActivity" />
-        <activity android:name=".Activity.AddDeviceOneStepActivity"></activity>
+        <activity android:name=".Activity.AddDeviceOneStepActivity" />
+        <activity android:name=".Activity.PlayLiveActivity"
+
+            ></activity>
     </application>
 
 </manifest>

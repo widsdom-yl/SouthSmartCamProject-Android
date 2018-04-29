@@ -5,6 +5,7 @@
 // Description : www.southipcam.com
 //-----------------------------------------------------------------------------
 #include "../include/avDecode.h"
+#include "thOpenGL_SLES.h"
 
 //-----------------------------------------------------------------------------
 HANDLE thRender_Init(int iDDrawMode/*0=VIDEOMEMORY 1=SYSTEMMEMORY*/)

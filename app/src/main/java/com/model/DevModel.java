@@ -1,7 +1,19 @@
 package com.model;
 
+import android.os.Handler;
+import android.os.Message;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
+import com.thSDK.TMsg;
+import com.thSDK.lib;
+
+import org.json.JSONObject;
+
+import java.io.Serializable;
+
+import stcam.stcamproject.Util.TFun;
 
 /**
  * Created by gyl1 on 12/21/16.
@@ -9,7 +21,34 @@ import android.os.Parcelable;
 
 
 
-public class DevModel implements Parcelable {
+public class DevModel implements Parcelable,Serializable {
+
+    public final static int IS_CONN_NODEV = 0;
+    public final static int IS_CONN_OFFLINE = 1;
+    public final static int IS_CONN_LAN = 2;
+    public final static int IS_CONN_DDNS = 3;
+    public final static int IS_CONN_P2P = 4;
+    public final static int IS_CONN_NOWAY = 5;
+    public int Index;
+    public long NetHandle = 0;
+    public boolean IsConnecting = false;
+    public JSONObject DevCfg = null;
+
+    public int ExistSD = 0;
+    int Brightness;
+    int Contrast;
+    int Sharpness;
+    public String SoftVersion = "";
+
+    public int VideoChlMask = 0;
+    public int AudioChlMask = 1;
+    public int SubVideoChlMask = 1;
+
+    public boolean IsAudioMute = true;
+    public boolean IsRecord = false;
+
+    /*==============================================*/
+
 
     protected DevModel(Parcel in) {
         SN = in.readString();
@@ -28,6 +67,7 @@ public class DevModel implements Parcelable {
         IsShare = in.readInt();
         IsRec = in.readInt();
         IsSnapshot = in.readInt();
+        NetHandle = in.readLong();
     }
 
     public static final Creator<DevModel> CREATOR = new Creator<DevModel>() {
@@ -65,6 +105,7 @@ public class DevModel implements Parcelable {
         parcel.writeInt(IsShare);
         parcel.writeInt(IsRec);
         parcel.writeInt(IsSnapshot);
+        parcel.writeLong(NetHandle);
     }
 
     public enum EnumOnlineState {
@@ -95,6 +136,149 @@ public class DevModel implements Parcelable {
         usr = "admin";
         pwd = "admin";
 
+    }
+
+    public boolean Init()
+    {
+        NetHandle = lib.thNetInit(true, false, false, false);
+        return true;
+    }
+    public String GetAllCfg()
+    {
+        return lib.thNetGetAllCfg(NetHandle);
+    }
+    public boolean Disconn()
+    {
+        return lib.thNetDisConn(NetHandle);
+    }
+    public boolean IsConnect()
+    {
+        boolean ret = false;
+        if (NetHandle == 0)
+        {
+            return ret;
+        }
+        ret = lib.thNetIsConnect(NetHandle);
+        TFun.printf(SN + "(" + IPUID + ")(" + lib.GetLocalIP() + ") thNetIsConnect:" + ret);
+        return ret;
+    }
+    public boolean Connect()
+    {
+        boolean ret;
+        if (IPUID == null || IPUID.length() <= 0)
+        {
+            return false;
+        }
+
+        if (IsConnecting) return false;
+        IsConnecting = true;
+        ret = lib.thNetConnect(NetHandle, usr, pwd, IPUID, DataPort, 10 * 1000);
+        if (ret)
+        {
+
+        }
+        IsConnecting = false;
+        return ret;
+    }
+
+    public static void threadConnect(final Handler ipc, final DevModel DevNode, final boolean IsDisconnReConnect)
+    {
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    if (DevNode.NetHandle == 0)
+                    {
+                        DevNode.Init();
+                    }
+                    if (IsDisconnReConnect)
+                    {
+                        DevNode.Disconn();
+                    }
+
+                    if (!DevNode.IsConnect())
+                    {
+                        DevNode.Connect();
+                    }
+
+                    if (DevNode.IsConnect())
+                    {
+                        ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_NetConnSucceed, DevNode.Index, 0, DevNode));
+                        String tmpStr = DevNode.GetAllCfg();
+                        JSONObject json = new JSONObject(tmpStr);
+                        DevNode.DevCfg = json;
+                        DevNode.ExistSD = json.getJSONObject("DevInfo").getInt("ExistSD");
+                        DevNode.Brightness = json.getJSONObject("Video").getInt("Brightness");
+                        DevNode.Contrast = json.getJSONObject("Video").getInt("Contrast");
+                        DevNode.Sharpness = json.getJSONObject("Video").getInt("Sharpness");
+
+                        DevNode.DevName = json.getJSONObject("DevInfo").getString("DevName");
+                        DevNode.SoftVersion = json.getJSONObject("DevInfo").getString("SoftVersion");
+                        Log.e("java", "SoftVersion is :" + DevNode.SoftVersion);
+                    }
+                    else
+                    {
+                        ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_NetConnFail, DevNode.Index, 0, DevNode));
+                        return;
+                    }
+                }
+                catch (Exception e)
+                {
+                    return;
+                }
+            }
+        }.start();
+    }
+
+    public boolean Play()
+    {
+        TFun.printf("Play:NetHandle:"+NetHandle);
+        return lib.thNetPlay(NetHandle, VideoChlMask, AudioChlMask, SubVideoChlMask);
+    }
+    public boolean Stop()
+    {
+        return lib.thNetStop(NetHandle);
+    }
+
+    public static void threadStartPlay(final Handler ipc, final DevModel DevNode)
+    {
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                DevNode.Play();
+
+                lib.thNetAudioPlayOpen(DevNode.NetHandle);
+                DevNode.IsAudioMute = true;
+                lib.thNetSetAudioIsMute(DevNode.NetHandle, DevNode.IsAudioMute);
+            }
+        }.start();
+    }
+
+    public static void threadStopPlay(final Handler ipc, final DevModel DevNode)
+    {
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                DevNode.Stop();
+
+
+                lib.thNetTalkClose(DevNode.NetHandle);
+
+                if (DevNode.IsRecord)
+                {
+                    DevNode.IsRecord = false;
+                    lib.thNetStopRec(DevNode.NetHandle);
+                }
+                lib.thNetAudioPlayClose(DevNode.NetHandle);
+            }
+        }.start();
     }
 
 
