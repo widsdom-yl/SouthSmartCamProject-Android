@@ -6,4 +6,81 @@
     android:layout_height="match_parent"
     tools:context=".Activity.DeviceShareActivity">
 
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <CheckBox
+                android:id="@+id/checkBox_vid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/action_share_vid"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:layout_editor_absoluteY="35dp" />
+
+            <CheckBox
+                android:id="@+id/checkBox_push"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/action_share_push"
+                app:layout_constraintStart_toEndOf="@+id/checkBox_vid"
+                tools:layout_editor_absoluteY="35dp" />
+
+            <CheckBox
+                android:id="@+id/checkBox_setting"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/action_share_setting"
+                tools:layout_editor_absoluteX="205dp"
+                tools:layout_editor_absoluteY="35dp" />
+
+            <CheckBox
+                android:id="@+id/checkBox_control"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/action_share_control"
+                tools:layout_editor_absoluteX="308dp"
+                tools:layout_editor_absoluteY="35dp" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </TableLayout>
+
+    <Button
+        android:id="@+id/btn_generate_share"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginRight="48dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="60dp"
+        android:text="@string/action_generate_share"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
 </android.support.constraint.ConstraintLayout>

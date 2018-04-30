@@ -43,6 +43,7 @@ public class DevModel implements Parcelable,Serializable {
     public int VideoChlMask = 0;
     public int AudioChlMask = 1;
     public int SubVideoChlMask = 1;
+    public String UID;
 
     public boolean IsAudioMute = true;
     public boolean IsRecord = false;
@@ -68,6 +69,7 @@ public class DevModel implements Parcelable,Serializable {
         IsRec = in.readInt();
         IsSnapshot = in.readInt();
         NetHandle = in.readLong();
+        UID = in.readString();
     }
 
     public static final Creator<DevModel> CREATOR = new Creator<DevModel>() {
@@ -106,6 +108,7 @@ public class DevModel implements Parcelable,Serializable {
         parcel.writeInt(IsRec);
         parcel.writeInt(IsSnapshot);
         parcel.writeLong(NetHandle);
+        parcel.writeString(UID);
     }
 
     public enum EnumOnlineState {
@@ -208,16 +211,18 @@ public class DevModel implements Parcelable,Serializable {
                     {
                         ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_NetConnSucceed, DevNode.Index, 0, DevNode));
                         String tmpStr = DevNode.GetAllCfg();
+                        Log.e("java", "tmpStr is :" + tmpStr);
                         JSONObject json = new JSONObject(tmpStr);
                         DevNode.DevCfg = json;
                         DevNode.ExistSD = json.getJSONObject("DevInfo").getInt("ExistSD");
                         DevNode.Brightness = json.getJSONObject("Video").getInt("Brightness");
                         DevNode.Contrast = json.getJSONObject("Video").getInt("Contrast");
                         DevNode.Sharpness = json.getJSONObject("Video").getInt("Sharpness");
-
+                        DevNode.UID = json.getJSONObject("P2P").getString("P2P_UID");
                         DevNode.DevName = json.getJSONObject("DevInfo").getString("DevName");
                         DevNode.SoftVersion = json.getJSONObject("DevInfo").getString("SoftVersion");
-                        Log.e("java", "SoftVersion is :" + DevNode.SoftVersion);
+                        Log.e("java", "SoftVersion is :" + DevNode.SoftVersion+",uid is "+DevNode.UID);
+
                     }
                     else
                     {
