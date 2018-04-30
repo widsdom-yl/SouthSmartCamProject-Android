@@ -29,6 +29,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import stcam.stcamproject.Application.STApplication;
+import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.Manager.JPushManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.View.LoadingDialog;
@@ -75,8 +76,8 @@ public class LoginActivity extends AppCompatActivity  {
 //        mEmailView.setText("4719373@qq.com");
 //        mPasswordView.setText("admin111");
 
-        mEmailView.setText("807510889@qq.com");
-        mPasswordView.setText("111111");
+        mEmailView.setText(AccountManager.getInstance().getDefaultUsr());
+        mPasswordView.setText(AccountManager.getInstance().getDefaultPwd());
 
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_login_in_button);
@@ -238,6 +239,9 @@ public class LoginActivity extends AppCompatActivity  {
             lod.dismiss();
             Log.e(tag,"---------------------0:"+m.ret);
             if (1 == m.ret){
+                String email = mEmailView.getText().toString();
+                String password = mPasswordView.getText().toString();
+                AccountManager.getInstance().saveAccount(email,password);
                 Intent intent = new Intent(STApplication.getInstance(), MainDevListActivity.class);
                 startActivity(intent);
                 LoginActivity.this.finish();

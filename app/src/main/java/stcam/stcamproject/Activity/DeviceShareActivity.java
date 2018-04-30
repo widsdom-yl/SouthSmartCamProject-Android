@@ -1,5 +1,6 @@
 package stcam.stcamproject.Activity;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -7,10 +8,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.model.DevModel;
 import com.model.ShareModel;
+import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import stcam.stcamproject.R;
 public class DeviceShareActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
@@ -21,7 +24,7 @@ public class DeviceShareActivity extends AppCompatActivity implements View.OnCli
     CheckBox checkbox_control;
     CheckBox checkbox_push;
     CheckBox checkbox_setting;
-
+    ImageView qr_imageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +56,7 @@ public class DeviceShareActivity extends AppCompatActivity implements View.OnCli
         checkbox_control.setOnCheckedChangeListener(this);
         checkbox_push.setOnCheckedChangeListener(this);
         checkbox_setting.setOnCheckedChangeListener(this);
+        qr_imageView = findViewById(R.id.qr_imageView);
         findViewById(R.id.btn_generate_share).setOnClickListener(this);
     }
 
@@ -71,6 +75,8 @@ public class DeviceShareActivity extends AppCompatActivity implements View.OnCli
         Gson gson =new Gson();
         String json = gson.toJson(shareModel);
         Log.e(tag,json);
+        Bitmap mBitmap = CodeUtils.createImage(json, 400, 400, null);
+        qr_imageView.setImageBitmap(mBitmap);
     }
 
     @Override

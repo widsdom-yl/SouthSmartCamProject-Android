@@ -22,6 +22,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
+import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.Manager.JPushManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.DeviceParseUtil;
@@ -124,7 +125,7 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
     void addDevice( List<SearchDevModel> devices){
         List<Observable<RetModel>> observables = new ArrayList<>();
         for (SearchDevModel device : devices){
-            observables.add(ServerNetWork.getCommandApi().app_user_add_dev("807510889@qq.com","111111",
+            observables.add(ServerNetWork.getCommandApi().app_user_add_dev(AccountManager.getInstance().getDefaultUsr(),AccountManager.getInstance().getDefaultPwd(),
                                                                             JPushManager.getJPushRegisterID(),
                     1,0,0,device.getSN(),0));
         }

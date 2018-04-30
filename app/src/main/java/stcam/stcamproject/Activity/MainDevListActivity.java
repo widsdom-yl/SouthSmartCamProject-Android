@@ -23,6 +23,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import stcam.stcamproject.Adapter.DeviceListAdapter;
 import stcam.stcamproject.Application.STApplication;
+import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
@@ -84,7 +85,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         lod.dialogShow();
         subscription = ServerNetWork.getCommandApi()
 //                .app_user_get_devlst("4719373@qq.com","admin111")
-                .app_user_get_devlst("807510889@qq.com","111111")
+                .app_user_get_devlst(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance().getDefaultPwd())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer_get_devlst);

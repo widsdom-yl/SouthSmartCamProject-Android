@@ -83,4 +83,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+
+    <ImageView
+        android:id="@+id/qr_imageView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_generate_share"
+        app:srcCompat="@color/cardview_light_background" />
 </android.support.constraint.ConstraintLayout>
