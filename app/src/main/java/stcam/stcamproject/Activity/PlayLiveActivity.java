@@ -1,5 +1,6 @@
 package stcam.stcamproject.Activity;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -23,13 +24,16 @@ public class PlayLiveActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_play_live);
         initView();
+
         glView.Play();
 
     }
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-//    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        glView.Stop();
+        glView.Play();
+    }
     void initView(){
         glView = findViewById(R.id.glPlayLive);
         glView.setModel(devModel);

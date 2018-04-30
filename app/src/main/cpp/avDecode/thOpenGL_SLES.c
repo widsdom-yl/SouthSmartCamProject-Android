@@ -67,6 +67,7 @@ bool thOpenGLVideo_FillMem(HANDLE Handle, TavPicture FrameV420, i32 ImgWidth, i3
   return true;
 }
 //-----------------------------------------------------------------------------
+int mScreenTpe = 0;//0-初始未知状态 1-竖屏幕 2-横屏幕
 bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
 {
   static GLuint s_disable_caps[] = {GL_FOG, GL_LIGHTING, GL_CULL_FACE, GL_ALPHA_TEST, GL_BLEND, GL_COLOR_LOGIC_OP, GL_DITHER, GL_STENCIL_TEST, GL_DEPTH_TEST, GL_COLOR_MATERIAL, 0};
@@ -82,17 +83,32 @@ bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
   if (Info->ScreenWidth <= 0) return false;
   if (Info->ScreenHeight <= 0) return false;
 
-  glDeleteTextures(1, &Info->gl_texture);
-  GLuint* start = s_disable_caps;
-  while (*start) glDisable(*start++);
-  glEnable(GL_TEXTURE_2D);
-  glGenTextures(1, &Info->gl_texture);
-  glBindTexture(GL_TEXTURE_2D, Info->gl_texture);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glShadeModel(GL_FLAT);
-  glColor4x(0x10000, 0x10000, 0x10000, 0x10000);
-  glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_CROP_RECT_OES, rect);
+
+
+
+    int screenTpe = 1;
+    if (Info->ScreenHeight > Info->ScreenWidth){
+        screenTpe = 1;
+    }
+    else{
+        screenTpe = 2;
+    }
+    if (mScreenTpe != screenTpe){
+        mScreenTpe = screenTpe;
+        glDeleteTextures(1, &Info->gl_texture);
+        GLuint* start = s_disable_caps;
+        while (*start) glDisable(*start++);
+        glEnable(GL_TEXTURE_2D);
+        glGenTextures(1, &Info->gl_texture);
+        glBindTexture(GL_TEXTURE_2D, Info->gl_texture);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glShadeModel(GL_FLAT);
+        glColor4x(0x10000, 0x10000, 0x10000, 0x10000);
+        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_CROP_RECT_OES, rect);
+
+    }
+
 
 
   thImgConvertFill(&Info->FrameV565, Info->rgbBuf565, AV_PIX_FMT_RGB565, TEXTURE_WIDTH, TEXTURE_HEIGHT);
@@ -118,20 +134,23 @@ bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
                GL_UNSIGNED_SHORT_5_6_5,
                (char*)Info->FrameV565.data[0]//App.Video[Chl].bufferRGB565
   );
-  int left,top,viewWidth,viewHeight;
-  if(Info->ScreenHeight > Info->ScreenWidth){
-    left = 0;
-    viewWidth = Info->ScreenWidth;
-    viewHeight = (int)(Info->ImgHeight*1.0f/Info->ImgWidth*viewWidth);
-    top = (Info->ScreenHeight - viewHeight)/2;
-  }else{
-    top = 0;
-    viewHeight = Info->ScreenHeight;
-    viewWidth = (int)(Info->ImgWidth*1.0f/Info->ImgHeight*viewHeight);
-    left = (Info->ScreenWidth - viewWidth)/2;
-  }
+    int left,top,viewWidth,viewHeight;
+    if(Info->ScreenHeight > Info->ScreenWidth){
+        left = 0;
+        viewWidth = Info->ScreenWidth;
+        viewHeight = (int)(Info->ImgHeight*1.0f/Info->ImgWidth*viewWidth);
+        top = (Info->ScreenHeight - viewHeight)/2;
+        PRINTF("0=======ScreenHeight>ScreenWidth,viewWidth:%d,viewheight",viewWidth,viewHeight);
+    }else{
+        top = 0;
+        viewHeight = Info->ScreenHeight;
+        viewWidth = (int)(Info->ImgWidth*1.0f/Info->ImgHeight*viewHeight);
+        left = (Info->ScreenWidth - viewWidth)/2;
+        PRINTF("1=======ScreenWidth>ScreenHeight,viewWidth:%d,viewheight",viewWidth,viewHeight);
+    }
+    glViewport(0, 0, Info->ScreenWidth, Info->ScreenHeight);
   glDrawTexiOES(left, top, 0, viewWidth, viewHeight);
-
+   // glDrawTexiOES(0, 0, 0, Info->ScreenWidth, Info->ScreenHeight);
   return true;
 
 }

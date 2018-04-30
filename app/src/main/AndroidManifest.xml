@@ -37,7 +37,8 @@
         <activity android:name=".Activity.AddDeviceActivity" />
         <activity android:name=".Activity.AddDeviceOneStepActivity" />
         <activity android:name=".Activity.PlayLiveActivity"
-
+            android:launchMode="singleTask"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             ></activity>
     </application>
 
