@@ -142,25 +142,34 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
     LoadingDialog lod;
 
     @Override
-    public void onItemClick(View view, int position) {
-        DevModel model = mDevices.get(position);
-        //192.168.0.199
-//        model.IPUID = "192.168.0.199";
-//        model.WebPort = 8556;
-//        model.DataPort = 7556;
+    public void onItemClick(View view, int position,int tpe) {
+        if (0 == tpe){
+            DevModel model = mDevices.get(position);
 
+            Intent intent = new Intent(STApplication.getInstance(), PlayLiveActivity.class);
 
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("devModel",model);
 
+            intent.putExtras(bundle);
+            Log.e(tag,"to vid devModel NetHandle:"+model.NetHandle);
 
-        Intent intent = new Intent(STApplication.getInstance(), PlayLiveActivity.class);
+            startActivity(intent);
+        }
+        else  if (1 == tpe){
+            DevModel model = mDevices.get(position);
 
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("devModel",model);
+            Intent intent = new Intent(STApplication.getInstance(), DeviceShareActivity.class);
 
-        intent.putExtras(bundle);
-        Log.e(tag,"to vid devModel NetHandle:"+model.NetHandle);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("devModel",model);
 
-        startActivity(intent);
+            intent.putExtras(bundle);
+            Log.e(tag,"to DeviceShareActivity NetHandle:"+model.NetHandle);
+
+            startActivity(intent);
+        }
+
 
     }
     public final Handler ipc = new Handler()

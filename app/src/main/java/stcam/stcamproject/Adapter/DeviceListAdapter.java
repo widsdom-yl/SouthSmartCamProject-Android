@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -54,7 +55,33 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
 
                 @Override
                 public void onClick(View v) {
-                    mItemClickListener.onItemClick(holder.itemView, position);
+                    mItemClickListener.onItemClick(holder.itemView, position,0);
+
+                }
+            });
+            holder.shareBtn.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    mItemClickListener.onItemClick(holder.shareBtn, position,1);
+
+                }
+            });
+
+            holder.playBackBtn.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    mItemClickListener.onItemClick(holder.playBackBtn, position,2);
+
+                }
+            });
+
+            holder.settingBtn.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    mItemClickListener.onItemClick(holder.settingBtn, position,3);
 
                 }
             });
@@ -75,18 +102,25 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
 
         private ImageView deviceImageView;
         private TextView deviceNameView;
+        private Button shareBtn;
+        private Button playBackBtn;
+        private Button settingBtn;
 
         public MyHolder(View view) {
             super(view);
-            deviceImageView = (ImageView) view.findViewById(R.id.device_image);
-            deviceNameView = (TextView) view.findViewById(R.id.device_name_view);
+            deviceImageView = view.findViewById(R.id.device_image);
+            deviceNameView =  view.findViewById(R.id.device_name_view);
+            shareBtn = view.findViewById(R.id.btn_device_share);
+            playBackBtn = view.findViewById(R.id.btn_device_play_record);
+            settingBtn = view.findViewById(R.id.btn_device_setting);
         }
 
     }
 
     public interface OnItemClickListener{
         //条目被点击时触发的回调
-        void onItemClick(View view,int position);
+        //tpe:0-item被点击 1-share被点击 2-回放被点击 3-设置被点击
+        void onItemClick(View view,int position,int tpe);
         //长按时触发的回调
         void onLongClick(View view,int position);
     }

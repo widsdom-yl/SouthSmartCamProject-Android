@@ -33,4 +33,8 @@
     <string name="action_add_device">添加设备</string>
     <string name="action_add_device_search">添加同一路由器下设备（局域网搜索）</string>
 
+    <string name="action_device_share">分享</string>
+    <string name="action_device_play_record">回放</string>
+    <string name="action_device_play_setting">设置</string>
+
 </resources>

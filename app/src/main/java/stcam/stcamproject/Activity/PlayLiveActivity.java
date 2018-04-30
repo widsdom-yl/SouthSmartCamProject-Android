@@ -31,8 +31,8 @@ public class PlayLiveActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        glView.Stop();
-        glView.Play();
+//        glView.Stop();
+//        glView.Play();
     }
     void initView(){
         glView = findViewById(R.id.glPlayLive);

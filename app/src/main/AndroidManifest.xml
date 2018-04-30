@@ -36,10 +36,11 @@
         <activity android:name=".Activity.MainDevListActivity" />
         <activity android:name=".Activity.AddDeviceActivity" />
         <activity android:name=".Activity.AddDeviceOneStepActivity" />
-        <activity android:name=".Activity.PlayLiveActivity"
-            android:launchMode="singleTask"
+        <activity
+            android:name=".Activity.PlayLiveActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            ></activity>
+            android:launchMode="singleTask" />
+        <activity android:name=".Activity.DeviceShareActivity"></activity>
     </application>
 
 </manifest>
