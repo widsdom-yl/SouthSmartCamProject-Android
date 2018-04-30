@@ -38,10 +38,12 @@
     <string name="action_device_play_setting">设置</string>
 
     <string name="action_share_vid">视频</string>
+    <string name="action_share_playback">回放</string>
     <string name="action_share_push">推送</string>
     <string name="action_share_setting">设置</string>
     <string name="action_share_control">控制</string>
 
     <string name="action_generate_share">生成分享</string>
+    <string name="action_add_share_device">添加分享的设备(扫描二维码)</string>
 
 </resources>

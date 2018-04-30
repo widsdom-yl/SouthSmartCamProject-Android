@@ -46,7 +46,8 @@ public class LoginActivity extends AppCompatActivity  {
     private EditText mPasswordView;
 
     String[] permissions = new String[]{
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA
     };
 
     @Override

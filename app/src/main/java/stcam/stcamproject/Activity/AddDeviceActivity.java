@@ -1,5 +1,6 @@
 package stcam.stcamproject.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -8,11 +9,15 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.model.RetModel;
 import com.model.SearchDevModel;
+import com.model.ShareModel;
 import com.thSDK.TMsg;
 import com.thSDK.lib;
+import com.uuzuche.lib_zxing.activity.CaptureActivity;
+import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +31,15 @@ import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.Manager.JPushManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.DeviceParseUtil;
+import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
 public class AddDeviceActivity extends AppCompatActivity implements View.OnClickListener {
 
+    static final String tag = "AddDeviceActivity";
+    final int REQUEST_CODE = 10001;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,8 +52,36 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
 
         setContentView(R.layout.activity_add_device);
         Button btn_search = findViewById(R.id.btn_add_device_search);
+        Button btn_add_device_share = findViewById(R.id.btn_add_device_share);
         btn_search.setOnClickListener(this);
+        btn_add_device_share.setOnClickListener(this);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i(tag, "onActivityResult"+"requestCode"+requestCode+"\n resultCode="+resultCode);
+        if(requestCode==REQUEST_CODE) {
+            if (requestCode == REQUEST_CODE) {
+                //处理扫描结果（在界面上显示）
+                if (null != data) {
+                    Bundle bundle = data.getExtras();
+                    if (bundle == null) {
+                        return;
+                    }
+                    if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
+                        String result = bundle.getString(CodeUtils.RESULT_STRING);
+                        Toast.makeText(this, "解析结果:" + result, Toast.LENGTH_LONG).show();
+                        addDevice_share(result);
+
+                    } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
+                        Toast.makeText(AddDeviceActivity.this, "解析二维码失败", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -56,6 +92,8 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     public void onClick(View view) {
@@ -78,6 +116,9 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
                     }
                 }.start();
                   break;
+            case R.id.btn_add_device_share:
+                Intent intent = new Intent(AddDeviceActivity.this, CaptureActivity.class);
+                startActivityForResult(intent, REQUEST_CODE);
             default:
                 break;
         }
@@ -121,6 +162,25 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
         }
     };
 
+
+    void addDevice_share(String json){
+        ShareModel model = GsonUtil.parseJsonWithGson(json, ShareModel.class);
+        if (model != null){
+            Log.e(tag,"model.uid:"+model.UID);
+            if (lod == null){
+                lod = new LoadingDialog(this);
+            }
+            lod.dialogShow();
+            ServerNetWork.getCommandApi().app_share_add_dev(AccountManager.getInstance().getDefaultUsr(),AccountManager.getInstance().getDefaultPwd(),
+                    model.From,JPushManager.getJPushRegisterID(),1,0,0,model.SN,model.Video,model.History,model.Push,
+                    model.Setup,model.Control).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observer_add_dev);;
+        }
+        else{
+            Log.e(tag,"parseJsonWithGson failed");
+        }
+    }
 
     void addDevice( List<SearchDevModel> devices){
         List<Observable<RetModel>> observables = new ArrayList<>();
@@ -176,5 +236,4 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
     LoadingDialog lod;
     String SearchMsg;
     boolean IsSearching;
-    final static String tag = "AddDeviceActivity";
 }

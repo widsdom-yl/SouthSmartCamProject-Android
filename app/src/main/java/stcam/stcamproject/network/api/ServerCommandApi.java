@@ -137,6 +137,7 @@ public interface ServerCommandApi {
     @GET("app_share_add_dev.asp")
     Observable<com.model.RetModel> app_share_add_dev(@Query("user") String user,
                                                     @Query("psd") String psd,
+                                                     @Query("from") String from,
                                                     @Query("tokenid") String tokenid,
                                                     @Query("mbtype") int mbtype,
                                                     @Query("apptype") int apptype,

@@ -15,12 +15,14 @@ import com.model.DevModel;
 import com.model.ShareModel;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
+import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.R;
 public class DeviceShareActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     static final String tag = "DeviceShareActivity";
     DevModel devModel;
     ShareModel shareModel;
     CheckBox checkbox_vid;
+    CheckBox checkbox_playback;
     CheckBox checkbox_control;
     CheckBox checkbox_push;
     CheckBox checkbox_setting;
@@ -42,7 +44,8 @@ public class DeviceShareActivity extends AppCompatActivity implements View.OnCli
             Log.e(tag,"NetHandle:"+devModel.NetHandle+",SN:"+devModel.SN);
         }
         shareModel = new ShareModel();
-        shareModel.From = "807510889@qq.com";
+        shareModel.SN = devModel.SN;
+        shareModel.From = AccountManager.getInstance().getDefaultUsr();
         shareModel.UID = devModel.UID;
         initView();
 
@@ -52,6 +55,7 @@ public class DeviceShareActivity extends AppCompatActivity implements View.OnCli
         checkbox_control = findViewById(R.id.checkBox_control);
         checkbox_push = findViewById(R.id.checkBox_push);
         checkbox_setting = findViewById(R.id.checkBox_setting);
+        checkbox_playback = findViewById(R.id.checkBox_playback);
         checkbox_vid.setOnCheckedChangeListener(this);
         checkbox_control.setOnCheckedChangeListener(this);
         checkbox_push.setOnCheckedChangeListener(this);
@@ -83,16 +87,19 @@ public class DeviceShareActivity extends AppCompatActivity implements View.OnCli
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
         switch (compoundButton.getId()){
             case R.id.checkBox_vid:
-                shareModel.Video = b;
+                shareModel.Video = b?1:0;
+                break;
+            case R.id.checkBox_playback:
+                shareModel.History = b?1:0;
                 break;
             case R.id.checkBox_push:
-                shareModel.Push = b;
+                shareModel.Push = b?1:0;
                 break;
             case R.id.checkBox_setting:
-                shareModel.Setup = b;
+                shareModel.Setup = b?1:0;
                 break;
             case R.id.checkBox_control:
-                shareModel.Control = b;
+                shareModel.Control = b?1:0;
                 break;
             default:
                 break;
