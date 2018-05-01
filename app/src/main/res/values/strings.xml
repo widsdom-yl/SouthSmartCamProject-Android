@@ -46,5 +46,6 @@
     <string name="action_generate_share">生成分享</string>
     <string name="action_add_share_device">添加分享的设备(扫描二维码)</string>
     <string name="action_net_not_connect">未连接到此设备</string>
+    <string name="action_not_exist_sd">此设备无SD卡</string>
 
 </resources>

@@ -5,6 +5,7 @@
     <file url="file://$PROJECT_DIR$/app/src/main/cpp/avDecode/thRender.c" charset="GB2312" />
     <file url="file://$PROJECT_DIR$/app/src/main/cpp/avDecode/thVideoDec.c" charset="GB2312" />
     <file url="file://$PROJECT_DIR$/app/src/main/cpp/avDecode/thffmpeg.h" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/app/src/main/cpp/common/TFun.c" charset="GB2312" />
     <file url="file://$PROJECT_DIR$/app/src/main/cpp/include/avDecode.h" charset="GB2312" />
     <file url="file://$PROJECT_DIR$/app/src/main/cpp/include/cm_types.h" charset="GB2312" />
     <file url="file://$PROJECT_DIR$/app/src/main/cpp/include/libthSDK.h" charset="GB2312" />

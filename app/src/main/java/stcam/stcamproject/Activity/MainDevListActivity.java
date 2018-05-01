@@ -5,13 +5,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout;
 import com.model.DevModel;
 import com.thSDK.TMsg;
 
@@ -34,6 +37,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
     RecyclerView mRecyclerView;
     DeviceListAdapter mAdapter;
     List<DevModel>mDevices;
+    SuperSwipeRefreshLayout refreshLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +51,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
     @Override
     protected void onResume() {
         super.onResume();
-        loadDevList();
+        loadDevList(false);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -69,20 +73,67 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         return super.onOptionsItemSelected(item);
     }
     void initView(){
+        refreshLayout = findViewById(R.id.swipeRefreshLayout);
         mRecyclerView = findViewById(R.id.recyler_device);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
 
+         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        refreshLayout
+                .setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
+
+                    @Override
+                    public void onRefresh() {
+                        //TODO 开始刷新
+                        loadDevList(true);
+                    }
+
+                    @Override
+                    public void onPullDistance(int distance) {
+                        //TODO 下拉距离
+                    }
+
+                    @Override
+                    public void onPullEnable(boolean enable) {
+                        //TODO 下拉过程中，下拉的距离是否足够出发刷新
+                    }
+                });
+        refreshLayout
+                .setOnPushLoadMoreListener(new SuperSwipeRefreshLayout.OnPushLoadMoreListener() {
+
+                    @Override
+                    public void onLoadMore() {
+                        loadDevList(true);
+                    }
+
+                    @Override
+                    public void onPushEnable(boolean enable) {
+                        //TODO 上拉过程中，上拉的距离是否足够出发刷新
+                    }
+
+                    @Override
+                    public void onPushDistance(int distance) {
+                        // TODO 上拉距离
+
+                    }
+
+                });
+        refreshLayout.setFooterView(createFooterView());
 
     }
 
+    View createFooterView(){
+        View view = LayoutInflater.from(this).inflate(R.layout.load_more, null);
 
-    void loadDevList(){
+        return view;
+    }
+    void loadDevList(boolean refresh){
         if (lod == null){
             lod = new LoadingDialog(this);
         }
-        lod.dialogShow();
+        if (!refresh)
+            lod.dialogShow();
         subscription = ServerNetWork.getCommandApi()
 //                .app_user_get_devlst("4719373@qq.com","admin111")
                 .app_user_get_devlst(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance().getDefaultPwd())
@@ -95,12 +146,19 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         @Override
         public void onCompleted() {
             lod.dismiss();
+            refreshLayout.setRefreshing(false);
+            refreshLayout.setLoadMore(false);
+
+           // refreshLayout.setLoading(false);
+
             Log.e(tag,"---------------------2");
             subscription.unsubscribe();
         }
         @Override
         public void onError(Throwable e) {
             lod.dismiss();
+            refreshLayout.setRefreshing(false);
+            refreshLayout.setLoadMore(false);
             Log.e(tag,"---------------------1:"+e.getLocalizedMessage());
         }
 
@@ -197,6 +255,22 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
             startActivity(intent);
         }
 
+        else  if (2 == tpe){
+
+            if(model.ExistSD == 0){
+                SouthUtil.showToast(STApplication.getInstance(),getString(R.string.action_not_exist_sd));
+                return;
+            }
+            Intent intent = new Intent(STApplication.getInstance(), PlayBackListActivity.class);
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("devModel",model);
+
+            intent.putExtras(bundle);
+            Log.e(tag,"to PlayBackListActivity NetHandle:"+model.NetHandle);
+
+            startActivity(intent);
+        }
 
     }
     public final Handler ipc = new Handler()
@@ -229,4 +303,6 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
     public void onLongClick(View view, int position) {
 
     }
+
+
 }
