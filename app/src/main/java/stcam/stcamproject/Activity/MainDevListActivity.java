@@ -109,12 +109,33 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
             lod.dismiss();
 
             if (mlist.size() > 0){
-                mDevices = mlist;
+              //  mDevices = mlist;
                 //DevModel model =  mlist.get(0);
                 //SouthUtil.showToast(STApplication.getInstance(),"dev0 name"+model.DevName);
 
+                if (mDevices == null){
+                    mDevices = mlist;
+                }
+                else{
+                    for (DevModel model : mlist){
+                        boolean exist = false;
+                        for (DevModel existModel : mDevices){
+
+                            if (model.SN.equals(existModel.SN)){
+                                exist = true;
+                                break;
+                            }
+                        }
+                        if (!exist){
+                            mDevices.add(model);
+                        }
+                    }
+                }
+
                 for (DevModel model : mDevices){
+
                     Log.e(tag,"---------------------1 dev0 name"+model.DevName);
+                    if (!model.IsConnect())
                     DevModel.threadConnect(ipc,model,false);
                 }
 
@@ -144,8 +165,13 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
     @Override
     public void onItemClick(View view, int position,int tpe) {
+        DevModel model = mDevices.get(position);
+        if (!model.IsConnect()){
+            SouthUtil.showToast(STApplication.getInstance(),getString(R.string.action_net_not_connect));
+            return;
+        }
         if (0 == tpe){
-            DevModel model = mDevices.get(position);
+
 
             Intent intent = new Intent(STApplication.getInstance(), PlayLiveActivity.class);
 
@@ -158,7 +184,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
             startActivity(intent);
         }
         else  if (1 == tpe){
-            DevModel model = mDevices.get(position);
+
 
             Intent intent = new Intent(STApplication.getInstance(), DeviceShareActivity.class);
 
