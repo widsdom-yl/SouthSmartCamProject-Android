@@ -1,7 +1,7 @@
 #include "../include/libthSDK.h"
 #include "jni.h"
 #include "avDecode/thffmpeg.h"
-
+#include "avDecode/thOpenGL_SLES.h"
 
 
 //-----------------------------------------------------------------------------
@@ -251,6 +251,7 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetHttpGet(JNIEnv* env, jclass ob
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetHttpGetStop(JNIEnv* env, jclass obj, u64 NetHandle)
 {
+
   return thNet_HttpGetStop((HANDLE)NetHandle);
 }
 //-----------------------------------------------------------------------------

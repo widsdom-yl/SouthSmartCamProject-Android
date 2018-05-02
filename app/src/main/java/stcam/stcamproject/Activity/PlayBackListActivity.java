@@ -30,7 +30,7 @@ public class PlayBackListActivity extends AppCompatActivity {
             actionBar.setTitle(devModel.DevName);
         }
         GetPlayBackListloadTask task = new GetPlayBackListloadTask();
-
+        task.execute();
 
     }
     @Override
@@ -54,7 +54,7 @@ public class PlayBackListActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Integer... params) {
             //第二个执行方法,onPreExecute()执行完后执行
-            String url = "http://0.0.0.0:0/User=admin&Psd=admin&MsgID=5&p=0&l=10";
+            String url = "http://0.0.0.0:0/cfg1.cgi?User=admin&Psd=admin&MsgID=5&p=0&l=10";
 
             String ret = lib.thNetHttpGet(devModel.NetHandle,url);
             return ret;

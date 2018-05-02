@@ -1902,6 +1902,7 @@ bool thNet_RemoteFilePlayControl(HANDLE NetHandle, i32 PlayCtrl, i32 Speed, i32 
 //-----------------------------------------------------------------------------
 bool thNet_HttpGetStop(HANDLE NetHandle)
 {
+
   TPlayParam* Play = (TPlayParam*)NetHandle;
   if (NetHandle == 0) return false;
   PRINTF("%s(%s)(%s)\n", __FUNCTION__, Play->IPUID, Play->LocalIP);

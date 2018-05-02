@@ -29,7 +29,7 @@ typedef struct TOpenGLInfo {
     i32 ImgHeight;
     i32 ScreenWidth;
     i32 ScreenHeight;
-
+    int mScreenTpe ;//0-初始未知状态 1-竖屏幕 2-横屏幕
     GLuint gl_texture;
 
 }TOpenGLInfo;
@@ -67,7 +67,7 @@ bool thOpenGLVideo_FillMem(HANDLE Handle, TavPicture FrameV420, i32 ImgWidth, i3
   return true;
 }
 //-----------------------------------------------------------------------------
-int mScreenTpe = 0;//0-初始未知状态 1-竖屏幕 2-横屏幕
+
 bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
 {
   static GLuint s_disable_caps[] = {GL_FOG, GL_LIGHTING, GL_CULL_FACE, GL_ALPHA_TEST, GL_BLEND, GL_COLOR_LOGIC_OP, GL_DITHER, GL_STENCIL_TEST, GL_DEPTH_TEST, GL_COLOR_MATERIAL, 0};
@@ -86,15 +86,15 @@ bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
 
 
 
-    int screenTpe = 1;
-    if (Info->ScreenHeight > Info->ScreenWidth){
-        screenTpe = 1;
-    }
-    else{
-        screenTpe = 2;
-    }
-    if (mScreenTpe != screenTpe){
-        mScreenTpe = screenTpe;
+//    int screenTpe = 1;
+//    if (Info->ScreenHeight > Info->ScreenWidth){
+//        screenTpe = 1;
+//    }
+//    else{
+//        screenTpe = 2;
+//    }
+//    if (Info->mScreenTpe != screenTpe){
+//        Info->mScreenTpe = screenTpe;
         glDeleteTextures(1, &Info->gl_texture);
         GLuint* start = s_disable_caps;
         while (*start) glDisable(*start++);
@@ -107,7 +107,7 @@ bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
         glColor4x(0x10000, 0x10000, 0x10000, 0x10000);
         glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_CROP_RECT_OES, rect);
 
-    }
+//    }
 
 
 
