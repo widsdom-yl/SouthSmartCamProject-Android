@@ -3,17 +3,29 @@ package stcam.stcamproject.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.model.DevModel;
+import com.model.SDVideoModel;
 import com.thSDK.lib;
 
-import stcam.stcamproject.R;
+import java.util.List;
 
-public class PlayBackListActivity extends AppCompatActivity {
+import stcam.stcamproject.Adapter.BaseAdapter;
+import stcam.stcamproject.Adapter.PlayBackListAdapter;
+import stcam.stcamproject.R;
+import stcam.stcamproject.Util.GsonUtil;
+
+public class PlayBackListActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener {
     static final String tag = "PlayBackListActivity";
     DevModel devModel;
+    PlayBackListAdapter adapter;
+    RecyclerView rv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,8 +41,13 @@ public class PlayBackListActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(devModel.DevName);
         }
+
+        rv = findViewById(R.id.play_back_list_view);
+        rv.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        rv.setLayoutManager(new LinearLayoutManager(this));
         GetPlayBackListloadTask task = new GetPlayBackListloadTask();
         task.execute();
+
 
     }
     @Override
@@ -41,6 +58,28 @@ public class PlayBackListActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    void onGetPlayBackListResponse(String json){
+        List<SDVideoModel> lists = GsonUtil.parseJsonArrayWithGson(json,
+                SDVideoModel[].class);
+        if (adapter == null){
+            adapter = new PlayBackListAdapter(lists);
+            adapter.setOnItemClickListener(PlayBackListActivity.this);
+        }
+        rv.setAdapter(adapter);
+
+
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Log.e(tag,"onItemClick,item:"+position);
+    }
+
+    @Override
+    public void onLongClick(View view, int position) {
+
     }
 
     class GetPlayBackListloadTask extends AsyncTask<Integer, Void, String> {
@@ -64,6 +103,8 @@ public class PlayBackListActivity extends AppCompatActivity {
             //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
             //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
             Log.e(tag,"get playback list :"+result);
+            onGetPlayBackListResponse(result);
+
             super.onPostExecute(result);
         }
     }

@@ -6,6 +6,7 @@ package com.model;
 
 public class SDVideoModel {
     public String sdVideo;
+    public int FileSize;
     public String url;
     public boolean checked;
     public boolean viewed;
