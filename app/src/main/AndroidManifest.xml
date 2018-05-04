@@ -46,7 +46,8 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask" />
         <activity android:name=".Activity.PlayBackListActivity" />
-        <activity android:name=".Activity.AlarmListActivity"></activity>
+        <activity android:name=".Activity.AlarmListActivity" />
+        <activity android:name=".Activity.AlarmDetailActivity"></activity>
     </application>
 
 </manifest>

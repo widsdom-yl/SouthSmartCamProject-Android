@@ -1,11 +1,14 @@
 package stcam.stcamproject.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
 
 import com.model.AlarmImageModel;
 
@@ -15,6 +18,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import stcam.stcamproject.Adapter.AlarmListAdapter;
+import stcam.stcamproject.Adapter.BaseAdapter;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.R;
@@ -22,7 +26,7 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
-public class AlarmListActivity extends AppCompatActivity {
+public class AlarmListActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener {
 
     AlarmListAdapter adapter;
     RecyclerView rv;
@@ -46,6 +50,17 @@ public class AlarmListActivity extends AppCompatActivity {
         rv.setLayoutManager(new LinearLayoutManager(this));
         getAlarmList(false);
 
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish(); // back button
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     void getAlarmList(boolean refresh){
@@ -87,6 +102,7 @@ public class AlarmListActivity extends AppCompatActivity {
                 alarmImageArray = mlist;
                 if (adapter == null){
                     adapter = new AlarmListAdapter(alarmImageArray);
+                    adapter.setOnItemClickListener(AlarmListActivity.this);
                 }
                 rv.setAdapter(adapter);
             }
@@ -100,4 +116,20 @@ public class AlarmListActivity extends AppCompatActivity {
     };
 
 
+    @Override
+    public void onItemClick(View view, int position) {
+        AlarmImageModel model = alarmImageArray.get(position);
+        Intent intent = new Intent(STApplication.getInstance(), AlarmDetailActivity.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("model",model);
+
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onLongClick(View view, int position) {
+
+    }
 }
