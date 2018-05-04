@@ -35,7 +35,6 @@ public class DeviceShareActivity extends AppCompatActivity implements View.OnCli
         if(actionBar != null){
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_add_device);
             actionBar.setTitle(R.string.action_device_share);
         }
         Bundle bundle = this.getIntent().getExtras();

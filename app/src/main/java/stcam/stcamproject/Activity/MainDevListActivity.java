@@ -69,6 +69,12 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
             startActivity(intent);
             return true;
         }
+        if (item.getItemId() == R.id.action_alarm) {
+            Intent intent = new Intent(this, AlarmListActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
 
         return super.onOptionsItemSelected(item);
     }

@@ -176,15 +176,26 @@ public interface ServerCommandApi {
     );
 
     /**
-     * App 端获取用户设备列表
+     *App 端获取单一设备警报图片列表
      * @return
      * 失败返回[] 成功返回 jsonarray
      */
     @GET("app_user_getalmfilelst.asp")
-    Observable<List<com.model.AlarmImageModel>> app_user_getalmfilelst(@Query("user") String user,
+    Observable<List<com.model.AlarmImageModel>> app_user_sn_getalmfilelst(@Query("user") String user,
                                                              @Query("psd") String psd,
                                                                        @Query("sn") String sn,
-                                                                       @Query("dt") String dt
+                                                                       @Query("dt") String dt,
+                                                                               @Query("line") int line,
+                                                                               @Query("page") int page
+
+    );
+
+    @GET("app_user_getalmfilelst.asp")
+    Observable<List<com.model.AlarmImageModel>> app_user_getalmfilelst(@Query("user") String user,
+                                                                          @Query("psd") String psd,
+                                                                          @Query("dt") String dt,
+                                                                          @Query("line") int line,
+                                                                          @Query("page") int page
 
     );
 
