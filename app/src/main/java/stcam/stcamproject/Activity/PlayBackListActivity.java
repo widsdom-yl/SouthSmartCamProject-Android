@@ -1,5 +1,6 @@
 package stcam.stcamproject.Activity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import stcam.stcamproject.Adapter.BaseAdapter;
 import stcam.stcamproject.Adapter.PlayBackListAdapter;
+import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.GsonUtil;
 
@@ -26,6 +28,7 @@ public class PlayBackListActivity extends AppCompatActivity implements BaseAdapt
     DevModel devModel;
     PlayBackListAdapter adapter;
     RecyclerView rv;
+    List<SDVideoModel> videoArray;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +66,9 @@ public class PlayBackListActivity extends AppCompatActivity implements BaseAdapt
     void onGetPlayBackListResponse(String json){
         List<SDVideoModel> lists = GsonUtil.parseJsonArrayWithGson(json,
                 SDVideoModel[].class);
+        if(lists.size()>0){
+            videoArray = lists;
+        }
         if (adapter == null){
             adapter = new PlayBackListAdapter(lists);
             adapter.setOnItemClickListener(PlayBackListActivity.this);
@@ -75,6 +81,18 @@ public class PlayBackListActivity extends AppCompatActivity implements BaseAdapt
     @Override
     public void onItemClick(View view, int position) {
         Log.e(tag,"onItemClick,item:"+position);
+
+        Intent intent = new Intent(STApplication.getInstance(), PlayBackActivity.class);
+
+        Bundle bundle = new Bundle();
+        SDVideoModel model =  videoArray.get(position);
+        bundle.putSerializable("model",model);
+        bundle.putSerializable("devModel",devModel);
+        intent.putExtras(bundle);
+        Log.e(tag,"to PlayBackActivity sdVideo:"+model.sdVideo);
+
+        startActivity(intent);
+
     }
 
     @Override

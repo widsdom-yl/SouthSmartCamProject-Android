@@ -41,7 +41,9 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask" />
         <activity android:name=".Activity.DeviceShareActivity" />
-        <activity android:name=".Activity.PlayBackActivity" />
+        <activity android:name=".Activity.PlayBackActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTask"/>
         <activity android:name=".Activity.PlayBackListActivity"></activity>
     </application>
 

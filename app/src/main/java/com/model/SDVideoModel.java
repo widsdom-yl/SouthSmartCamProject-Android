@@ -1,10 +1,12 @@
 package com.model;
 
+import java.io.Serializable;
+
 /**
  * Created by gyl1 on 3/30/17.
  */
 
-public class SDVideoModel {
+public class SDVideoModel implements Serializable {
     public String sdVideo;
     public int FileSize;
     public String url;
