@@ -64,7 +64,7 @@ add_library( # Sets the name of the library.
             ${SOURCE_DIR}/avDecode/thSDL.c ${SOURCE_DIR}/avDecode/thOpenGL_SLES.c ${SOURCE_DIR}/avDecode/thRec.c
               ${SOURCE_DIR}/avDecode/thImg.c ${SOURCE_DIR}/avDecode/thVideoDec.c
               ${SOURCE_DIR}/avDecode/thRender.c
-            # ${jpegSrc}
+             ${jpegSrc}
 
              )
 

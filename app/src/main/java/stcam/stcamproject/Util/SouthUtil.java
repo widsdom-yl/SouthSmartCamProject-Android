@@ -16,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
+import stcam.stcamproject.Application.STApplication;
+
 /**
  * Created by gyl1 on 12/22/16.
  */
@@ -115,6 +117,10 @@ public class SouthUtil {
         int s = random.nextInt(max)%(max-min+1) + min;
         Log.e(tag,"random is "+ s);
         return s;
+    }
+    public static int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = STApplication.getInstance().getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
     static final String tag = "SouthUtil";
 

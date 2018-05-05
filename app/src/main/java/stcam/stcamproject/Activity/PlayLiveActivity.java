@@ -5,16 +5,22 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 
 import com.model.DevModel;
 
 import stcam.stcamproject.R;
+import stcam.stcamproject.Util.ConstraintUtil;
 import stcam.stcamproject.View.GLSurfaceViewLive;
 
 public class PlayLiveActivity extends AppCompatActivity {
 
     GLSurfaceViewLive glView;
     DevModel devModel;
+    TableLayout layout_control;
+    RelativeLayout layout_land;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,12 +55,28 @@ public class PlayLiveActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-//        glView.Stop();
-//        glView.Play();
+        configurationChanged();
+
+    }
+    void configurationChanged(){
+        if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            layout_land.setVisibility(View.INVISIBLE);
+            layout_control.setVisibility(View.VISIBLE);
+
+
+        }else if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            layout_land.setVisibility(View.VISIBLE);
+            layout_control.setVisibility(View.INVISIBLE);
+
+        }
     }
     void initView(){
         glView = findViewById(R.id.glPlayLive);
+        layout_control = findViewById(R.id.layout_control);
         glView.setModel(devModel);
+        layout_land = findViewById(R.id.layout_land);
+        configurationChanged();
     }
+    ConstraintUtil constraintUtil;
     static final String tag = "PlayLiveActivity";
 }

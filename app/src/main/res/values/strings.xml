@@ -48,5 +48,7 @@
     <string name="action_net_not_connect">未连接到此设备</string>
     <string name="action_not_exist_sd">此设备无SD卡</string>
     <string name="action_alarm">报警事件</string>
-
+    <string name="action_snapshot">截图</string>
+    <string name="action_speech">对讲</string>
+    <string name="action_record">录像</string>
 </resources>

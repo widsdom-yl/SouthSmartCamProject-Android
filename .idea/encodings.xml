@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding" defaultCharsetForPropertiesFiles="GB2312">
+    <file url="file://$PROJECT_DIR$/app/src/main/cpp/avDecode/libjpeg/myJpeg.c" charset="GB2312" />
     <file url="file://$PROJECT_DIR$/app/src/main/cpp/avDecode/thImg.c" charset="GB2312" />
     <file url="file://$PROJECT_DIR$/app/src/main/cpp/avDecode/thRender.c" charset="GB2312" />
     <file url="file://$PROJECT_DIR$/app/src/main/cpp/avDecode/thVideoDec.c" charset="GB2312" />
