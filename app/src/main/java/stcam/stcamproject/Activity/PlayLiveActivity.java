@@ -6,21 +6,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 
 import com.model.DevModel;
+import com.thSDK.lib;
 
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.ConstraintUtil;
+import stcam.stcamproject.Util.FileUtil;
 import stcam.stcamproject.View.GLSurfaceViewLive;
 
-public class PlayLiveActivity extends AppCompatActivity {
+public class PlayLiveActivity extends AppCompatActivity implements View.OnClickListener {
 
     GLSurfaceViewLive glView;
     DevModel devModel;
     TableLayout layout_control;
     RelativeLayout layout_land;
+    Button button_snapshot,button_snapshot_o;
+    Button button_speech,button_speech_o;
+    Button button_record,button_record_o;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +82,42 @@ public class PlayLiveActivity extends AppCompatActivity {
         glView.setModel(devModel);
         layout_land = findViewById(R.id.layout_land);
         configurationChanged();
+
+        button_snapshot = findViewById(R.id.button_snapshot);
+        button_snapshot_o = findViewById(R.id.button_snapshot_o);
+        button_speech = findViewById(R.id.button_speech);
+        button_speech_o = findViewById(R.id.button_speech_o);
+        button_record = findViewById(R.id.button_record);
+        button_record_o = findViewById(R.id.button_record_o);
+        button_snapshot.setOnClickListener(this);
+        button_snapshot_o.setOnClickListener(this);
+        button_speech.setOnClickListener(this);
+        button_speech_o.setOnClickListener(this);
+        button_record.setOnClickListener(this);
+        button_record_o.setOnClickListener(this);
+
     }
     ConstraintUtil constraintUtil;
     static final String tag = "PlayLiveActivity";
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.button_snapshot:
+            case R.id.button_snapshot_o:
+                String fileName = FileUtil.generatePathSnapShotFileName(devModel.SN);
+                if (fileName != null){
+                    lib.thNetSaveToJpg(devModel.NetHandle,fileName);
+                }
+                break;
+            case R.id.button_speech:
+            case R.id.button_speech_o:
+                break;
+            case R.id.button_record:
+            case R.id.button_record_o:
+                break;
+            default:
+                break;
+        }
+    }
 }
