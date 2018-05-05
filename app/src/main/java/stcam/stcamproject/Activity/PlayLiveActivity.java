@@ -115,6 +115,18 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.button_record:
             case R.id.button_record_o:
+
+                if (lib.thNetIsRec(devModel.NetHandle)){
+                    lib.thNetStopRec(devModel.NetHandle);
+                }
+                else{
+                   String recordfileName = FileUtil.generatePathRecordFileName(devModel.SN);
+                   boolean ret =  lib.thNetSetRecPath(devModel.NetHandle,recordfileName);
+                   if (ret){
+                       lib.thNetStartRec(devModel.NetHandle,recordfileName);
+                   }
+                }
+
                 break;
             default:
                 break;

@@ -113,6 +113,7 @@ bool thDecodeVideoFree(HANDLE decHandle)
 //-----------------------------------------------------------------------------
 bool thDecodeVideoSaveToJpg(HANDLE decHandle, char* FileName_Jpg)
 {
+    return false;
   int w, h, ret;
   char* newBuf;
   TavPicture newFrameV;
@@ -125,7 +126,7 @@ bool thDecodeVideoSaveToJpg(HANDLE decHandle, char* FileName_Jpg)
   newBuf = (char*)malloc(w * h * 3);
   thImgConvertFill(&newFrameV, newBuf, AV_PIX_FMT_RGB24, w, h);
   thImgConvertScale1(//only copy ?
-    &newFrameV, 
+    &newFrameV,
     AV_PIX_FMT_RGB24,
     w,
     h,
@@ -134,7 +135,10 @@ bool thDecodeVideoSaveToJpg(HANDLE decHandle, char* FileName_Jpg)
     w,
     h,
     0);
-  ret = rgb24_jpg(FileName_Jpg, newBuf, w, h);
+  //ret = rgb24_jpg(FileName_Jpg, newBuf, w, h);
+
+
+
   free(newBuf);
 
   return ret;

@@ -171,24 +171,23 @@ public class FileUtil {
 
         }
         return null;
-
     }
     public static String generatePathSnapShotFileName(String sn){
         String snapPath = FileUtil.pathSnapShot();
         if (snapPath!=null){
             SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
             String date = sDateFormat.format(new java.util.Date());
-            String fileName = snapPath+sn+sDateFormat+"jpg";
+            String fileName = snapPath+sn+date+".jpg";
             return fileName;
         }
         return null;
     }
     public static String generatePathRecordFileName(String sn){
-        String snapPath = FileUtil.pathSnapShot();
-        if (snapPath!=null){
+        String recordPath = FileUtil.pathRecord();
+        if (recordPath!=null){
             SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
             String date = sDateFormat.format(new java.util.Date());
-            String fileName = snapPath+sn+sDateFormat+"mp4";
+            String fileName = recordPath+sn+date+".mp4";
             return fileName;
         }
         return null;
