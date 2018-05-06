@@ -197,4 +197,14 @@
 
     </TableLayout>
 
+    <include
+        android:id="@+id/ptz_layout"
+        layout="@layout/layout_ptz_view"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
 </android.support.constraint.ConstraintLayout>

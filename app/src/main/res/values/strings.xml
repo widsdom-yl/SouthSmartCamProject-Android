@@ -55,4 +55,5 @@
     <string name="action_led">灯光</string>
     <string name="action_ptz">云台</string>
     <string name="action_pix">标清/高清</string>
+    <string name="action_ok">确定</string>
 </resources>

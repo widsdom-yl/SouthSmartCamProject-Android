@@ -1,0 +1,84 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:id="@+id/lay1"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" >
+
+        <ImageView
+            android:id="@+id/img1"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/brightness" />
+
+        <SeekBar
+            android:id="@+id/seekBarBrightness"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@id/img1"
+            android:layout_marginLeft="10dp"
+            android:max="255"
+            android:onClick="onSlider"
+            android:progress="100" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/lay2"
+        android:layout_width="match_parent"
+        android:layout_below="@id/lay1"
+        android:layout_height="40dp" >
+
+        <ImageView
+            android:id="@+id/img2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/contrast" />
+
+        <SeekBar
+            android:id="@+id/seekBarContast"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@id/img2"
+            android:layout_marginLeft="10dp"
+            android:max="255"
+            android:onClick="onSlider"
+            android:progress="100" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/lay3"
+        android:layout_below="@id/lay2"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" >
+
+        <ImageView
+            android:id="@+id/img3"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/sharpness" />
+
+        <SeekBar
+            android:id="@+id/seekBarSharpness"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@id/img3"
+            android:layout_marginLeft="10dp"
+            android:max="255"
+            android:onClick="onSlider"
+            android:progress="100" />
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -140,13 +140,13 @@ bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
         viewWidth = Info->ScreenWidth;
         viewHeight = (int)(Info->ImgHeight*1.0f/Info->ImgWidth*viewWidth);
         top = (Info->ScreenHeight - viewHeight)/2;
-        PRINTF("0=======ScreenHeight>ScreenWidth,viewWidth:%d,viewheight",viewWidth,viewHeight);
+       // PRINTF("0=======ScreenHeight>ScreenWidth,viewWidth:%d,viewheight",viewWidth,viewHeight);
     }else{
         top = 0;
         viewHeight = Info->ScreenHeight;
         viewWidth = (int)(Info->ImgWidth*1.0f/Info->ImgHeight*viewHeight);
         left = (Info->ScreenWidth - viewWidth)/2;
-        PRINTF("1=======ScreenWidth>ScreenHeight,viewWidth:%d,viewheight",viewWidth,viewHeight);
+       // PRINTF("1=======ScreenWidth>ScreenHeight,viewWidth:%d,viewheight",viewWidth,viewHeight);
     }
     glViewport(0, 0, Info->ScreenWidth, Info->ScreenHeight);
   glDrawTexiOES(left, top, 0, viewWidth, viewHeight);

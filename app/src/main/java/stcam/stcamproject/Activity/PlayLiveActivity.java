@@ -1,13 +1,18 @@
 package stcam.stcamproject.Activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TableLayout;
 
 import com.model.DevModel;
@@ -27,6 +32,8 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     Button button_snapshot,button_snapshot_o;
     Button button_speech,button_speech_o;
     Button button_record,button_record_o;
+    Button button_led;
+    Button button_ptz_left,button_ptz_right,button_ptz_up,button_ptz_down;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,12 +96,22 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         button_speech_o = findViewById(R.id.button_speech_o);
         button_record = findViewById(R.id.button_record);
         button_record_o = findViewById(R.id.button_record_o);
+        button_ptz_left = findViewById(R.id.button_ptz_left);
+        button_ptz_right = findViewById(R.id.button_ptz_right);
+        button_ptz_up = findViewById(R.id.button_ptz_up);
+        button_ptz_down = findViewById(R.id.button_ptz_down);
+        button_led = findViewById(R.id.button_led);
         button_snapshot.setOnClickListener(this);
         button_snapshot_o.setOnClickListener(this);
         button_speech.setOnClickListener(this);
         button_speech_o.setOnClickListener(this);
         button_record.setOnClickListener(this);
         button_record_o.setOnClickListener(this);
+        button_led.setOnClickListener(this);
+        button_ptz_left.setOnClickListener(this);
+        button_ptz_right.setOnClickListener(this);
+        button_ptz_up.setOnClickListener(this);
+        button_ptz_down.setOnClickListener(this);
 
     }
     ConstraintUtil constraintUtil;
@@ -125,8 +142,76 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 }
 
                 break;
+            case R.id.button_led:
+                LayoutInflater factory = LayoutInflater.from(this);
+                View DialogView = factory.inflate(R.layout.layout_view_led_control, null);
+                SeekBar seekBarBrightness = (SeekBar) DialogView.findViewById(R.id.seekBarBrightness);
+
+
+                new AlertDialog.Builder(this).setTitle("").setIcon(android.R.drawable.ic_dialog_info).setView(DialogView)
+                        .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener()
+                        {
+
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+
+
+
+                            }
+                        }).show();
+               break;
+            case R.id.button_ptz_left:
+                Log.e(tag,"left");
+                PtzControlTask task = new PtzControlTask();
+                task.execute(5);
+                break;
+            case R.id.button_ptz_right:
+                PtzControlTask task1 = new PtzControlTask();
+                Log.e(tag,"right");
+                task1.execute(7);
+                break;
+            case R.id.button_ptz_up:
+                PtzControlTask task2 = new PtzControlTask();
+                Log.e(tag,"up");
+                task2.execute(1);
+                break;
+            case R.id.button_ptz_down:
+                PtzControlTask task3 = new PtzControlTask();
+                Log.e(tag,"down");
+                task3.execute(3);
+                break;
             default:
                 break;
+        }
+
+
+
+    }
+
+    class PtzControlTask extends AsyncTask<Integer, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(Integer... params) {
+            //第二个执行方法,onPreExecute()执行完后执行
+            String url = "http://0.0.0.0:0/cfg1.cgi?User=admin&Psd=admin&MsgID=13&cmd="+params[0]+"&sleep=500&s=23231";
+
+            String ret = lib.thNetHttpGet(devModel.NetHandle,url);
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
+            //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
+            //Log.e(tag,"get playback list :"+result);
+
+
+            super.onPostExecute(result);
         }
     }
 }
