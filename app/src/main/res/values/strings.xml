@@ -51,4 +51,8 @@
     <string name="action_snapshot">截图</string>
     <string name="action_speech">对讲</string>
     <string name="action_record">录像</string>
+    <string name="action_slient">静音</string>
+    <string name="action_led">灯光</string>
+    <string name="action_ptz">云台</string>
+    <string name="action_pix">标清/高清</string>
 </resources>

@@ -121,10 +121,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 }
                 else{
                    String recordfileName = FileUtil.generatePathRecordFileName(devModel.SN);
-                   boolean ret =  lib.thNetSetRecPath(devModel.NetHandle,recordfileName);
-                   if (ret){
-                       lib.thNetStartRec(devModel.NetHandle,recordfileName);
-                   }
+                   lib.thNetStartRec(devModel.NetHandle,recordfileName);
                 }
 
                 break;

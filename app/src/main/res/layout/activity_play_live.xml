@@ -20,7 +20,7 @@
         android:id="@+id/layout_control"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="80dp"
         app:layout_constraintBottom_toBottomOf="@+id/glPlayLive"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -119,5 +119,82 @@
             android:layout_marginBottom="40dp"
             android:text="@string/action_record" />
     </RelativeLayout>
+
+    <TableLayout
+        android:id="@+id/layout_bottom"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/button_slient"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="@string/action_slient"
+                tools:layout_editor_absoluteX="52dp"
+                tools:layout_editor_absoluteY="391dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/button_led"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="@string/action_led"
+                tools:layout_editor_absoluteX="178dp"
+                tools:layout_editor_absoluteY="391dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/button_ptz"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="@string/action_ptz"
+                tools:layout_editor_absoluteX="279dp"
+                tools:layout_editor_absoluteY="391dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+            <Button
+                android:id="@+id/button_pix"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="@string/action_pix"
+                tools:layout_editor_absoluteX="279dp"
+                tools:layout_editor_absoluteY="391dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </TableRow>
+
+    </TableLayout>
 
 </android.support.constraint.ConstraintLayout>
