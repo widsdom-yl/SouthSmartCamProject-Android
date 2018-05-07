@@ -27,6 +27,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
+import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.Manager.JPushManager;
 import stcam.stcamproject.R;
@@ -55,6 +56,9 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
         Button btn_add_device_share = findViewById(R.id.btn_add_device_share);
         btn_search.setOnClickListener(this);
         btn_add_device_share.setOnClickListener(this);
+        findViewById(R.id.btn_add_device_one_key).setOnClickListener(this);
+        findViewById(R.id.btn_add_device_ap_sta).setOnClickListener(this);
+        findViewById(R.id.btn_add_device_ap).setOnClickListener(this);
     }
 
     @Override
@@ -119,6 +123,15 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
             case R.id.btn_add_device_share:
                 Intent intent = new Intent(AddDeviceActivity.this, CaptureActivity.class);
                 startActivityForResult(intent, REQUEST_CODE);
+                break;
+            case R.id.btn_add_device_one_key:
+                Intent intent1 = new Intent(STApplication.getInstance(), AddDeviceOneStepActivity.class);
+                startActivity(intent1);
+                break;
+            case R.id.btn_add_device_ap_sta:
+                break;
+            case R.id.btn_add_device_ap:
+                break;
             default:
                 break;
         }
