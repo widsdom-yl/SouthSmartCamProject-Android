@@ -113,7 +113,7 @@ bool thDecodeVideoFree(HANDLE decHandle)
 //-----------------------------------------------------------------------------
 bool thDecodeVideoSaveToJpg(HANDLE decHandle, char* FileName_Jpg)
 {
-    return false;
+
   int w, h, ret;
   char* newBuf;
   TavPicture newFrameV;
@@ -135,7 +135,7 @@ bool thDecodeVideoSaveToJpg(HANDLE decHandle, char* FileName_Jpg)
     w,
     h,
     0);
-  //ret = rgb24_jpg(FileName_Jpg, newBuf, w, h);
+ //ret = rgb24_jpg(FileName_Jpg, newBuf, w, h);
 
 
 

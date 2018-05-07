@@ -2298,7 +2298,7 @@ bool thNet_SaveToJpg(HANDLE NetHandle, char* JpgFileName)
   }
 
   ThreadLock(&Play->Lock);
-  strcpy(Play->FileName_Jpg, JpgFileName);
+  strcpy(Play->FileName_Jpg, PathFileName);
   Play->IsSnapShot = true;
   ThreadUnlock(&Play->Lock);
   return true;

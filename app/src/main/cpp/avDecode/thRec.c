@@ -386,7 +386,7 @@ bool thRecordWriteAudio2048(HANDLE RecHandle, char* Buf, int Len, i64 pts)//pts 
   VO_CODECBUFFER         inData;
   VO_CODECBUFFER         outData;
   VO_AUDIO_OUTPUTINFO    outInfo;
-  int ret;
+  int ret = 0;
   AVPacket packet;
   TRecInfoPkt* Info = (TRecInfoPkt*)RecHandle;
   if (!Info) return false;
