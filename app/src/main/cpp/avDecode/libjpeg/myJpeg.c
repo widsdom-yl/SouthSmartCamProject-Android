@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <cm_types.h>
 #include "jpeglib.h"
 
 #ifdef WIN32
@@ -101,18 +102,52 @@ int JpegUnCompress(const char* jpeg_data, int jpeg_size, char* rgb_data, int rgb
   return 1;
 }
 //-----------------------------------------------------------------------------
-int rgb24_jpg(char* dstFile, char* rgbBuf, int w, int h)
+int rgb24_jpg(char* outfilename, char* data, int w, int h)
 {
-  FILE* f;
-  char* dstBuf;
-  int dstLen;
-  dstBuf = malloc(w * h * 2);
-  JpegCompress(w, h, rgbBuf, w * h * 3, dstBuf, &dstLen);
-  f = fopen(dstFile, "w+b");
-  fwrite(dstBuf, dstLen, 1, f); 
-  fclose(f);
-  free(dstBuf);
-  return 1;
+    int nComponent = 3;
+
+    struct jpeg_compress_struct jcs;
+
+    struct jpeg_error_mgr jem;
+
+    jcs.err = jpeg_std_error(&jem);
+    jpeg_create_compress(&jcs);
+
+    FILE* f=fopen(outfilename,"wb");
+    if (f==NULL)
+    {
+        free(data);
+        return 0;
+    }
+    jpeg_stdio_dest(&jcs, f);
+    jcs.image_width = w;
+    jcs.image_height = h;
+    jcs.input_components = nComponent;
+    if (nComponent==1)
+        jcs.in_color_space = JCS_GRAYSCALE;
+    else
+        jcs.in_color_space = JCS_RGB;
+
+    jpeg_set_defaults(&jcs);
+    jpeg_set_quality (&jcs, 60, true);
+
+    jpeg_start_compress(&jcs, TRUE);
+
+    JSAMPROW row_pointer[1];
+    int row_stride;
+
+    row_stride = jcs.image_width*nComponent;
+
+    while (jcs.next_scanline < jcs.image_height) {
+        row_pointer[0] = & data[jcs.next_scanline*row_stride];
+        jpeg_write_scanlines(&jcs, row_pointer, 1);
+    }
+
+    jpeg_finish_compress(&jcs);
+    jpeg_destroy_compress(&jcs);
+    fclose(f);
+
+    return 1;
 }
 //-----------------------------------------------------------------------------
 int bmp_jpg(char* srcFile, char* dstFile)

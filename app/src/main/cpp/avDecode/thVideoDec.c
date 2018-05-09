@@ -135,7 +135,8 @@ bool thDecodeVideoSaveToJpg(HANDLE decHandle, char* FileName_Jpg)
     w,
     h,
     0);
- //ret = rgb24_jpg(FileName_Jpg, newBuf, w, h);
+    PRINTF("============before rgb24_jpg,w -%d,h-%d",w,h);
+  ret = rgb24_jpg(FileName_Jpg, newBuf, w, h);
 
 
 
