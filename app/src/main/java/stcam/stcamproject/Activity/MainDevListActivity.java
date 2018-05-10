@@ -18,6 +18,7 @@ import com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout;
 import com.model.DevModel;
 import com.thSDK.TMsg;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observer;
@@ -74,6 +75,18 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
             startActivity(intent);
             return true;
         }
+        if (item.getItemId() == R.id.action_media) {
+            Intent intent = new Intent(this, MediaActivity.class);
+            Bundle bundle = new Bundle();
+            //bundle.putSerializable("devModel",model);
+            ArrayList<DevModel> devices = (ArrayList<DevModel>) mDevices;
+            bundle.putParcelableArrayList("devices",devices);
+            intent.putExtras(bundle);
+
+            startActivity(intent);
+            return true;
+        }
+
 
 
         return super.onOptionsItemSelected(item);

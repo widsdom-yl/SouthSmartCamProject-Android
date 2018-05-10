@@ -59,4 +59,5 @@
     <string name="action_add_one_key_setting">一键设置</string>
     <string name="action_add_ap_sta">添加AP方式设备(AP转STA)</string>
     <string name="action_add_ap">AP热点单机直连</string>
+    <string name="action_media">图库</string>
 </resources>
