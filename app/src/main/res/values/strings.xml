@@ -60,4 +60,10 @@
     <string name="action_add_ap_sta">添加AP方式设备(AP转STA)</string>
     <string name="action_add_ap">AP热点单机直连</string>
     <string name="action_media">图库</string>
+    <string name="action_one_key_setting_desc0">听到"等待连接"或指示灯红灯、蓝灯同时长亮后，输入路由器密码，进行下一步</string>
+    <string name="action_one_key_setting_desc1">听到"配置成功"或指示灯红灯熄灭，蓝灯长亮后，按"取消"后，搜索设备</string>
+    <string name="ssid">路由器SSID</string>
+    <string name="ssid_pwd">密码</string>
+    <string name="next">下一步</string>
+    <string name="cancel">取消</string>
 </resources>

@@ -50,7 +50,8 @@
         <activity android:name=".Activity.AlarmDetailActivity" />
         <activity android:name=".Activity.MediaActivity" />
         <activity android:name=".Activity.MediaPhotoListActivity" />
-        <activity android:name=".Activity.MediaPhotoDetailActivity"></activity>
+        <activity android:name=".Activity.MediaPhotoDetailActivity" />
+        <activity android:name=".Activity.AddDeviceOneStepNext"></activity>
     </application>
 
 </manifest>

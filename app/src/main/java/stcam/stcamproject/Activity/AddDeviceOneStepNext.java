@@ -1,37 +1,31 @@
 package stcam.stcamproject.Activity;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import stcam.stcamproject.R;
-public class AddDeviceOneStepActivity extends AppCompatActivity implements View.OnClickListener {
-    EditText edittext_ssid_name;
-    EditText edittext_ssid_pwd;
-    Button button_next;
+
+public class AddDeviceOneStepNext extends AppCompatActivity implements View.OnClickListener {
+    Button button_cancel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_device_one_step_next);
+
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(R.string.action_add_one_key_setting);
         }
+        button_cancel = findViewById(R.id.button_cancel);
+        button_cancel.setOnClickListener(this);
 
-        setContentView(R.layout.activity_add_device_one_step);
-        initView();
     }
-    void initView(){
-        edittext_ssid_name = findViewById(R.id.edittext_ssid_name);
-        edittext_ssid_pwd = findViewById(R.id.edittext_ssid_pwd);
-        button_next = findViewById(R.id.button_next);
-        button_next.setOnClickListener(this);
-    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -44,7 +38,6 @@ public class AddDeviceOneStepActivity extends AppCompatActivity implements View.
 
     @Override
     public void onClick(View view) {
-        Intent intent = new Intent(this, AddDeviceOneStepNext.class);
-        startActivity(intent);
+        this.finish();
     }
 }
