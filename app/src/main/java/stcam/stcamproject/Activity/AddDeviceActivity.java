@@ -129,8 +129,14 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
                 startActivity(intent1);
                 break;
             case R.id.btn_add_device_ap_sta:
+                Intent intent2 = new Intent(STApplication.getInstance(), AddDeviceAP2StaActivity.class);
+                intent2.putExtra("type",1);
+                startActivity(intent2);
                 break;
             case R.id.btn_add_device_ap:
+                Intent intent3 = new Intent(STApplication.getInstance(), AddDeviceAP2StaActivity.class);
+                intent3.putExtra("type",2);
+                startActivity(intent3);
                 break;
             default:
                 break;

@@ -51,7 +51,9 @@
         <activity android:name=".Activity.MediaActivity" />
         <activity android:name=".Activity.MediaPhotoListActivity" />
         <activity android:name=".Activity.MediaPhotoDetailActivity" />
-        <activity android:name=".Activity.AddDeviceOneStepNext"></activity>
+        <activity android:name=".Activity.AddDeviceOneStepNext" />
+        <activity android:name=".Activity.AddDeviceAP2StaActivity" />
+        <activity android:name=".Activity.ChangeDevicePwdActivity"></activity>
     </application>
 
 </manifest>
