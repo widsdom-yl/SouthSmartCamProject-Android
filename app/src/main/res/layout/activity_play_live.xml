@@ -35,12 +35,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
-            <Button
+            <stcam.stcamproject.View.VoiceImageButton
                 android:id="@+id/button_snapshot"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="@string/action_snapshot"
+                android:background="@android:color/transparent"
+                android:src="@drawable/btnsnapshot"
+                android:scaleType="fitCenter"
                 tools:layout_editor_absoluteX="52dp"
                 tools:layout_editor_absoluteY="391dp" />
 
@@ -89,19 +91,19 @@
         android:layout_height="0dp"
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
-        android:background="#ff0000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Button
+        <stcam.stcamproject.View.VoiceImageButton
             android:id="@+id/button_snapshot_o"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
-            android:text="@string/action_snapshot" />
+            android:src="@drawable/snapshot"
+            android:background="@drawable/imagebutton_background"/>
 
         <Button
             android:id="@+id/button_speech_o"

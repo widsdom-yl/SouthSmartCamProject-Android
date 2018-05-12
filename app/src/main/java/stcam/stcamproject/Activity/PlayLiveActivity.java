@@ -21,7 +21,9 @@ import com.thSDK.lib;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.ConstraintUtil;
 import stcam.stcamproject.Util.FileUtil;
+import stcam.stcamproject.Util.PlayVoice;
 import stcam.stcamproject.View.GLSurfaceViewLive;
+import stcam.stcamproject.View.VoiceImageButton;
 
 public class PlayLiveActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -29,7 +31,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     DevModel devModel;
     TableLayout layout_control;
     RelativeLayout layout_land;
-    Button button_snapshot,button_snapshot_o;
+    VoiceImageButton button_snapshot,button_snapshot_o;
     Button button_speech,button_speech_o;
     Button button_record,button_record_o;
     Button button_led;
@@ -92,6 +94,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 
         button_snapshot = findViewById(R.id.button_snapshot);
         button_snapshot_o = findViewById(R.id.button_snapshot_o);
+        button_snapshot.setEnumSoundWav(PlayVoice.EnumSoundWav.SNAP);
         button_speech = findViewById(R.id.button_speech);
         button_speech_o = findViewById(R.id.button_speech_o);
         button_record = findViewById(R.id.button_record);
