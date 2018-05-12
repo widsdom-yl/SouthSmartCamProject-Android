@@ -10,11 +10,13 @@ import com.thSDK.lib;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import stcam.stcamproject.Util.FileUtil;
 import stcam.stcamproject.Util.TFun;
 
 public class GLSurfaceViewLive extends GLSurfaceView {
     //public actPlayLive Activity;
     DevModel model;
+    boolean hasCapture;
 
     public GLSurfaceViewLive(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -25,6 +27,7 @@ public class GLSurfaceViewLive extends GLSurfaceView {
 
     public void setModel(DevModel m) {
         model = m;
+        hasCapture = false;
     }
 
     public void Play() {
@@ -36,7 +39,7 @@ public class GLSurfaceViewLive extends GLSurfaceView {
     }
 
     class MyRenderer implements GLSurfaceView.Renderer {
-        boolean IsGetNodeIcon = false;
+
 
         @Override
         public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
@@ -55,8 +58,12 @@ public class GLSurfaceViewLive extends GLSurfaceView {
 
             if (lib.thNetOpenGLRender(model.NetHandle)) {
 
-                if (IsGetNodeIcon == false) {
-
+                if (hasCapture == false) {
+                    hasCapture = true;
+                    String fileName = FileUtil.generatePathSnapShotFileName(model.SN);
+                    if (fileName != null){
+                        lib.thNetSaveToJpg(model.NetHandle,fileName);
+                    }
                 }
             }
         }

@@ -7,10 +7,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TableLayout;
@@ -25,17 +28,18 @@ import stcam.stcamproject.Util.PlayVoice;
 import stcam.stcamproject.View.GLSurfaceViewLive;
 import stcam.stcamproject.View.VoiceImageButton;
 
-public class PlayLiveActivity extends AppCompatActivity implements View.OnClickListener {
+public class PlayLiveActivity extends AppCompatActivity implements View.OnClickListener , GestureDetector.OnGestureListener, View.OnTouchListener {
 
     GLSurfaceViewLive glView;
     DevModel devModel;
     TableLayout layout_control;
     RelativeLayout layout_land;
     VoiceImageButton button_snapshot,button_snapshot_o;
-    Button button_speech,button_speech_o;
-    Button button_record,button_record_o;
+    ImageButton button_speech,button_speech_o;
+    VoiceImageButton button_record,button_record_o;
     Button button_led;
     Button button_ptz_left,button_ptz_right,button_ptz_up,button_ptz_down;
+    private GestureDetector mygesture;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +59,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 
         glView.Play();
 
+        mygesture = new GestureDetector(this);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -87,6 +92,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     }
     void initView(){
         glView = findViewById(R.id.glPlayLive);
+        glView.setOnTouchListener(this);
         layout_control = findViewById(R.id.layout_control);
         glView.setModel(devModel);
         layout_land = findViewById(R.id.layout_land);
@@ -95,10 +101,13 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         button_snapshot = findViewById(R.id.button_snapshot);
         button_snapshot_o = findViewById(R.id.button_snapshot_o);
         button_snapshot.setEnumSoundWav(PlayVoice.EnumSoundWav.SNAP);
+        button_snapshot_o.setEnumSoundWav(PlayVoice.EnumSoundWav.SNAP);
         button_speech = findViewById(R.id.button_speech);
         button_speech_o = findViewById(R.id.button_speech_o);
         button_record = findViewById(R.id.button_record);
         button_record_o = findViewById(R.id.button_record_o);
+        button_record.setEnumSoundWav(PlayVoice.EnumSoundWav.CLICK);
+        button_record_o.setEnumSoundWav(PlayVoice.EnumSoundWav.CLICK);
         button_ptz_left = findViewById(R.id.button_ptz_left);
         button_ptz_right = findViewById(R.id.button_ptz_right);
         button_ptz_up = findViewById(R.id.button_ptz_up);
@@ -189,6 +198,66 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 
 
 
+    }
+
+    @Override
+    public boolean onDown(MotionEvent motionEvent) {
+        return true;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float v, float v1) {
+        if (e1.getX() - e2.getX() > 120)
+        {
+            Log.e(tag, "left");
+            PtzControlTask task2 = new PtzControlTask();
+            task2.execute(5);
+        }
+        else if (e1.getX() - e2.getX() < -120)
+        {
+            Log.e(tag, "right");
+            PtzControlTask task2 = new PtzControlTask();
+            task2.execute(7);
+        }
+        else if (e1.getY() - e2.getY() < 120)
+        {
+            Log.e(tag, "down");
+            PtzControlTask task2 = new PtzControlTask();
+            task2.execute(3);
+        }
+        else if (e1.getY() - e2.getY() > 120)
+        {
+            Log.e(tag, "up");
+            PtzControlTask task2 = new PtzControlTask();
+            task2.execute(1);
+        }
+        Log.e(tag, "onFling");
+        return false;
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        return mygesture.onTouchEvent(motionEvent);
     }
 
     class PtzControlTask extends AsyncTask<Integer, Void, String> {

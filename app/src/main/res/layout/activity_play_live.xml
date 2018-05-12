@@ -19,7 +19,7 @@
     <TableLayout
         android:id="@+id/layout_control"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="80dp"
         app:layout_constraintBottom_toBottomOf="@+id/glPlayLive"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,12 +52,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/button_speech"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="@string/action_speech"
+                android:background="@android:color/transparent"
+                android:src="@drawable/microphonedefault"
+                android:scaleType="fitCenter"
                 tools:layout_editor_absoluteX="178dp"
                 tools:layout_editor_absoluteY="391dp" />
 
@@ -67,12 +69,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
-            <Button
+            <stcam.stcamproject.View.VoiceImageButton
                 android:id="@+id/button_record"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="@string/action_record"
+                android:src="@drawable/btnrecorddefault"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
                 tools:layout_editor_absoluteX="279dp"
                 tools:layout_editor_absoluteY="391dp" />
 
@@ -87,9 +91,8 @@
 
     <RelativeLayout
         android:id="@+id/layout_land"
-        android:layout_width="112dp"
+        android:layout_width="50dp"
         android:layout_height="0dp"
-        android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -97,29 +100,35 @@
 
         <stcam.stcamproject.View.VoiceImageButton
             android:id="@+id/button_snapshot_o"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="40dp"
-            android:src="@drawable/snapshot"
-            android:background="@drawable/imagebutton_background"/>
+            android:scaleType="fitCenter"
+            android:src="@drawable/btnsnapshot"
+            android:background="@android:color/transparent"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/button_speech_o"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="fitCenter"
             android:layout_centerInParent="true"
-            android:text="@string/action_speech" />
+            android:src="@drawable/microphonedefault"
+            android:background="@android:color/transparent" />
 
-        <Button
+        <stcam.stcamproject.View.VoiceImageButton
             android:id="@+id/button_record_o"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="40dp"
-            android:text="@string/action_record" />
+            android:scaleType="fitCenter"
+            android:layout_marginBottom="30dp"
+
+            android:src="@drawable/btnrecorddefault"
+            android:background="@android:color/transparent" />
     </RelativeLayout>
 
     <TableLayout
@@ -169,19 +178,19 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
-            <Button
-                android:id="@+id/button_ptz"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="@string/action_ptz"
-                tools:layout_editor_absoluteX="279dp"
-                tools:layout_editor_absoluteY="391dp" />
+            <!--<Button-->
+                <!--android:id="@+id/button_ptz"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="3"-->
+                <!--android:text="@string/action_ptz"-->
+                <!--tools:layout_editor_absoluteX="279dp"-->
+                <!--tools:layout_editor_absoluteY="391dp" />-->
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+            <!--<View-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1" />-->
             <Button
                 android:id="@+id/button_pix"
                 android:layout_width="0dp"
@@ -202,6 +211,7 @@
     <include
         android:id="@+id/ptz_layout"
         layout="@layout/layout_ptz_view"
+        android:visibility="gone"
         android:layout_width="150dp"
         android:layout_height="150dp"
         app:layout_constraintTop_toTopOf="parent"

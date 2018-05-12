@@ -2,6 +2,8 @@ package stcam.stcamproject.Adapter;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import com.model.DevModel;
 import java.util.List;
 
 import stcam.stcamproject.R;
+import stcam.stcamproject.Util.FileUtil;
 
 public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.MyHolder> {
 
@@ -48,7 +51,16 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
 //                .placeholder(R.drawable.imagethumb)
 //                .diskCacheStrategy(DiskCacheStrategy.ALL)
 //                .into(holder.deviceImageView);
-        holder.deviceImageView.setImageResource(R.drawable.imagethumb);
+        List<String> files= FileUtil.getImagePathFromPath(FileUtil.pathSnapShot(),model.SN);
+        if (files.size()>0){
+
+            Bitmap bitmap = BitmapFactory.decodeFile(files.get(0));
+            holder.deviceImageView.setImageBitmap(bitmap);
+        }
+        else{
+            holder.deviceImageView.setImageResource(R.drawable.imagethumb);
+        }
+
         holder.deviceNameView.setText(model.DevName);
         if(mItemClickListener != null){
             holder.itemView.setOnClickListener(new View.OnClickListener() {
