@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
+import stcam.stcamproject.Manager.DataManager;
 import stcam.stcamproject.Util.TFun;
 
 /**
@@ -141,9 +142,17 @@ public class DevModel implements Parcelable,Serializable {
 
     }
 
+
     public boolean Init()
     {
         NetHandle = lib.thNetInit(true, false, false, false);
+
+        //获取用户名和密码
+        DevModel dbModel = DataManager.getInstance().getSNDev(this.SN);
+        if (dbModel != null){
+            usr = dbModel.usr;
+            pwd = dbModel.pwd;
+        }
         return true;
     }
     public String GetAllCfg()

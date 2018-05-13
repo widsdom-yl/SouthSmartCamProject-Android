@@ -15,7 +15,6 @@ import com.model.RetModel;
 import com.model.SearchDevModel;
 import com.model.ShareModel;
 import com.thSDK.TMsg;
-import com.thSDK.lib;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
@@ -33,7 +32,6 @@ import stcam.stcamproject.Manager.JPushManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.DeviceParseUtil;
 import stcam.stcamproject.Util.GsonUtil;
-import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
@@ -103,22 +101,24 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_add_device_search:
-                if (lod == null){
-                    lod = new LoadingDialog(this);
-                }
-                lod.dialogShow();
-
-                SouthUtil.showToast(this,"search");
-                new Thread()
-                {
-                    @Override
-                    public void run()
-                    {
-                        SearchMsg = lib.thNetSearchDevice(3000, 1);
-                        ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_SearchOver, 0, 0, null));
-                        IsSearching = false;
-                    }
-                }.start();
+//                if (lod == null){
+//                    lod = new LoadingDialog(this);
+//                }
+//                lod.dialogShow();
+//
+//                SouthUtil.showToast(this,"search");
+//                new Thread()
+//                {
+//                    @Override
+//                    public void run()
+//                    {
+//                        SearchMsg = lib.thNetSearchDevice(3000, 1);
+//                        ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_SearchOver, 0, 0, null));
+//                        IsSearching = false;
+//                    }
+//                }.start();
+                Intent intent4 = new Intent(STApplication.getInstance(), AddDeviceWlanActivity.class);
+                startActivity(intent4);
                   break;
             case R.id.btn_add_device_share:
                 Intent intent = new Intent(AddDeviceActivity.this, CaptureActivity.class);
@@ -186,15 +186,21 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
         ShareModel model = GsonUtil.parseJsonWithGson(json, ShareModel.class);
         if (model != null){
             Log.e(tag,"model.uid:"+model.UID);
-            if (lod == null){
-                lod = new LoadingDialog(this);
-            }
-            lod.dialogShow();
-            ServerNetWork.getCommandApi().app_share_add_dev(AccountManager.getInstance().getDefaultUsr(),AccountManager.getInstance().getDefaultPwd(),
-                    model.From,JPushManager.getJPushRegisterID(),1,0,0,model.SN,model.Video,model.History,model.Push,
-                    model.Setup,model.Control).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(observer_add_dev);;
+//            if (lod == null){
+//                lod = new LoadingDialog(this);
+//            }
+//            lod.dialogShow();
+//            ServerNetWork.getCommandApi().app_share_add_dev(AccountManager.getInstance().getDefaultUsr(),AccountManager.getInstance().getDefaultPwd(),
+//                    model.From,JPushManager.getJPushRegisterID(),1,0,0,model.SN,model.Video,model.History,model.Push,
+//                    model.Setup,model.Control).subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(observer_add_dev);
+
+            //ChangeDevicePwdActivity
+            Intent intent = new Intent(this,ChangeDevicePwdActivity.class);
+            intent.putExtra("type",ChangeDevicePwdActivity.EnumChangeDevicePwd.SHARE);
+            intent.putExtra("model",model);
+            startActivity(intent);
         }
         else{
             Log.e(tag,"parseJsonWithGson failed");

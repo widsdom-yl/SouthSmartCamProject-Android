@@ -1,13 +1,16 @@
 package com.model;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Auto-generated: 2018-04-27 23:21:10
  *
  * @author bejson.com (i@bejson.com)
  * @website http://www.bejson.com/java2pojo/
  */
-public class SearchDevModel {
+public class SearchDevModel implements Parcelable {
 
     private String SN;
     private String DevModal;
@@ -24,6 +27,37 @@ public class SearchDevModel {
     private String DDNSServer;
     private String DDNSHost;
     private String UID;
+
+    protected SearchDevModel(Parcel in) {
+        SN = in.readString();
+        DevModal = in.readString();
+        DevName = in.readString();
+        DevMAC = in.readString();
+        DevIP = in.readString();
+        SubMask = in.readString();
+        Gateway = in.readString();
+        DNS1 = in.readString();
+        SoftVersion = in.readString();
+        DataPort = in.readInt();
+        HttpPort = in.readInt();
+        rtspPort = in.readInt();
+        DDNSServer = in.readString();
+        DDNSHost = in.readString();
+        UID = in.readString();
+    }
+
+    public static final Creator<SearchDevModel> CREATOR = new Creator<SearchDevModel>() {
+        @Override
+        public SearchDevModel createFromParcel(Parcel in) {
+            return new SearchDevModel(in);
+        }
+
+        @Override
+        public SearchDevModel[] newArray(int size) {
+            return new SearchDevModel[size];
+        }
+    };
+
     public void setSN(String SN) {
         this.SN = SN;
     }
@@ -129,4 +163,27 @@ public class SearchDevModel {
         return UID;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(SN);
+        parcel.writeString(DevModal);
+        parcel.writeString(DevName);
+        parcel.writeString(DevMAC);
+        parcel.writeString(DevIP);
+        parcel.writeString(SubMask);
+        parcel.writeString(Gateway);
+        parcel.writeString(DNS1);
+        parcel.writeString(SoftVersion);
+        parcel.writeInt(DataPort);
+        parcel.writeInt(HttpPort);
+        parcel.writeInt(rtspPort);
+        parcel.writeString(DDNSServer);
+        parcel.writeString(DDNSHost);
+        parcel.writeString(UID);
+    }
 }

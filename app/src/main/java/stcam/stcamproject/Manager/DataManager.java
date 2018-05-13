@@ -20,7 +20,7 @@ public class DataManager{
 	private static final String TAG = "DataManager";
 	private Context context;
 	private SQLiteAssetHelper dBHelper;
-	private final String[] ORDER_COLUMNS_NODE = new String[] {"sn", "name","ip","httpport","dataport","usr","pwd","resolute"};
+	private final String[] ORDER_COLUMNS_NODE = new String[] {"SN", "DevName","usr","pwd"};
 	private final String[] ORDER_COLUMNS_IMAGE = new String[] {"Id","date", "fm","sn"};
 	private final String[] ORDER_COLUMNS_VIDEO = new String[] {"name","url","viewed"};
 	private final String[] ORDER_COLUMNS_IMAGE_DATE = new String[] {"date"};
@@ -68,11 +68,8 @@ public class DataManager{
 			db = dBHelper.getWritableDatabase();
 			db.beginTransaction();
 			ContentValues contentValues = new ContentValues();
-			contentValues.put("sn", model.SN);
-			contentValues.put("name", model.DevName);
-			contentValues.put("ip", model.IPUID);
-			contentValues.put("dataport", model.DataPort);
-			contentValues.put("httpport", model.WebPort);
+			contentValues.put("SN", model.SN);
+			contentValues.put("DevName", model.DevName);
 			contentValues.put("usr", model.usr);
 			contentValues.put("pwd", model.pwd);
 			db.insertOrThrow(dBHelper.TABLE_NAME_NODE, null, contentValues);
@@ -88,8 +85,42 @@ public class DataManager{
 		}
 		return true;
 	}
+/*根据SN获得*/
+	public DevModel getSNDev(String SN){
+		SQLiteDatabase db = null;
+		Cursor cursor = null;
+		List<DevModel> orderList = new ArrayList();
+		try {
+			db = dBHelper.getReadableDatabase();
+			// select * from Orders
+			cursor = db.query(dBHelper.TABLE_NAME_NODE, ORDER_COLUMNS_NODE, null, null, null, null, null);
+			cursor = db.query(dBHelper.TABLE_NAME_NODE,
+					ORDER_COLUMNS_NODE,
+					"SN = ?",
+					new String[] {SN},
+					null, null, null);
+			if (cursor.getCount() > 0) {
 
+				while (cursor.moveToNext()) {
+					return parseNode(cursor);
+				}
+				return null;
+			}
+		}
+		catch (Exception e) {
+			Log.e(TAG, "", e);
+		}
+		finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+			if (db != null) {
+				db.close();
+			}
+		}
 
+		return null;
+	}
 	/**
 	 * 查询数据库中所有设备数据
 	 */
@@ -343,7 +374,7 @@ public class DataManager{
 			// select * from Orders
 			cursor = db.query(dBHelper.TABLE_NAME_NODE,
 					ORDER_COLUMNS_NODE,
-					"sn = ?",
+					"SN = ?",
 					new String[] {model.SN},
 					null, null, null);
 
@@ -418,16 +449,13 @@ public class DataManager{
 		try {
 			db = dBHelper.getWritableDatabase();
 			ContentValues cv = new ContentValues();
-			cv.put("sn", model.SN);
-			cv.put("name", model.DevName);
-			cv.put("ip", model.IPUID);
-			cv.put("dataport", model.DataPort);
-			cv.put("httpport", model.WebPort);
+			cv.put("SN", model.SN);
+			cv.put("DevName", model.DevName);
 			cv.put("usr", model.usr);
 			cv.put("pwd", model.pwd);
 
 			Log.e(TAG, "update in manager sn:" + model.SN );
-			ret = db.update(dBHelper.TABLE_NAME_NODE, cv, "sn = ?", new String[]{model.SN});
+			ret = db.update(dBHelper.TABLE_NAME_NODE, cv, "SN = ?", new String[]{model.SN});
 		}
 		catch (Exception e) {
 			return false;
@@ -450,7 +478,7 @@ public class DataManager{
 		try {
 			db = dBHelper.getReadableDatabase();
 			// select * from Orders
-			db.delete(dBHelper.TABLE_NAME_NODE , "sn =? ", new String[]{model.SN});
+			db.delete(dBHelper.TABLE_NAME_NODE , "SN =? ", new String[]{model.SN});
 		}
 		catch (Exception e) {
 			Log.e(TAG, "", e);
@@ -649,11 +677,8 @@ public class DataManager{
 	 */
 	private DevModel parseNode(Cursor cursor){
 		DevModel model = new DevModel();
-		model.SN = (cursor.getString(cursor.getColumnIndex("sn")));
-		model.DevName = (cursor.getString(cursor.getColumnIndex("name")));
-		model.IPUID = (cursor.getString(cursor.getColumnIndex("ip")));
-		model.DataPort = (cursor.getInt(cursor.getColumnIndex("dataport")));
-		model.WebPort = (cursor.getInt(cursor.getColumnIndex("httpport")));
+		model.SN = (cursor.getString(cursor.getColumnIndex("SN")));
+		model.DevName = (cursor.getString(cursor.getColumnIndex("DevName")));
 		model.usr = (cursor.getString(cursor.getColumnIndex("usr")));
 		model.pwd = (cursor.getString(cursor.getColumnIndex("pwd")));
 		return model;

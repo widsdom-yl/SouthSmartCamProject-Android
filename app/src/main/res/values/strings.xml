@@ -31,7 +31,7 @@
     <string name="action_search">搜索</string>
     <string name="action_add">添加</string>
     <string name="action_add_device">添加设备</string>
-    <string name="action_change_password">修改设备密码</string>
+    <string name="action_change_password">设置设备密码</string>
     <string name="action_add_device_search">添加同一路由器下设备（局域网搜索）</string>
 
     <string name="action_device_share">分享</string>
