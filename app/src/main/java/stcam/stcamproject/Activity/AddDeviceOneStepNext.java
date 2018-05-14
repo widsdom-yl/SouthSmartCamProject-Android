@@ -10,6 +10,7 @@ import stcam.stcamproject.R;
 
 public class AddDeviceOneStepNext extends AppCompatActivity implements View.OnClickListener {
     Button button_cancel;
+    final  static  String tag = "AddDeviceOneStepNext";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,7 +20,7 @@ public class AddDeviceOneStepNext extends AppCompatActivity implements View.OnCl
         if(actionBar != null){
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_add_one_key_setting);
+            actionBar.setTitle(R.string.action_add_ap_sta);
         }
         button_cancel = findViewById(R.id.button_cancel);
         button_cancel.setOnClickListener(this);
@@ -35,6 +36,8 @@ public class AddDeviceOneStepNext extends AppCompatActivity implements View.OnCl
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     public void onClick(View view) {

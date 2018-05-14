@@ -1,5 +1,6 @@
 package stcam.stcamproject.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -36,6 +37,7 @@ public class AddDeviceAP2StaActivity extends AppCompatActivity implements BaseAd
     String SearchMsg;
     boolean IsSearching;
     int type;//1:ap2sta 2:ap
+    List<SearchDevModel> lists;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,7 +126,16 @@ public class AddDeviceAP2StaActivity extends AppCompatActivity implements BaseAd
     }
     @Override
     public void onItemClick(View view, int position) {
-
+        Intent intent = new Intent(this,ChangeDevicePwdActivity.class);
+        if (1 == type){
+            intent.putExtra("type",ChangeDevicePwdActivity.EnumChangeDevicePwd.STA);
+        }
+        else{
+            intent.putExtra("type",ChangeDevicePwdActivity.EnumChangeDevicePwd.AP);
+        }
+        SearchDevModel model = lists.get(position);
+        intent.putExtra("model",model);
+        startActivity(intent);
     }
 
     @Override

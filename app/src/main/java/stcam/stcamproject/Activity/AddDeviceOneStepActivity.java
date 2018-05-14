@@ -1,8 +1,10 @@
 package stcam.stcamproject.Activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -31,6 +33,11 @@ public class AddDeviceOneStepActivity extends AppCompatActivity implements View.
         edittext_ssid_pwd = findViewById(R.id.edittext_ssid_pwd);
         button_next = findViewById(R.id.button_next);
         button_next.setOnClickListener(this);
+
+        WifiManager wifiManager = (WifiManager)getApplicationContext().getSystemService(WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        edittext_ssid_name.setText(wifiInfo.getSSID().replaceAll("\"",""));
+
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

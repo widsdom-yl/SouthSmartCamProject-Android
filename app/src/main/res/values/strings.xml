@@ -66,6 +66,7 @@
     <string name="ssid">路由器SSID</string>
     <string name="ssid_pwd">密码</string>
     <string name="next">下一步</string>
+    <string name="OK">确定</string>
     <string name="cancel">取消</string>
     <string name="device_old_pwd">密码</string>
     <string name="device_new_pwd">新密码</string>

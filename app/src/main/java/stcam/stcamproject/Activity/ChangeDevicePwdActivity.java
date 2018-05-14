@@ -1,5 +1,6 @@
 package stcam.stcamproject.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -34,8 +35,8 @@ public class ChangeDevicePwdActivity extends AppCompatActivity implements View.O
     public enum EnumChangeDevicePwd implements Serializable{
         SHARE,
         WLAN,
-        STA,
-        AP
+        STA,//ap to sta
+        AP//ap 游客模式
     }
 
     EnumChangeDevicePwd enumType;
@@ -67,12 +68,10 @@ public class ChangeDevicePwdActivity extends AppCompatActivity implements View.O
                     dbModel = DataManager.getInstance().getSNDev(shareModel.SN);
                     break;
                 case WLAN:
+                case STA:
+                case AP:
                     model = bundle.getParcelable("model");
                     dbModel = DataManager.getInstance().getSNDev(model.getSN());
-                    break;
-                case STA:
-                    break;
-                case AP:
                     break;
                 default:
                         break;
@@ -135,6 +134,12 @@ public class ChangeDevicePwdActivity extends AppCompatActivity implements View.O
                             1,0,0,model.getSN(),0)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(observer_add_dev);
+                }
+                else if(enumType == EnumChangeDevicePwd.STA){
+                   // AddDeviceAP2StaSetup
+                    Intent intent = new Intent(this,AddDeviceAP2StaSetup.class);
+                    intent.putExtra("model" ,model);
+                    startActivity(intent);
                 }
                 else if(enumType == EnumChangeDevicePwd.SHARE){
                     if (lod == null){
