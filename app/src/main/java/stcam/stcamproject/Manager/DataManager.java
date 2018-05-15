@@ -20,7 +20,7 @@ public class DataManager{
 	private static final String TAG = "DataManager";
 	private Context context;
 	private SQLiteAssetHelper dBHelper;
-	private final String[] ORDER_COLUMNS_NODE = new String[] {"SN", "DevName","usr","pwd"};
+	private final String[] ORDER_COLUMNS_NODE = new String[] {"SN","usr","pwd"};
 	private final String[] ORDER_COLUMNS_IMAGE = new String[] {"Id","date", "fm","sn"};
 	private final String[] ORDER_COLUMNS_VIDEO = new String[] {"name","url","viewed"};
 	private final String[] ORDER_COLUMNS_IMAGE_DATE = new String[] {"date"};
@@ -69,7 +69,6 @@ public class DataManager{
 			db.beginTransaction();
 			ContentValues contentValues = new ContentValues();
 			contentValues.put("SN", model.SN);
-			contentValues.put("DevName", model.DevName);
 			contentValues.put("usr", model.usr);
 			contentValues.put("pwd", model.pwd);
 			db.insertOrThrow(dBHelper.TABLE_NAME_NODE, null, contentValues);
@@ -89,7 +88,6 @@ public class DataManager{
 	public DevModel getSNDev(String SN){
 		SQLiteDatabase db = null;
 		Cursor cursor = null;
-		List<DevModel> orderList = new ArrayList();
 		try {
 			db = dBHelper.getReadableDatabase();
 			// select * from Orders
@@ -450,7 +448,6 @@ public class DataManager{
 			db = dBHelper.getWritableDatabase();
 			ContentValues cv = new ContentValues();
 			cv.put("SN", model.SN);
-			cv.put("DevName", model.DevName);
 			cv.put("usr", model.usr);
 			cv.put("pwd", model.pwd);
 
@@ -678,7 +675,7 @@ public class DataManager{
 	private DevModel parseNode(Cursor cursor){
 		DevModel model = new DevModel();
 		model.SN = (cursor.getString(cursor.getColumnIndex("SN")));
-		model.DevName = (cursor.getString(cursor.getColumnIndex("DevName")));
+		//model.DevName = (cursor.getString(cursor.getColumnIndex("DevName")));
 		model.usr = (cursor.getString(cursor.getColumnIndex("usr")));
 		model.pwd = (cursor.getString(cursor.getColumnIndex("pwd")));
 		return model;

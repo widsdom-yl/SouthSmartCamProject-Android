@@ -18,12 +18,7 @@ public class SQLiteAssetHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String sql = "create table if not exists " + TABLE_NAME_NODE + " ("
                 + "Id integer primary key AUTOINCREMENT, "
-                + "resolute integer default 0,"
-                + "sn text unique,"
-                + "name text, "
-                + "ip text,"
-                + "dataport text,"
-                + "httpport text,"
+                + "SN text unique,"
                 + "usr text,"
                 + "pwd text)";
         sqLiteDatabase.execSQL(sql);

@@ -39,7 +39,7 @@ public class DeviceShareActivity extends AppCompatActivity implements View.OnCli
         }
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){
-            devModel = (DevModel) bundle.getSerializable("devModel");
+            devModel = (DevModel) bundle.getParcelable("devModel");
             Log.e(tag,"NetHandle:"+devModel.NetHandle+",SN:"+devModel.SN);
         }
         shareModel = new ShareModel();

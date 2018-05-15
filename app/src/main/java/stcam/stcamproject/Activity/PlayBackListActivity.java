@@ -35,7 +35,7 @@ public class PlayBackListActivity extends AppCompatActivity implements BaseAdapt
         setContentView(R.layout.activity_play_back_list);
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){
-            devModel = (DevModel) bundle.getSerializable("devModel");
+            devModel = (DevModel) bundle.getParcelable("devModel");
             Log.e(tag,"NetHandle:"+devModel.NetHandle+",SN:"+devModel.SN);
         }
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -87,7 +87,7 @@ public class PlayBackListActivity extends AppCompatActivity implements BaseAdapt
         Bundle bundle = new Bundle();
         SDVideoModel model =  videoArray.get(position);
         bundle.putSerializable("model",model);
-        bundle.putSerializable("devModel",devModel);
+        bundle.putParcelable("devModel",devModel);
         intent.putExtras(bundle);
         Log.e(tag,"to PlayBackActivity sdVideo:"+model.sdVideo);
 

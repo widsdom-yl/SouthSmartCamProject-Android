@@ -242,18 +242,22 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
     @Override
     public void onItemClick(View view, int position,int tpe) {
+
         DevModel model = mDevices.get(position);
-        if (!model.IsConnect()){
-            SouthUtil.showToast(STApplication.getInstance(),getString(R.string.action_net_not_connect));
-            return;
+        if (3 != tpe){
+            if (!model.IsConnect()){
+                SouthUtil.showToast(STApplication.getInstance(),getString(R.string.action_net_not_connect));
+                return;
+            }
         }
+
         if (0 == tpe){
 
 
             Intent intent = new Intent(STApplication.getInstance(), PlayLiveActivity.class);
 
             Bundle bundle = new Bundle();
-            bundle.putSerializable("devModel",model);
+            bundle.putParcelable("devModel",model);
 
             intent.putExtras(bundle);
             Log.e(tag,"to vid devModel NetHandle:"+model.NetHandle);
@@ -266,7 +270,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
             Intent intent = new Intent(STApplication.getInstance(), DeviceShareActivity.class);
 
             Bundle bundle = new Bundle();
-            bundle.putSerializable("devModel",model);
+            bundle.putParcelable("devModel",model);
 
             intent.putExtras(bundle);
             Log.e(tag,"to DeviceShareActivity NetHandle:"+model.NetHandle);
@@ -283,10 +287,21 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
             Intent intent = new Intent(STApplication.getInstance(), PlayBackListActivity.class);
 
             Bundle bundle = new Bundle();
-            bundle.putSerializable("devModel",model);
+            bundle.putParcelable("devModel",model);
 
             intent.putExtras(bundle);
             Log.e(tag,"to PlayBackListActivity NetHandle:"+model.NetHandle);
+
+            startActivity(intent);
+        }
+        else if(3 == tpe){
+            Intent intent = new Intent(STApplication.getInstance(), SettingActivity.class);
+
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("devModel",model);
+
+            intent.putExtras(bundle);
+            Log.e(tag,"to SettingActivity NetHandle:"+model.NetHandle);
 
             startActivity(intent);
         }

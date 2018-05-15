@@ -55,7 +55,8 @@
         <activity android:name=".Activity.AddDeviceAP2StaActivity" />
         <activity android:name=".Activity.ChangeDevicePwdActivity" />
         <activity android:name=".Activity.AddDeviceWlanActivity" />
-        <activity android:name=".Activity.AddDeviceAP2StaSetup"></activity>
+        <activity android:name=".Activity.AddDeviceAP2StaSetup" />
+        <activity android:name=".Activity.SettingActivity"></activity>
     </application>
 
 </manifest>

@@ -42,7 +42,7 @@ public interface ServerCommandApi {
     @GET("app_user_del_dev.asp")
     Observable<com.model.RetModel> app_user_del_dev(@Query("user") String user,
                                                     @Query("psd") String psd,
-                                                    @Query("sn") int sn,
+                                                    @Query("sn") String sn,
                                                     @Query("s") int s
     );
 

@@ -36,18 +36,21 @@ public class ChangeDevicePwdActivity extends AppCompatActivity implements View.O
         SHARE,
         WLAN,
         STA,//ap to sta
-        AP//ap 游客模式
+        AP,//ap 游客模式
+        DEVICE_SETTING
     }
 
     EnumChangeDevicePwd enumType;
     SearchDevModel model;
     ShareModel shareModel;
+    DevModel setModel;
     DevModel dbModel;
     TextView text_uid;
     EditText editText_confirm_pwd;
     EditText editText_new_pwd;
     EditText editText_old_pwd;
     Button confirmButton;
+    String SN;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,19 +63,26 @@ public class ChangeDevicePwdActivity extends AppCompatActivity implements View.O
         }
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){
-            enumType = bundle.getParcelable("type");
+            enumType = (EnumChangeDevicePwd) bundle.getSerializable("type");
             switch (enumType){
                 case SHARE:
                     //ShareModel model
                     shareModel = bundle.getParcelable("model");
                     dbModel = DataManager.getInstance().getSNDev(shareModel.SN);
+
+                    SN = shareModel.SN;
                     break;
                 case WLAN:
                 case STA:
                 case AP:
                     model = bundle.getParcelable("model");
                     dbModel = DataManager.getInstance().getSNDev(model.getSN());
+                    SN = model.getSN();
                     break;
+                case DEVICE_SETTING:
+                    setModel = bundle.getParcelable("model");
+                    dbModel = DataManager.getInstance().getSNDev(setModel.SN);
+                    SN = setModel.SN;
                 default:
                         break;
             }
@@ -99,7 +109,25 @@ public class ChangeDevicePwdActivity extends AppCompatActivity implements View.O
         editText_old_pwd = findViewById(R.id.editText_old_pwd);
         confirmButton = findViewById(R.id.button_next);
 
-        text_uid.setText("UID  "+model.getUID());
+
+        switch (enumType) {
+            case SHARE:
+                //ShareModel model
+                text_uid.setText("UID  " + shareModel.UID);
+                break;
+            case WLAN:
+            case STA:
+            case AP:
+                text_uid.setText("UID  " + model.getUID());
+                break;
+            case DEVICE_SETTING:
+                text_uid.setText("UID  " + setModel.UID);
+            default:
+                break;
+        }
+
+
+
         confirmButton.setOnClickListener(this);
 
         if (dbModel != null){
@@ -109,19 +137,23 @@ public class ChangeDevicePwdActivity extends AppCompatActivity implements View.O
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.button_next){
-
-            if (editText_new_pwd.getText().equals(editText_confirm_pwd.getText()) && editText_new_pwd.getText().length() >= 4){
-                if (dbModel != null){
+            Log.e(tag,"----0,change pwd ,new pwd is  "+editText_new_pwd.getText().toString());
+            if (editText_new_pwd.getText().toString().equals(editText_confirm_pwd.getText().toString()) && editText_new_pwd.getText().toString().length() >= 4){
+                Log.e(tag,"----1,change pwd ,new pwd is  "+editText_new_pwd.getText().toString());
+                if (dbModel == null){
+                    Log.e(tag,"----2,change pwd ,new pwd is  "+editText_new_pwd.getText().toString());
                     DevModel devModel = new DevModel();
-                    devModel.SN = model.getSN();
-                    devModel.DevName = model.getDevName();
+                    devModel.SN = SN;
                     devModel.usr = "admin";//默认填写admin
                     devModel.pwd = editText_new_pwd.getText().toString();
-                    DataManager.getInstance().addDev(devModel);
+                    boolean ret  = DataManager.getInstance().addDev(devModel);
+                    Log.e(tag,"addDev ,ret is "+ret);
                 }
                 else{
+                    Log.e(tag,"----3,change pwd ,new pwd is  "+editText_new_pwd.getText().toString());
                     dbModel.pwd = editText_new_pwd.getText().toString();
-                    DataManager.getInstance().updateDev(dbModel);
+                    boolean ret = DataManager.getInstance().updateDev(dbModel);
+                    Log.e(tag,"updateDev ,ret is "+ret);
                 }
 
                 if (enumType == EnumChangeDevicePwd.WLAN){

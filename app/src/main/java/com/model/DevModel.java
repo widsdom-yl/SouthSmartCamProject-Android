@@ -11,8 +11,6 @@ import com.thSDK.lib;
 
 import org.json.JSONObject;
 
-import java.io.Serializable;
-
 import stcam.stcamproject.Manager.DataManager;
 import stcam.stcamproject.Util.TFun;
 
@@ -22,8 +20,8 @@ import stcam.stcamproject.Util.TFun;
 
 
 
-public class DevModel implements Parcelable,Serializable {
-
+public class DevModel implements Parcelable {
+final static String tag = "DevModel";
     public final static int IS_CONN_NODEV = 0;
     public final static int IS_CONN_OFFLINE = 1;
     public final static int IS_CONN_LAN = 2;
@@ -49,10 +47,21 @@ public class DevModel implements Parcelable,Serializable {
     public boolean IsAudioMute = true;
     public boolean IsRecord = false;
 
-    /*==============================================*/
-
-
     protected DevModel(Parcel in) {
+        Index = in.readInt();
+        NetHandle = in.readLong();
+        IsConnecting = in.readByte() != 0;
+        ExistSD = in.readInt();
+        Brightness = in.readInt();
+        Contrast = in.readInt();
+        Sharpness = in.readInt();
+        SoftVersion = in.readString();
+        VideoChlMask = in.readInt();
+        AudioChlMask = in.readInt();
+        SubVideoChlMask = in.readInt();
+        UID = in.readString();
+        IsAudioMute = in.readByte() != 0;
+        IsRecord = in.readByte() != 0;
         SN = in.readString();
         DevName = in.readString();
         usr = in.readString();
@@ -69,8 +78,6 @@ public class DevModel implements Parcelable,Serializable {
         IsShare = in.readInt();
         IsRec = in.readInt();
         IsSnapshot = in.readInt();
-        NetHandle = in.readLong();
-        UID = in.readString();
     }
 
     public static final Creator<DevModel> CREATOR = new Creator<DevModel>() {
@@ -92,6 +99,20 @@ public class DevModel implements Parcelable,Serializable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(Index);
+        parcel.writeLong(NetHandle);
+        parcel.writeByte((byte) (IsConnecting ? 1 : 0));
+        parcel.writeInt(ExistSD);
+        parcel.writeInt(Brightness);
+        parcel.writeInt(Contrast);
+        parcel.writeInt(Sharpness);
+        parcel.writeString(SoftVersion);
+        parcel.writeInt(VideoChlMask);
+        parcel.writeInt(AudioChlMask);
+        parcel.writeInt(SubVideoChlMask);
+        parcel.writeString(UID);
+        parcel.writeByte((byte) (IsAudioMute ? 1 : 0));
+        parcel.writeByte((byte) (IsRecord ? 1 : 0));
         parcel.writeString(SN);
         parcel.writeString(DevName);
         parcel.writeString(usr);
@@ -100,7 +121,7 @@ public class DevModel implements Parcelable,Serializable {
         parcel.writeString(IPUID);
         parcel.writeInt(WebPort);
         parcel.writeInt(DataPort);
-        parcel.writeInt(IsVideo );
+        parcel.writeInt(IsVideo);
         parcel.writeInt(IsHistory);
         parcel.writeInt(IsPush);
         parcel.writeInt(IsSetup);
@@ -108,9 +129,13 @@ public class DevModel implements Parcelable,Serializable {
         parcel.writeInt(IsShare);
         parcel.writeInt(IsRec);
         parcel.writeInt(IsSnapshot);
-        parcel.writeLong(NetHandle);
-        parcel.writeString(UID);
     }
+
+    /*==============================================*/
+
+
+
+
 
     public enum EnumOnlineState {
         Unkown,Online,Offline
@@ -143,16 +168,12 @@ public class DevModel implements Parcelable,Serializable {
     }
 
 
+
     public boolean Init()
     {
         NetHandle = lib.thNetInit(true, false, false, false);
 
         //获取用户名和密码
-        DevModel dbModel = DataManager.getInstance().getSNDev(this.SN);
-        if (dbModel != null){
-            usr = dbModel.usr;
-            pwd = dbModel.pwd;
-        }
         return true;
     }
     public String GetAllCfg()
@@ -195,6 +216,13 @@ public class DevModel implements Parcelable,Serializable {
 
     public static void threadConnect(final Handler ipc, final DevModel DevNode, final boolean IsDisconnReConnect)
     {
+        DevModel dbModel = DataManager.getInstance().getSNDev(DevNode.SN);
+        if (dbModel != null){
+
+            DevNode.usr = dbModel.usr;
+            DevNode.pwd = dbModel.pwd;
+            Log.e(tag,"SN:"+DevNode.SN+",pwd:"+DevNode.pwd);
+        }
         new Thread()
         {
             @Override

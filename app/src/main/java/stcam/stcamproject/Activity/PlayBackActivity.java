@@ -24,7 +24,7 @@ public class PlayBackActivity extends AppCompatActivity {
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){
             model = (SDVideoModel) bundle.getSerializable("model");
-            devModel = (DevModel) bundle.getSerializable("devModel");
+            devModel = (DevModel) bundle.getParcelable("devModel");
             Log.e(tag,"play sdVideo:"+model.sdVideo);
         }
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();

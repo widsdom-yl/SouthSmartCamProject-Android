@@ -71,4 +71,10 @@
     <string name="device_old_pwd">密码</string>
     <string name="device_new_pwd">新密码</string>
     <string name="device_confirm_pwd">确认新密码</string>
+    <string name="action_setting">设置</string>
+    <string name="device_name">设备名称</string>
+    <string name="device_pwd">连接密码</string>
+    <string name="action_change_device_pwd">修改密码</string>
+    <string name="device_version">版本</string>
+    <string name="action_delete_device">删除设备</string>
 </resources>

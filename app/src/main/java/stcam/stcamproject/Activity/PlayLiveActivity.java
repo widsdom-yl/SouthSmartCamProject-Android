@@ -45,7 +45,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){
-            devModel = (DevModel) bundle.getSerializable("devModel");
+            devModel = (DevModel) bundle.getParcelable("devModel");
             Log.e(tag,"NetHandle:"+devModel.NetHandle+",SN:"+devModel.SN);
         }
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
