@@ -36,7 +36,7 @@ public class MediaPhotoListActivity extends AppCompatActivity implements BaseAda
         }
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){
-            model = (DevModel) bundle.getSerializable("devModel");
+            model = (DevModel) bundle.getParcelable("devModel");
             Log.e(tag,"devmodel SN:"+model.SN);
         }
         rv = findViewById(R.id.photo_grid_view);

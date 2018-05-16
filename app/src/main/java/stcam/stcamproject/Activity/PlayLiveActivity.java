@@ -37,6 +37,8 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     VoiceImageButton button_snapshot,button_snapshot_o;
     ImageButton button_speech,button_speech_o;
     VoiceImageButton button_record,button_record_o;
+    ImageButton button_slient;
+
     Button button_led;
     Button button_ptz_left,button_ptz_right,button_ptz_up,button_ptz_down;
     private GestureDetector mygesture;
@@ -113,6 +115,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         button_ptz_up = findViewById(R.id.button_ptz_up);
         button_ptz_down = findViewById(R.id.button_ptz_down);
         button_led = findViewById(R.id.button_led);
+        button_slient = findViewById(R.id.button_slient);
         button_snapshot.setOnClickListener(this);
         button_snapshot_o.setOnClickListener(this);
         button_speech.setOnClickListener(this);
@@ -120,10 +123,12 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         button_record.setOnClickListener(this);
         button_record_o.setOnClickListener(this);
         button_led.setOnClickListener(this);
-        button_ptz_left.setOnClickListener(this);
-        button_ptz_right.setOnClickListener(this);
-        button_ptz_up.setOnClickListener(this);
-        button_ptz_down.setOnClickListener(this);
+        button_slient.setOnClickListener(this);
+
+//        button_ptz_left.setOnClickListener(this);
+//        button_ptz_right.setOnClickListener(this);
+//        button_ptz_up.setOnClickListener(this);
+//        button_ptz_down.setOnClickListener(this);
 
     }
     ConstraintUtil constraintUtil;
@@ -141,6 +146,28 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.button_speech:
             case R.id.button_speech_o:
+                if (button_speech.isSelected()){
+                    button_speech.setSelected(false);
+                    button_speech.setImageResource(R.drawable.microphonedefault);
+                    lib.thNetTalkClose(devModel.NetHandle);
+                }
+                else{
+                    button_speech.setSelected(true);
+                    button_speech.setImageResource(R.drawable.microphoneselected);
+                    lib.thNetTalkOpen(devModel.NetHandle);
+                }
+                break;
+            case R.id.button_slient:
+                if (button_slient.isSelected()){
+                    button_slient.setSelected(false);
+                    button_slient.setImageResource(R.drawable.talk_nor);
+                    lib.thNetAudioPlayClose(devModel.NetHandle);
+                }
+                else{
+                    button_slient.setSelected(true);
+                    button_slient.setImageResource(R.drawable.talk_sel);
+                    lib.thNetAudioPlayOpen(devModel.NetHandle);
+                }
                 break;
             case R.id.button_record:
             case R.id.button_record_o:

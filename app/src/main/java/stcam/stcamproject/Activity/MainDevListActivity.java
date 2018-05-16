@@ -37,7 +37,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
     RecyclerView mRecyclerView;
     DeviceListAdapter mAdapter;
-    List<DevModel>mDevices;//这个list中的model，判断了连接状态
+    List<DevModel>mDevices = new ArrayList<>();//这个list中的model，判断了连接状态
     List<DevModel>mAccountDevices;//没有连接状态
     SuperSwipeRefreshLayout refreshLayout;
     @Override

@@ -150,14 +150,20 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
-            <Button
+
+            <ImageButton
                 android:id="@+id/button_slient"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:text="@string/action_slient"
+                android:background="@android:color/transparent"
+                android:src="@drawable/talk_nor"
+                android:scaleType="fitCenter"
                 tools:layout_editor_absoluteX="52dp"
                 tools:layout_editor_absoluteY="391dp" />
+
+
+
 
             <View
                 android:layout_width="0dp"

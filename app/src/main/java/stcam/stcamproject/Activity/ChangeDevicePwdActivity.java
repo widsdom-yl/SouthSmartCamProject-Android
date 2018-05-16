@@ -184,7 +184,9 @@ public class ChangeDevicePwdActivity extends AppCompatActivity implements View.O
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(observer_add_dev);
                 }
-
+                else if(enumType == EnumChangeDevicePwd.DEVICE_SETTING){
+                    finish();
+                }
             }
         }
 
