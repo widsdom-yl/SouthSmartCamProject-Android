@@ -53,6 +53,12 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
     @Override
     protected void onResume() {
         super.onResume();
+        if (mDevices != null) {
+            for (DevModel existModel : mDevices){
+                 existModel..updateUserAndPwd();    
+            }
+        }
+        
         loadDevList(false);
     }
     @Override

@@ -168,6 +168,15 @@ final static String tag = "DevModel";
     }
 
 
+    public void updateUserAndPwd(){
+        DevModel dbModel = DataManager.getInstance().getSNDev(DevNode.SN);
+        if (dbModel != null){
+
+            DevNode.usr = dbModel.usr;
+            DevNode.pwd = dbModel.pwd;
+            Log.e(tag,"SN:"+DevNode.SN+",pwd:"+DevNode.pwd);
+        }
+    }
 
     public boolean Init()
     {

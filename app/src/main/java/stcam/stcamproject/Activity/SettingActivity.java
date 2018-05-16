@@ -57,6 +57,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onResume() {
         super.onResume();
+        model.updateUserAndPwd();
         refreshView();
     }
     @Override
