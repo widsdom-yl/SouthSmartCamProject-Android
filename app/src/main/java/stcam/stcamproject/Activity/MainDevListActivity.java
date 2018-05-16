@@ -55,7 +55,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         super.onResume();
         if (mDevices != null) {
             for (DevModel existModel : mDevices){
-                 existModel..updateUserAndPwd();    
+                 existModel.updateUserAndPwd();
             }
         }
         
@@ -256,7 +256,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
     public void onItemClick(View view, int position,int tpe) {
 
         DevModel currentModel = mAccountDevices.get(position);
-        DevModel model;
+        DevModel model = null;
 
         for (DevModel existModel : mDevices){
             if (currentModel.SN.equals(existModel.SN)){
