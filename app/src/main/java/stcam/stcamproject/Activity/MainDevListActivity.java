@@ -37,7 +37,8 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
     RecyclerView mRecyclerView;
     DeviceListAdapter mAdapter;
-    List<DevModel>mDevices;
+    List<DevModel>mDevices;//这个list中的model，判断了连接状态
+    List<DevModel>mAccountDevices;//没有连接状态
     SuperSwipeRefreshLayout refreshLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,15 +186,19 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         public void onNext(List<DevModel> mlist) {
             lod.dismiss();
 
-            if (mlist.size() > 0){
+            mAccountDevices = mlist;
+
+            if (mlist.size() > 0)
+            {
               //  mDevices = mlist;
                 //DevModel model =  mlist.get(0);
                 //SouthUtil.showToast(STApplication.getInstance(),"dev0 name"+model.DevName);
 
-                if (mDevices == null){
-                    mDevices = mlist;
-                }
-                else{
+                // if (mAccountDevices == null){
+                //     mAccountDevices = mlist;
+                // }
+                // else
+                {
                     for (DevModel model : mlist){
                         boolean exist = false;
                         for (DevModel existModel : mDevices){
@@ -228,6 +233,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
             }
             else{
                 //MyContext.getInstance()
+                mAdapter.setmDatas(mlist);
                 Log.e(tag,"---------------------1:no dev");
                 SouthUtil.showToast(STApplication.getInstance(),"No dev");
             }
@@ -243,7 +249,16 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
     @Override
     public void onItemClick(View view, int position,int tpe) {
 
-        DevModel model = mDevices.get(position);
+        DevModel currentModel = mAccountDevices.get(position);
+        DevModel model;
+
+        for (DevModel existModel : mDevices){
+            if (currentModel.SN.equals(existModel.SN)){
+                model = existModel;
+                break;
+            }              
+        }
+
         if (3 != tpe){
             if (!model.IsConnect()){
                 SouthUtil.showToast(STApplication.getInstance(),getString(R.string.action_net_not_connect));
