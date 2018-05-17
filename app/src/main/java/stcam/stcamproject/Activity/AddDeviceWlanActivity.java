@@ -1,6 +1,5 @@
 package stcam.stcamproject.Activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,18 +11,28 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.model.RetModel;
 import com.model.SearchDevModel;
 import com.thSDK.TMsg;
 import com.thSDK.lib;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.FuncN;
+import rx.schedulers.Schedulers;
 import stcam.stcamproject.Adapter.AddDeviceAdapter;
 import stcam.stcamproject.Adapter.BaseAdapter;
+import stcam.stcamproject.Manager.AccountManager;
+import stcam.stcamproject.Manager.JPushManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.DeviceParseUtil;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
+import stcam.stcamproject.network.ServerNetWork;
 
 public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener {
 
@@ -105,6 +114,10 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
                         adapter = new AddDeviceAdapter(lists);
                         rv.setAdapter(adapter);
                         adapter.setOnItemClickListener(AddDeviceWlanActivity.this);
+                        addDevice(lists);
+                    }
+                    else{
+                        lod.dismiss();
                     }
 
                     break;
@@ -122,15 +135,68 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
 
     @Override
     public void onItemClick(View view, int position) {
-        Intent intent = new Intent(this,ChangeDevicePwdActivity.class);
-        intent.putExtra("type",ChangeDevicePwdActivity.EnumChangeDevicePwd.WLAN);
-        SearchDevModel model = lists.get(position);
-        intent.putExtra("model",model);
-        startActivity(intent);
+//        Intent intent = new Intent(this,ChangeDevicePwdActivity.class);
+//        intent.putExtra("type",ChangeDevicePwdActivity.EnumChangeDevicePwd.WLAN);
+//        SearchDevModel model = lists.get(position);
+//        intent.putExtra("model",model);
+//        startActivity(intent);
     }
 
     @Override
     public void onLongClick(View view, int position) {
 
     }
+
+    void addDevice( List<SearchDevModel> devices){
+        List<Observable<RetModel>> observables = new ArrayList<>();
+        for (SearchDevModel device : devices){
+            observables.add(ServerNetWork.getCommandApi().app_user_add_dev(AccountManager.getInstance().getDefaultUsr(),AccountManager.getInstance().getDefaultPwd(),
+                    JPushManager.getJPushRegisterID(),
+                    1,0,0,device.getSN(),0));
+        }
+        Observable.combineLatest(observables,new FuncN<RetModel>(){
+
+            @Override
+            public RetModel call(Object... args) {
+                RetModel model = new RetModel();
+                model.ret = 1;
+                for (Object i : args){
+                    RetModel retModel = (RetModel) i;
+                    Log.e(tag,"---------------------app_user_add_dev ret :"+retModel.ret);
+
+                    model.ret &= retModel.ret;
+
+                }
+                return model;
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer_add_dev);
+    }
+    Observer<RetModel> observer_add_dev = new Observer<RetModel>() {
+        @Override
+        public void onCompleted() {
+            lod.dismiss();
+            Log.e(tag,"---------------------2");
+        }
+        @Override
+        public void onError(Throwable e) {
+            lod.dismiss();
+            Log.e(tag,"---------------------1:"+e.getLocalizedMessage());
+        }
+
+        @Override
+        public void onNext(RetModel m) {
+            lod.dismiss();
+            Log.e(tag,"---------------------0:"+m.ret);
+            if (1 == m.ret){
+
+            }
+            else{
+
+            }
+
+        }
+    };
+
 }
