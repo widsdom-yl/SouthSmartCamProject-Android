@@ -3,4 +3,19 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="tab_blue">#283593</color>
+    <color name="tab_light_blue">#03a9f4</color>
+    <color name="tab_purple">#9c27b0</color>
+    <color name="tab_green">#056f00</color>
+    <color name="tab_orange">#ff9800</color>
+    <color name="page_1">#7A5BBD</color>
+    <color name="page_1_dark">#624998</color>
+    <color name="page_2">#4388F0</color>
+    <color name="page_2_dark">#346CBE</color>
+    <color name="page_3">#7BB248</color>
+    <color name="page_3_dark">#628F38</color>
+    <color name="black_overlay">#66000000</color>
+
+    <color name="radio_button_selected_color">#ff33b5e5</color>
+    <color name="radio_button_unselected_color">#e0e0e0</color>
 </resources>

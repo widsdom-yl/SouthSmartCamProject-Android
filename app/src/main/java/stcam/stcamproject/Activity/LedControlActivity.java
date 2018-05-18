@@ -2,11 +2,16 @@ package stcam.stcamproject.Activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
+
+import com.model.DevModel;
 
 import stcam.stcamproject.R;
 
 public class LedControlActivity extends AppCompatActivity {
+    DevModel devModel;
+    static final String tag = "LedControlActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +23,12 @@ public class LedControlActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(R.string.action_led_control);
         }
+        Bundle bundle = this.getIntent().getExtras();
+        if (bundle != null){
+            devModel = (DevModel) bundle.getParcelable("devModel");
+            Log.e(tag,"NetHandle:"+devModel.NetHandle+",SN:"+devModel.SN);
+        }
+
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

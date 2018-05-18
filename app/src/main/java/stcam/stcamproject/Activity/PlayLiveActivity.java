@@ -1,21 +1,18 @@
 package stcam.stcamproject.Activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.TableLayout;
 
 import com.model.DevModel;
@@ -182,22 +179,25 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 
                 break;
             case R.id.button_led:
-                LayoutInflater factory = LayoutInflater.from(this);
-                View DialogView = factory.inflate(R.layout.layout_view_led_control, null);
-                SeekBar seekBarBrightness = (SeekBar) DialogView.findViewById(R.id.seekBarBrightness);
+//                LayoutInflater factory = LayoutInflater.from(this);
+//                View DialogView = factory.inflate(R.layout.layout_view_led_control, null);
+//                SeekBar seekBarBrightness = (SeekBar) DialogView.findViewById(R.id.seekBarBrightness);
+//
+//
+//                new AlertDialog.Builder(this).setTitle("").setIcon(android.R.drawable.ic_dialog_info).setView(DialogView)
+//                        .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener()
+//                        {
+//
+//                            public void onClick(DialogInterface dialog, int which)
+//                            {
+//
+//
+//
+//                            }
+//                        }).show();
 
-
-                new AlertDialog.Builder(this).setTitle("").setIcon(android.R.drawable.ic_dialog_info).setView(DialogView)
-                        .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener()
-                        {
-
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-
-
-
-                            }
-                        }).show();
+                Intent intent = new Intent(this,LedControlActivity.class);
+                startActivity(intent);
                break;
             case R.id.button_ptz_left:
                 Log.e(tag,"left");
