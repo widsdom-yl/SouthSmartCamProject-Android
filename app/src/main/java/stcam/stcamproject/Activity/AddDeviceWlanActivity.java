@@ -1,8 +1,10 @@
 package stcam.stcamproject.Activity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
+import com.model.DevModel;
 import com.model.RetModel;
 import com.model.SearchDevModel;
 import com.thSDK.TMsg;
@@ -27,6 +31,7 @@ import rx.schedulers.Schedulers;
 import stcam.stcamproject.Adapter.AddDeviceAdapter;
 import stcam.stcamproject.Adapter.BaseAdapter;
 import stcam.stcamproject.Manager.AccountManager;
+import stcam.stcamproject.Manager.DataManager;
 import stcam.stcamproject.Manager.JPushManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.DeviceParseUtil;
@@ -114,7 +119,7 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
                         adapter = new AddDeviceAdapter(lists);
                         rv.setAdapter(adapter);
                         adapter.setOnItemClickListener(AddDeviceWlanActivity.this);
-                        addDevice(lists);
+                       // addDevice(lists);
                     }
                     else{
                         lod.dismiss();
@@ -135,11 +140,68 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
 
     @Override
     public void onItemClick(View view, int position) {
-//        Intent intent = new Intent(this,ChangeDevicePwdActivity.class);
-//        intent.putExtra("type",ChangeDevicePwdActivity.EnumChangeDevicePwd.WLAN);
-//        SearchDevModel model = lists.get(position);
-//        intent.putExtra("model",model);
-//        startActivity(intent);
+        final SearchDevModel model = lists.get(position);
+        final DevModel dbModel = DataManager.getInstance().getSNDev(model.getSN());
+
+
+        View halfview = getLayoutInflater().inflate(R.layout.half_dialog_view, null);
+        final EditText editText = (EditText) view.findViewById(R.id.dialog_edit);
+        if (dbModel == null){
+            editText.setText("admin");
+        }
+        else{
+            editText.setText(dbModel.pwd);
+        }
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.action_add_device_search))//设置对话框的标题
+                .setView(halfview)
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String content = editText.getText().toString();
+                        if (content.length() < 4 ){
+                            SouthUtil.showToast(AddDeviceWlanActivity.this,"pwd too short");
+                        }
+                        else{
+                            if (dbModel == null){
+                                Log.e(tag,"----2,change pwd ,new pwd is  "+content);
+                                DevModel devModel = new DevModel();
+                                devModel.SN = model.getSN();
+                                devModel.usr = "admin";//默认填写admin
+                                devModel.pwd = content;
+                                boolean ret  = DataManager.getInstance().addDev(devModel);
+                                Log.e(tag,"addDev ,ret is "+ret);
+                            }
+                            else{
+                                Log.e(tag,"----3,change pwd ,new pwd is  "+content);
+                                dbModel.pwd = content;
+                                boolean ret = DataManager.getInstance().updateDev(dbModel);
+                                Log.e(tag,"updateDev ,ret is "+ret);
+                            }
+
+                            if (lod == null){
+                                lod = new LoadingDialog(AddDeviceWlanActivity.this);
+                            }
+                            lod.dialogShow();
+                            ServerNetWork.getCommandApi().app_user_add_dev(AccountManager.getInstance().getDefaultUsr(),AccountManager.getInstance().getDefaultPwd(),
+                                    JPushManager.getJPushRegisterID(),
+                                    1,0,0,model.getSN(),0)
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(observer_add_dev);
+
+                        }
+                       // Toast.makeText(MainActivity.this, content, Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+                }).create();
+        dialog.show();
     }
 
     @Override
@@ -190,10 +252,10 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
             lod.dismiss();
             Log.e(tag,"---------------------0:"+m.ret);
             if (1 == m.ret){
-
+                SouthUtil.showToast(AddDeviceWlanActivity.this,"device has added successfully");
             }
             else{
-
+                SouthUtil.showToast(AddDeviceWlanActivity.this,"device  added failed");
             }
 
         }
