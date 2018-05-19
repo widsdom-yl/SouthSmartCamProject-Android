@@ -59,7 +59,9 @@
         <activity android:name=".Activity.AddDeviceWlanActivity" />
         <activity android:name=".Activity.AddDeviceAP2StaSetup" />
         <activity android:name=".Activity.SettingActivity" />
-        <activity android:name=".Activity.LedControlActivity"></activity>
+        <activity android:name=".Activity.LedControlActivity">
+
+        </activity>
     </application>
 
 </manifest>

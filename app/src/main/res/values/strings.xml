@@ -90,4 +90,6 @@
     <string name="action_level_high">高</string>
     <string name="action_level_middle">中</string>
     <string name="action_level_low">低</string>
+    <string name="action_time_start">开始时间</string>
+    <string name="action_time_stop">结束时间</string>
 </resources>
