@@ -116,6 +116,8 @@
             android:layout_marginStart="14dp"
             android:layout_toRightOf="@id/light_time_span"
             app:layout_constraintEnd_toEndOf="parent"
+            android:min="10"
+            android:max="600"
             tools:layout_editor_absoluteY="216dp" />
 
         <View

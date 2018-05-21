@@ -197,6 +197,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 //                        }).show();
 
                 Intent intent = new Intent(this,LedControlActivity.class);
+                intent.putExtra("devModel",devModel);
                 startActivity(intent);
                break;
             case R.id.button_ptz_left:

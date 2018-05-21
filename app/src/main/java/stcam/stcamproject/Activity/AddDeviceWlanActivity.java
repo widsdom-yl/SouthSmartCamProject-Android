@@ -145,7 +145,7 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
 
 
         View halfview = getLayoutInflater().inflate(R.layout.half_dialog_view, null);
-        final EditText editText = (EditText) view.findViewById(R.id.dialog_edit);
+        final EditText editText = (EditText) halfview.findViewById(R.id.dialog_edit);
         if (dbModel == null){
             editText.setText("admin");
         }
