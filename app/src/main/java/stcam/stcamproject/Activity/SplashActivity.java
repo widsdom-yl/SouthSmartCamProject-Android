@@ -1,14 +1,14 @@
 package stcam.stcamproject.Activity;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-
-import com.thSDK.lib;
 
 import stcam.stcamproject.R;
 
@@ -31,7 +31,16 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
 
         // Example of a call to a native method
         TextView tv = (TextView) findViewById(R.id.sample_text);
-        tv.setText(lib.testGetFfmpeg());
+        //tv.setText(lib.testGetFfmpeg());
+        try {
+            PackageInfo packageInfo = this.getApplicationContext()
+                    .getPackageManager()
+                    .getPackageInfo(this.getPackageName(), 0);
+            int localVersion = packageInfo.versionCode;
+            tv.setText(""+localVersion);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
