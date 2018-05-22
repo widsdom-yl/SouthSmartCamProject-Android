@@ -267,7 +267,8 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
         if (3 != tpe){
             if (!model.IsConnect()){
-                SouthUtil.showToast(STApplication.getInstance(),getString(R.string.action_net_not_connect));
+                Log.e(tag,"---------------------1:not connect ");
+                SouthUtil.showDialog(MainDevListActivity.this,getString(R.string.action_net_not_connect));
                 return;
             }
         }

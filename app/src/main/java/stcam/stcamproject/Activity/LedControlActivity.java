@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -14,14 +15,16 @@ import android.widget.SeekBar;
 
 import com.model.DevModel;
 import com.model.LedStatusModel;
+import com.model.RetModel;
 import com.thSDK.lib;
 
 import info.hoang8f.android.segmented.SegmentedGroup;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.GsonUtil;
+import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 
-public class LedControlActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener {
+public class LedControlActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener {
     DevModel devModel;
     static final String tag = "LedControlActivity";
 
@@ -43,6 +46,13 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
     RadioButton btn_sensitive_2;
     RadioButton btn_sensitive_3;
 
+    //亮度
+    Button light_brintness;
+    SeekBar seekBar_brintness;
+
+    Button button_time_start;
+    Button button_time_stop;
+
 
     LedStatusModel statusModel;
     LoadingDialog lod;
@@ -61,11 +71,21 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
             devModel = (DevModel) bundle.getParcelable("devModel");
             Log.e(tag,"NetHandle:"+devModel.NetHandle+",SN:"+devModel.SN);
         }
+        statusModel = new LedStatusModel();
         initView();
 
         initValue();
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_led, menu);
+        return true;
+    }
+
+
+
     void initValue(){
         if (lod == null){
            lod = new LoadingDialog(this);
@@ -79,6 +99,11 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
         switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish(); // back button
+                return true;
+            case R.id.action_set:
+                SetLedStatusTask task = new SetLedStatusTask();
+                task.execute(0);
+                lod.dialogShow();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -98,15 +123,26 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
 
 
         modeGroup.setOnCheckedChangeListener(this);
-        modeGroup.check(R.id.btn_mode_1);
+
 
         seekBar = findViewById(R.id.seekBar);
         light_time_span = findViewById(R.id.light_time_span);
+        seekBar.setOnSeekBarChangeListener(this);
 
          segmented3= findViewById(R.id.segmented3);
          btn_sensitive_1= findViewById(R.id.btn_sensitive_1);
          btn_sensitive_2= findViewById(R.id.btn_sensitive_2);
          btn_sensitive_3= findViewById(R.id.btn_sensitive_3);
+        segmented3.setOnCheckedChangeListener(this);
+
+        light_brintness = findViewById(R.id.light_brintness);
+        seekBar_brintness = findViewById(R.id.seekBar_brintness);
+        seekBar_brintness.setOnSeekBarChangeListener(this);
+
+        button_time_start = findViewById(R.id.button_time_start);
+        button_time_stop = findViewById(R.id.button_time_stop);
+
+        modeGroup.check(R.id.btn_mode_1);
     }
 
     void hideAllLayout(){
@@ -117,27 +153,66 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
     }
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
-        if (group == modeGroup){
+        if (group == modeGroup) {
             hideAllLayout();
-            switch (checkedId){
+            switch (checkedId) {
                 case R.id.btn_mode_1:
+                    statusModel.setMode(1);
                     relativelayout_time_span.setVisibility(View.VISIBLE);
                     layout_sensitive.setVisibility(View.VISIBLE);
 
                     break;
                 case R.id.btn_mode_2:
+                    statusModel.setMode(2);
                     layout_brintness.setVisibility(View.VISIBLE);
                     break;
                 case R.id.btn_mode_3:
+                    statusModel.setMode(3);
                     layout_time.setVisibility(View.VISIBLE);
                     layout_brintness.setVisibility(View.VISIBLE);
                     break;
                 case R.id.btn_mode_4:
+                    statusModel.setMode(4);
                     layout_brintness.setVisibility(View.VISIBLE);
                     layout_sensitive.setVisibility(View.VISIBLE);
                     break;
                 default:
-                     break;
+                    break;
+            }
+            reloadView();
+        } else if (group == segmented3) {
+            //光感灵敏度
+            if (statusModel.getMode() == 1) {
+                switch (checkedId) {
+                    case R.id.btn_sensitive_1:
+                        statusModel.getAuto().setLux(0);
+
+                        break;
+                    case R.id.btn_sensitive_2:
+                        statusModel.getAuto().setLux(1);
+                        break;
+                    case R.id.btn_sensitive_3:
+                        statusModel.getAuto().setLux(2);
+                        break;
+
+                    default:
+                        break;
+                }
+            } else if (statusModel.getMode() == 4) {
+                switch (checkedId) {
+                    case R.id.btn_sensitive_1:
+                        statusModel.getD2D().setLux(0);
+                        break;
+                    case R.id.btn_sensitive_2:
+                        statusModel.getD2D().setLux(1);
+                        break;
+                    case R.id.btn_sensitive_3:
+                        statusModel.getD2D().setLux(2);
+                        break;
+
+                    default:
+                        break;
+                }
             }
         }
     }
@@ -160,12 +235,29 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
                     break;
                 case 2:
                     modeGroup.check(R.id.btn_mode_2);
+                    seekBar_brintness.setProgress(statusModel.getManual().getBrightness());
+                    light_brintness.setText(""+statusModel.getManual().getBrightness());
                     break;
                 case 3:
                     modeGroup.check(R.id.btn_mode_3);
+                    button_time_start.setText(statusModel.getTimer().getStartH()+":"+statusModel.getTimer().getStartM());
+                    button_time_stop.setText(statusModel.getTimer().getStopH()+":"+statusModel.getTimer().getStopM());
+                    seekBar_brintness.setProgress(statusModel.getTimer().getBrightness());
+                    light_brintness.setText(""+statusModel.getTimer().getBrightness());
                     break;
                 case 4:
                     modeGroup.check(R.id.btn_mode_4);
+                    seekBar_brintness.setProgress(statusModel.getD2D().getBrightness());
+                    light_brintness.setText(""+statusModel.getD2D().getBrightness());
+                    if (statusModel.getD2D().getLux() == 0 ){
+                        segmented3.check(R.id.btn_sensitive_1);
+                    }
+                    else if (statusModel.getD2D().getLux() == 1 ){
+                        segmented3.check(R.id.btn_sensitive_2);
+                    }
+                    else if (statusModel.getD2D().getLux() == 2 ){
+                        segmented3.check(R.id.btn_sensitive_3);
+                    }
                     break;
                 default:
                     break;
@@ -173,6 +265,41 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
             //if (statusModel.getMode() == 1)
         }
     }
+
+    @Override
+    public void onProgressChanged(SeekBar bar, int i, boolean b) {
+        if (bar == seekBar){
+            statusModel.getAuto().setDelay(i);
+            light_time_span.setText(""+i);
+        }
+        else if(bar == seekBar_brintness){
+            light_brintness.setText(""+i);
+            switch (statusModel.getMode()){
+                case 2:
+                    statusModel.getManual().setBrightness(i);
+                    break;
+                case 3:
+                    statusModel.getTimer().setBrightness(i);
+                    break;
+                case 4:
+                    statusModel.getD2D().setBrightness(i);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
+
     class GetLedStatusTask extends AsyncTask<Integer, Void, String> {
         // AsyncTask<Params, Progress, Result>
         //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
@@ -198,6 +325,55 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
             // "Timer":{"Brightness":0,"StartH":0,"StartM":0,"StopH":0,"StopM":0},"D2D":{"Brightness":0,"Lux":0}}
             reloadView();
             lod.dismiss();
+            super.onPostExecute(result);
+        }
+    }
+
+    class SetLedStatusTask extends AsyncTask<Integer, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(Integer... params) {
+            //第二个执行方法,onPreExecute()执行完后执行
+            String url = "http://0.0.0.0:0/cfg1.cgi?User="+ devModel.usr+"&Psd="+ devModel.pwd+"&MsgID=97";
+            if (statusModel.getMode() == 1){
+                url += "&Mode=1&Delay="+statusModel.getAuto().getDelay()+"&Lux="+statusModel.getAuto().getLux();
+            }
+            else if(statusModel.getMode() == 2){
+                url += "&Mode=2&Brightness="+statusModel.getManual().getBrightness();
+            }
+            else if(statusModel.getMode() == 3){
+                url += "&Mode=3&Brightness="+statusModel.getTimer().getBrightness()+"&StartH="+statusModel.getTimer().getStartH()+"" +
+                        "&StartM="+statusModel.getTimer().getStartM()+"&StopH="+statusModel.getTimer().getStopH()+"&StopM="+statusModel.getTimer().getStopM();
+            }
+            else if(statusModel.getMode() == 4){
+                url += "&Mode=4&Brightness=" +
+                        ""+statusModel.getD2D().getBrightness()+"&Lux="+statusModel.getD2D().getLux();
+            }
+            Log.e(tag,"url "+url);
+            String ret = lib.thNetHttpGet(devModel.NetHandle,url);
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+
+            RetModel retmodel = GsonUtil.parseJsonWithGson(result,RetModel.class);
+            Log.e(tag,"set status model is "+result);
+            // get status model is {"Mode":1,"Auto":{"Delay":90,"Lux":2},"Manual":{"Brightness":0},
+            // "Timer":{"Brightness":0,"StartH":0,"StartM":0,"StopH":0,"StopM":0},"D2D":{"Brightness":0,"Lux":0}}
+            lod.dismiss();
+            if (retmodel.ret == 1){
+                SouthUtil.showDialog(LedControlActivity.this,"set successfully");
+            }
+            else {
+                SouthUtil.showDialog(LedControlActivity.this,"set failed");
+            }
+
             super.onPostExecute(result);
         }
     }

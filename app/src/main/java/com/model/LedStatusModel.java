@@ -16,6 +16,13 @@ public class LedStatusModel {
     private Manual Manual;
     private Timer Timer;
     private D2D D2D;
+    public LedStatusModel(){
+        Mode = 1;
+        Auto = new Auto();
+        Manual = new Manual();
+        Timer = new Timer();
+        D2D = new D2D();
+    }
     public void setMode(int Mode) {
          this.Mode = Mode;
      }
