@@ -6,11 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.model.DevModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import stcam.stcamproject.Adapter.BaseAdapter;
@@ -18,12 +20,13 @@ import stcam.stcamproject.Adapter.MediaPhotoGridAdapter;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
 
-public class MediaPhotoListActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener {
+public class MediaPhotoListActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener, MediaPhotoGridAdapter.OnImageCheckListner {
     final static String tag = "MediaPhotoListActivity";
     DevModel model;
     RecyclerView rv;
     MediaPhotoGridAdapter adapter;
     List<String> files;
+    List<String> checkFile = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,9 +48,17 @@ public class MediaPhotoListActivity extends AppCompatActivity implements BaseAda
 
         files= FileUtil.getImagePathFromPath(FileUtil.pathSnapShot(),model.SN);
         adapter = new MediaPhotoGridAdapter(files);
+        adapter.setCheckFile(checkFile);
         adapter.setOnItemClickListener(this);
+        adapter.setOnImageCheckListner(this);
         rv.setAdapter(adapter);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_delete, menu);
+        return true;
     }
 
     @Override
@@ -56,7 +67,30 @@ public class MediaPhotoListActivity extends AppCompatActivity implements BaseAda
             case android.R.id.home:
                 this.finish(); // back button
                 return true;
+            case R.id.action_delete:
+                for (String file :checkFile){
+                    FileUtil.delFiles(file);
+                }
+                checkFile.clear();
+                files= FileUtil.getImagePathFromPath(FileUtil.pathSnapShot(),model.SN);
+                adapter.resetMList(files);
+                adapter.notifyDataSetChanged();
+                break;
+            case R.id.action_select_all:
+                checkFile.clear();
+                for (String file : files){
+                    checkFile.add(file);
+                }
+                adapter.setCheckFile(checkFile);
+                adapter.notifyDataSetChanged();
+                break;
+            case R.id.action_unselect_all:
+                checkFile.clear();
+                adapter.setCheckFile(checkFile);
+                adapter.notifyDataSetChanged();
+                break;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -73,5 +107,22 @@ public class MediaPhotoListActivity extends AppCompatActivity implements BaseAda
     @Override
     public void onLongClick(View view, int position) {
 
+    }
+
+    @Override
+    public void OnImageChecked(View view, int position, boolean checked) {
+        Log.e(tag,"position "+position+",checked "+checked);
+        String file = files.get(position);
+        if (checked){
+            if (!checkFile.contains(file)){
+                checkFile.add(file);
+            }
+        }
+        else{
+            if (checkFile.contains(file)){
+                checkFile.remove(file);
+            }
+        }
+        Log.e(tag,"checked file size is  "+checkFile.size());
     }
 }

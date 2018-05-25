@@ -15,6 +15,9 @@ public class BaseAdapter<T> extends RecyclerView.Adapter<BaseHolder> {
         this.layoutId=layoutId;
         this. mList=list;
     }
+    public void resetMList(List<T> list){
+        this. mList=list;
+    }
     //onCreateViewHolder用来给rv创建缓存
     @Override
     public BaseHolder onCreateViewHolder(ViewGroup parent, int viewType) {

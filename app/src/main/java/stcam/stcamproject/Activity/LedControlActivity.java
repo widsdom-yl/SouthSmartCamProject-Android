@@ -1,5 +1,6 @@
 package stcam.stcamproject.Activity;
 
+import android.app.TimePickerDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.TimePicker;
 
 import com.model.DevModel;
 import com.model.LedStatusModel;
@@ -24,7 +26,7 @@ import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 
-public class LedControlActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener {
+public class LedControlActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener, View.OnClickListener {
     DevModel devModel;
     static final String tag = "LedControlActivity";
 
@@ -141,7 +143,8 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
 
         button_time_start = findViewById(R.id.button_time_start);
         button_time_stop = findViewById(R.id.button_time_stop);
-
+        button_time_start.setOnClickListener(this);
+        button_time_stop.setOnClickListener(this);
         modeGroup.check(R.id.btn_mode_1);
     }
 
@@ -299,6 +302,50 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
     public void onStopTrackingTouch(SeekBar seekBar) {
 
     }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.button_time_stop){
+            showTimePickerDialog(false);
+        }
+        else if(view.getId() == R.id.button_time_start){
+            showTimePickerDialog(true);
+        }
+    }
+
+    public  void showTimePickerDialog(final boolean start) {
+// Calendar c = Calendar.getInstance();
+        // 创建一个TimePickerDialog实例，并把它显示出来
+        // 解释一哈，Activity是context的子类
+        new TimePickerDialog( this,
+                // 绑定监听器
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view,
+                                          int hourOfDay, int minute) {
+//                        tv.setText("您选择了：" + hourOfDay + "时" + minute
+//                                + "分");
+                        if (start){
+                            statusModel.getTimer().setStartH(hourOfDay);
+                            statusModel.getTimer().setStartM(minute);
+                            button_time_start.setText(statusModel.getTimer().getStartH()+":"+statusModel.getTimer().getStartM());
+
+                        }
+                        else{
+                            statusModel.getTimer().setStopH(hourOfDay);
+                            statusModel.getTimer().setStopM(minute);
+                            button_time_stop.setText(statusModel.getTimer().getStopH()+":"+statusModel.getTimer().getStopM());
+                        }
+                    }
+                }
+                // 设置初始时间
+                , start?21:9
+                , 0
+                // true表示采用24小时制
+                ,true).show();
+    }
+
+
 
     class GetLedStatusTask extends AsyncTask<Integer, Void, String> {
         // AsyncTask<Params, Progress, Result>

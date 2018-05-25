@@ -37,7 +37,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
     RecyclerView mRecyclerView;
     DeviceListAdapter mAdapter;
-    List<DevModel>mDevices = new ArrayList<>();//这个list中的model，判断了连接状态
+    public static  List<DevModel>mDevices = new ArrayList<>();//这个list中的model，判断了连接状态
     List<DevModel>mAccountDevices;//没有连接状态
     SuperSwipeRefreshLayout refreshLayout;
     @Override
@@ -343,9 +343,11 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
                 case TMsg.Msg_NetConnSucceed:
                     model = (DevModel) msg.obj;
                     Log.e(tag,"NetConnSucceed:"+model.SN+"DevNode.NetHandle:"+model.NetHandle);
+                    mAdapter.notifyDataSetChanged();
                     break;
                 case TMsg.Msg_NetConnFail:
                     model = (DevModel) msg.obj;
+                    mAdapter.notifyDataSetChanged();
                     Log.e(tag,"NetConnFail:"+model.SN+"DevNode.NetHandle:"+model.NetHandle);
                     break;
 

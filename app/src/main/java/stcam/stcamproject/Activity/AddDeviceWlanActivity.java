@@ -120,6 +120,7 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
                         rv.setAdapter(adapter);
                         adapter.setOnItemClickListener(AddDeviceWlanActivity.this);
                        // addDevice(lists);
+
                     }
                     else{
                         lod.dismiss();
@@ -186,15 +187,7 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
                                 Log.e(tag,"updateDev ,ret is "+ret);
                             }
 
-                            if (lod == null){
-                                lod = new LoadingDialog(AddDeviceWlanActivity.this);
-                            }
-                            lod.dialogShow();
-                            ServerNetWork.getCommandApi().app_user_add_dev(AccountManager.getInstance().getDefaultUsr(),AccountManager.getInstance().getDefaultPwd(),
-                                    JPushManager.getJPushRegisterID(),
-                                    1,0,0,model.getSN(),0)
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(observer_add_dev);
+                           addDevice(model);
 
                         }
                        // Toast.makeText(MainActivity.this, content, Toast.LENGTH_SHORT).show();
@@ -208,7 +201,19 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
     public void onLongClick(View view, int position) {
 
     }
-
+    void addDevice( SearchDevModel model){
+        if (lod == null){
+            lod = new LoadingDialog(AddDeviceWlanActivity.this);
+        }
+        lod.dialogShow();
+        Log.e(tag,"RegisterID is "+JPushManager.getJPushRegisterID());
+        ServerNetWork.getCommandApi().app_user_add_dev(AccountManager.getInstance().getDefaultUsr(),AccountManager.getInstance().getDefaultPwd(),
+                JPushManager.getJPushRegisterID(),
+                1,0,0,model.getSN(),1)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer_add_dev);
+    }
     void addDevice( List<SearchDevModel> devices){
         List<Observable<RetModel>> observables = new ArrayList<>();
         for (SearchDevModel device : devices){

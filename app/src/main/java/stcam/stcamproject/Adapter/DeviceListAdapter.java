@@ -4,6 +4,7 @@ package stcam.stcamproject.Adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.model.DevModel;
 
 import java.util.List;
 
+import stcam.stcamproject.Activity.MainDevListActivity;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
 
@@ -61,6 +63,24 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
             holder.deviceImageView.setImageResource(R.drawable.imagethumb);
         }
 
+        DevModel chooseModel = null;
+
+        for (DevModel existModel : MainDevListActivity.mDevices){
+            if (model.SN.equals(existModel.SN)){
+                chooseModel = existModel;
+                break;
+            }
+        }
+
+
+        if (chooseModel.IsConnect()){
+            holder.online_status_tx.setText(R.string.status_online);
+            holder.online_status_tx.setTextColor(Color.rgb(0, 255, 0));
+        }
+        else{
+            holder.online_status_tx.setText(R.string.status_offline);
+            holder.online_status_tx.setTextColor(Color.rgb(255, 0, 0));
+        }
         holder.deviceNameView.setText(model.DevName);
         if(mItemClickListener != null){
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +137,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
         private Button shareBtn;
         private Button playBackBtn;
         private Button settingBtn;
+        private TextView online_status_tx;
 
         public MyHolder(View view) {
             super(view);
@@ -125,6 +146,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
             shareBtn = view.findViewById(R.id.btn_device_share);
             playBackBtn = view.findViewById(R.id.btn_device_play_record);
             settingBtn = view.findViewById(R.id.btn_device_setting);
+            online_status_tx = view.findViewById(R.id.online_status_tx);
         }
 
     }

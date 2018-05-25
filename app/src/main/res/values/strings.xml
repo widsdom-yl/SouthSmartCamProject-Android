@@ -92,4 +92,9 @@
     <string name="action_level_low">低</string>
     <string name="action_time_start">开始时间</string>
     <string name="action_time_stop">结束时间</string>
+    <string name="status_online">在线</string>
+    <string name="status_offline">离线</string>
+    <string name="action_delete">删除</string>
+    <string name="action_select_all">全选</string>
+    <string name="action_undelete_all">取消取选</string>
 </resources>

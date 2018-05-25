@@ -122,13 +122,23 @@ public class FileUtil {
      * 删除指定路径下的所有文件
      * @param path 指定的路径
      */
-    public static void delFiles(String path) {
+    public static void delDirectFiles(String path) {
         File file = new File(path);
         if(!file.exists()) { return; }
         File[] files = file.listFiles();
         for(int i = 0; i < files.length; i++) {
             files[i].delete();
         }
+    }
+
+    /**
+     * 删除指定文件
+     * @param path 指定的路径
+     */
+    public static void delFiles(String path) {
+        File file = new File(path);
+        if(!file.exists()) { return; }
+        file.delete();
     }
 
     public static boolean isFileExist(String path) {
