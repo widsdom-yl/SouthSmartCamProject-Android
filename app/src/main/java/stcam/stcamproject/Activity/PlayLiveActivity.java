@@ -35,9 +35,10 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     ImageButton button_speech,button_speech_o;
     VoiceImageButton button_record,button_record_o;
     ImageButton button_slient;
-
+    RelativeLayout ptz_layout;
     Button button_led;
-    Button button_ptz_left,button_ptz_right,button_ptz_up,button_ptz_down;
+    ImageButton button_ptz_left,button_ptz_right,button_ptz_up,button_ptz_down;
+    Button button_ptz;
     private GestureDetector mygesture;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,10 +123,13 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         button_led.setOnClickListener(this);
         button_slient.setOnClickListener(this);
 
-//        button_ptz_left.setOnClickListener(this);
-//        button_ptz_right.setOnClickListener(this);
-//        button_ptz_up.setOnClickListener(this);
-//        button_ptz_down.setOnClickListener(this);
+        ptz_layout = findViewById(R.id.ptz_layout);
+        button_ptz = findViewById(R.id.button_ptz);
+        button_ptz.setOnClickListener(this);
+        button_ptz_left.setOnClickListener(this);
+        button_ptz_right.setOnClickListener(this);
+        button_ptz_up.setOnClickListener(this);
+        button_ptz_down.setOnClickListener(this);
 
     }
     ConstraintUtil constraintUtil;
@@ -219,6 +223,14 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 PtzControlTask task3 = new PtzControlTask();
                 Log.e(tag,"down");
                 task3.execute(3);
+                break;
+            case R.id.button_ptz:
+                if (ptz_layout.getVisibility() ==View.VISIBLE){
+                    ptz_layout.setVisibility(View.INVISIBLE);
+                }
+                else{
+                    ptz_layout.setVisibility(View.VISIBLE);
+                }
                 break;
             default:
                 break;

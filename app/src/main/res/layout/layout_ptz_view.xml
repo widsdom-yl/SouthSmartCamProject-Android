@@ -1,38 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="150dp"
-    android:layout_height="150dp"
-    android:background="#00dddddd">
+    android:id="@+id/ptz_layout"
+    android:layout_width="300dp"
+    android:layout_height="216dp"
+    android:background="#00000000">
 
-    <Button
+    <ImageButton
         android:id="@+id/button_ptz_up"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:text="up"
+        android:layout_width="100dp"
+        android:layout_height="72dp"
+        android:src="@drawable/up"
+        android:scaleType="fitCenter"
+        android:background="@android:color/transparent"
         android:layout_centerHorizontal="true"
         />
 
-    <Button
+    <ImageButton
         android:id="@+id/button_ptz_left"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="100dp"
+        android:layout_height="72dp"
         android:layout_alignParentLeft="true"
-        android:text="left"
+        android:background="@android:color/transparent"
+        android:src="@drawable/left"
+        android:scaleType="fitCenter"
         android:layout_below="@id/button_ptz_up"
         />
-    <Button
+    <ImageButton
         android:id="@+id/button_ptz_right"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:text="right"
+        android:layout_width="100dp"
+        android:layout_height="72dp"
+        android:src="@drawable/right"
+        android:scaleType="fitCenter"
         android:layout_alignParentRight="true"
+        android:background="@android:color/transparent"
         android:layout_below="@id/button_ptz_up"
         />
-    <Button
+    <ImageButton
         android:id="@+id/button_ptz_down"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:text="down"
+        android:layout_width="100dp"
+        android:layout_height="72dp"
+        android:src="@drawable/down"
+        android:scaleType="fitCenter"
+        android:background="@android:color/transparent"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/button_ptz_left"
         />
