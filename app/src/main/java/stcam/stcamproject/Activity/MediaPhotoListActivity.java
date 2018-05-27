@@ -54,7 +54,13 @@ public class MediaPhotoListActivity extends AppCompatActivity implements BaseAda
         rv.setAdapter(adapter);
 
     }
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        files= FileUtil.getImagePathFromPath(FileUtil.pathSnapShot(),model.SN);
+        adapter.resetMList(files);
+        adapter.notifyDataSetChanged();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_delete, menu);
