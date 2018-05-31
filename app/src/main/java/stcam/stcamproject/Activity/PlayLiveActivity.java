@@ -10,6 +10,8 @@ import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -82,12 +84,20 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
             layout_land.setVisibility(View.INVISIBLE);
             layout_control.setVisibility(View.VISIBLE);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getSupportActionBar().show();
+
+            //设置当前窗体为全屏显示
 
 
         }else if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
             layout_land.setVisibility(View.VISIBLE);
             layout_control.setVisibility(View.INVISIBLE);
-
+            getSupportActionBar().hide();
+            int flag= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+            //设置当前窗体为全屏显示
+            Window window = getWindow();
+            window.setFlags(flag, flag);
         }
     }
     void initView(){
@@ -311,9 +321,10 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         @Override
         protected String doInBackground(Integer... params) {
             //第二个执行方法,onPreExecute()执行完后执行
-            String url = "http://0.0.0.0:0/cfg1.cgi?User=admin&Psd=admin&MsgID=13&cmd="+params[0]+"&sleep=500&s=23231";
+            String url = "http://0.0.0.0:0/cfg1.cgi?User="+devModel.usr+"&Psd="+devModel.pwd+"&MsgID=13&cmd="+params[0]+"&sleep=500&s=23231";
 
             String ret = lib.thNetHttpGet(devModel.NetHandle,url);
+            Log.e(tag,"ret :"+ret);
             return ret;
         }
         @Override

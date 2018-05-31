@@ -143,9 +143,12 @@ bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
        // PRINTF("0=======ScreenHeight>ScreenWidth,viewWidth:%d,viewheight",viewWidth,viewHeight);
     }else{
         top = 0;
-        viewHeight = Info->ScreenHeight;
-        viewWidth = (int)(Info->ImgWidth*1.0f/Info->ImgHeight*viewHeight);
-        left = (Info->ScreenWidth - viewWidth)/2;
+//        viewHeight = Info->ScreenHeight;
+//        viewWidth = (int)(Info->ImgWidth*1.0f/Info->ImgHeight*viewHeight);
+//        left = (Info->ScreenWidth - viewWidth)/2;
+      left = 0;
+      viewHeight = Info->ScreenHeight;
+      viewWidth = Info->ScreenWidth;
        // PRINTF("1=======ScreenWidth>ScreenHeight,viewWidth:%d,viewheight",viewWidth,viewHeight);
     }
     glViewport(0, 0, Info->ScreenWidth, Info->ScreenHeight);

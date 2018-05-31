@@ -5,8 +5,9 @@
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in</string>
-    <string name="action_Register">Register</string>
+    <string name="action_sign_in">登录</string>
+    <string name="action_visitor">临时访问</string>
+    <string name="action_Register">注册</string>
     <string name="action_get_checknum">验证码</string>
     <string name="action_get_checknum_sent">验证码已经发送至邮箱</string>
     <string name="action_get_checknum_sent_failed">验证码发送失败</string>
@@ -97,4 +98,7 @@
     <string name="action_delete">删除</string>
     <string name="action_select_all">全选</string>
     <string name="action_undelete_all">取消取选</string>
+    <string name="action_AP_T_STA">AP转STA</string>
+    <string name="action_AP_T_STA_Success">设置成功，请重启摄像头</string>
+    <string name="action_AP_T_STA_Failed">设置失败</string>
 </resources>

@@ -186,4 +186,20 @@ public class SearchDevModel implements Parcelable {
         parcel.writeString(DDNSHost);
         parcel.writeString(UID);
     }
+/*
+* 根据searchmodel 构造DevModel
+* */
+    public DevModel exportDevModelForm(){
+        if (devModel == null){
+            devModel = new DevModel();
+        }
+        devModel.SN = this.getSN();
+        devModel.UID = this.getUID();
+        devModel.IPUID = this.getDevIP();
+        devModel.DataPort = this.getDataPort();
+        devModel.WebPort = this.getHttpPort();
+        devModel.DevName = this.getDevName();
+        return devModel;
+    }
+    DevModel devModel;
 }

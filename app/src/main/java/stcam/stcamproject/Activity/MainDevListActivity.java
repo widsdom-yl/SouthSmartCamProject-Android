@@ -16,8 +16,11 @@ import android.view.View;
 
 import com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout;
 import com.model.DevModel;
+import com.model.SearchDevModel;
 import com.thSDK.TMsg;
+import com.thSDK.lib;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,23 +32,39 @@ import stcam.stcamproject.Adapter.DeviceListAdapter;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.R;
+import stcam.stcamproject.Util.DeviceParseUtil;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
+
+import static stcam.stcamproject.Activity.MainDevListActivity.EnumMainEntry.EnumMainEntry_Login;
 
 public class MainDevListActivity extends AppCompatActivity implements DeviceListAdapter.OnItemClickListener {
 
     RecyclerView mRecyclerView;
     DeviceListAdapter mAdapter;
     public static  List<DevModel>mDevices = new ArrayList<>();//这个list中的model，判断了连接状态
-    List<DevModel>mAccountDevices;//没有连接状态
+    List<DevModel>mAccountDevices = new ArrayList<>();//没有连接状态
     SuperSwipeRefreshLayout refreshLayout;
+
+    EnumMainEntry entryType;
+    public enum EnumMainEntry implements Serializable {
+        EnumMainEntry_Login,
+        EnumMainEntry_Visitor
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_dev_list);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(R.string.title_main_dev_list);
+        Bundle bundle = this.getIntent().getExtras();
+        if (bundle != null){
+            entryType = (EnumMainEntry) bundle.getSerializable("entry");
+        }
+
+
         initView();
        // mAdapter = new DeviceListAdapter(this,null);
     }
@@ -58,12 +77,21 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
                  existModel.updateUserAndPwd();
             }
         }
-        
-        loadDevList(false);
+        if (entryType == EnumMainEntry.EnumMainEntry_Login){
+            loadDevList(false);
+        }
+
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        if (entryType == EnumMainEntry.EnumMainEntry_Login){
+            getMenuInflater().inflate(R.menu.menu_main, menu);
+        }
+        else{
+            getMenuInflater().inflate(R.menu.menu_search, menu);
+        }
+
         return true;
     }
     String SearchMsg;
@@ -93,9 +121,9 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
             startActivity(intent);
             return true;
         }
-
-
-
+        if (item.getItemId() == R.id.action_search){
+            searchDevices();
+        }
         return super.onOptionsItemSelected(item);
     }
     void initView(){
@@ -106,46 +134,51 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         mRecyclerView.setLayoutManager(layoutManager);
 
          mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        refreshLayout
-                .setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
+        if (entryType == EnumMainEntry.EnumMainEntry_Login){
+            refreshLayout
+                    .setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
 
-                    @Override
-                    public void onRefresh() {
-                        //TODO 开始刷新
-                        loadDevList(true);
-                    }
+                        @Override
+                        public void onRefresh() {
+                            //TODO 开始刷新
+                            loadDevList(true);
+                        }
 
-                    @Override
-                    public void onPullDistance(int distance) {
-                        //TODO 下拉距离
-                    }
+                        @Override
+                        public void onPullDistance(int distance) {
+                            //TODO 下拉距离
+                        }
 
-                    @Override
-                    public void onPullEnable(boolean enable) {
-                        //TODO 下拉过程中，下拉的距离是否足够出发刷新
-                    }
-                });
-        refreshLayout
-                .setOnPushLoadMoreListener(new SuperSwipeRefreshLayout.OnPushLoadMoreListener() {
+                        @Override
+                        public void onPullEnable(boolean enable) {
+                            //TODO 下拉过程中，下拉的距离是否足够出发刷新
+                        }
+                    });
+            refreshLayout
+                    .setOnPushLoadMoreListener(new SuperSwipeRefreshLayout.OnPushLoadMoreListener() {
 
-                    @Override
-                    public void onLoadMore() {
-                        loadDevList(true);
-                    }
+                        @Override
+                        public void onLoadMore() {
+                            loadDevList(true);
+                        }
 
-                    @Override
-                    public void onPushEnable(boolean enable) {
-                        //TODO 上拉过程中，上拉的距离是否足够出发刷新
-                    }
+                        @Override
+                        public void onPushEnable(boolean enable) {
+                            //TODO 上拉过程中，上拉的距离是否足够出发刷新
+                        }
 
-                    @Override
-                    public void onPushDistance(int distance) {
-                        // TODO 上拉距离
+                        @Override
+                        public void onPushDistance(int distance) {
+                            // TODO 上拉距离
 
-                    }
+                        }
 
-                });
-        refreshLayout.setFooterView(createFooterView());
+                    });
+            refreshLayout.setFooterView(createFooterView());
+        }
+        else{
+            refreshLayout.setEnabled(false);
+        }
 
     }
 
@@ -228,7 +261,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
                 }
 
                 if (mAdapter == null){
-                    mAdapter = new DeviceListAdapter(MainDevListActivity.this,mlist);
+                    mAdapter = new DeviceListAdapter(MainDevListActivity.this,mlist,entryType);
                     mAdapter.setOnItemClickListener(MainDevListActivity.this);
                     mRecyclerView.setAdapter(mAdapter);
                 }
@@ -289,15 +322,29 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         else  if (1 == tpe){
 
 
-            Intent intent = new Intent(STApplication.getInstance(), DeviceShareActivity.class);
+            if (entryType == EnumMainEntry_Login){
+                Intent intent = new Intent(STApplication.getInstance(), DeviceShareActivity.class);
 
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("devModel",model);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("devModel",model);
 
-            intent.putExtras(bundle);
-            Log.e(tag,"to DeviceShareActivity NetHandle:"+model.NetHandle);
+                intent.putExtras(bundle);
+                Log.e(tag,"to DeviceShareActivity NetHandle:"+model.NetHandle);
 
-            startActivity(intent);
+                startActivity(intent);
+            }
+            else{
+                Intent intent = new Intent(STApplication.getInstance(), AddDeviceAP2StaSetup.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("devModel",model);
+
+                intent.putExtras(bundle);
+                Log.e(tag,"to DeviceShareActivity NetHandle:"+model.NetHandle);
+
+                startActivity(intent);
+            }
+
         }
 
         else  if (2 == tpe){
@@ -321,7 +368,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
             Bundle bundle = new Bundle();
             bundle.putParcelable("devModel",model);
-
+            bundle.putSerializable("entry",entryType);
             intent.putExtras(bundle);
             Log.e(tag,"to SettingActivity NetHandle:"+model.NetHandle);
 
@@ -357,10 +404,100 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         }
     };
 
+    void searchDevices(){
+        if (lod == null){
+            lod = new LoadingDialog(this);
+        }
+        lod.dialogShow();
+        SouthUtil.showToast(this,"search");
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                SearchMsg = lib.thNetSearchDevice(3000, 1);
+                ipc_search.sendMessage(Message.obtain(ipc_search, TMsg.Msg_SearchOver, 0, 0, null));
+                IsSearching = false;
+            }
+        }.start();
+    }
+    public final Handler ipc_search = new Handler()
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
+
+
+            super.handleMessage(msg);
+            switch (msg.what)
+            {
+                case TMsg.Msg_SearchOver:
+                    lod.dismiss();
+                    if (SearchMsg.equals(""))
+                    {
+                        return;
+                    }
+                    Log.e(tag,SearchMsg);
+                    //[{"SN":"80005556","DevModal":"401H","DevName":"IPCAM_80005556","DevMAC":"00:C1:A1:62:55:56",
+                    // "DevIP":"192.168.0.199","SubMask":"255.255.255.0","Gateway":"192.168.0.1","DNS1":"192.168.0.1",
+                    // "SoftVersion":"V7.113.1759.00","DataPort":7556,"HttpPort":8556,"rtspPort":554,
+                    // "DDNSServer":"211.149.199.247","DDNSHost":"80005556.southtech.xyz","UID":"NULL"}]
+                    searchList = DeviceParseUtil.parseSearchMsg(SearchMsg);
+                    if (searchList.size()>0){
+                        mAccountDevices.clear();
+                        for (SearchDevModel model : searchList){
+                            DevModel devModel  = model.exportDevModelForm();
+                            mAccountDevices.add(devModel);
+                            boolean exist = false;
+                            for (DevModel existModel : mDevices){
+
+                                if (devModel.SN.equals(existModel.SN)){
+                                    exist = true;
+                                    break;
+                                }
+                            }
+                            if (!exist){
+                                mDevices.add(devModel);
+                            }
+                        }
+
+                        for (DevModel model : mDevices){
+
+                            Log.e(tag,"---------------------1 dev0 name"+model.DevName);
+                            if (!model.IsConnect())
+                                DevModel.threadConnect(ipc,model,false);
+                        }
+
+
+                        if (mAdapter == null){
+                            mAdapter = new DeviceListAdapter(MainDevListActivity.this,mAccountDevices,entryType);
+                            mAdapter.setOnItemClickListener(MainDevListActivity.this);
+                            mRecyclerView.setAdapter(mAdapter);
+                        }
+                        else{
+                            mAdapter.setmDatas(mAccountDevices);
+                        }
+
+                    }
+
+
+
+
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    };
+
     @Override
     public void onLongClick(View view, int position) {
 
     }
+
+    List<SearchDevModel> searchList;
 
 
 }

@@ -100,6 +100,15 @@ public class LoginActivity extends AppCompatActivity  {
         });
 
 
+        Button visitor_button = (Button) findViewById(R.id.visitor_button);
+        visitor_button.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(STApplication.getInstance(), MainDevListActivity.class);
+                intent.putExtra("entry", MainDevListActivity.EnumMainEntry.EnumMainEntry_Visitor);
+                startActivity(intent);
+            }
+        });
     }
 
     private String[] denied;
@@ -246,6 +255,7 @@ public class LoginActivity extends AppCompatActivity  {
                 String password = mPasswordView.getText().toString();
                 AccountManager.getInstance().saveAccount(email,password);
                 Intent intent = new Intent(STApplication.getInstance(), MainDevListActivity.class);
+                intent.putExtra("entry", MainDevListActivity.EnumMainEntry.EnumMainEntry_Login);
                 startActivity(intent);
                 LoginActivity.this.finish();
             }

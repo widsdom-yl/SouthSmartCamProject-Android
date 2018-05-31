@@ -207,6 +207,7 @@ final static String tag = "DevModel";
     public boolean Connect()
     {
         boolean ret;
+        Log.e(tag,"NetHandle:"+NetHandle+",usr:"+usr+",pwd:"+pwd+",IPUID:"+IPUID+",DataPort:"+DataPort);
         if (IPUID == null || IPUID.length() <= 0)
         {
             return false;
@@ -214,6 +215,7 @@ final static String tag = "DevModel";
 
         if (IsConnecting) return false;
         IsConnecting = true;
+        //Log.e(tag,"NetHandle:"+NetHandle+",usr:"+usr+",pwd:"+pwd+",IPUID:"+IPUID+",DataPort:"+DataPort);
         ret = lib.thNetConnect(NetHandle, usr, pwd, IPUID, DataPort, 10 * 1000);
         if (ret)
         {

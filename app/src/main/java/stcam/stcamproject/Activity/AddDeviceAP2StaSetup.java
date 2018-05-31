@@ -2,8 +2,6 @@ package stcam.stcamproject.Activity;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -12,12 +10,18 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.model.DevModel;
+import com.model.RetModel;
 import com.model.SearchDevModel;
-import com.thSDK.TMsg;
 import com.thSDK.lib;
 
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import stcam.stcamproject.R;
+import stcam.stcamproject.Util.GsonUtil;
+import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
+import stcam.stcamproject.network.Network;
 
 public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnClickListener {
     SearchDevModel model;
@@ -36,18 +40,12 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
         if(actionBar != null){
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_add_ap_sta);
+            actionBar.setTitle(R.string.action_AP_T_STA);
         }
 
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){
-            model = bundle.getParcelable("model");
-            devModel = new DevModel();
-            devModel.UID = model.getUID();
-            devModel.SN = model.getSN();
-            devModel.WebPort = model.getHttpPort();
-            devModel.DataPort = model.getDataPort();
-            devModel.threadConnect(ipc,devModel,false);
+            devModel = bundle.getParcelable("devModel");
         }
         initView();
     }
@@ -66,31 +64,7 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
         button_next = findViewById(R.id.button_next);
         button_next.setOnClickListener(this);
     }
-    public final Handler ipc = new Handler()
-    {
-        @Override
-        public void handleMessage(Message msg)
-        {
 
-
-            super.handleMessage(msg);
-            DevModel model;
-            switch (msg.what)
-            {
-                case TMsg.Msg_NetConnSucceed:
-                    model = (DevModel) msg.obj;
-                    Log.e(tag,"NetConnSucceed:"+model.SN+"DevNode.NetHandle:"+model.NetHandle);
-                    break;
-                case TMsg.Msg_NetConnFail:
-                    model = (DevModel) msg.obj;
-                    Log.e(tag,"NetConnFail:"+model.SN+"DevNode.NetHandle:"+model.NetHandle);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    };
 
     @Override
     public void onClick(View view) {
@@ -99,10 +73,44 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
                 lod = new LoadingDialog(this);
             }
             lod.dialogShow();
-            SetSSIDTask task = new SetSSIDTask();
-            task.execute(edittext_ssid_name.getText().toString(),edittext_ssid_pwd.getText().toString());
+//            SetSSIDTask task = new SetSSIDTask();
+//            task.execute(edittext_ssid_name.getText().toString(),edittext_ssid_pwd.getText().toString());
+
+            Network.getCommandApi(devModel)
+                    .STA2AP_changeValue(devModel.usr,devModel.pwd,38,1,0,edittext_ssid_name.getText().toString(),
+                            edittext_ssid_pwd.getText().toString(),0)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observer_ret);
+
         }
     }
+
+    Observer<RetModel> observer_ret = new Observer<RetModel>() {
+        @Override
+        public void onCompleted() {
+            lod.dismiss();
+            Log.e(tag,"---------------------2");
+        }
+        @Override
+        public void onError(Throwable e) {
+            lod.dismiss();
+            Log.e(tag,"---------------------1:"+e.getLocalizedMessage());
+        }
+
+        @Override
+        public void onNext(RetModel m) {
+            lod.dismiss();
+            Log.e(tag,"---------------------0:"+m.ret);
+            if (1 == m.ret){
+                SouthUtil.showDialog(AddDeviceAP2StaSetup.this,getString(R.string.action_AP_T_STA_Success));
+            }
+            else{
+                SouthUtil.showDialog(AddDeviceAP2StaSetup.this,getString(R.string.action_AP_T_STA_Failed));
+            }
+
+        }
+    };
 
     class SetSSIDTask extends AsyncTask<String, Void, String> {
         // AsyncTask<Params, Progress, Result>
@@ -119,7 +127,9 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
             //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
             String url = "http://0.0.0.0:0/cfg1.cgi?User="+devModel.usr+"&Psd="+devModel.pwd+"&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wifi_SSID_STA" +
                     "="+params[0]+"&wifi_Password_STA="+params[1];
+            Log.e(tag,url+",NetHandle is "+devModel.NetHandle);
             String ret = lib.thNetHttpGet(devModel.NetHandle,url);
+            Log.e(tag,"ret :"+ret);
             return ret;
         }
         @Override
@@ -128,6 +138,16 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
             //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
             //Log.e(tag,"get playback list :"+result);
             lod.dismiss();
+
+            RetModel retModel = GsonUtil.parseJsonWithGson(result,RetModel.class);
+            if (retModel != null){
+                if (retModel.ret == 1){
+                    SouthUtil.showDialog(AddDeviceAP2StaSetup.this,getString(R.string.action_AP_T_STA_Success));
+                }
+                else {
+                    SouthUtil.showDialog(AddDeviceAP2StaSetup.this,getString(R.string.action_AP_T_STA_Failed));
+                }
+            }
             super.onPostExecute(result);
         }
     }

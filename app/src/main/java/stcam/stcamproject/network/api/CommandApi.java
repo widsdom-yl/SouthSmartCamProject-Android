@@ -47,7 +47,7 @@ public interface CommandApi {
      * @param admin
      * @param MsgID 38
      * @param wifi_Active 1
-     * @param wifi_IsAPMode 1
+     * @param wifi_IsAPMode 0
      * @param wifi_SSID_AP
      * @param wifi_Password_AP
      * @return

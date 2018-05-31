@@ -21,15 +21,20 @@ import stcam.stcamproject.Activity.MainDevListActivity;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
 
+import static stcam.stcamproject.Activity.MainDevListActivity.EnumMainEntry.EnumMainEntry_Login;
+
 public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.MyHolder> {
 
     private Context mContext;
     private List<DevModel> mDatas;
+    private MainDevListActivity.EnumMainEntry mEntryType;
 
-    public DeviceListAdapter(Context context, List<DevModel> datas) {
+
+    public DeviceListAdapter(Context context, List<DevModel> datas,MainDevListActivity.EnumMainEntry entryType) {
         super();
         this.mContext = context;
         this.mDatas = datas;
+        mEntryType = entryType;
     }
     public void setmDatas(List<DevModel> datas){
         mDatas = datas;
@@ -147,6 +152,15 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
             playBackBtn = view.findViewById(R.id.btn_device_play_record);
             settingBtn = view.findViewById(R.id.btn_device_setting);
             online_status_tx = view.findViewById(R.id.online_status_tx);
+
+            if (mEntryType == EnumMainEntry_Login){
+                shareBtn.setVisibility(View.VISIBLE);
+               // settingBtn.setVisibility(View.VISIBLE);
+            }
+            else {
+                shareBtn.setText(R.string.action_AP_T_STA);
+               // settingBtn.setVisibility(View.INVISIBLE);
+            }
         }
 
     }

@@ -27,6 +27,8 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
+import static stcam.stcamproject.Activity.MainDevListActivity.EnumMainEntry.EnumMainEntry_Visitor;
+
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener {
 
     ImageView imageview_thumb;
@@ -36,7 +38,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     TextView textview_version;
     Button button_change_pwd;
     Button button_delete_device;
-
+    MainDevListActivity.EnumMainEntry entryType;
     DevModel model;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){
             model = bundle.getParcelable("devModel");
+            entryType = (MainDevListActivity.EnumMainEntry) bundle.getSerializable("entry");
         }
         initView();
     }
@@ -80,7 +83,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         button_delete_device = findViewById(R.id.button_delete_device);
 
 
-
+        if (entryType == EnumMainEntry_Visitor){
+            button_delete_device.setVisibility(View.INVISIBLE);
+        }
 
 
         button_change_pwd.setOnClickListener(this);
