@@ -22,12 +22,24 @@ import stcam.stcamproject.Util.TFun;
 
 public class DevModel implements Parcelable {
 final static String tag = "DevModel";
+
+
+
     public final static int IS_CONN_NODEV = 0;
     public final static int IS_CONN_OFFLINE = 1;
     public final static int IS_CONN_LAN = 2;
     public final static int IS_CONN_DDNS = 3;
     public final static int IS_CONN_P2P = 4;
     public final static int IS_CONN_NOWAY = 5;
+    public enum CONNECT_TYPE {
+        IS_CONN_NODEV,
+        IS_CONN_OFFLINE,
+        IS_CONN_LAN,
+        IS_CONN_DDNS,
+        IS_CONN_P2P,
+        IS_CONN_NOWAY
+    }
+
     public int Index;
     public long NetHandle = 0;
     public boolean IsConnecting = false;
@@ -135,11 +147,28 @@ final static String tag = "DevModel";
 
 
 
-
-
-    public enum EnumOnlineState {
-        Unkown,Online,Offline
+    public CONNECT_TYPE getConnectType(){
+        if (ConnType.equals("IS_CONN_NODEV")){
+            return CONNECT_TYPE.IS_CONN_NOWAY;
+        }
+        else if(ConnType.equals("IS_CONN_OFFLINE")){
+            return CONNECT_TYPE.IS_CONN_OFFLINE;
+        }
+        else if(ConnType.equals("IS_CONN_LAN")){
+            return CONNECT_TYPE.IS_CONN_OFFLINE;
+        }
+        else if(ConnType.equals("IS_CONN_DDNS")){
+            return CONNECT_TYPE.IS_CONN_DDNS;
+        }
+        else if(ConnType.equals("IS_CONN_P2P")){
+            return CONNECT_TYPE.IS_CONN_P2P;
+        }
+        else if(ConnType.equals("IS_CONN_NOWAY")){
+            return CONNECT_TYPE.IS_CONN_NOWAY;
+        }
+        return CONNECT_TYPE.IS_CONN_NOWAY;
     }
+
 
 
     public String SN;
@@ -333,6 +362,7 @@ final static String tag = "DevModel";
             }
         }.start();
     }
+
 
 
 }

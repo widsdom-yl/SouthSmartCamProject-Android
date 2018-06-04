@@ -124,6 +124,10 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         if (item.getItemId() == R.id.action_search){
             searchDevices();
         }
+        if (item.getItemId() == R.id.action_setting){
+            Intent intent = new Intent(this, SystemSettingActivity.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
     void initView(){

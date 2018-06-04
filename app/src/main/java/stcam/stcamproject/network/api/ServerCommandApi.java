@@ -107,6 +107,19 @@ public interface ServerCommandApi {
 
 
     /**
+     * 用户修改密码
+     * @return
+     * 成功返回 json {"ret":1} 失败返回 json {"ret":0} 用户已存在返回 json {"ret":-1} 校验码错误返回 json {"ret":-2} 校验码超时返回 json {"ret":-3}
+     */
+    @GET("app_user_changepsd.asp")
+    Observable<com.model.RetModel> app_user_changepsd(@Query("user") String user,
+                                                @Query("psd") String psd,
+                                                @Query("newpsd") String verifycode
+    );
+
+
+
+    /**
      * 主帐号获取分享帐号列表
      * @return
      * 失败返回[] 成功返回 jsonarray

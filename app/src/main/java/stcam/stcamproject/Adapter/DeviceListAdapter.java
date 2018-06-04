@@ -155,11 +155,11 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
 
             if (mEntryType == EnumMainEntry_Login){
                 shareBtn.setVisibility(View.VISIBLE);
-               // settingBtn.setVisibility(View.VISIBLE);
             }
             else {
-                shareBtn.setText(R.string.action_AP_T_STA);
-               // settingBtn.setVisibility(View.INVISIBLE);
+               // shareBtn.setText(R.string.action_AP_T_STA);
+
+                shareBtn.setVisibility(View.INVISIBLE);
             }
         }
 

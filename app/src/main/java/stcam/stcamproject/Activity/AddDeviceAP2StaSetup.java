@@ -6,13 +6,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.model.DevModel;
 import com.model.RetModel;
+import com.model.SSIDModel;
 import com.model.SearchDevModel;
 import com.thSDK.lib;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -26,6 +32,8 @@ import stcam.stcamproject.network.Network;
 public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnClickListener {
     SearchDevModel model;
     DevModel devModel;
+    Spinner spiner_ssid_name;
+    private ArrayAdapter<String> arr_adapter;
     EditText edittext_ssid_name;
     EditText edittext_ssid_pwd;
     Button button_next;
@@ -48,6 +56,8 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
             devModel = bundle.getParcelable("devModel");
         }
         initView();
+        getSSIDList();
+
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -59,16 +69,32 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
         return super.onOptionsItemSelected(item);
     }
     void initView(){
+        spiner_ssid_name = findViewById(R.id.spiner_ssid_name);
         edittext_ssid_name = findViewById(R.id.edittext_ssid_name);
         edittext_ssid_pwd = findViewById(R.id.edittext_ssid_pwd);
         button_next = findViewById(R.id.button_next);
         button_next.setOnClickListener(this);
     }
 
+    void getSSIDList(){
+        if (lod == null){
+            lod = new LoadingDialog(this);
+        }
+        lod.dialogShow();
+//            SetSSIDTask task = new SetSSIDTask();
+//            task.execute(edittext_ssid_name.getText().toString(),edittext_ssid_pwd.getText().toString());
+
+        Network.getCommandApi(devModel)
+                .getSSIDList(devModel.usr,devModel.pwd,36,0)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer_SSIDList);
+    }
+
 
     @Override
     public void onClick(View view) {
-        if (edittext_ssid_name.getText().length()>0&&edittext_ssid_pwd.getText().length()>0 ){
+        if (edittext_ssid_pwd.getText().length()>0 ){
             if (lod == null){
                 lod = new LoadingDialog(this);
             }
@@ -77,7 +103,7 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
 //            task.execute(edittext_ssid_name.getText().toString(),edittext_ssid_pwd.getText().toString());
 
             Network.getCommandApi(devModel)
-                    .STA2AP_changeValue(devModel.usr,devModel.pwd,38,1,0,edittext_ssid_name.getText().toString(),
+                    .AP2STA_changeValue(devModel.usr,devModel.pwd,38,1,0,spiner_ssid_name.getSelectedItem().toString(),
                             edittext_ssid_pwd.getText().toString(),0)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -85,6 +111,49 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
 
         }
     }
+
+
+    Observer<List<SSIDModel>> observer_SSIDList = new Observer<List<SSIDModel>>() {
+        @Override
+        public void onCompleted() {
+            lod.dismiss();
+            Log.e(tag,"observer_SSIDList---------------------2");
+        }
+        @Override
+        public void onError(Throwable e) {
+            lod.dismiss();
+            Log.e(tag,"observer_SSIDList ---------------------1:"+e.getLocalizedMessage());
+
+        }
+
+        @Override
+        public void onNext(List<SSIDModel> ssidModels) {
+            lod.dismiss();
+            Log.e(tag,"observer_SSIDList ---------------------1:"+ssidModels.size());
+            if(ssidModels.size() == 0){
+                edittext_ssid_name.setVisibility(View.VISIBLE);
+                spiner_ssid_name.setVisibility(View.INVISIBLE);
+                return;
+            }
+            edittext_ssid_name.setVisibility(View.INVISIBLE);
+            spiner_ssid_name.setVisibility(View.VISIBLE);
+
+            //数据
+            List data_list = new ArrayList<String>();
+            for (SSIDModel model : ssidModels){
+                data_list.add(model.SSID);
+            }
+
+            //适配器
+            arr_adapter= new ArrayAdapter<String>(AddDeviceAP2StaSetup.this, android.R.layout.simple_spinner_item, data_list);
+            //设置样式
+            arr_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            //加载适配器
+            spiner_ssid_name.setAdapter(arr_adapter);
+
+        }
+    };
+
 
     Observer<RetModel> observer_ret = new Observer<RetModel>() {
         @Override
@@ -96,6 +165,7 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
         public void onError(Throwable e) {
             lod.dismiss();
             Log.e(tag,"---------------------1:"+e.getLocalizedMessage());
+            SouthUtil.showDialog(AddDeviceAP2StaSetup.this,getString(R.string.device_reboot));
         }
 
         @Override

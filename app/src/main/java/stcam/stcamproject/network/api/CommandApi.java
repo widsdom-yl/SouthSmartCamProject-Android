@@ -24,7 +24,6 @@ public interface CommandApi {
 
 
     /**
-     * ֻתΪ AP�����޸�
      * @param User
      * @param admin
      * @param MsgID 38
@@ -89,8 +88,8 @@ public interface CommandApi {
      * @param MsgID 38
      * @param wifi_Active 1
      * @param wifi_IsAPMode 0
-     * @param wifi_SSID_AP
-     * @param wifi_Password_AP
+     * @param wifi_SSID_STA
+     * @param wifi_Password_STA
      * @return
      */
     @GET("cfg1.cgi")
@@ -99,8 +98,8 @@ public interface CommandApi {
                                             @Query("MsgID") int MsgID,
                                             @Query("wifi_Active") int wifi_Active,
                                             @Query("wifi_IsAPMode") int wifi_IsAPMode,
-                                            @Query("wifi_SSID_STA") String wifi_SSID_AP,
-                                            @Query("wifi_Password_STA") String wifi_Password_AP,
+                                            @Query("wifi_SSID_STA") String wifi_SSID_STA,
+                                            @Query("wifi_Password_STA") String wifi_Password_STA,
                                             @Query("s") int s
     );
 
@@ -319,7 +318,7 @@ public interface CommandApi {
 
 
     /**
-     * ��ȡssid����
+     *
      * @param User
      * @param admin
      * @param MsgID 36
@@ -352,6 +351,8 @@ public interface CommandApi {
                                      @Query("INFO_DevName") String INFO_DevName,
                                      @Query("s") int s
     );
+
+
 
     /**
      * ��ȡwifi����

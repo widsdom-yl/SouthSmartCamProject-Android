@@ -29,7 +29,7 @@ public class AddDeviceOneStepActivity extends AppCompatActivity implements View.
         initView();
     }
     void initView(){
-        edittext_ssid_name = findViewById(R.id.edittext_ssid_name);
+        edittext_ssid_name = findViewById(R.id.spiner_ssid_name);
         edittext_ssid_pwd = findViewById(R.id.edittext_ssid_pwd);
         button_next = findViewById(R.id.button_next);
         button_next.setOnClickListener(this);

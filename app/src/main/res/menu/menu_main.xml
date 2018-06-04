@@ -17,4 +17,9 @@
         android:orderInCategory="2"
         android:title="@string/action_media"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_setting"
+        android:orderInCategory="2"
+        android:title="@string/action_system_setting"
+        app:showAsAction="ifRoom" />
 </menu>

@@ -20,11 +20,13 @@ import java.util.List;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
+import stcam.stcamproject.network.Network;
 import stcam.stcamproject.network.ServerNetWork;
 
 import static stcam.stcamproject.Activity.MainDevListActivity.EnumMainEntry.EnumMainEntry_Visitor;
@@ -36,7 +38,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     TextView textview_name;
     TextView textview_pwd;
     TextView textview_version;
-    Button button_change_pwd;
+    Button button_change_pwd,button_ap_sta;
     Button button_delete_device;
     MainDevListActivity.EnumMainEntry entryType;
     DevModel model;
@@ -81,7 +83,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         textview_version = findViewById(R.id.textview_version);
         button_change_pwd = findViewById(R.id.button_change_pwd);
         button_delete_device = findViewById(R.id.button_delete_device);
-
+        button_ap_sta = findViewById(R.id.button_ap_sta);
+        if (entryType == EnumMainEntry_Visitor){
+            button_ap_sta.setText(R.string.action_AP_T_STA);
+        }
+        else{
+            button_ap_sta.setText(R.string.action_STA_T_AP);
+        }
 
         if (entryType == EnumMainEntry_Visitor){
             button_delete_device.setVisibility(View.INVISIBLE);
@@ -90,6 +98,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
         button_change_pwd.setOnClickListener(this);
         button_delete_device.setOnClickListener(this);
+        button_ap_sta.setOnClickListener(this);
 
     }
     void refreshView(){
@@ -129,9 +138,72 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(observer);
                 break;
+            case R.id.button_ap_sta:
+                if (entryType == EnumMainEntry_Visitor){
+                    //设置ap转sta
+                    Intent intent1 = new Intent(STApplication.getInstance(), AddDeviceAP2StaSetup.class);
 
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putParcelable("devModel",model);
+
+                    intent1.putExtras(bundle1);
+                    Log.e(tag,"to DeviceShareActivity NetHandle:"+model.NetHandle);
+
+                    startActivity(intent1);
+                }
+                else{
+                    //设置sta转ap
+
+                    if (model.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_LAN || model.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_DDNS)
+                    {
+                        if (lod == null){
+                            lod = new LoadingDialog(this);
+                        }
+                        lod.dialogShow();
+                        Network.getCommandApi(model)
+                                .STA2AP_keepValue(model.usr,model.pwd,38,1,1,0)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(observer_sta_ap);
+                    }
+                    else{
+                        SouthUtil.showDialog(SettingActivity.this,"仅在局域网或者 DDNS连接才可以转AP模式");
+                    }
+
+
+                }
+                break;
+                default:
+                    break;
         }
     }
+
+    Observer<RetModel> observer_sta_ap = new Observer<RetModel>() {
+        @Override
+        public void onCompleted() {
+            lod.dismiss();
+            Log.e(tag,"---------------------2");
+        }
+        @Override
+        public void onError(Throwable e) {
+            lod.dismiss();
+            Log.e(tag,"---------------------1:"+e.getLocalizedMessage());
+        }
+
+        @Override
+        public void onNext(RetModel m) {
+            lod.dismiss();
+            Log.e(tag,"---------------------0:"+m.ret);
+            if (1 == m.ret){
+                SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_STA_T_AP_Success));
+            }
+            else{
+                SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_STA_T_AP_Failed));
+            }
+
+        }
+    };
+
 
     Observer<RetModel> observer = new Observer<RetModel>() {
         @Override
@@ -151,10 +223,10 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             lod.dismiss();
             Log.e(tag,"---------------------0:"+m.ret);
             if (1 == m.ret){
-                SouthUtil.showToast(getApplicationContext(),"delete ok");
+                SouthUtil.showToast(SettingActivity.this,"delete ok");
             }
             else{
-                SouthUtil.showToast(getApplicationContext(),"delete failed");
+                SouthUtil.showToast(SettingActivity.this,"delete failed");
             }
 
         }

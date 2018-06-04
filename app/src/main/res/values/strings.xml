@@ -99,6 +99,17 @@
     <string name="action_select_all">全选</string>
     <string name="action_undelete_all">取消取选</string>
     <string name="action_AP_T_STA">AP转STA</string>
-    <string name="action_AP_T_STA_Success">设置成功，请重启摄像头</string>
+    <string name="action_STA_T_AP">STA转AP</string>
+    <string name="action_AP_T_STA_Success">设置成功</string>
     <string name="action_AP_T_STA_Failed">设置失败</string>
+    <string name="action_STA_T_AP_Success">设置成功</string>
+    <string name="action_STA_T_AP_Failed">设置失败</string>
+    <string name="action_system_setting">系统设置</string>
+    <string name="action_alarm_sound">报警声音</string>
+    <string name="action_app_version">App版本</string>
+    <string name="action_change_system_password">修改密码</string>
+    <string name="action_about">关于</string>
+    <string name="action_change_login_password">修改App登录密码</string>
+    <string name="device_logn_old_pwd">原密码</string>
+    <string name="device_reboot">设备正在重启，请退出app重新连接</string>
 </resources>
