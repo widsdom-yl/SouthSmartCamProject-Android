@@ -100,7 +100,7 @@
     <string name="action_undelete_all">取消取选</string>
     <string name="action_AP_T_STA">AP转STA</string>
     <string name="action_STA_T_AP">STA转AP</string>
-    <string name="action_AP_T_STA_Success">设置成功</string>
+    <string name="action_AP_T_STA_Success">设置成功,请手动重启设备</string>
     <string name="action_AP_T_STA_Failed">设置失败</string>
     <string name="action_STA_T_AP_Success">设置成功</string>
     <string name="action_STA_T_AP_Failed">设置失败</string>
