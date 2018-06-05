@@ -3,6 +3,7 @@ package stcam.stcamproject.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.model.DevModel;
 import com.model.RetModel;
+import com.thSDK.lib;
 
 import java.util.List;
 
@@ -24,9 +26,9 @@ import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
+import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
-import stcam.stcamproject.network.Network;
 import stcam.stcamproject.network.ServerNetWork;
 
 import static stcam.stcamproject.Activity.MainDevListActivity.EnumMainEntry.EnumMainEntry_Visitor;
@@ -154,20 +156,22 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 else{
                     //设置sta转ap
 
-                    if (model.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_LAN || model.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_DDNS)
+                    if (model.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_LAN || model.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_DDNS || model.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_P2P)
                     {
                         if (lod == null){
                             lod = new LoadingDialog(this);
                         }
                         lod.dialogShow();
-                        Network.getCommandApi(model)
-                                .STA2AP_keepValue(model.usr,model.pwd,38,1,1,0)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(observer_sta_ap);
+//                        Network.getCommandApi(model)
+//                                .STA2AP_keepValue(model.usr,model.pwd,38,1,1,0)
+//                                .subscribeOn(Schedulers.io())
+//                                .observeOn(AndroidSchedulers.mainThread())
+//                                .subscribe(observer_sta_ap);
+                        Sta2ApTask task = new Sta2ApTask();
+                        task.execute();
                     }
                     else{
-                        SouthUtil.showDialog(SettingActivity.this,"仅在局域网或者 DDNS连接才可以转AP模式");
+                        SouthUtil.showDialog(SettingActivity.this,"当前五有效连接，无法转AP模式");
                     }
 
 
@@ -175,6 +179,45 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
                 default:
                     break;
+        }
+    }
+
+    class Sta2ApTask extends AsyncTask<String, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            //第二个执行方法,onPreExecute()执行完后执行
+            // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
+            //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
+            String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=38&wifi_Active=1&wifi_IsAPMode=1&s=0";
+            Log.e(tag,url+",NetHandle is "+model.NetHandle);
+            String ret = lib.thNetHttpGet(model.NetHandle,url);
+            Log.e(tag,"ret :"+ret);
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
+            //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
+            //Log.e(tag,"get playback list :"+result);
+            lod.dismiss();
+
+            RetModel retModel = GsonUtil.parseJsonWithGson(result,RetModel.class);
+            if (retModel != null){
+                if (retModel.ret == 1){
+                    SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_STA_T_AP_Success));
+                }
+                else {
+                    SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_STA_T_AP_Failed));
+                }
+            }
+            super.onPostExecute(result);
         }
     }
 

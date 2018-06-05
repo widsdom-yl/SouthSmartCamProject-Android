@@ -9,6 +9,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -128,8 +129,25 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
             Intent intent = new Intent(this, SystemSettingActivity.class);
             startActivity(intent);
         }
+        if (item.getItemId() == android.R.id.home){
+            Log.e(tag,"---------------------back to home");
+            mDevices.clear();
+            this.finish(); // back button
+        }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            Log.e(tag,"---------------------onKeyDown");
+            mDevices.clear();
+            this.finish(); // back button
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
     void initView(){
         refreshLayout = findViewById(R.id.swipeRefreshLayout);
         mRecyclerView = findViewById(R.id.recyler_device);
