@@ -149,13 +149,13 @@ final static String tag = "DevModel";
 
     public CONNECT_TYPE getConnectType(){
         if (ConnType.equals("IS_CONN_NODEV")){
-            return CONNECT_TYPE.IS_CONN_NOWAY;
+            return CONNECT_TYPE.IS_CONN_NODEV;
         }
         else if(ConnType.equals("IS_CONN_OFFLINE")){
             return CONNECT_TYPE.IS_CONN_OFFLINE;
         }
         else if(ConnType.equals("IS_CONN_LAN")){
-            return CONNECT_TYPE.IS_CONN_OFFLINE;
+            return CONNECT_TYPE.IS_CONN_LAN;
         }
         else if(ConnType.equals("IS_CONN_DDNS")){
             return CONNECT_TYPE.IS_CONN_DDNS;
@@ -315,8 +315,10 @@ final static String tag = "DevModel";
         }.start();
     }
 
-    public boolean Play()
+    public boolean Play(int sub)
     {
+        SubVideoChlMask = sub;
+        VideoChlMask = 1-sub;
         TFun.printf("Play:NetHandle:"+NetHandle);
         return lib.thNetPlay(NetHandle, VideoChlMask, AudioChlMask, SubVideoChlMask);
     }
@@ -332,7 +334,7 @@ final static String tag = "DevModel";
             @Override
             public void run()
             {
-                DevNode.Play();
+                DevNode.Play(1);
 
                 lib.thNetAudioPlayOpen(DevNode.NetHandle);
                 DevNode.IsAudioMute = true;

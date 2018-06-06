@@ -109,7 +109,7 @@ public class AlarmListActivity extends AppCompatActivity implements BaseAdapter.
             else{
                 //MyContext.getInstance()
                 Log.e(tag,"---------------------1:no dev");
-                SouthUtil.showToast(STApplication.getInstance(),"No dev");
+                SouthUtil.showToast(STApplication.getInstance(),"No Alarm");
             }
 
         }

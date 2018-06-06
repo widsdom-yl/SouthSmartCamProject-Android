@@ -8,6 +8,7 @@
     <string name="action_sign_in">登录</string>
     <string name="action_visitor">临时访问</string>
     <string name="action_Register">注册</string>
+    <string name="action_Forgetpwd">忘记密码</string>
     <string name="action_get_checknum">验证码</string>
     <string name="action_get_checknum_sent">验证码已经发送至邮箱</string>
     <string name="action_get_checknum_sent_failed">验证码发送失败</string>
@@ -28,6 +29,8 @@
     <string name="action_get_register_failed1">用户已存在</string>
     <string name="action_get_register_failed2">校验码错误</string>
     <string name="action_get_register_failed3">校验码超时</string>
+    <string name="action_send_pws_success">密码已经发送至您的邮箱</string>
+    <string name="action_send_pws_failed">请求失败</string>
     <string name="title_main_dev_list">设备列表</string>
     <string name="action_search">搜索</string>
     <string name="action_add">添加</string>
@@ -56,7 +59,8 @@
     <string name="action_slient">静音</string>
     <string name="action_led">灯光</string>
     <string name="action_ptz">云台</string>
-    <string name="action_pix">标清/高清</string>
+    <string name="action_pix_low">标清</string>
+    <string name="action_pix_high">高清</string>
     <string name="action_ok">确定</string>
     <string name="action_add_one_key_setting">一键设置</string>
     <string name="action_add_ap_sta">添加AP方式设备(AP转STA)</string>
@@ -112,4 +116,9 @@
     <string name="action_change_login_password">修改App登录密码</string>
     <string name="device_logn_old_pwd">原密码</string>
     <string name="device_reboot">设备正在重启，请退出app重新连接</string>
+    <string name="action_send">发送</string>
+    <string name="string_device_name">设备名称</string>
+    <string name="action_change_device_name">修改设备名称</string>
+    <string name="action_Success">设置成功</string>
+    <string name="action_Failed">设置失败</string>
 </resources>

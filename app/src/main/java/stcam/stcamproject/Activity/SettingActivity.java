@@ -1,15 +1,18 @@
 package stcam.stcamproject.Activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,6 +45,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     TextView textview_version;
     Button button_change_pwd,button_ap_sta;
     Button button_delete_device;
+    Button button_device_name;
     MainDevListActivity.EnumMainEntry entryType;
     DevModel model;
     @Override
@@ -86,6 +90,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         button_change_pwd = findViewById(R.id.button_change_pwd);
         button_delete_device = findViewById(R.id.button_delete_device);
         button_ap_sta = findViewById(R.id.button_ap_sta);
+        button_device_name = findViewById(R.id.button_device_name);
         if (entryType == EnumMainEntry_Visitor){
             button_ap_sta.setText(R.string.action_AP_T_STA);
         }
@@ -101,6 +106,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         button_change_pwd.setOnClickListener(this);
         button_delete_device.setOnClickListener(this);
         button_ap_sta.setOnClickListener(this);
+        button_device_name.setOnClickListener(this);
 
     }
     void refreshView(){
@@ -111,10 +117,36 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             imageview_thumb.setImageBitmap(bitmap);
         }
         textview_uid.setText(model.UID);
-        textview_name.setText(getString(R.string.device_name)+":"+model.DevName);
+        button_device_name.setText(model.DevName);
         textview_pwd.setText(getString(R.string.device_pwd)+":"+model.pwd);
         textview_version.setText(getString(R.string.device_version)+":"+model.SoftVersion);
     }
+
+    private void changeDeviceNameDialog() {
+
+        final EditText inputServer = new EditText(this);
+        inputServer.setFocusable(true);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.action_change_device_name)).setView(inputServer)
+                .setNegativeButton(
+                getString(R.string.cancel), null);
+        builder.setPositiveButton(getString(R.string.OK),
+                new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (lod == null){
+                            lod = new LoadingDialog(SettingActivity.this);
+                        }
+                        lod.dialogShow();
+                        String inputName = inputServer.getText().toString();
+                        ChangeDeviceTask task = new  ChangeDeviceTask();
+                        task.execute(inputName);
+                    }
+                });
+        builder.show();
+    }
+
 
     @Override
     public void onClick(View view) {
@@ -139,6 +171,11 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(observer);
+                break;
+            case R.id.button_device_name:
+                if (model.IsConnect()){
+                    changeDeviceNameDialog();
+                }
                 break;
             case R.id.button_ap_sta:
                 if (entryType == EnumMainEntry_Visitor){
@@ -179,6 +216,52 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
                 default:
                     break;
+        }
+    }
+
+    class ChangeDeviceTask extends AsyncTask<String, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            //第二个执行方法,onPreExecute()执行完后执行
+            // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
+            //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
+            String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=31&DevName="+params[0];
+            Log.e(tag,url+",NetHandle is "+model.NetHandle);
+            String ret = lib.thNetHttpGet(model.NetHandle,url);
+            Log.e(tag,"ret :"+ret);
+            RetModel retModel = GsonUtil.parseJsonWithGson(ret,RetModel.class);
+            if (retModel != null){
+                if (retModel.ret == 1){
+                    model.DevName = params[0];
+                }
+            }
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
+            //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
+            //Log.e(tag,"get playback list :"+result);
+            lod.dismiss();
+
+            RetModel retModel = GsonUtil.parseJsonWithGson(result,RetModel.class);
+            if (retModel != null){
+                if (retModel.ret == 1){
+                    SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_Success));
+                    refreshView();
+                }
+                else {
+                    SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_Failed));
+                }
+            }
+            super.onPostExecute(result);
         }
     }
 

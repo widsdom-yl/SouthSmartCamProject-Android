@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,7 +39,8 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     VoiceImageButton button_record,button_record_o;
     ImageButton button_slient;
     RelativeLayout ptz_layout;
-    Button button_led;
+    Button button_led,button_pix;
+    boolean pix_low = true;
     ImageButton button_ptz_left,button_ptz_right,button_ptz_up,button_ptz_down;
     Button button_ptz;
     private GestureDetector mygesture;
@@ -59,6 +61,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_play_live);
         initView();
 
+        pix_low = true;
         glView.Play();
 
         mygesture = new GestureDetector(this);
@@ -73,6 +76,17 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            Log.e(tag,"---------------------onKeyDown");
+            glView.Stop();
+
+            this.finish(); // back button
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -123,6 +137,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         button_ptz_up = findViewById(R.id.button_ptz_up);
         button_ptz_down = findViewById(R.id.button_ptz_down);
         button_led = findViewById(R.id.button_led);
+        button_pix = findViewById(R.id.button_pix);
         button_slient = findViewById(R.id.button_slient);
         button_snapshot.setOnClickListener(this);
         button_snapshot_o.setOnClickListener(this);
@@ -132,6 +147,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         button_record_o.setOnClickListener(this);
         button_led.setOnClickListener(this);
         button_slient.setOnClickListener(this);
+        button_pix.setOnClickListener(this);
 
         ptz_layout = findViewById(R.id.ptz_layout);
         button_ptz = findViewById(R.id.button_ptz);
@@ -193,22 +209,6 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 
                 break;
             case R.id.button_led:
-//                LayoutInflater factory = LayoutInflater.from(this);
-//                View DialogView = factory.inflate(R.layout.layout_view_led_control, null);
-//                SeekBar seekBarBrightness = (SeekBar) DialogView.findViewById(R.id.seekBarBrightness);
-//
-//
-//                new AlertDialog.Builder(this).setTitle("").setIcon(android.R.drawable.ic_dialog_info).setView(DialogView)
-//                        .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener()
-//                        {
-//
-//                            public void onClick(DialogInterface dialog, int which)
-//                            {
-//
-//
-//
-//                            }
-//                        }).show();
 
                 Intent intent = new Intent(this,LedControlActivity.class);
                 intent.putExtra("devModel",devModel);
@@ -242,6 +242,10 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                     ptz_layout.setVisibility(View.VISIBLE);
                 }
                 break;
+            case R.id.button_pix:
+                pix_low = !pix_low;
+                button_pix.setText(pix_low?R.string.action_pix_low:R.string.action_pix_high);
+                devModel.Play(pix_low?1:0);
             default:
                 break;
         }

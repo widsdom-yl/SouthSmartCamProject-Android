@@ -109,6 +109,15 @@ public class LoginActivity extends AppCompatActivity  {
                 startActivity(intent);
             }
         });
+
+        Button forget_button = findViewById(R.id.forget_button);
+        forget_button.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(STApplication.getInstance(), ForgetPwdActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private String[] denied;

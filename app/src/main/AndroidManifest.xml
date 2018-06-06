@@ -61,7 +61,8 @@
         <activity android:name=".Activity.SettingActivity" />
         <activity android:name=".Activity.LedControlActivity" />
         <activity android:name=".Activity.SystemSettingActivity" />
-        <activity android:name=".Activity.ChangeLoginPasswordActivity"></activity>
+        <activity android:name=".Activity.ChangeLoginPasswordActivity" />
+        <activity android:name=".Activity.ForgetPwdActivity"></activity>
     </application>
 
 </manifest>
