@@ -342,6 +342,7 @@ void make_ExtraDataAudio(int nSamplesPerSec, int nChannels, unsigned char* Extra
 //-----------------------------------------------------------------------------
 bool thRecordWriteVideo(HANDLE RecHandle, char* Buf, int Len, i64 pts)//pts = -1 为自动计算
 {
+    pts = -1;
   int ret, IsIFrame;
   AVPacket packet;
   TRecInfoPkt* Info = (TRecInfoPkt*)RecHandle;
@@ -371,8 +372,11 @@ bool thRecordWriteVideo(HANDLE RecHandle, char* Buf, int Len, i64 pts)//pts = -1
   }
   if (!Info->IsWriteHead) return false;
 
+
   ThreadLock(&Info->Lock);
-  Info->VideoFrameCount++;
+  Info->VideoFrameCount = Info->VideoFrameCount+1;
+    PRINTF("%s(%d) pts is %lld", __FUNCTION__, __LINE__,pts);
+  PRINTF("%s(%d) record VideoFrameCount:%lld ", __FUNCTION__, __LINE__,Info->VideoFrameCount);
 
   av_init_packet(&packet);
   if (IsIFrame) packet.flags |= AV_PKT_FLAG_KEY; else packet.flags = 0;
@@ -382,13 +386,14 @@ bool thRecordWriteVideo(HANDLE RecHandle, char* Buf, int Len, i64 pts)//pts = -1
   packet.data = (uint8_t*)Buf;
   packet.size = Len;
   ret = av_interleaved_write_frame(Info->avFormat, &packet);
-
+    PRINTF("%s(%d) record VideoFrameCount:% ,end", __FUNCTION__, __LINE__,Info->VideoFrameCount);
   ThreadUnlock(&Info->Lock);
   return (ret == 0);
 }
 //-----------------------------------------------------------------------------
 bool thRecordWriteAudio2048(HANDLE RecHandle, char* Buf, int Len, i64 pts)//pts = -1 为自动计算 Len只能为2048，不然会丢包
 {
+
 #ifdef IS_AAC
   VO_CODECBUFFER         inData;
   VO_CODECBUFFER         outData;
@@ -507,7 +512,7 @@ bool thRecordStop(HANDLE RecHandle)
 
   ThreadLockFree(&Info->Lock);
   free(Info);
-
+    PRINTF("%s(%d) record stop", __FUNCTION__, __LINE__);
   return true;
 }
 //-----------------------------------------------------------------------------
