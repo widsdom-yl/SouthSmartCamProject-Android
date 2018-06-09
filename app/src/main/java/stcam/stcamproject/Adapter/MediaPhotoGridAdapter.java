@@ -2,6 +2,8 @@ package stcam.stcamproject.Adapter;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -23,10 +25,23 @@ public class MediaPhotoGridAdapter extends BaseAdapter<String>{
     protected void convert(BaseHolder holder, String path, final int position) {
         super.convert(holder,path,position);
         ImageView imageView = holder.getView(R.id.media_photo_image);
+        ImageView play_image = holder.getView(R.id.play_image);
+
 //        BitmapFactory.Options options = new BitmapFactory.Options();
 //        options.inSampleSize = 8;
-        Bitmap bitmap = BitmapFactory.decodeFile(path);
-        imageView.setImageBitmap(bitmap);
+        if (path.contains("jpg")){
+            Bitmap bitmap = BitmapFactory.decodeFile(path);
+            imageView.setImageBitmap(bitmap);
+            play_image.setVisibility(View.INVISIBLE);
+        }
+        else if(path.contains("mp4")){
+            imageView.setImageResource(R.drawable.imagethumb);
+            //createVideoThumbnail
+            Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(path,
+                    MediaStore.Images.Thumbnails.MINI_KIND);
+            imageView.setImageBitmap(bitmap);
+            play_image.setVisibility(View.VISIBLE);
+        }
         final CheckBox checkBox = holder.getView(R.id.checkbox);
 
         checkBox.setChecked(false);

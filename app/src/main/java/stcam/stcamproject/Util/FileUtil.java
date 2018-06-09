@@ -225,12 +225,25 @@ public class FileUtil {
         }
         return isImageFile;
     }
+    public static boolean checkIsVideoFile(String fName) {
+        boolean isVideoFile = false;
+        // 获取扩展名
+        String FileEnd = fName.substring(fName.lastIndexOf(".") + 1,
+                fName.length()).toLowerCase();
+        if (FileEnd.equals("mp4") ) {
+            isVideoFile = true;
+        } else {
+            isVideoFile = false;
+        }
+        return isVideoFile;
+    }
+
 
     /**
-     * 从文件夹获某个设备的图片资源
+     * 从文件夹获某个设备的图片和视频资源
      * @return
      */
-    public static List<String> getImagePathFromPath(String filePath,String SN) {
+    public static List<String> getSNFilesFromPath(String filePath,String SN) {
         // 图片列表
         List<String> imagePathList = new ArrayList<String>();
         // 得到sd卡内image文件夹的路径   File.separator(/)
@@ -245,6 +258,9 @@ public class FileUtil {
                 continue;
             }
             if (FileUtil.checkIsImageFile(file.getPath())) {
+                imagePathList.add(file.getPath());
+            }
+            else if (FileUtil.checkIsVideoFile(file.getPath())){
                 imagePathList.add(file.getPath());
             }
         }

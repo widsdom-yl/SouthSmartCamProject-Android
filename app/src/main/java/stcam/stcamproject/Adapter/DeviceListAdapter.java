@@ -58,7 +58,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
 //                .placeholder(R.drawable.imagethumb)
 //                .diskCacheStrategy(DiskCacheStrategy.ALL)
 //                .into(holder.deviceImageView);
-        List<String> files= FileUtil.getImagePathFromPath(FileUtil.pathSnapShot(),model.SN);
+        List<String> files= FileUtil.getSNFilesFromPath(FileUtil.pathSnapShot(),model.SN);
         if (files.size()>0){
 
             Bitmap bitmap = BitmapFactory.decodeFile(files.get(0));

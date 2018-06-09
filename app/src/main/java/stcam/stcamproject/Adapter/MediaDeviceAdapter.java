@@ -21,7 +21,7 @@ public class MediaDeviceAdapter extends BaseAdapter<DevModel>{
         holder.setText(R.id.media_device_text,model.DevName).setImageResource(R.id.media_device_image,R.drawable.imagethumb);
         ImageView imageView = holder.getView(R.id.media_device_image);
 
-        List<String> files= FileUtil.getImagePathFromPath(FileUtil.pathSnapShot(),model.SN);
+        List<String> files= FileUtil.getSNFilesFromPath(FileUtil.pathSnapShot(),model.SN);
         if (files.size()>0){
 
             Bitmap bitmap = BitmapFactory.decodeFile(files.get(0));

@@ -110,7 +110,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
     }
     void refreshView(){
-        List<String> files= FileUtil.getImagePathFromPath(FileUtil.pathSnapShot(),model.SN);
+        List<String> files= FileUtil.getSNFilesFromPath(FileUtil.pathSnapShot(),model.SN);
         if (files.size()>0){
 
             Bitmap bitmap = BitmapFactory.decodeFile(files.get(0));

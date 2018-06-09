@@ -9,6 +9,16 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         />
+
+    <ImageView
+        android:id="@+id/play_image"
+        android:scaleType="fitCenter"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/play"
+        android:layout_centerInParent="true"
+        />
+
     <CheckBox
 
         android:id="@+id/checkbox"

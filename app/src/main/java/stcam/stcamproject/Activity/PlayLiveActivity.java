@@ -201,10 +201,14 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 
                 if (lib.thNetIsRec(devModel.NetHandle)){
                     lib.thNetStopRec(devModel.NetHandle);
+                    button_record.setImageResource(R.drawable.btnrecorddefault);
+                    button_record_o.setImageResource(R.drawable.btnrecorddefault);
                 }
                 else{
                    String recordfileName = FileUtil.generatePathRecordFileName(devModel.SN);
                    lib.thNetStartRec(devModel.NetHandle,recordfileName);
+                    button_record.setImageResource(R.drawable.btnrecorddown);
+                    button_record_o.setImageResource(R.drawable.btnrecorddown);
                 }
 
                 break;

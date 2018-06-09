@@ -1,6 +1,7 @@
 package stcam.stcamproject.Activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -25,7 +26,9 @@ public class MediaPhotoListActivity extends AppCompatActivity implements BaseAda
     DevModel model;
     RecyclerView rv;
     MediaPhotoGridAdapter adapter;
-    List<String> files;
+    List<String> mediaFiles = new ArrayList<>();//包含图片和视频的数组
+    List<String> imagefiles;
+    List<String> videofiles;
     List<String> checkFile = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +49,15 @@ public class MediaPhotoListActivity extends AppCompatActivity implements BaseAda
         GridLayoutManager layoutManage = new GridLayoutManager(this, 3);
         rv.setLayoutManager(layoutManage);
 
-        files= FileUtil.getImagePathFromPath(FileUtil.pathSnapShot(),model.SN);
-        adapter = new MediaPhotoGridAdapter(files);
+        imagefiles= FileUtil.getSNFilesFromPath(FileUtil.pathSnapShot(),model.SN);
+        videofiles = FileUtil.getSNFilesFromPath(FileUtil.pathRecord(),model.SN);
+        Log.e(tag,"videofiles size:"+videofiles.size());
+        mediaFiles.clear();
+        mediaFiles.addAll(imagefiles);
+        mediaFiles.addAll(videofiles);
+        Log.e(tag,"mediaFiles size:"+mediaFiles.size());
+
+        adapter = new MediaPhotoGridAdapter(mediaFiles);
         adapter.setCheckFile(checkFile);
         adapter.setOnItemClickListener(this);
         adapter.setOnImageCheckListner(this);
@@ -57,8 +67,8 @@ public class MediaPhotoListActivity extends AppCompatActivity implements BaseAda
     @Override
     protected void onResume() {
         super.onResume();
-        files= FileUtil.getImagePathFromPath(FileUtil.pathSnapShot(),model.SN);
-        adapter.resetMList(files);
+        reloadMediaList();
+        adapter.resetMList(mediaFiles);
         adapter.notifyDataSetChanged();
     }
     @Override
@@ -67,6 +77,13 @@ public class MediaPhotoListActivity extends AppCompatActivity implements BaseAda
         return true;
     }
 
+    void reloadMediaList(){
+        imagefiles= FileUtil.getSNFilesFromPath(FileUtil.pathSnapShot(),model.SN);
+        videofiles = FileUtil.getSNFilesFromPath(FileUtil.pathRecord(),model.SN);
+        mediaFiles.clear();
+        mediaFiles.addAll(imagefiles);
+        mediaFiles.addAll(videofiles);
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -78,13 +95,13 @@ public class MediaPhotoListActivity extends AppCompatActivity implements BaseAda
                     FileUtil.delFiles(file);
                 }
                 checkFile.clear();
-                files= FileUtil.getImagePathFromPath(FileUtil.pathSnapShot(),model.SN);
-                adapter.resetMList(files);
+                reloadMediaList();
+                adapter.resetMList(mediaFiles);
                 adapter.notifyDataSetChanged();
                 break;
             case R.id.action_select_all:
                 checkFile.clear();
-                for (String file : files){
+                for (String file : mediaFiles){
                     checkFile.add(file);
                 }
                 adapter.setCheckFile(checkFile);
@@ -103,11 +120,22 @@ public class MediaPhotoListActivity extends AppCompatActivity implements BaseAda
     @Override
     public void onItemClick(View view, int position) {
        //
-        Intent intent = new Intent(this, MediaPhotoDetailActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("imagePath",files.get(position));
-        intent.putExtras(bundle);
-        startActivity(intent);
+
+        String mediaPath = mediaFiles.get(position);
+        if (FileUtil.checkIsImageFile(mediaPath)){
+            Intent intent = new Intent(this, MediaPhotoDetailActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("imagePath",mediaPath);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+        else if(FileUtil.checkIsVideoFile(mediaPath)){
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse(mediaPath), "video/mov");
+             startActivity(intent);
+
+        }
+
     }
 
     @Override
@@ -118,7 +146,7 @@ public class MediaPhotoListActivity extends AppCompatActivity implements BaseAda
     @Override
     public void OnImageChecked(View view, int position, boolean checked) {
         Log.e(tag,"position "+position+",checked "+checked);
-        String file = files.get(position);
+        String file = mediaFiles.get(position);
         if (checked){
             if (!checkFile.contains(file)){
                 checkFile.add(file);
