@@ -8,6 +8,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,11 +24,14 @@ import com.model.DevModel;
 import com.model.RetModel;
 import com.thSDK.lib;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import stcam.stcamproject.Adapter.BaseAdapter;
+import stcam.stcamproject.Adapter.DeviceSettingAdapter;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.R;
@@ -36,18 +43,22 @@ import stcam.stcamproject.network.ServerNetWork;
 
 import static stcam.stcamproject.Activity.MainDevListActivity.EnumMainEntry.EnumMainEntry_Visitor;
 
-public class SettingActivity extends AppCompatActivity implements View.OnClickListener {
+public class SettingActivity extends AppCompatActivity implements View.OnClickListener, BaseAdapter.OnItemClickListener {
+
+
+
 
     ImageView imageview_thumb;
     TextView textview_uid;
-    TextView textview_name;
-    TextView textview_pwd;
-    TextView textview_version;
-    Button button_change_pwd,button_ap_sta;
+    Button    button_ap_sta;
     Button button_delete_device;
-    Button button_device_name;
     MainDevListActivity.EnumMainEntry entryType;
+
+    RecyclerView mRecyclerView;
+    DeviceSettingAdapter mAdapter;
     DevModel model;
+
+    List<String> items = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +75,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             entryType = (MainDevListActivity.EnumMainEntry) bundle.getSerializable("entry");
         }
         initView();
+        initValue();
+
+
     }
     @Override
     protected void onResume() {
@@ -84,13 +98,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     void initView(){
         imageview_thumb = findViewById(R.id.imageview_thumb);
         textview_uid = findViewById(R.id.textview_uid);
-        textview_name = findViewById(R.id.textview_name);
-        textview_pwd = findViewById(R.id.textview_pwd);
-        textview_version = findViewById(R.id.textview_version);
-        button_change_pwd = findViewById(R.id.button_change_pwd);
         button_delete_device = findViewById(R.id.button_delete_device);
         button_ap_sta = findViewById(R.id.button_ap_sta);
-        button_device_name = findViewById(R.id.button_device_name);
         if (entryType == EnumMainEntry_Visitor){
             button_ap_sta.setText(R.string.action_AP_T_STA);
         }
@@ -103,10 +112,29 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         }
 
 
-        button_change_pwd.setOnClickListener(this);
         button_delete_device.setOnClickListener(this);
         button_ap_sta.setOnClickListener(this);
-        button_device_name.setOnClickListener(this);
+
+        mRecyclerView = findViewById(R.id.recyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+    }
+    void initValue(){
+        items.add(getString(R.string.device_name));
+        items.add(getString(R.string.action_change_device_pwd));
+        items.add(getString(R.string.action_manager_push));
+        items.add(getString(R.string.action_manager_volume));
+        items.add(getString(R.string.action_manager_alarm_level));
+        items.add(getString(R.string.action_version));
+
+        mAdapter = new DeviceSettingAdapter(items);
+        mAdapter.setDevModel(model);
+        mAdapter.setOnItemClickListener(this);
+        mRecyclerView.setAdapter(mAdapter);
 
     }
     void refreshView(){
@@ -117,9 +145,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             imageview_thumb.setImageBitmap(bitmap);
         }
         textview_uid.setText(model.UID);
-        button_device_name.setText(model.DevName);
-        textview_pwd.setText(getString(R.string.device_pwd)+":"+model.pwd);
-        textview_version.setText(getString(R.string.device_version)+":"+model.SoftVersion);
+        mAdapter.notifyDataSetChanged();
     }
 
     private void changeDeviceNameDialog() {
@@ -140,7 +166,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                         }
                         lod.dialogShow();
                         String inputName = inputServer.getText().toString();
-                        ChangeDeviceTask task = new  ChangeDeviceTask();
+                        ChangeDeviceNameTask task = new  ChangeDeviceNameTask();
                         task.execute(inputName);
                     }
                 });
@@ -151,15 +177,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.button_change_pwd:
-                Intent intent = new Intent(this,ChangeDevicePwdActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("model",model);
-                bundle.putSerializable("type",ChangeDevicePwdActivity.EnumChangeDevicePwd.DEVICE_SETTING);
 
-                intent.putExtras(bundle);
-                startActivity(intent);
-                break;
             case R.id.button_delete_device:
                 if (lod == null){
                     lod = new LoadingDialog(this);
@@ -172,11 +190,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(observer);
                 break;
-            case R.id.button_device_name:
-                if (model.IsConnect()){
-                    changeDeviceNameDialog();
-                }
-                break;
+
+//                break;
             case R.id.button_ap_sta:
                 if (entryType == EnumMainEntry_Visitor){
                     //设置ap转sta
@@ -219,7 +234,30 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    class ChangeDeviceTask extends AsyncTask<String, Void, String> {
+    @Override
+    public void onItemClick(View view, int position) {
+        if (0 == position){
+            if (model.IsConnect()){
+                changeDeviceNameDialog();
+            }
+        }
+        else if(1 == position){
+                Intent intent = new Intent(this,ChangeDevicePwdActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("model",model);
+                bundle.putSerializable("type",ChangeDevicePwdActivity.EnumChangeDevicePwd.DEVICE_SETTING);
+
+                intent.putExtras(bundle);
+                startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onLongClick(View view, int position) {
+
+    }
+
+    class ChangeDeviceNameTask extends AsyncTask<String, Void, String> {
         // AsyncTask<Params, Progress, Result>
         //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
         @Override

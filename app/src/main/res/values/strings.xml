@@ -121,4 +121,8 @@
     <string name="action_change_device_name">修改设备名称</string>
     <string name="action_Success">设置成功</string>
     <string name="action_Failed">设置失败</string>
+    <string name="action_manager_push">推送管理</string>
+    <string name="action_manager_volume">存储管理</string>
+    <string name="action_manager_alarm_level">报警灵敏度</string>
+    <string name="action_version">版本</string>
 </resources>
