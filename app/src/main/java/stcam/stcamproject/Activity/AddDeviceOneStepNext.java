@@ -1,16 +1,26 @@
 package stcam.stcamproject.Activity;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.github.ybq.android.spinkit.SpinKitView;
+import com.thSDK.TMsg;
 
 import stcam.stcamproject.R;
 
 public class AddDeviceOneStepNext extends AppCompatActivity implements View.OnClickListener {
     Button button_cancel;
     final  static  String tag = "AddDeviceOneStepNext";
+    String SSID;
+    String Password;
+    SpinKitView spin_kit;
+    boolean isConfig;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,9 +32,16 @@ public class AddDeviceOneStepNext extends AppCompatActivity implements View.OnCl
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(R.string.action_add_ap_sta);
         }
+        Bundle bundle = this.getIntent().getExtras();
+        if (bundle != null){
+            SSID = bundle.getString("ssid");
+            Password = bundle.getString("ssid_pwd");
+        }
+
         button_cancel = findViewById(R.id.button_cancel);
         button_cancel.setOnClickListener(this);
-
+        spin_kit = findViewById(R.id.spin_kit);
+        smartConfig();
     }
 
     @Override
@@ -36,8 +53,67 @@ public class AddDeviceOneStepNext extends AppCompatActivity implements View.OnCl
         }
         return super.onOptionsItemSelected(item);
     }
+    public void SmartConfigStop()
+    {
+        isConfig = false;
+        spin_kit.setVisibility(View.INVISIBLE);
+        //lib.jsmt_Stop();
+
+    }
+    void smartConfig(){
+        //lib.jsmt_Init();
+        //lib.jsmt_Start(SSID, Password, "", "", 0);
+        new Thread()
+        {
+            public void run()
+            {
+                long dt = System.currentTimeMillis();
+
+                while (true)
+                {
+                    try
+                    {
+                        sleep(500);
+                    }
+                    catch (InterruptedException e)
+                    {
+                    }
+                    if (!isConfig){
+                        handler.sendEmptyMessage(TMsg.Msg_SmartConfigClose);
+                    }
 
 
+                    if (System.currentTimeMillis() - dt > 1000 * 30)
+                    {
+                        handler.sendEmptyMessage(TMsg.Msg_SmartConfigOver);
+                        break;
+                    }
+                }
+            }
+        }.start();
+
+    }
+    Handler handler = new Handler()
+    {
+        public void handleMessage(Message msg)
+        {
+            switch (msg.what) {
+
+
+                case TMsg.Msg_SmartConfigClose:
+                    //AddDeviceOneStepNext.this.mydialog.dismiss();
+                    AddDeviceOneStepNext.this.SmartConfigStop();
+                    break;
+
+                case TMsg.Msg_SmartConfigOver:
+                    AddDeviceOneStepNext.this.SmartConfigStop();
+                    //actSmartConfig.this.mydialog.dismiss();
+                    Toast.makeText(AddDeviceOneStepNext.this, R.string.SmartConfigOver, Toast.LENGTH_SHORT).show();
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
 
     @Override
     public void onClick(View view) {

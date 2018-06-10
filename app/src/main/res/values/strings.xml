@@ -125,4 +125,6 @@
     <string name="action_manager_volume">存储管理</string>
     <string name="action_manager_alarm_level">报警灵敏度</string>
     <string name="action_version">版本</string>
+    <string name="action_request_ssid">请填写wifi信息</string>
+    <string name="SmartConfigOver">Configuration finish</string>
 </resources>

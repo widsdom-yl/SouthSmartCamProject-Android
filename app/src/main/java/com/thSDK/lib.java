@@ -8,6 +8,8 @@ public class lib extends Activity
     {
         try
         {
+            System.loadLibrary("IOTCAPIs");
+            System.loadLibrary("AVAPIs");
             System.loadLibrary("thSDK");
         }
         catch (UnsatisfiedLinkError e)
