@@ -62,7 +62,8 @@
         <activity android:name=".Activity.LedControlActivity" />
         <activity android:name=".Activity.SystemSettingActivity" />
         <activity android:name=".Activity.ChangeLoginPasswordActivity" />
-        <activity android:name=".Activity.ForgetPwdActivity"></activity>
+        <activity android:name=".Activity.ForgetPwdActivity" />
+        <activity android:name=".Activity.SDVolumeManagerActivity"></activity>
     </application>
 
 </manifest>

@@ -250,6 +250,22 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 intent.putExtras(bundle);
                 startActivity(intent);
         }
+        else if(3 == position){
+            if (!model.IsConnect()){
+                SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_net_not_connect));
+                return;
+            }
+            if(model.ExistSD == 0){
+                SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_not_exist_sd));
+                return;
+            }
+            Intent intent = new Intent(this,SDVolumeManagerActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("devModel",model);
+            intent.putExtras(bundle);
+            startActivity(intent);
+
+        }
     }
 
     @Override

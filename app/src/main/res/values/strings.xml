@@ -105,6 +105,7 @@
     <string name="action_AP_T_STA">AP转STA</string>
     <string name="action_STA_T_AP">STA转AP</string>
     <string name="action_AP_T_STA_Success">设置成功,请手动重启设备</string>
+
     <string name="action_AP_T_STA_Failed">设置失败</string>
     <string name="action_STA_T_AP_Success">设置成功</string>
     <string name="action_STA_T_AP_Failed">设置失败</string>
@@ -122,11 +123,18 @@
     <string name="action_Success">设置成功</string>
     <string name="action_Failed">设置失败</string>
     <string name="action_manager_push">推送管理</string>
-    <string name="action_manager_volume">存储管理</string>
+    <string name="action_manager_volume">储存管理</string>
     <string name="action_manager_alarm_level">报警灵敏度</string>
     <string name="action_version">版本</string>
     <string name="action_request_ssid">请填写wifi信息</string>
     <string name="SmartConfigOver">Configuration finish</string>
     <string name="SmartConfig">SmartConfig</string>
     <string name="SmartConfiging">SmartConfiging...</string>
+    <string name="action_record_recycle">循环录像</string>
+    <string name="action_record_stop">停止录像</string>
+    <string name="action_sd_format">格式化</string>
+    <string name="action_volume_total">存储容量</string>
+    <string name="action_volume_record">录像分区</string>
+    <string name="action_volume_left">剩余容量</string>
+    <string name="action_Success_Reboot">设置成功,重启设备后生效</string>
 </resources>
