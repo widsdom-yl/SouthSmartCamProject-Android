@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
 
 
     Button btnNext;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,18 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                // do something
+                Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+        }, 1 * 1000);
+
+
     }
 
     @Override

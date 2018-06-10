@@ -24,6 +24,9 @@ import com.model.DevModel;
 import com.model.RetModel;
 import com.thSDK.lib;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +60,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     RecyclerView mRecyclerView;
     DeviceSettingAdapter mAdapter;
     DevModel model;
+    int MD_Sensitive = -1;
 
     List<String> items = new ArrayList<>();
     @Override
@@ -76,6 +80,18 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         }
         initView();
         initValue();
+
+        if (model.IsConnect()){
+            if (lod == null){
+                lod = new LoadingDialog(this);
+            }
+            lod.dialogShow();
+
+            getConfigTask configTask = new getConfigTask();
+            configTask.execute();
+        }
+
+
 
 
     }
@@ -223,7 +239,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                         task.execute();
                     }
                     else{
-                        SouthUtil.showDialog(SettingActivity.this,"当前五有效连接，无法转AP模式");
+                        SouthUtil.showDialog(SettingActivity.this,"当前无有效连接，无法转AP模式");
                     }
 
 
@@ -266,7 +282,43 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             startActivity(intent);
 
         }
+        else if(4 == position){
+            dialogChoice();
+        }
     }
+
+    int chooseLevel = -1;
+    private void dialogChoice() {
+        chooseLevel = -1;
+        final String items[] = {getString(R.string.action_level_low), getString(R.string.action_level_middle), getString(R.string.action_level_high)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this,3);
+        builder.setTitle(getString(R.string.action_manager_alarm_level));
+        builder.setIcon(R.mipmap.ic_launcher);
+        builder.setSingleChoiceItems(items, 0,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.e(tag,"choose :"+which);
+                        chooseLevel = which;
+                    }
+                });
+        builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Log.e(tag,"final choose :"+which);
+                if (lod == null){
+                    lod = new LoadingDialog(SettingActivity.this);
+                }
+                lod.dialogShow();
+                SetMdSensitiveConfigTask task = new SetMdSensitiveConfigTask();
+                task.execute(chooseLevel);
+            }
+        });
+        builder.create().show();
+    }
+
+
 
     @Override
     public void onLongClick(View view, int position) {
@@ -286,6 +338,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             //第二个执行方法,onPreExecute()执行完后执行
             // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
             //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
+
+
             String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=31&DevName="+params[0];
             Log.e(tag,url+",NetHandle is "+model.NetHandle);
             String ret = lib.thNetHttpGet(model.NetHandle,url);
@@ -349,6 +403,103 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             if (retModel != null){
                 if (retModel.ret == 1){
                     SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_STA_T_AP_Success));
+                }
+                else {
+                    SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_STA_T_AP_Failed));
+                }
+            }
+            super.onPostExecute(result);
+        }
+    }
+
+    class getConfigTask extends AsyncTask<String, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            //第二个执行方法,onPreExecute()执行完后执行
+            // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
+            //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
+            String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=82";
+            Log.e(tag,url+",NetHandle is "+model.NetHandle);
+            String ret = lib.thNetHttpGet(model.NetHandle,url);
+            Log.e(tag,"ret :"+ret);
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
+            //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
+            //Log.e(tag,"get playback list :"+result);
+            lod.dismiss();
+            if (result == null){
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                MD_Sensitive = jsonObject.getInt("MD_Sensitive");
+                mAdapter.setMD_Sensitive(MD_Sensitive);
+                mAdapter.notifyDataSetChanged();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            super.onPostExecute(result);
+        }
+    }
+
+    class SetMdSensitiveConfigTask extends AsyncTask<Integer, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(Integer... params) {
+            //第二个执行方法,onPreExecute()执行完后执行
+            // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
+            //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
+
+            if (params[0] == 0){
+                MD_Sensitive = 100;
+            }
+            else if (params[0] == 1){
+                MD_Sensitive = 150;
+            }
+            else if (params[0] == 2){
+                MD_Sensitive = 200;
+            }
+
+            String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=29&MD_Sensitive="+MD_Sensitive;
+            Log.e(tag,url+",MD_Sensitive,NetHandle is "+model.NetHandle);
+            String ret = lib.thNetHttpGet(model.NetHandle,url);
+            Log.e(tag,"ret :"+ret);
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
+            //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
+            //Log.e(tag,"get playback list :"+result);
+            lod.dismiss();
+
+
+
+            RetModel retModel = GsonUtil.parseJsonWithGson(result,RetModel.class);
+            if (retModel != null){
+                if (retModel.ret == 1){
+                    mAdapter.setMD_Sensitive(MD_Sensitive);
+                    mAdapter.notifyDataSetChanged();
+                    SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_Success));
                 }
                 else {
                     SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_STA_T_AP_Failed));
