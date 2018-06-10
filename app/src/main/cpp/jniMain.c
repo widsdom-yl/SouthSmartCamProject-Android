@@ -1,3 +1,4 @@
+#include <mtk_SmartConfig.h>
 #include "../include/libthSDK.h"
 #include "jni.h"
 #include "avDecode/thffmpeg.h"
@@ -163,6 +164,32 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_testGetFfmpeg(JNIEnv* env, jclass o
   return (*env)->NewStringUTF(env, info);
 
 }
+
+JNIEXPORT jint Java_com_thSDK_lib_jsmtInit(JNIEnv* env, jclass obj)
+{
+  return InitSmartConnection();
+}
+//-----------------------------------------------------------------------------
+JNIEXPORT jint Java_com_thSDK_lib_jsmtStop(JNIEnv* env, jclass obj)
+{
+  return StopSmartConnection();
+}
+//-----------------------------------------------------------------------------
+JNIEXPORT jint Java_com_thSDK_lib_jsmtStart(JNIEnv* env, jclass obj, jstring nSSID, jstring nPassword, jstring nTlv, jstring nTarget, int nAuthMode)
+{
+  const char* SSID = (*env)->GetStringUTFChars(env, nSSID, NULL);
+  const char* Password = (*env)->GetStringUTFChars(env, nPassword, NULL);
+  const char* Tlv = (*env)->GetStringUTFChars(env, nTlv, NULL);
+  const char* Target = (*env)->GetStringUTFChars(env, nTarget, NULL);
+  char AuthMode = nAuthMode;
+  int ret = StartSmartConnection(SSID, Password, (unsigned char*)Tlv, strlen(Tlv), Target, AuthMode);
+  (*env)->ReleaseStringUTFChars(env, nSSID, SSID);
+  (*env)->ReleaseStringUTFChars(env, nPassword, Password);
+  (*env)->ReleaseStringUTFChars(env, nTlv, Tlv);
+  (*env)->ReleaseStringUTFChars(env, nTarget, Target);
+  return ret;
+}
+
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetTalkOpen(JNIEnv* env, jclass obj, u64 NetHandle)
 {

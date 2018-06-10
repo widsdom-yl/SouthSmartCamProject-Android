@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -11,9 +13,9 @@ import android.widget.Toast;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.thSDK.TMsg;
+import com.thSDK.lib;
 
 import stcam.stcamproject.R;
-
 public class AddDeviceOneStepNext extends AppCompatActivity implements View.OnClickListener {
     Button button_cancel;
     final  static  String tag = "AddDeviceOneStepNext";
@@ -30,7 +32,7 @@ public class AddDeviceOneStepNext extends AppCompatActivity implements View.OnCl
         if(actionBar != null){
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_add_ap_sta);
+            actionBar.setTitle(R.string.SmartConfig);
         }
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){
@@ -48,21 +50,34 @@ public class AddDeviceOneStepNext extends AppCompatActivity implements View.OnCl
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                isConfig = false;
                 this.finish(); // back button
+
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            Log.e(tag,"---------------------onKeyDown");
+            isConfig = false;
+            this.finish(); // back button
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
     public void SmartConfigStop()
     {
         isConfig = false;
         spin_kit.setVisibility(View.INVISIBLE);
-        //lib.jsmt_Stop();
+        lib.jsmtStop();
 
     }
     void smartConfig(){
-        //lib.jsmt_Init();
-        //lib.jsmt_Start(SSID, Password, "", "", 0);
+        isConfig = true;
+        lib.jsmtInit();
+        lib.jsmtStart(SSID, Password, "", "", 0);
         new Thread()
         {
             public void run()
@@ -117,6 +132,7 @@ public class AddDeviceOneStepNext extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View view) {
+        isConfig = false;
         this.finish();
     }
 }

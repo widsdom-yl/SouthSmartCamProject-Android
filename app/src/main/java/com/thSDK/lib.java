@@ -95,6 +95,10 @@ public class lib extends Activity
 
     public static native String thNetSearchDevice(int TimeOut, int IsJson);
 
+    public static native int jsmtInit();
+    public static native int jsmtStop();
+    public static native int jsmtStart(String SSID, String Password, String Tlv, String Target, int AuthMode);
+
     //---------------------------------------------------------------------------
     //---------------------------------------------------------------------------
     //---------------------------------------------------------------------------

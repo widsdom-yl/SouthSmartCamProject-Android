@@ -25,7 +25,7 @@ public class AddDeviceOneStepActivity extends AppCompatActivity implements View.
         if(actionBar != null){
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_add_one_key_setting);
+            actionBar.setTitle(R.string.SmartConfig);
         }
 
         setContentView(R.layout.activity_add_device_one_step);
