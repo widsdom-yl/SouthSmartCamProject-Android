@@ -2,9 +2,11 @@ package stcam.stcamproject.Application;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
 import cn.jpush.android.api.JPushInterface;
+import io.fabric.sdk.android.Fabric;
 import stcam.stcamproject.Manager.MyContext;
 
 public class STApplication extends Application {
@@ -14,6 +16,7 @@ public class STApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
 
         mInstance = this;
         if (!MyContext.isInitialized()) {

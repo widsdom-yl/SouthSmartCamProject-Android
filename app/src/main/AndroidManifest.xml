@@ -40,6 +40,7 @@
         <activity android:name=".Activity.AddDeviceOneStepActivity" />
         <activity
             android:name=".Activity.PlayLiveActivity"
+            android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask" />
         <activity android:name=".Activity.DeviceShareActivity" />
@@ -64,6 +65,9 @@
         <activity android:name=".Activity.ChangeLoginPasswordActivity" />
         <activity android:name=".Activity.ForgetPwdActivity" />
         <activity android:name=".Activity.SDVolumeManagerActivity"></activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="d4fed762adbf5636271fae1e9fffd1bad9abf368" />
     </application>
 
 </manifest>

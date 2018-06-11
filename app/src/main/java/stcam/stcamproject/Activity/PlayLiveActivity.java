@@ -1,6 +1,7 @@
 package stcam.stcamproject.Activity;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,6 +44,9 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     boolean pix_low = true;
     ImageButton button_ptz_left,button_ptz_right,button_ptz_up,button_ptz_down;
     Button button_ptz;
+
+    ImageButton imagebutton_to_lanscape,imagebutton_to_portrait;
+
     private GestureDetector mygesture;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +74,9 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                if (lib.thNetIsRec(devModel.NetHandle)) {
+                    lib.thNetStopRec(devModel.NetHandle);
+                }
                 glView.Stop();
 
                 this.finish(); // back button
@@ -81,7 +88,13 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK){
             Log.e(tag,"---------------------onKeyDown");
+
+            if (lib.thNetIsRec(devModel.NetHandle)) {
+                lib.thNetStopRec(devModel.NetHandle);
+            }
             glView.Stop();
+
+
 
             this.finish(); // back button
             return true;
@@ -101,17 +114,25 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             getSupportActionBar().show();
 
+            imagebutton_to_portrait.setVisibility(View.INVISIBLE);
+            imagebutton_to_lanscape.setVisibility(View.VISIBLE);
+
+
             //设置当前窗体为全屏显示
 
 
         }else if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
             layout_land.setVisibility(View.VISIBLE);
             layout_control.setVisibility(View.INVISIBLE);
+
+            imagebutton_to_portrait.setVisibility(View.VISIBLE);
+            imagebutton_to_lanscape.setVisibility(View.INVISIBLE);
             getSupportActionBar().hide();
             int flag= WindowManager.LayoutParams.FLAG_FULLSCREEN;
             //设置当前窗体为全屏显示
             Window window = getWindow();
             window.setFlags(flag, flag);
+
         }
     }
     void initView(){
@@ -120,7 +141,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         layout_control = findViewById(R.id.layout_control);
         glView.setModel(devModel);
         layout_land = findViewById(R.id.layout_land);
-        configurationChanged();
+
 
         button_snapshot = findViewById(R.id.button_snapshot);
         button_snapshot_o = findViewById(R.id.button_snapshot_o);
@@ -157,6 +178,12 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         button_ptz_up.setOnClickListener(this);
         button_ptz_down.setOnClickListener(this);
 
+        imagebutton_to_lanscape = findViewById(R.id.imagebutton_to_lanscape);
+        imagebutton_to_portrait = findViewById(R.id.imagebutton_to_portrait);
+        imagebutton_to_lanscape.setOnClickListener(this);
+        imagebutton_to_portrait.setOnClickListener(this);
+
+        configurationChanged();
     }
     ConstraintUtil constraintUtil;
     static final String tag = "PlayLiveActivity";
@@ -250,6 +277,17 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 pix_low = !pix_low;
                 button_pix.setText(pix_low?R.string.action_pix_low:R.string.action_pix_high);
                 devModel.Play(pix_low?1:0);
+            case R.id.imagebutton_to_portrait:
+                if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                }
+
+                break;
+            case R.id.imagebutton_to_lanscape:
+                if (this.getResources().getConfiguration().orientation ==Configuration.ORIENTATION_PORTRAIT) {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                }
+                break;
             default:
                 break;
         }
