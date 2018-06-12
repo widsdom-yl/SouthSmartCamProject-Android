@@ -418,12 +418,18 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
             // get status model is {"Mode":1,"Auto":{"Delay":90,"Lux":2},"Manual":{"Brightness":0},
             // "Timer":{"Brightness":0,"StartH":0,"StartM":0,"StopH":0,"StopM":0},"D2D":{"Brightness":0,"Lux":0}}
             lod.dismiss();
-            if (retmodel.ret == 1){
-                SouthUtil.showDialog(LedControlActivity.this,"set successfully");
+            if (retmodel != null){
+                if (retmodel.ret == 1){
+                    SouthUtil.showDialog(LedControlActivity.this,"set successfully");
+                }
+                else {
+                    SouthUtil.showDialog(LedControlActivity.this,"set failed");
+                }
             }
-            else {
+            else{
                 SouthUtil.showDialog(LedControlActivity.this,"set failed");
             }
+
 
             super.onPostExecute(result);
         }

@@ -152,6 +152,23 @@ public class FileUtil {
         }
 
     }
+
+    /*判断文件是否是空文件，录像的时候可能存在空文件*/
+    public static boolean isFileEmpty(String path) {
+        File file = new File(path);
+        if(file.exists()) {
+
+            if (file.length() == 0){
+                return true;
+            }
+        }
+        else{
+            return true;
+        }
+        return false;
+    }
+
+
     public static String pathSnapShot(){
         String rootPath = FileUtil.getSDRootPath();
         if (rootPath != null){

@@ -76,6 +76,9 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
             case android.R.id.home:
                 if (lib.thNetIsRec(devModel.NetHandle)) {
                     lib.thNetStopRec(devModel.NetHandle);
+                    if (FileUtil.isFileEmpty(recordfileName)){
+                        FileUtil.delFiles(recordfileName);
+                    }
                 }
                 glView.Stop();
 
@@ -91,6 +94,9 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 
             if (lib.thNetIsRec(devModel.NetHandle)) {
                 lib.thNetStopRec(devModel.NetHandle);
+                if (FileUtil.isFileEmpty(recordfileName)){
+                    FileUtil.delFiles(recordfileName);
+                }
             }
             glView.Stop();
 
@@ -170,7 +176,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         button_slient.setOnClickListener(this);
         button_pix.setOnClickListener(this);
 
-        ptz_layout = findViewById(R.id.ptz_layout);
+        ptz_layout = findViewById(R.id.ptz_control_layout);
         button_ptz = findViewById(R.id.button_ptz);
         button_ptz.setOnClickListener(this);
         button_ptz_left.setOnClickListener(this);
@@ -187,6 +193,8 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     }
     ConstraintUtil constraintUtil;
     static final String tag = "PlayLiveActivity";
+
+    String recordfileName;
 
     @Override
     public void onClick(View view) {
@@ -228,11 +236,14 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 
                 if (lib.thNetIsRec(devModel.NetHandle)){
                     lib.thNetStopRec(devModel.NetHandle);
+                    if (FileUtil.isFileEmpty(recordfileName)){
+                        FileUtil.delFiles(recordfileName);
+                    }
                     button_record.setImageResource(R.drawable.btnrecorddefault);
                     button_record_o.setImageResource(R.drawable.btnrecorddefault);
                 }
                 else{
-                   String recordfileName = FileUtil.generatePathRecordFileName(devModel.SN);
+                    recordfileName = FileUtil.generatePathRecordFileName(devModel.SN);
                    lib.thNetStartRec(devModel.NetHandle,recordfileName);
                     button_record.setImageResource(R.drawable.btnrecorddown);
                     button_record_o.setImageResource(R.drawable.btnrecorddown);

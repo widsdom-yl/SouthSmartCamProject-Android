@@ -218,10 +218,9 @@
 
     <include
         android:id="@+id/include"
-        layout="@layout/layout_ptz_view"
         android:layout_width="300dp"
+        layout="@layout/layout_ptz_view"
         android:layout_height="216dp"
-        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -493,7 +493,10 @@ bool thRecordStop(HANDLE RecHandle)
 #ifdef IS_AAC
   if (Info->haacCodec) ret = Info->aacAPI.Uninit(Info->haacCodec);
 #endif
-  av_write_trailer(Info->avFormat);
+    if (Info->IsWriteHead){
+        av_write_trailer(Info->avFormat);
+    }
+
   avio_close(Info->avFormat->pb);
 
   if (Info->VideoType != CODEC_NONE)
