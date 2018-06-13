@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TimePicker;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.model.DevModel;
 import com.model.LedStatusModel;
 import com.model.RetModel;
@@ -58,11 +59,16 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
 
     LedStatusModel statusModel;
     LoadingDialog lod;
+
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_led_control);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         if(actionBar != null){
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -80,11 +86,11 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_led, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_led, menu);
+//        return true;
+//    }
 
 
 
@@ -100,6 +106,8 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                SetLedStatusTask task1 = new SetLedStatusTask();
+                task1.execute(0);
                 this.finish(); // back button
                 return true;
             case R.id.action_set:
@@ -109,6 +117,20 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            Log.e(tag,"---------------------onKeyDown");
+
+            SetLedStatusTask task1 = new SetLedStatusTask();
+            task1.execute(0);
+            this.finish(); // back button
+
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     public void initView(){
@@ -418,7 +440,12 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
             // get status model is {"Mode":1,"Auto":{"Delay":90,"Lux":2},"Manual":{"Brightness":0},
             // "Timer":{"Brightness":0,"StartH":0,"StartM":0,"StopH":0,"StopM":0},"D2D":{"Brightness":0,"Lux":0}}
             lod.dismiss();
+            Bundle params = new Bundle();
+            params.putString("SetLedResult", result);
+
+
             if (retmodel != null){
+                params.putBoolean("SetLedResultModel", true);
                 if (retmodel.ret == 1){
                     SouthUtil.showDialog(LedControlActivity.this,"set successfully");
                 }
@@ -427,10 +454,11 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
                 }
             }
             else{
+                params.putBoolean("SetLedResultModel", false);
                 SouthUtil.showDialog(LedControlActivity.this,"set failed");
             }
 
-
+            mFirebaseAnalytics.logEvent("SetLed", params);
             super.onPostExecute(result);
         }
     }
