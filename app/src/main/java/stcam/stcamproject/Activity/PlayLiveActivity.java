@@ -288,6 +288,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 pix_low = !pix_low;
                 button_pix.setText(pix_low?R.string.action_pix_low:R.string.action_pix_high);
                 devModel.Play(pix_low?1:0);
+                break;
             case R.id.imagebutton_to_portrait:
                 if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

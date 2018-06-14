@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="24dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="124dp"
         android:text="@string/action_led_model"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -116,8 +116,8 @@
             android:layout_marginStart="14dp"
             android:layout_toRightOf="@id/light_time_span"
             app:layout_constraintEnd_toEndOf="parent"
-            android:min="10"
-            android:max="600"
+            android:min="20"
+            android:max="620"
             tools:layout_editor_absoluteY="216dp" />
 
         <View
@@ -332,7 +332,14 @@
 
     </RelativeLayout>
 
-
+    <ImageView
+        android:id="@+id/imageView_light"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

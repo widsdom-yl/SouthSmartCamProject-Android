@@ -13,6 +13,7 @@ public class Auto {
 
     private int Delay;
     private int Lux;
+    private int Brightness;
     public void setDelay(int Delay) {
          this.Delay = Delay;
      }
@@ -26,5 +27,11 @@ public class Auto {
      public int getLux() {
          return Lux;
      }
+    public void setBrightness(int Brightness) {
+        this.Brightness = Brightness;
+    }
+    public int getBrightness() {
+        return Brightness;
+    }
 
 }

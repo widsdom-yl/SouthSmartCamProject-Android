@@ -3,12 +3,14 @@ package stcam.stcamproject.Activity;
 import android.app.TimePickerDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -24,7 +26,6 @@ import com.thSDK.lib;
 import info.hoang8f.android.segmented.SegmentedGroup;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.GsonUtil;
-import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 
 public class LedControlActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener, View.OnClickListener {
@@ -60,7 +61,20 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
     LedStatusModel statusModel;
     LoadingDialog lod;
 
+    ImageView imageView_light;
+
     private FirebaseAnalytics mFirebaseAnalytics;
+
+
+    Handler handler=new Handler();
+    Runnable runnable=new Runnable(){
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            SetLedStatusTask task = new SetLedStatusTask();
+            task.execute(0);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +97,8 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
         initView();
 
         initValue();
+
+
 
     }
 
@@ -113,7 +129,7 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
             case R.id.action_set:
                 SetLedStatusTask task = new SetLedStatusTask();
                 task.execute(0);
-                lod.dialogShow();
+               // lod.dialogShow();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -134,6 +150,9 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
     }
 
     public void initView(){
+
+        imageView_light = findViewById(R.id.imageView_light);
+
         btn_mode_1 = findViewById(R.id.btn_mode_1);
         btn_mode_2 = findViewById(R.id.btn_mode_2);
         btn_mode_3 = findViewById(R.id.btn_mode_3);
@@ -168,6 +187,8 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
         button_time_start.setOnClickListener(this);
         button_time_stop.setOnClickListener(this);
         modeGroup.check(R.id.btn_mode_1);
+
+
     }
 
     void hideAllLayout(){
@@ -185,6 +206,7 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
                     statusModel.setMode(1);
                     relativelayout_time_span.setVisibility(View.VISIBLE);
                     layout_sensitive.setVisibility(View.VISIBLE);
+                    layout_brintness.setVisibility(View.VISIBLE);
 
                     break;
                 case R.id.btn_mode_2:
@@ -223,6 +245,8 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
                     default:
                         break;
                 }
+                handler.removeCallbacks(runnable);
+                handler.postDelayed(runnable,2000);
             } else if (statusModel.getMode() == 4) {
                 switch (checkedId) {
                     case R.id.btn_sensitive_1:
@@ -238,11 +262,21 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
                     default:
                         break;
                 }
+                handler.removeCallbacks(runnable);
+                handler.postDelayed(runnable,2000);
             }
         }
     }
     void reloadView(){
         if (statusModel != null){
+
+            if (statusModel.getStatus() == 1){
+                imageView_light.setImageResource(R.drawable.light_open);
+            }
+            else{
+                imageView_light.setImageResource(R.drawable.light_close);
+            }
+
             switch (statusModel.getMode()){
                 case 1:
                     modeGroup.check(R.id.btn_mode_1);
@@ -300,6 +334,9 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
         else if(bar == seekBar_brintness){
             light_brintness.setText(""+i);
             switch (statusModel.getMode()){
+                case 1:
+                    statusModel.getAuto().setBrightness(i);
+                    break;
                 case 2:
                     statusModel.getManual().setBrightness(i);
                     break;
@@ -313,6 +350,8 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
                     break;
             }
         }
+        handler.removeCallbacks(runnable);
+        handler.postDelayed(runnable,2000);
     }
 
     @Override
@@ -358,11 +397,14 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
                             statusModel.getTimer().setStopM(minute);
                             button_time_stop.setText(statusModel.getTimer().getStopH()+":"+statusModel.getTimer().getStopM());
                         }
+
+                        handler.removeCallbacks(runnable);
+                        handler.postDelayed(runnable,2000);
                     }
                 }
                 // 设置初始时间
-                , start?21:9
-                , 0
+                , start?statusModel.getTimer().getStartH():statusModel.getTimer().getStopH()
+                , start?statusModel.getTimer().getStartM():statusModel.getTimer().getStopM()
                 // true表示采用24小时制
                 ,true).show();
     }
@@ -439,7 +481,7 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
             Log.e(tag,"set status model is "+result);
             // get status model is {"Mode":1,"Auto":{"Delay":90,"Lux":2},"Manual":{"Brightness":0},
             // "Timer":{"Brightness":0,"StartH":0,"StartM":0,"StopH":0,"StopM":0},"D2D":{"Brightness":0,"Lux":0}}
-            lod.dismiss();
+           // lod.dismiss();
             Bundle params = new Bundle();
             params.putString("SetLedResult", result);
 
@@ -447,15 +489,15 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
             if (retmodel != null){
                 params.putBoolean("SetLedResultModel", true);
                 if (retmodel.ret == 1){
-                    SouthUtil.showDialog(LedControlActivity.this,"set successfully");
+                   // SouthUtil.showDialog(LedControlActivity.this,"set successfully");
                 }
                 else {
-                    SouthUtil.showDialog(LedControlActivity.this,"set failed");
+                   // SouthUtil.showDialog(LedControlActivity.this,"set failed");
                 }
             }
             else{
                 params.putBoolean("SetLedResultModel", false);
-                SouthUtil.showDialog(LedControlActivity.this,"set failed");
+               // SouthUtil.showDialog(LedControlActivity.this,"set failed");
             }
 
             mFirebaseAnalytics.logEvent("SetLed", params);

@@ -11,6 +11,7 @@ package com.model;
  */
 public class LedStatusModel {
 
+    private int Status;
     private int Mode;
     private Auto Auto;
     private Manual Manual;
@@ -29,6 +30,13 @@ public class LedStatusModel {
      public int getMode() {
          return Mode;
      }
+
+    public void setStatus(int Status) {
+        this.Status = Status;
+    }
+    public int getStatus() {
+        return Status;
+    }
 
     public void setAuto(Auto Auto) {
          this.Auto = Auto;
