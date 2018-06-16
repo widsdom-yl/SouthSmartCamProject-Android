@@ -57,6 +57,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        lib.P2PInit();
         setContentView(R.layout.activity_main_dev_list);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(R.string.title_main_dev_list);
@@ -131,7 +132,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         }
         if (item.getItemId() == android.R.id.home){
             Log.e(tag,"---------------------back to home");
-            mDevices.clear();
+            disconnectDev();
             this.finish(); // back button
         }
         return super.onOptionsItemSelected(item);
@@ -141,13 +142,30 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK){
             Log.e(tag,"---------------------onKeyDown");
-            mDevices.clear();
+            disconnectDev();
+
             this.finish(); // back button
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
+    void disconnectDev(){
+        new Thread() {
+            @Override
+            public void run(){
+                Log.e(tag,"disconnectDev thread start");
+                for (DevModel model : mDevices){
+                    if (model.IsConnect()){
+                        Log.e(tag,"---------------------disconnect:"+model.SN);
+                        model.Disconn();
+                    }
+                }
+                mDevices.clear();
+                lib.P2PFree();
+            }
+        }.run();
 
+    }
     void initView(){
         refreshLayout = findViewById(R.id.swipeRefreshLayout);
         mRecyclerView = findViewById(R.id.recyler_device);

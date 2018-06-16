@@ -122,8 +122,8 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                SetLedStatusTask task1 = new SetLedStatusTask();
-                task1.execute(0);
+//                SetLedStatusTask task1 = new SetLedStatusTask();
+//                task1.execute(0);
                 this.finish(); // back button
                 return true;
             case R.id.action_set:
@@ -140,8 +140,8 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
         if(keyCode == KeyEvent.KEYCODE_BACK){
             Log.e(tag,"---------------------onKeyDown");
 
-            SetLedStatusTask task1 = new SetLedStatusTask();
-            task1.execute(0);
+//            SetLedStatusTask task1 = new SetLedStatusTask();
+//            task1.execute(0);
             this.finish(); // back button
 
             return true;

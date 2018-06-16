@@ -64,17 +64,18 @@ public class PlayBackListActivity extends AppCompatActivity implements BaseAdapt
     }
 
     void onGetPlayBackListResponse(String json){
-        List<SDVideoModel> lists = GsonUtil.parseJsonArrayWithGson(json,
-                SDVideoModel[].class);
-        if(lists.size()>0){
-            videoArray = lists;
+        if (json != null && json.length() >0){
+            List<SDVideoModel> lists = GsonUtil.parseJsonArrayWithGson(json,
+                    SDVideoModel[].class);
+            if(lists.size()>0){
+                videoArray = lists;
+            }
+            if (adapter == null){
+                adapter = new PlayBackListAdapter(lists);
+                adapter.setOnItemClickListener(PlayBackListActivity.this);
+            }
+            rv.setAdapter(adapter);
         }
-        if (adapter == null){
-            adapter = new PlayBackListAdapter(lists);
-            adapter.setOnItemClickListener(PlayBackListActivity.this);
-        }
-        rv.setAdapter(adapter);
-
 
     }
 

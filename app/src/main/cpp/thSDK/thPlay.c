@@ -1259,6 +1259,7 @@ reconnects:
 //-----------------------------------------------------------------------------
 bool net_Connect_P2P(HANDLE NetHandle, bool IsCreateRecvThread)
 {
+    PRINTF("================ connect p2p,nethandel is %lld\n", NetHandle);
 #ifdef IsUsedP2P
   char20 sLocalIP;
   i32 v1, v2, v3, v4;
@@ -1270,6 +1271,7 @@ bool net_Connect_P2P(HANDLE NetHandle, bool IsCreateRecvThread)
   i32 tmpSID;
   i32 ret = false;
   TPlayParam* Play = (TPlayParam*)NetHandle;
+    PRINTF("================ before connect p2p,Play->IPUID:%s\n",Play->IPUID);
   if (NetHandle == 0) return false;  
   if (Play->IsConnect) return true;
   Play->IsConnect = false;
@@ -1288,7 +1290,9 @@ bool net_Connect_P2P(HANDLE NetHandle, bool IsCreateRecvThread)
 //#warning "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 #if 1
   tmpSID = IOTC_Get_SessionID();
+    PRINTF("================ -1  connect p2p,tmpSID :%d,Play->IPUID:%s\n",tmpSID,Play->IPUID);
   Play->p2p_SessionID = IOTC_Connect_ByUID_Parallel(Play->IPUID, tmpSID);
+    PRINTF("================ -2  connect p2p,Play->p2p_SessionID :%d,Play->IPUID:%s\n",Play->p2p_SessionID,Play->IPUID);
   if (Play->p2p_SessionID < 0) goto exits;
 #else
   Play->p2p_SessionID = IOTC_Connect_ByUID(Play->IPUID);
@@ -1299,15 +1303,18 @@ bool net_Connect_P2P(HANDLE NetHandle, bool IsCreateRecvThread)
   memset(&Sinfo, 0, sizeof(struct st_SInfo));
   IOTC_Session_Check(Play->p2p_SessionID, &Sinfo);
   Play->p2p_avIndex = avClientStart2(Play->p2p_SessionID, Play->UserName, Play->Password, Play->TimeOut, &nServType, 0, &nResend);
-  if(Play->p2p_avIndex < 0) goto exits;
-
+    PRINTF("================ 0  connect p2p,nethandel is %lld\n", NetHandle);
+    if(Play->p2p_avIndex < 0) goto exits;
+    PRINTF("================ 1 connect p2p,nethandel is %lld\n", NetHandle);
   avSendIOCtrl(Play->p2p_avIndex, IOTYPE_INNER_SND_DATA_DELAY, (char*)&val, sizeof(u16));
 #define AUDIO_SPEAKER_CHANNEL 5
   //Play->p2p_talkIndex = avServStart(Play->p2p_SessionID, NULL, NULL, 60, 0, AUDIO_SPEAKER_CHANNEL);
   Play->p2p_talkIndex = avServStart(Play->p2p_SessionID, NULL, NULL, Play->TimeOut, 0, AUDIO_SPEAKER_CHANNEL);
+
   if(Play->p2p_talkIndex < 0) goto exits;
 
   ret = net_GetAllCfg(NetHandle);
+    PRINTF("================ 2 connect p2p,nethandel is %lld\n", NetHandle);
   if (!ret) goto exits;
   ret = sscanf(Play->DevCfg.DevInfoPkt.SoftVersion, "V%d.%d.%d.%d", &v1, &v2, &v3, &v4);
   Play->p2pSoftVersion = 0;//old
@@ -1331,9 +1338,11 @@ exits:
 //-----------------------------------------------------------------------------
 bool thNet_Connect(HANDLE NetHandle, char* UserName, char* Password, char* IPUID, i32 DataPort, u32 TimeOut)
 {
+  PRINTF("connect ,IPUID is %s\n",IPUID);
   bool ret;
   TPlayParam* Play = (TPlayParam*)NetHandle;
   if (NetHandle == 0) return false;
+
   if (Play->IsConnect) return true;
 /*
   if (Play->iConnectStatus == THNET_CONNSTATUS_CONNING)
@@ -1348,6 +1357,7 @@ bool thNet_Connect(HANDLE NetHandle, char* UserName, char* Password, char* IPUID
   strcpy(Play->UserName, UserName);
   strcpy(Play->Password, Password);
   strcpy(Play->IPUID, IPUID);
+  PRINTF("connect ,strcpy Play->IPUID is %s\n",Play->IPUID);
   Play->DataPort = DataPort;
   Play->TimeOut = TimeOut;
   if (Play->TimeOut == 0) Play->TimeOut = NET_TIMEOUT;
