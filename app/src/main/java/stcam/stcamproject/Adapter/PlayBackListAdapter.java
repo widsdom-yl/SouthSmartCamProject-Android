@@ -10,6 +10,7 @@ public class PlayBackListAdapter extends BaseAdapter<SDVideoModel>{
         super(R.layout.layout_play_back_list, list);
     }
 
+
     protected void convert(BaseHolder holder, SDVideoModel model,int position) {
         super.convert(holder,model,position);
         holder.setText(R.id.file_name_text,model.sdVideo);

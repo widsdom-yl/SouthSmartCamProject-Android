@@ -47,9 +47,14 @@
         <activity android:name=".Activity.DeviceShareActivity" />
         <activity
             android:name=".Activity.PlayBackActivity"
+            android:screenOrientation="landscape"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask" />
-        <activity android:name=".Activity.PlayBackListActivity" />
+        <activity android:name=".Activity.PlayBackListActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTask"
+            />
         <activity android:name=".Activity.AlarmListActivity" />
         <activity android:name=".Activity.AlarmDetailActivity" />
         <activity android:name=".Activity.MediaActivity" />

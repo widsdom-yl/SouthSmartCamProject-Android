@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".Activity.PlayBackListActivity">
 
+    <com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/play_back_list_view"
         android:layout_width="0dp"
@@ -16,4 +21,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    </com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout>
 </android.support.constraint.ConstraintLayout>
