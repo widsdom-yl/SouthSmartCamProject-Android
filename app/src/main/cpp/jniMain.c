@@ -270,7 +270,7 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetHttpGet(JNIEnv* env, jclass ob
   {
     PRINTF("%s(%d) Buf:%s\n", __FUNCTION__, __LINE__, Buf);
     UcnvConvert(conv, sizeof(conv), Buf, &pnErrC);
-    Result = (*env)->NewStringUTF(env, conv);
+    Result = (*env)->NewStringUTF(env, Buf);
   }
   (*env)->ReleaseStringUTFChars(env, jurl, url);
   return Result;

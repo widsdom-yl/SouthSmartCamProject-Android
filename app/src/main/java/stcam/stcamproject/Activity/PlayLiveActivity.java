@@ -382,7 +382,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
             String url = "http://0.0.0.0:0/cfg1.cgi?User="+devModel.usr+"&Psd="+devModel.pwd+"&MsgID=13&cmd="+params[0]+"&sleep=500&s=23231";
 
             String ret = lib.thNetHttpGet(devModel.NetHandle,url);
-            Log.e(tag,"ret :"+ret);
+            Log.e(tag,"PtzControlTask ret :"+ret);
             return ret;
         }
         @Override

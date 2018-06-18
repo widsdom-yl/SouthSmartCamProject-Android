@@ -1,6 +1,7 @@
 package stcam.stcamproject.Activity;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -49,6 +50,11 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
     SuperSwipeRefreshLayout refreshLayout;
 
     EnumMainEntry entryType;
+
+    private IntentFilter intentFilter;
+    private NetworkChangeReceiver networkChangeReceiver;
+
+
     public enum EnumMainEntry implements Serializable {
         EnumMainEntry_Login,
         EnumMainEntry_Visitor
@@ -68,6 +74,13 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
 
         initView();
+
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        networkChangeReceiver = new NetworkChangeReceiver();
+        registerReceiver(networkChangeReceiver, intentFilter);
+
+
        // mAdapter = new DeviceListAdapter(this,null);
     }
 
@@ -85,6 +98,13 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
 
     }
+
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(networkChangeReceiver);
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (entryType == EnumMainEntry.EnumMainEntry_Login){

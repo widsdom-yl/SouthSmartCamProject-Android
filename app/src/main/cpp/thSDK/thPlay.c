@@ -1973,6 +1973,7 @@ bool thNet_HttpGet(HANDLE NetHandle, char* url, char* Buf, i32* BufLen)
   }
   else
   {
+    PRINTF("------------------------- httpget p2p 0\n");
 #ifdef IsUsedP2P
     char1024 SvrName, HostName, UserNamePassword;
     char PageName[1024];
@@ -1981,7 +1982,7 @@ bool thNet_HttpGet(HANDLE NetHandle, char* url, char* Buf, i32* BufLen)
     TNewCmdPkt SendPkt;
     TNewCmdPkt recvPkt;
     struct timespec abstime;
-
+    PRINTF("------------------------- httpget p2p a\n");
     ret = sscanf(url, "http://%[^@]@%[^/]%s", UserNamePassword, SvrName, PageName);
     if (ret != 3)
     {
@@ -1991,14 +1992,18 @@ bool thNet_HttpGet(HANDLE NetHandle, char* url, char* Buf, i32* BufLen)
 
     if (sscanf(SvrName, "%[^:]:%d", HostName, &port) == 2)
     {
-      if ((strlen(HostName) == 0) || (port <= 0) || (port >0xffff)) goto exits;
+
+      if ((strlen(HostName) == 0) || (port < 0) || (port >0xffff)){
+          PRINTF("------------------------- httpget p2p aaaa,HostName is %s,port is %d\n",HostName,port);
+          goto exits;
+      }
     }
     else
     {
       strcpy(HostName, SvrName);
       port = 80;
     }
-
+    PRINTF("------------------------- httpget p2p b\n");
     *BufLen = 0;
     memset(&SendPkt, 0, sizeof(TNewCmdPkt));
     SendPkt.VerifyCode = Head_CmdPkt;
@@ -2010,14 +2015,16 @@ bool thNet_HttpGet(HANDLE NetHandle, char* url, char* Buf, i32* BufLen)
     Play->RecvDownloadLen = 0;
     ioType = Head_CmdPkt;
     ret = avSendIOCtrl(Play->p2p_avIndex, ioType, (char*)&SendPkt, 8 + SendPkt.PktSize);
+    PRINTF("------------------------- httpget p2p 1,ret is %d\n",ret);
     if (ret < 0) goto exits;
 
     if (Play->p2pSoftVersion >= 1)
     {
+
       ThreadLock(&Play->Lock);
       Play->IsStopHttpGet = false;
       ThreadUnlock(&Play->Lock);
-
+      PRINTF("------------------------- httpget p2p 2\n");
       dt = GetTime();
       abstime.tv_sec =  dt + 3;
       abstime.tv_nsec = 0;
@@ -2043,6 +2050,7 @@ bool thNet_HttpGet(HANDLE NetHandle, char* url, char* Buf, i32* BufLen)
     }
     else
     {
+      PRINTF("------------------------- httpget p2p 3\n");
       while(1)
       {
         if (Play->IsExit) goto exits;
@@ -2059,8 +2067,10 @@ bool thNet_HttpGet(HANDLE NetHandle, char* url, char* Buf, i32* BufLen)
           break;
         }
       }
+      PRINTF("------------------------- httpget p2p 4\n");
     }
 #endif
+    PRINTF("------------------------- httpget p2p 5\n");
   }
 
 exits:
