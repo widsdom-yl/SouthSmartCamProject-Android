@@ -17,20 +17,5 @@ public class SDVideoModel implements Serializable {
         checked=false;
         viewed = false;
     }
-    public String getsdVideoUrl(DevModel model){
-        return "http://"+model.IPUID+":"+model.WebPort+""+sdVideo;
-    }
-    public String getSdVideoName(){
-        if (sdVideo.contains("aaaa")){
-            return "aaaa.mp4";
-        }
-        else{
-            String[] array = sdVideo.split("/");
-            return array[array.length-1];
-        }
 
-    }
-    public boolean isSDVideo(){
-        return sdVideo.contains("mp4");
-    }
 }

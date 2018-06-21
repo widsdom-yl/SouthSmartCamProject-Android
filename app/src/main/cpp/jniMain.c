@@ -45,7 +45,50 @@ void UcnvConvert(char* dst, unsigned long dstLen, const char* src, unsigned long
   if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_3_8");
   if (NULL == g_pvUcnvConvert) return;
   g_pvUcnvConvert("utf8", "gb2312", dst, dstLen, src, strlen(src), pnErrC);
-}  
+}
+/**/
+void UcnvConvertReverse(char* dst, unsigned long dstLen, const char* src, unsigned long *pnErrC)
+{
+  //UcnvConvert(uDevName, 100, DevName, &pnErrC);
+  typedef void (*pvUcnvFunc)(const char* lpcstrDstEcd, const char* lpcstrSrcEcd, char* dst, unsigned long dstLen, const char* src, unsigned long nInLen, unsigned long *pnErrCode);
+  static pvUcnvFunc g_pvUcnvConvert = NULL;
+  static void*      g_pvUcnvDll = NULL;
+
+  if (NULL == g_pvUcnvDll) g_pvUcnvDll = dlopen("/system/lib/libicuuc.so", RTLD_LAZY);
+  if (NULL == g_pvUcnvDll) return;
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_44");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_46");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_47");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_48");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_49");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_50");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_51");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_53");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_54");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_52");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_55");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_56");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_57");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_58");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_59");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_60");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_61");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_62");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_63");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_64");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_65");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_66");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_67");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_68");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_69");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_70");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_4_2");
+  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc)dlsym(g_pvUcnvDll, "ucnv_convert_3_8");
+  if (NULL == g_pvUcnvConvert) return;
+  g_pvUcnvConvert("gb2312", "utf8", dst, dstLen, src, strlen(src), pnErrC);
+}
+
+
 //-----------------------------------------------------------------------------
 //*****************************************************************************
 //-----------------------------------------------------------------------------
@@ -260,12 +303,17 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetHttpGet(JNIEnv* env, jclass ob
   int BufLen = 0;
   static char Buf[1024*64];
   static char conv[1024*64];
+  static char convreverse[1024*64];//utf8->gb2312
   jstring Result = NULL;
   char* url = (char*)(*env)->GetStringUTFChars(env, jurl, NULL);
+    UcnvConvertReverse(convreverse, sizeof(convreverse), url, &pnErrC);
+ // UcnvConvertReverse
+
+
   Buf[0] = 0x00;
   conv[0] = 0x00;
   PRINTF("%s(%d) url:%s\n", __FUNCTION__, __LINE__, url);
-  ret = thNet_HttpGet((HANDLE)NetHandle, url, Buf, &BufLen);
+  ret = thNet_HttpGet((HANDLE)NetHandle, convreverse, Buf, &BufLen);
   if (ret)
   {
     PRINTF("%s(%d) Buf:%s\n", __FUNCTION__, __LINE__, Buf);

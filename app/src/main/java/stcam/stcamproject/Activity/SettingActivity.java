@@ -141,7 +141,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     }
     void initValue(){
         items.add(getString(R.string.device_name));
-        items.add(getString(R.string.action_change_device_pwd));
+        items.add(getString(R.string.action_device_pwd));
         items.add(getString(R.string.action_manager_push));
         items.add(getString(R.string.action_manager_volume));
         items.add(getString(R.string.action_manager_alarm_level));
@@ -294,7 +294,17 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         AlertDialog.Builder builder = new AlertDialog.Builder(this,3);
         builder.setTitle(getString(R.string.action_manager_alarm_level));
         builder.setIcon(R.mipmap.ic_launcher);
-        builder.setSingleChoiceItems(items, 0,
+        if (MD_Sensitive <= 100){
+            chooseLevel = 0;
+        }
+        else if(MD_Sensitive <= 150){
+            chooseLevel = 1;
+        }
+        else if(MD_Sensitive <= 200){
+            chooseLevel = 2;
+        }
+
+        builder.setSingleChoiceItems(items, chooseLevel,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -340,17 +350,28 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
 
 
-            String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=31&DevName="+params[0];
-            Log.e(tag,url+",NetHandle is "+model.NetHandle);
-            String ret = lib.thNetHttpGet(model.NetHandle,url);
-            Log.e(tag,"ret :"+ret);
-            RetModel retModel = GsonUtil.parseJsonWithGson(ret,RetModel.class);
-            if (retModel != null){
-                if (retModel.ret == 1){
-                    model.DevName = params[0];
+
+//                Encoding targetEncoding = Xml.Encoding.GetEncoding(1252);
+//                byte[] utf8Bytes = targetEncoding.GetBytes(text);
+//                byte[] ansiBytes = Encoding.Convert(Encoding.UTF8,
+//                        targetEncoding,
+//                        utf8Bytes);
+
+
+                //String devName = new String(params[0].getBytes("UTF-8"), "GB2312");
+                String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=31&DevName="+params[0];
+                Log.e(tag,url+",NetHandle is "+model.NetHandle);
+                String ret = lib.thNetHttpGet(model.NetHandle,url);
+                Log.e(tag,"ret :"+ret);
+                RetModel retModel = GsonUtil.parseJsonWithGson(ret,RetModel.class);
+                if (retModel != null){
+                    if (retModel.ret == 1){
+                        model.DevName = params[0];
+                    }
                 }
-            }
-            return ret;
+                return ret;
+
+
         }
         @Override
         protected void onPostExecute(String result) {
@@ -403,6 +424,12 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             if (retModel != null){
                 if (retModel.ret == 1){
                     SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_STA_T_AP_Success));
+                    model.NetHandle = 0;
+                    for (DevModel existModel : MainDevListActivity.mDevices){
+                        if (model.SN.equals(existModel.SN)){
+                            model.NetHandle = 0;
+                        }
+                    }
                 }
                 else {
                     SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_STA_T_AP_Failed));
@@ -426,7 +453,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
             //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
             String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=82";
-            Log.e(tag,url+",NetHandle is "+model.NetHandle);
+            Log.e(tag,url+"" +
+                    ""+model.NetHandle);
             String ret = lib.thNetHttpGet(model.NetHandle,url);
             Log.e(tag,"ret :"+ret);
             return ret;
@@ -479,7 +507,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 MD_Sensitive = 200;
             }
 
-            String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=29&MD_Sensitive="+MD_Sensitive;
+            String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=29&MD_Sensitive="+MD_Sensitive+"&md_active=1";
             Log.e(tag,url+",MD_Sensitive,NetHandle is "+model.NetHandle);
             String ret = lib.thNetHttpGet(model.NetHandle,url);
             Log.e(tag,"ret :"+ret);

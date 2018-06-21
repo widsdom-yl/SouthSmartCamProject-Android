@@ -211,11 +211,15 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 if (button_speech.isSelected()){
                     button_speech.setSelected(false);
                     button_speech.setImageResource(R.drawable.microphonedefault);
+                    button_speech_o.setSelected(false);
+                    button_speech_o.setImageResource(R.drawable.microphonedefault);
                     lib.thNetTalkClose(devModel.NetHandle);
                 }
                 else{
                     button_speech.setSelected(true);
                     button_speech.setImageResource(R.drawable.microphoneselected);
+                    button_speech_o.setSelected(true);
+                    button_speech_o.setImageResource(R.drawable.microphoneselected);
                     lib.thNetTalkOpen(devModel.NetHandle);
                 }
                 break;

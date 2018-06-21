@@ -310,7 +310,6 @@ public class DataManager{
 		try {
 			db = dBHelper.getWritableDatabase();
 			ContentValues cv = new ContentValues();
-			cv.put("url", model.url);
 			cv.put("viewed", model.viewed ? 1 : 0);
 			ret = db.update(dBHelper.TABLE_NAME_VIDEO, cv, "name = ?", new String[]{model.sdVideo});
 		}

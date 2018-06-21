@@ -17,8 +17,8 @@ android {
         applicationId "stcam.stcamproject"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 9
-        versionName "1.0"
+        versionCode 12
+        versionName "1.1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
@@ -113,6 +113,15 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.9.3@aar') {
         transitive = true;
     }
+    compile('com.crashlytics.sdk.android:crashlytics-ndk:2.0.4@aar') {
+        transitive = true;
+    }
 
 }
 apply plugin: 'com.google.gms.google-services'
+
+crashlytics {
+    enableNdk true
+    androidNdkOut 'src/main/obj'
+    androidNdkLibsOut 'src/main/libs'
+}

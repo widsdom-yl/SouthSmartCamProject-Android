@@ -77,9 +77,11 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
             }
         }
 
-
+        if (chooseModel == null){
+            return;
+        }
         if (chooseModel.IsConnect()){
-            holder.online_status_tx.setText(R.string.status_online);
+            holder.online_status_tx.setText(model.getConnectTypeDesc());
             holder.online_status_tx.setTextColor(Color.rgb(0, 255, 0));
         }
         else{

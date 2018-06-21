@@ -51,6 +51,7 @@ final static String tag = "DevModel";
     int Sharpness;
     public String SoftVersion = "";
 
+
     public int VideoChlMask = 0;
     public int AudioChlMask = 1;
     public int SubVideoChlMask = 1;
@@ -148,6 +149,9 @@ final static String tag = "DevModel";
 
 
     public CONNECT_TYPE getConnectType(){
+        if (ConnType == null){
+            return CONNECT_TYPE.IS_CONN_LAN;
+        }
         if (ConnType.equals("IS_CONN_NODEV")){
             return CONNECT_TYPE.IS_CONN_NODEV;
         }
@@ -167,6 +171,20 @@ final static String tag = "DevModel";
             return CONNECT_TYPE.IS_CONN_NOWAY;
         }
         return CONNECT_TYPE.IS_CONN_NOWAY;
+    }
+
+    public String getConnectTypeDesc(){
+        CONNECT_TYPE type = getConnectType();
+        switch (type){
+            case IS_CONN_LAN:
+                return "LAN";
+            case IS_CONN_DDNS:
+                return "DDNS";
+            case IS_CONN_P2P:
+                return "P2P";
+            default:
+                return "OFFLINE";
+        }
     }
 
 

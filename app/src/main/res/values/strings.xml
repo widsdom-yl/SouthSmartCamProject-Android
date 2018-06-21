@@ -19,6 +19,8 @@
     <string name="error_invalid_checknum">请输入正确的验证码</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+    <string name="error_login_failed">无效的用户名或密码</string>
+    <string name="error_network_status">网络错误，请尝试再次登录</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
@@ -79,6 +81,7 @@
     <string name="action_setting">设置</string>
     <string name="device_name">设备名称</string>
     <string name="device_pwd">连接密码</string>
+    <string name="action_device_pwd">设备登录密码</string>
     <string name="action_change_device_pwd">修改密码</string>
     <string name="device_version">版本</string>
     <string name="action_delete_device">删除设备</string>

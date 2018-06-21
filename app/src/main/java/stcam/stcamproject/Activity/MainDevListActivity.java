@@ -2,6 +2,7 @@ package stcam.stcamproject.Activity;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -98,7 +99,11 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
 
     }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
 
+    }
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(networkChangeReceiver);

@@ -32,6 +32,7 @@ import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.Manager.JPushManager;
 import stcam.stcamproject.R;
+import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
@@ -254,6 +255,8 @@ public class LoginActivity extends AppCompatActivity  {
         public void onError(Throwable e) {
             lod.dismiss();
             Log.e(tag,"---------------------1:"+e.getLocalizedMessage());
+            SouthUtil.showDialog(LoginActivity.this,getString(R.string.error_network_status));
+
         }
 
         @Override
@@ -270,7 +273,7 @@ public class LoginActivity extends AppCompatActivity  {
                 LoginActivity.this.finish();
             }
             else{
-
+                SouthUtil.showDialog(LoginActivity.this,getString(R.string.error_login_failed));
             }
 
         }

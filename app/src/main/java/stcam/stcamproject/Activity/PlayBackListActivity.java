@@ -24,6 +24,7 @@ import java.util.List;
 import stcam.stcamproject.Adapter.BaseAdapter;
 import stcam.stcamproject.Adapter.PlayBackListAdapter;
 import stcam.stcamproject.Application.STApplication;
+import stcam.stcamproject.Manager.DataManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.View.LoadingDialog;
@@ -122,6 +123,15 @@ public class PlayBackListActivity extends AppCompatActivity implements BaseAdapt
 
 
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+        if (adapter != null){
+            adapter.notifyDataSetChanged();
+        }
+    }
     View createFooterView(){
         View view = LayoutInflater.from(this).inflate(R.layout.load_more, null);
 
@@ -141,6 +151,8 @@ public class PlayBackListActivity extends AppCompatActivity implements BaseAdapt
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     void onGetPlayBackListResponse(String json){
         if (json != null && json.length() >0){
@@ -177,9 +189,12 @@ public class PlayBackListActivity extends AppCompatActivity implements BaseAdapt
 
         Bundle bundle = new Bundle();
         SDVideoModel model =  videoArray.get(position);
+        model.viewed = true;
+        DataManager.getInstance().addSDVideoModel(model);
         bundle.putSerializable("model",model);
         bundle.putParcelable("devModel",devModel);
         intent.putExtras(bundle);
+
         Log.e(tag,"to PlayBackActivity sdVideo:"+model.sdVideo);
 
         startActivity(intent);
