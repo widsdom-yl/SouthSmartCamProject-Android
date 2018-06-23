@@ -23,22 +23,27 @@ import com.model.SearchDevModel;
 import com.thSDK.TMsg;
 import com.thSDK.lib;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import stcam.stcamproject.Adapter.DeviceListAdapter;
 import stcam.stcamproject.Application.STApplication;
+import stcam.stcamproject.Config.Config;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.DeviceParseUtil;
+import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
-import stcam.stcamproject.network.ServerNetWork;
 
 import static stcam.stcamproject.Activity.MainDevListActivity.EnumMainEntry.EnumMainEntry_Login;
 
@@ -55,6 +60,9 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
     private IntentFilter intentFilter;
     private NetworkChangeReceiver networkChangeReceiver;
 
+
+    Request getDevListRequest;//
+    OkHttpClient mHttpClient = new OkHttpClient();
 
     public enum EnumMainEntry implements Serializable {
         EnumMainEntry_Login,
@@ -258,12 +266,112 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         }
         if (!refresh)
             lod.dialogShow();
-        subscription = ServerNetWork.getCommandApi()
-//                .app_user_get_devlst("4719373@qq.com","admin111")
-                .app_user_get_devlst(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance().getDefaultPwd())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer_get_devlst);
+        if (getDevListRequest == null){
+            //http://xxx.xxx.xxx.xxx:800/app_user_get_devlst.asp??user=aa@bb.com&psd=12345678
+            String url = "http://"+ Config.ServerIP+":"+Config.ServerPort+"/app_user_get_devlst.asp?user="+AccountManager.getInstance().getDefaultUsr()+"&psd="+
+                    AccountManager.getInstance().getDefaultPwd();
+            Log.e(tag,"request url :"+url);
+            getDevListRequest = new Request.Builder()
+                    .url(url)
+                    .build();
+        }
+
+
+        mHttpClient.newCall(getDevListRequest).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                MainDevListActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        lod.dismiss();
+                        refreshLayout.setRefreshing(false);
+                        refreshLayout.setLoadMore(false);
+                    }
+                });
+
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                MainDevListActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        lod.dismiss();
+                        refreshLayout.setRefreshing(false);
+                        refreshLayout.setLoadMore(false);
+                    }
+                });
+                //String retStr = response.body().string();
+                final String gb2312Str = new String(response.body().bytes(), "GB2312");
+                MainDevListActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        parseGetDevListResponse(gb2312Str);
+                    }
+                });
+
+
+            }
+        });
+
+
+//        subscription = ServerNetWork.getCommandApi()
+////                .app_user_get_devlst("4719373@qq.com","admin111")
+//                .app_user_get_devlst(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance().getDefaultPwd())
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(observer_get_devlst);
+    }
+
+    void parseGetDevListResponse(String response){
+        List<DevModel> mlist = GsonUtil.parseJsonArrayWithGson(response,DevModel[].class);
+
+
+        if (mlist == null){
+            SouthUtil.showToast(STApplication.getInstance(),"No dev");
+            return;
+        }
+        if (mlist.size() > 0)
+        {
+                mAccountDevices = mlist;
+                for (DevModel model : mlist){
+                    boolean exist = false;
+                    for (DevModel existModel : mDevices){
+
+                        if (model.SN.equals(existModel.SN)){
+                            exist = true;
+                            break;
+                        }
+                    }
+                    if (!exist){
+                        mDevices.add(model);
+                    }
+                }
+
+            for (DevModel model : mDevices){
+
+                Log.e(tag,"---------------------1 dev0 name"+model.DevName);
+                if (!model.IsConnect())
+                    DevModel.threadConnect(ipc,model,false);
+            }
+
+            if (mAdapter == null){
+                mAdapter = new DeviceListAdapter(MainDevListActivity.this,mlist,entryType);
+                mAdapter.setOnItemClickListener(MainDevListActivity.this);
+                mRecyclerView.setAdapter(mAdapter);
+            }
+            else{
+                mAdapter.setmDatas(mlist);
+            }
+
+        }
+        else{
+            //MyContext.getInstance()
+            mAdapter.setmDatas(mlist);
+            Log.e(tag,"---------------------1:no dev");
+            SouthUtil.showToast(STApplication.getInstance(),"No dev");
+        }
     }
 
     Observer<List<DevModel>> observer_get_devlst = new Observer<List<DevModel>>() {
@@ -303,6 +411,9 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
                 // }
                 // else
                 {
+
+
+
                     for (DevModel model : mlist){
                         boolean exist = false;
                         for (DevModel existModel : mDevices){
