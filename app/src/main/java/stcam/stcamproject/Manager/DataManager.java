@@ -84,6 +84,8 @@ public class DataManager{
 		}
 		return true;
 	}
+
+
 /*根据SN获得*/
 	public DevModel getSNDev(String SN){
 		SQLiteDatabase db = null;

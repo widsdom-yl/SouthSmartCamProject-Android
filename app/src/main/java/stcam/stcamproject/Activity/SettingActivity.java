@@ -37,6 +37,7 @@ import stcam.stcamproject.Adapter.BaseAdapter;
 import stcam.stcamproject.Adapter.DeviceSettingAdapter;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.AccountManager;
+import stcam.stcamproject.Manager.DataManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
 import stcam.stcamproject.Util.GsonUtil;
@@ -204,7 +205,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                                 model.SN, 0)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(observer);
+                        .subscribe(observer_delete);
                 break;
 
 //                break;
@@ -265,6 +266,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
                 intent.putExtras(bundle);
                 startActivity(intent);
+        }
+        else if(2 == position){
+            Intent intent = new Intent(this,PushSettingActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("model",model);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
         else if(3 == position){
             if (!model.IsConnect()){
@@ -452,7 +460,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             //第二个执行方法,onPreExecute()执行完后执行
             // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
             //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-            String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=82";
+            String url = "http://"+model.IPUID+":"+model.WebPort+"/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=82";
             Log.e(tag,url+"" +
                     ""+model.NetHandle);
             String ret = lib.thNetHttpGet(model.NetHandle,url);
@@ -507,7 +515,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 MD_Sensitive = 200;
             }
 
-            String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=29&MD_Sensitive="+MD_Sensitive+"&md_active=1";
+            String url = "http://"+model.IPUID+":"+model.WebPort+"/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=46&MD_Sensitive="+MD_Sensitive+"&MD_Active=1";
             Log.e(tag,url+",MD_Sensitive,NetHandle is "+model.NetHandle);
             String ret = lib.thNetHttpGet(model.NetHandle,url);
             Log.e(tag,"ret :"+ret);
@@ -564,7 +572,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     };
 
 
-    Observer<RetModel> observer = new Observer<RetModel>() {
+    Observer<RetModel> observer_delete = new Observer<RetModel>() {
         @Override
         public void onCompleted() {
             lod.dismiss();
@@ -583,6 +591,14 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             Log.e(tag,"---------------------0:"+m.ret);
             if (1 == m.ret){
                 SouthUtil.showToast(SettingActivity.this,"delete ok");
+                DataManager.getInstance().deleteDev(model);
+                for (DevModel existModel : MainDevListActivity.mDevices){
+                    if (model.SN.equals(existModel.SN)){
+                        MainDevListActivity.mDevices.remove(existModel);
+                        break;
+                    }
+                }
+
             }
             else{
                 SouthUtil.showToast(SettingActivity.this,"delete failed");

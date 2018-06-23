@@ -140,4 +140,8 @@
     <string name="action_volume_record">录像分区</string>
     <string name="action_volume_left">剩余容量</string>
     <string name="action_Success_Reboot">设置成功,重启设备后生效</string>
+
+    <string name="action_push">推送</string>
+    <string name="action_push_interval">消息推送间隔</string>
+    <string name="action_pir_sensitivity">PIR灵敏度</string>
 </resources>

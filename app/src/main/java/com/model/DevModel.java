@@ -248,7 +248,7 @@ final static String tag = "DevModel";
             return ret;
         }
         ret = lib.thNetIsConnect(NetHandle);
-        TFun.printf(SN + "(" + IPUID + ")(" + lib.GetLocalIP() + ") thNetIsConnect:" + ret);
+       // TFun.printf(SN + "(" + IPUID + ")(" + lib.GetLocalIP() + ") thNetIsConnect:" + ret);
         return ret;
     }
     public boolean Connect()
