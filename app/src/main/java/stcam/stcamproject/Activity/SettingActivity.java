@@ -270,7 +270,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         else if(2 == position){
             Intent intent = new Intent(this,PushSettingActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putParcelable("model",model);
+            bundle.putParcelable("devModel",model);
             intent.putExtras(bundle);
             startActivity(intent);
         }
@@ -435,9 +435,15 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                     model.NetHandle = 0;
                     for (DevModel existModel : MainDevListActivity.mDevices){
                         if (model.SN.equals(existModel.SN)){
+                            model.Disconn();
                             model.NetHandle = 0;
                         }
                     }
+                }
+                else if(retModel.ret == 2){
+                    SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_STA_T_AP_Success));
+                    RebootTask task = new RebootTask();
+                    task.execute();
                 }
                 else {
                     SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_STA_T_AP_Failed));
@@ -446,6 +452,57 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             super.onPostExecute(result);
         }
     }
+
+    class RebootTask extends AsyncTask<String, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            //第二个执行方法,onPreExecute()执行完后执行
+            // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
+            //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
+
+
+            String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID==18";
+
+            String ret = lib.thNetHttpGet(model.NetHandle,url);
+            Log.e(tag,"ret :"+ret);
+
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
+            //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
+            //Log.e(tag,"get playback list :"+result);
+            lod.dismiss();
+
+            RetModel retModel = GsonUtil.parseJsonWithGson(result,RetModel.class);
+            if (retModel != null){
+                if (retModel.ret == 1){
+                    SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_Success));
+                    model.NetHandle = 0;
+                    for (DevModel existModel : MainDevListActivity.mDevices){
+                        if (model.SN.equals(existModel.SN)){
+                            model.Disconn();
+                            model.NetHandle = 0;
+                        }
+                    }
+                }
+                else
+                {
+                    SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_Failed));
+                }
+            }
+            super.onPostExecute(result);
+        }
+    }
+
 
     class getConfigTask extends AsyncTask<String, Void, String> {
         // AsyncTask<Params, Progress, Result>

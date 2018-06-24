@@ -144,4 +144,8 @@
     <string name="action_push">推送</string>
     <string name="action_push_interval">消息推送间隔</string>
     <string name="action_pir_sensitivity">PIR灵敏度</string>
+    <string name="action_open">开</string>
+    <string name="action_close">关</string>
+    <string name="string_second">秒</string>
+    <string name="string_miniute">分钟</string>
 </resources>
