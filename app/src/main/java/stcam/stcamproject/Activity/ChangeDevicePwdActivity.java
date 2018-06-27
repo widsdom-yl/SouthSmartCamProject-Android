@@ -270,7 +270,7 @@ public class ChangeDevicePwdActivity extends AppCompatActivity implements View.O
             //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
 
 
-            String url = "http://0.0.0.0:0/cfg1.cgi?User=admin&Psd="+editText_old_pwd.getText().toString()+"&MsgID=18";
+            String url = "http://"+setModel.IPUID+":"+setModel.WebPort+"/cfg1.cgi?User=admin&Psd="+editText_old_pwd.getText().toString()+"&MsgID=18";
             Log.e(tag,url+",NetHandle is "+setModel.NetHandle);
             String ret = lib.thNetHttpGet(setModel.NetHandle,url);
             Log.e(tag,"ret :"+ret);

@@ -312,8 +312,9 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetHttpGet(JNIEnv* env, jclass ob
 
   Buf[0] = 0x00;
   conv[0] = 0x00;
-  PRINTF("%s(%d) url:%s\n", __FUNCTION__, __LINE__, url);
-  ret = thNet_HttpGet((HANDLE)NetHandle, convreverse, Buf, &BufLen);
+  PRINTF("%s(%d) url:%s,convreverse:%s\n", __FUNCTION__, __LINE__, url,convreverse);
+  //ret = thNet_HttpGet((HANDLE)NetHandle, convreverse, Buf, &BufLen);
+    ret = thNet_HttpGet((HANDLE)NetHandle, url, Buf, &BufLen);
   if (ret)
   {
     PRINTF("%s(%d) Buf:%s\n", __FUNCTION__, __LINE__, Buf);

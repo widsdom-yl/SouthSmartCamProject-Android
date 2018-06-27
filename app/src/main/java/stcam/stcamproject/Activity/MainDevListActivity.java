@@ -368,7 +368,15 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         }
         else{
             //MyContext.getInstance()
-            mAdapter.setmDatas(mlist);
+            if (mAdapter == null){
+                mAdapter = new DeviceListAdapter(MainDevListActivity.this,mlist,entryType);
+                mAdapter.setOnItemClickListener(MainDevListActivity.this);
+                mRecyclerView.setAdapter(mAdapter);
+            }
+            else{
+                mAdapter.setmDatas(mlist);
+            }
+
             Log.e(tag,"---------------------1:no dev");
             SouthUtil.showToast(STApplication.getInstance(),"No dev");
         }

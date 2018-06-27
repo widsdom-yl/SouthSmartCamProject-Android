@@ -160,7 +160,7 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
             //第二个执行方法,onPreExecute()执行完后执行
             // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
             //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-            String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=92";
+            String url = model.getHttpCfg1UsrPwd() +"&MsgID=92";
             Log.e(tag,url+",NetHandle is "+model.NetHandle);
             String ret = lib.thNetHttpGet(model.NetHandle,url);
             Log.e(tag,"ret :"+ret);
@@ -202,7 +202,7 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
             //第二个执行方法,onPreExecute()执行完后执行
             // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
             //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-            String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=85";
+            String url = model.getHttpCfg1UsrPwd() +"&MsgID=85";
             Log.e(tag,url+",NetHandle is "+model.NetHandle);
             String ret = lib.thNetHttpGet(model.NetHandle,url);
             Log.e(tag,"ret :"+ret);
@@ -246,7 +246,7 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
             //第二个执行方法,onPreExecute()执行完后执行
             // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
             //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-            String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=53";
+            String url = model.getHttpCfg1UsrPwd() +"&MsgID=53";
             Log.e(tag,url+",NetHandle is "+model.NetHandle);
             String ret = lib.thNetHttpGet(model.NetHandle,url);
             Log.e(tag,"ret :"+ret);
@@ -282,7 +282,7 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
             //第二个执行方法,onPreExecute()执行完后执行
             // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
             //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-            String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID="+params[0];
+            String url = model.getHttpCfg1UsrPwd() +"&MsgID="+params[0];
             Log.e(tag,url+",NetHandle is "+model.NetHandle);
             String ret = lib.thNetHttpGet(model.NetHandle,url);
             Log.e(tag,"ret :"+ret);

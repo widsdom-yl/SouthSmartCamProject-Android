@@ -217,7 +217,7 @@ public class PlayBackListActivity extends AppCompatActivity implements BaseAdapt
         @Override
         protected String doInBackground(Integer... params) {
             //第二个执行方法,onPreExecute()执行完后执行
-            String url = "http://0.0.0.0:0/cfg1.cgi?User=admin&Psd=admin&MsgID=5&p="+(page++)+"&l=20";
+            String url = devModel.getHttpCfg1UsrPwd()+"&MsgID=5&p="+(page++)+"&l=20";
             Log.e(tag,"get playback list,url :"+url);
             String ret = lib.thNetHttpGet(devModel.NetHandle,url);
             return ret;

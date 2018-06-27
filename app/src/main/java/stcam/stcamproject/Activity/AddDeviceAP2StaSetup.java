@@ -195,7 +195,8 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
             //第二个执行方法,onPreExecute()执行完后执行
            // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
             //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-            String url = "http://0.0.0.0:0/cfg1.cgi?User="+devModel.usr+"&Psd="+devModel.pwd+"&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wifi_SSID_STA" +
+            String url = devModel.getHttpCfg1UsrPwd() +
+            "&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wifi_SSID_STA" +
                     "="+params[0]+"&wifi_Password_STA="+params[1];
             Log.e(tag,url+",NetHandle is "+devModel.NetHandle);
             String ret = lib.thNetHttpGet(devModel.NetHandle,url);

@@ -422,7 +422,7 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
         @Override
         protected String doInBackground(Integer... params) {
             //第二个执行方法,onPreExecute()执行完后执行
-            String url = "http://0.0.0.0:0/cfg1.cgi?User="+ devModel.usr+"&Psd="+ devModel.pwd+"&MsgID=96";
+            String url = devModel.getHttpCfg1UsrPwd() +"&MsgID=96";
             Log.e(tag,"url "+url);
             String ret = lib.thNetHttpGet(devModel.NetHandle,url);
             return ret;
@@ -455,7 +455,7 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
         @Override
         protected String doInBackground(Integer... params) {
             //第二个执行方法,onPreExecute()执行完后执行
-            String url = "http://0.0.0.0:0/cfg1.cgi?User="+ devModel.usr+"&Psd="+ devModel.pwd+"&MsgID=97";
+            String url = devModel.getHttpCfg1UsrPwd() +"&MsgID=97";
             if (statusModel.getMode() == 1){
                 url += "&Mode=1&Delay="+statusModel.getAuto().getDelay()+"&Lux="+statusModel.getAuto().getLux();
             }

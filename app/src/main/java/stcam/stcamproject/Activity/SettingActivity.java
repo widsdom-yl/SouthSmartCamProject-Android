@@ -367,7 +367,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
 
                 //String devName = new String(params[0].getBytes("UTF-8"), "GB2312");
-                String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=31&DevName="+params[0];
+                String url = model.getHttpCfg1UsrPwd() +"&MsgID=31&DevName="+params[0];
                 Log.e(tag,url+",NetHandle is "+model.NetHandle);
                 String ret = lib.thNetHttpGet(model.NetHandle,url);
                 Log.e(tag,"ret :"+ret);
@@ -415,7 +415,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             //第二个执行方法,onPreExecute()执行完后执行
             // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
             //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-            String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=38&wifi_Active=1&wifi_IsAPMode=1&s=0";
+            String url = model.getHttpCfg1UsrPwd() +"&MsgID=38&wifi_Active=1&wifi_IsAPMode=1&s=0";
             Log.e(tag,url+",NetHandle is "+model.NetHandle);
             String ret = lib.thNetHttpGet(model.NetHandle,url);
             Log.e(tag,"ret :"+ret);
@@ -468,7 +468,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
 
 
-            String url = "http://0.0.0.0:0/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID==18";
+            String url = model.getHttpCfg1UsrPwd() +"&MsgID==18";
 
             String ret = lib.thNetHttpGet(model.NetHandle,url);
             Log.e(tag,"ret :"+ret);

@@ -248,13 +248,13 @@ final static String tag = "DevModel";
             return ret;
         }
         ret = lib.thNetIsConnect(NetHandle);
-       // TFun.printf(SN + "(" + IPUID + ")(" + lib.GetLocalIP() + ") thNetIsConnect:" + ret);
+         TFun.printf(SN + "(" + IPUID + ") thNetIsConnect:" + ret);
         return ret;
     }
     public boolean Connect()
     {
         boolean ret;
-        Log.e(tag,"NetHandle:"+NetHandle+",usr:"+usr+",pwd:"+pwd+",IPUID:"+IPUID+",DataPort:"+DataPort);
+        Log.e(tag,"Connect:NetHandle:"+NetHandle+",usr:"+usr+",pwd:"+pwd+",IPUID:"+IPUID+",DataPort:"+DataPort);
         if (IPUID == null || IPUID.length() <= 0)
         {
             return false;
@@ -383,6 +383,9 @@ final static String tag = "DevModel";
         }.start();
     }
 
-
+/*获取包含用户名和密码啊的cfg1 url*/
+    public String getHttpCfg1UsrPwd(){
+        return "http://"+IPUID+":"+WebPort+"/cfg1.cgi?User=admin&Psd="+pwd;
+    }
 
 }

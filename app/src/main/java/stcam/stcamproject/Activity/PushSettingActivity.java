@@ -278,7 +278,7 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
             //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
             String url = "http://"+model.IPUID+":"+model.WebPort+"/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=99&PushActive="+
                    mPushSettingModel.getPushActive()+"&PushInterval="+mPushSettingModel.getPushInterval()+"&PIRSensitive="+mPushSettingModel.getPIRSensitive();
-            Log.e(tag,url+"" +
+            Log.e(tag,url+"," +
                     ""+model.NetHandle);
             String ret = lib.thNetHttpGet(model.NetHandle,url);
             Log.e(tag,"ret :"+ret);
