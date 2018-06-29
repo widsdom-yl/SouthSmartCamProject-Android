@@ -281,7 +281,7 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
             Log.e(tag,url+"," +
                     ""+model.NetHandle);
             String ret = lib.thNetHttpGet(model.NetHandle,url);
-            Log.e(tag,"ret :"+ret);
+            Log.e(tag,"MsgID=99：ret :"+ret);
             return ret;
         }
         @Override

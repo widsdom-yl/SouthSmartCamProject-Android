@@ -50,7 +50,7 @@ public class PushSettingModel {
 
     public String getPushIntervalDesc(){
         if (PushInterval < 60){
-            return STApplication.getInstance().getString(R.string.string_second);
+            return PushInterval+STApplication.getInstance().getString(R.string.string_second);
         }
         else {
             return PushInterval/60+STApplication.getInstance().getString(R.string.string_miniute);

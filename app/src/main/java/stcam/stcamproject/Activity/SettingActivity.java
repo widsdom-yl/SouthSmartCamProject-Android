@@ -45,6 +45,7 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
+import static stcam.stcamproject.Activity.MainDevListActivity.EnumMainEntry.EnumMainEntry_Login;
 import static stcam.stcamproject.Activity.MainDevListActivity.EnumMainEntry.EnumMainEntry_Visitor;
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener, BaseAdapter.OnItemClickListener {
@@ -253,6 +254,10 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onItemClick(View view, int position) {
+
+        if (entryType == EnumMainEntry_Visitor){
+            return;
+        }
         if (0 == position){
             if (model.IsConnect()){
                 changeDeviceNameDialog();
@@ -517,7 +522,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             //第二个执行方法,onPreExecute()执行完后执行
             // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
             //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-            String url = "http://"+model.IPUID+":"+model.WebPort+"/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=82";
+            String url = "http://"+model.IPUID+":"+model.WebPort+"/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=45";
             Log.e(tag,url+"" +
                     ""+model.NetHandle);
             String ret = lib.thNetHttpGet(model.NetHandle,url);

@@ -291,6 +291,8 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
                     else if (statusModel.getAuto().getLux() == 2 ){
                         segmented3.check(R.id.btn_sensitive_3);
                     }
+                    light_brintness.setText(""+statusModel.getAuto().getBrightness());
+                    seekBar_brintness.setProgress(statusModel.getAuto().getBrightness());
                     break;
                 case 2:
                     modeGroup.check(R.id.btn_mode_2);
@@ -457,7 +459,7 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
             //第二个执行方法,onPreExecute()执行完后执行
             String url = devModel.getHttpCfg1UsrPwd() +"&MsgID=97";
             if (statusModel.getMode() == 1){
-                url += "&Mode=1&Delay="+statusModel.getAuto().getDelay()+"&Lux="+statusModel.getAuto().getLux();
+                url += "&Mode=1&Delay="+statusModel.getAuto().getDelay()+"&Lux="+statusModel.getAuto().getLux()+"&Brightness="+statusModel.getAuto().getBrightness();
             }
             else if(statusModel.getMode() == 2){
                 url += "&Mode=2&Brightness="+statusModel.getManual().getBrightness();

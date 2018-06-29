@@ -497,7 +497,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
             Bundle bundle = new Bundle();
             bundle.putParcelable("devModel",model);
-
+            bundle.putSerializable("entry",entryType);
             intent.putExtras(bundle);
             Log.e(tag,"to vid devModel NetHandle:"+model.NetHandle);
 
@@ -541,7 +541,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
             Bundle bundle = new Bundle();
             bundle.putParcelable("devModel",model);
-
+            bundle.putSerializable("entry",entryType);
             intent.putExtras(bundle);
             Log.e(tag,"to PlayBackListActivity NetHandle:"+model.NetHandle);
 

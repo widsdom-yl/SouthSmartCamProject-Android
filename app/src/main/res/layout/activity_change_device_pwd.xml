@@ -21,8 +21,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/editText_confirm_pwd"
+
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/layout_old_pwd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="60dp"
@@ -31,15 +34,26 @@
         android:layout_marginStart="60dp"
         android:layout_marginTop="40dp"
         android:ems="10"
-        android:hint="@string/device_confirm_pwd"
-        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_new_pwd" />
+        app:layout_constraintTop_toBottomOf="@+id/text_uid"
+        app:passwordToggleEnabled="true">
 
-    <EditText
-        android:id="@+id/editText_new_pwd"
+        <AutoCompleteTextView
+            android:id="@+id/editText_old_pwd"
+            android:hint="@string/device_old_pwd"
+            android:inputType="textPassword"
+            android:text="admin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/layout_new_pwd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="63dp"
@@ -48,14 +62,27 @@
         android:layout_marginStart="60dp"
         android:layout_marginTop="40dp"
         android:ems="10"
-        android:hint="@string/device_new_pwd"
-        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_old_pwd" />
+        app:layout_constraintTop_toBottomOf="@+id/layout_old_pwd"
+        app:passwordToggleEnabled="true">
 
-    <EditText
-        android:id="@+id/editText_old_pwd"
+        <AutoCompleteTextView
+            android:id="@+id/editText_new_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/device_new_pwd"
+            android:inputType="textPassword"
+            />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/layout_confirm_pwd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="60dp"
@@ -64,12 +91,28 @@
         android:layout_marginStart="60dp"
         android:layout_marginTop="40dp"
         android:ems="10"
-        android:hint="@string/device_old_pwd"
-        android:inputType="textPersonName"
-        android:text="admin"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_uid" />
+        app:layout_constraintTop_toBottomOf="@+id/layout_new_pwd"
+        app:passwordToggleEnabled="true"
+        >
+
+        <AutoCompleteTextView
+            android:id="@+id/editText_confirm_pwd"
+            android:hint="@string/device_confirm_pwd"
+            android:inputType="textPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+
+
+
+
 
     <Button
         android:id="@+id/button_next"
@@ -80,9 +123,9 @@
         android:layout_marginRight="60dp"
         android:layout_marginStart="60dp"
         android:layout_marginTop="40dp"
-        android:text="@string/next"
+        android:text="@string/OK"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_confirm_pwd" />
+        app:layout_constraintTop_toBottomOf="@+id/layout_confirm_pwd" />
 </android.support.constraint.ConstraintLayout>
