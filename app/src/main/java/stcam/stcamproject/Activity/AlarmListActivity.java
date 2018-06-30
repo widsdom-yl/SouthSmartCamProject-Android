@@ -12,6 +12,8 @@ import android.view.View;
 
 import com.model.AlarmImageModel;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import rx.Observer;
@@ -69,8 +71,13 @@ public class AlarmListActivity extends AppCompatActivity implements BaseAdapter.
         }
         if (!refresh)
             lod.dialogShow();
+        Date d = new Date();
+        System.out.println(d);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String dateNowStr = sdf.format(d);
+
             ServerNetWork.getCommandApi()
-                .app_user_getalmfilelst(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance().getDefaultPwd(),"20180504",10,0)
+                .app_user_getalmfilelst(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance().getDefaultPwd(),dateNowStr,100,0)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer_get_alarmlst);

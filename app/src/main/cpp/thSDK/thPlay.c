@@ -1570,6 +1570,7 @@ bool thNet_IsConnect(HANDLE NetHandle)
 {
   TPlayParam* Play = (TPlayParam*)NetHandle;
   if (NetHandle == 0) return false;
+
   return Play->IsConnect;
 }
 //-----------------------------------------------------------------------------

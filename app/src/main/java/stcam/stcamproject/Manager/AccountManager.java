@@ -35,4 +35,16 @@ public class AccountManager {
         String pwd = pref.getString("pwd","");//第二个参数为默认值
         return pwd;
     }
+
+    public void setAlarmSoundSetting(Boolean open){
+        SharedPreferences pref = context.getSharedPreferences("setting",MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putBoolean("alarmSound",open);
+        editor.commit();
+    }
+    public boolean getAlarmSoundSetting(){
+        SharedPreferences pref = context.getSharedPreferences("setting",MODE_PRIVATE);
+        boolean open = pref.getBoolean("alarmSound",true);//第二个参数为默认值
+        return open;
+    }
 }

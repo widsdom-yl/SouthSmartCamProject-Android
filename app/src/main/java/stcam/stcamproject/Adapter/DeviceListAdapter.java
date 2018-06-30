@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
     private List<DevModel> mDatas;
     private MainDevListActivity.EnumMainEntry mEntryType;
 
-
+    public static String tag = "DeviceListAdapter";
     public DeviceListAdapter(Context context, List<DevModel> datas,MainDevListActivity.EnumMainEntry entryType) {
         super();
         this.mContext = context;
@@ -73,6 +74,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
         for (DevModel existModel : MainDevListActivity.mDevices){
             if (model.SN.equals(existModel.SN)){
                 chooseModel = existModel;
+                Log.e(tag,"NetConn reloadview get exist model:"+chooseModel.SN+",isconnect is "+chooseModel.IsConnect()+",mdevice size "+MainDevListActivity.mDevices.size()+",handel is "+chooseModel.NetHandle);
                 break;
             }
         }
@@ -80,6 +82,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
         if (chooseModel == null){
             return;
         }
+        Log.e(tag,"NetConn reloadview sn:"+chooseModel.SN);
         if (chooseModel.IsConnect()){
             holder.online_status_tx.setText(chooseModel.getConnectTypeDesc());
             holder.online_status_tx.setTextColor(Color.rgb(0, 255, 0));

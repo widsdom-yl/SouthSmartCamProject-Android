@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import java.util.List;
 
 import stcam.stcamproject.Application.STApplication;
+import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.R;
 public class SytstmSettingListAdapter extends BaseAdapter<String>{
     public SytstmSettingListAdapter( List<String> list) {
@@ -16,6 +17,10 @@ public class SytstmSettingListAdapter extends BaseAdapter<String>{
         super.convert(holder,title,position);
         holder.setText(R.id.file_name_text,title);
 
+        if (0 == position){
+            boolean alarmSoundOpen = AccountManager.getInstance().getAlarmSoundSetting();
+            holder.setText(R.id.detail_info_text,alarmSoundOpen?STApplication.getInstance().getString(R.string.action_open):STApplication.getInstance().getString(R.string.action_close));
+        }
         if (1 == position){
             try {
                 PackageInfo packageInfo = STApplication.getInstance()
@@ -27,5 +32,6 @@ public class SytstmSettingListAdapter extends BaseAdapter<String>{
                 e.printStackTrace();
             }
         }
+
     }
 }

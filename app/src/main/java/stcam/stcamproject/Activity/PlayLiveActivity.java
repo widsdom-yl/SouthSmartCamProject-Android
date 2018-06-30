@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -193,17 +194,41 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 
         configurationChanged();
 
-        if (entryType == MainDevListActivity.EnumMainEntry.EnumMainEntry_Visitor){
-            button_record.setVisibility(View.INVISIBLE);
-            button_record_o.setVisibility(View.INVISIBLE);
-            button_snapshot.setVisibility(View.INVISIBLE);
-            button_snapshot_o.setVisibility(View.INVISIBLE);
-        }
+//        if (entryType == MainDevListActivity.EnumMainEntry.EnumMainEntry_Visitor){
+//            button_record.setVisibility(View.INVISIBLE);
+//            button_record_o.setVisibility(View.INVISIBLE);
+//            button_snapshot.setVisibility(View.INVISIBLE);
+//            button_snapshot_o.setVisibility(View.INVISIBLE);
+//        }
     }
     ConstraintUtil constraintUtil;
     static final String tag = "PlayLiveActivity";
 
     String recordfileName;
+
+    Handler handler=new Handler();
+    Runnable runnable=new Runnable(){
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            button_speech.setEnabled(true);
+            button_speech_o.setEnabled(true);
+            button_slient.setEnabled(true);
+            button_record.setEnabled(true);
+            button_record_o.setEnabled(true);
+            button_pix.setEnabled(true);
+        }
+    };
+
+    void enableBtnAfterSeconds(){
+        button_speech.setEnabled(false);
+        button_speech_o.setEnabled(false);
+        button_slient.setEnabled(false);
+        button_record.setEnabled(false);
+        button_record_o.setEnabled(false);
+        button_pix.setEnabled(false);
+        handler.postDelayed(runnable,2500);
+    }
 
     @Override
     public void onClick(View view) {
@@ -217,6 +242,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.button_speech:
             case R.id.button_speech_o:
+                enableBtnAfterSeconds();
                 if (button_speech.isSelected()){
                     button_speech.setSelected(false);
                     button_speech.setImageResource(R.drawable.microphonedefault);
@@ -233,6 +259,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 }
                 break;
             case R.id.button_slient:
+                enableBtnAfterSeconds();
                 if (button_slient.isSelected()){
                     button_slient.setSelected(false);
                     button_slient.setImageResource(R.drawable.talk_nor);
@@ -246,7 +273,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.button_record:
             case R.id.button_record_o:
-
+                enableBtnAfterSeconds();
                 if (lib.thNetIsRec(devModel.NetHandle)){
                     lib.thNetStopRec(devModel.NetHandle);
                     if (FileUtil.isFileEmpty(recordfileName)){
@@ -298,9 +325,21 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 }
                 break;
             case R.id.button_pix:
+                enableBtnAfterSeconds();
                 pix_low = !pix_low;
                 button_pix.setText(pix_low?R.string.action_pix_low:R.string.action_pix_high);
-                devModel.Play(pix_low?1:0);
+                //线程操作
+                new Thread()
+                {
+                    @Override
+                    public void run()
+                    {
+                        devModel.Stop();
+                        devModel.Play(pix_low?1:0);
+                    }
+                }.start();
+
+
                 break;
             case R.id.imagebutton_to_portrait:
                 if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){

@@ -39,6 +39,7 @@ import stcam.stcamproject.Adapter.DeviceListAdapter;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Config.Config;
 import stcam.stcamproject.Manager.AccountManager;
+import stcam.stcamproject.Manager.JPushManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.DeviceParseUtil;
 import stcam.stcamproject.Util.GsonUtil;
@@ -73,6 +74,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         lib.P2PInit();
+        Log.e(tag, "PushRegisterID : "+JPushManager.getJPushRegisterID());
         setContentView(R.layout.activity_main_dev_list);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(R.string.title_main_dev_list);
@@ -104,7 +106,9 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         if (entryType == EnumMainEntry.EnumMainEntry_Login){
             loadDevList(false);
         }
-
+        if (mAdapter != null){
+            mAdapter.notifyDataSetChanged();
+        }
 
     }
     @Override
@@ -353,6 +357,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
                 Log.e(tag,"---------------------1 dev0 name"+model.DevName);
                 if (!model.IsConnect())
+                    Log.e(tag,"---------------------NetConn:sn"+model.SN);
                     DevModel.threadConnect(ipc,model,false);
             }
 

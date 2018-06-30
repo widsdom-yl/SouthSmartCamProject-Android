@@ -45,7 +45,6 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
-import static stcam.stcamproject.Activity.MainDevListActivity.EnumMainEntry.EnumMainEntry_Login;
 import static stcam.stcamproject.Activity.MainDevListActivity.EnumMainEntry.EnumMainEntry_Visitor;
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener, BaseAdapter.OnItemClickListener {
@@ -440,8 +439,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                     model.NetHandle = 0;
                     for (DevModel existModel : MainDevListActivity.mDevices){
                         if (model.SN.equals(existModel.SN)){
-                            model.Disconn();
-                            model.NetHandle = 0;
+                            existModel.Disconn();
+                            existModel.NetHandle = 0;
                         }
                     }
                 }
@@ -494,8 +493,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                     model.NetHandle = 0;
                     for (DevModel existModel : MainDevListActivity.mDevices){
                         if (model.SN.equals(existModel.SN)){
-                            model.Disconn();
-                            model.NetHandle = 0;
+                            existModel.Disconn();
+                            existModel.NetHandle = 0;
                         }
                     }
                 }

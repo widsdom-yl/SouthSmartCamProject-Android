@@ -106,11 +106,11 @@ public class PlayBackActivity extends AppCompatActivity implements View.OnClickL
         button_snapshot.setOnClickListener(this);
         button_record.setOnClickListener(this);
         imagebutton_back.setOnClickListener(this);
-        if (entryType == MainDevListActivity.EnumMainEntry.EnumMainEntry_Visitor){
-            button_record.setVisibility(View.INVISIBLE);
-
-            button_snapshot.setVisibility(View.INVISIBLE);
-        }
+//        if (entryType == MainDevListActivity.EnumMainEntry.EnumMainEntry_Visitor){
+//            button_record.setVisibility(View.INVISIBLE);
+//
+//            button_snapshot.setVisibility(View.INVISIBLE);
+//        }
     }
     String recordfileName;
 

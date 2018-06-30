@@ -3,6 +3,7 @@
   <component name="Encoding" defaultCharsetForPropertiesFiles="GB2312">
     <file url="file://$PROJECT_DIR$/app/src/main/cpp/avDecode/libjpeg/myJpeg.c" charset="GB2312" />
     <file url="file://$PROJECT_DIR$/app/src/main/cpp/avDecode/thImg.c" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/app/src/main/cpp/avDecode/thOpenGL_SLES.h" charset="GB2312" />
     <file url="file://$PROJECT_DIR$/app/src/main/cpp/avDecode/thRec.c" charset="GB2312" />
     <file url="file://$PROJECT_DIR$/app/src/main/cpp/avDecode/thRender.c" charset="GB2312" />
     <file url="file://$PROJECT_DIR$/app/src/main/cpp/avDecode/thVideoDec.c" charset="GB2312" />
