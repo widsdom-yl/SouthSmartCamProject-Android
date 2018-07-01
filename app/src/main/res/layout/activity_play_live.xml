@@ -127,7 +127,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:scaleType="fitCenter"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="70dp"
 
             android:src="@drawable/btnrecorddefault"
             android:background="@android:color/transparent" />
@@ -137,7 +137,7 @@
         android:id="@+id/layout_bottom"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"

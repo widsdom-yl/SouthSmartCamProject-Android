@@ -48,7 +48,7 @@ import stcam.stcamproject.View.LoadingDialog;
 
 import static stcam.stcamproject.Activity.MainDevListActivity.EnumMainEntry.EnumMainEntry_Login;
 
-public class MainDevListActivity extends AppCompatActivity implements DeviceListAdapter.OnItemClickListener {
+public class MainDevListActivity extends AppCompatActivity implements DeviceListAdapter.OnItemClickListener, NetworkChangeReceiver.OnNetWorkBreakListener {
 
     RecyclerView mRecyclerView;
     DeviceListAdapter mAdapter;
@@ -64,6 +64,16 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
     Request getDevListRequest;//
     OkHttpClient mHttpClient = new OkHttpClient();
+
+    @Override
+    public void OnNetWorkBreakListener() {
+        for (DevModel devModel : mAccountDevices){
+            if (devModel.IsConnect()){
+                devModel.Disconn();
+            }
+        }
+        mAdapter.notifyDataSetChanged();
+    }
 
     public enum EnumMainEntry implements Serializable {
         EnumMainEntry_Login,
@@ -89,6 +99,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         intentFilter = new IntentFilter();
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         networkChangeReceiver = new NetworkChangeReceiver();
+        networkChangeReceiver.setNetWorkBreakListener(this);
         registerReceiver(networkChangeReceiver, intentFilter);
 
 

@@ -166,6 +166,13 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
             lod.dismiss();
             Log.e(tag,"---------------------1:"+e.getLocalizedMessage());
             SouthUtil.showDialog(AddDeviceAP2StaSetup.this,getString(R.string.device_reboot));
+            for (DevModel existModel : MainDevListActivity.mDevices){
+                if (devModel.SN.equals(existModel.SN)){
+                    existModel.Disconn();
+                    existModel.NetHandle = 0;
+                }
+            }
+
         }
 
         @Override
@@ -174,6 +181,20 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
             Log.e(tag,"---------------------0:"+m.ret);
             if (1 == m.ret){
                 SouthUtil.showDialog(AddDeviceAP2StaSetup.this,getString(R.string.action_AP_T_STA_Success));
+                for (DevModel existModel : MainDevListActivity.mDevices){
+                    if (devModel.SN.equals(existModel.SN)){
+                        existModel.Disconn();
+                        existModel.NetHandle = 0;
+                    }
+                }
+            }
+            else if(2 == m.ret){
+                for (DevModel existModel : MainDevListActivity.mDevices){
+                    if (devModel.SN.equals(existModel.SN)){
+                        existModel.Disconn();
+                        existModel.NetHandle = 0;
+                    }
+                }
             }
             else{
                 SouthUtil.showDialog(AddDeviceAP2StaSetup.this,getString(R.string.action_AP_T_STA_Failed));
@@ -214,6 +235,11 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
             if (retModel != null){
                 if (retModel.ret == 1){
                     SouthUtil.showDialog(AddDeviceAP2StaSetup.this,getString(R.string.action_AP_T_STA_Success));
+
+                }
+                else if(retModel.ret == 2){
+                    SouthUtil.showDialog(AddDeviceAP2StaSetup.this,getString(R.string.action_AP_T_STA_Success));
+
                 }
                 else {
                     SouthUtil.showDialog(AddDeviceAP2StaSetup.this,getString(R.string.action_AP_T_STA_Failed));

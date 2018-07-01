@@ -479,30 +479,32 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
         @Override
         protected void onPostExecute(String result) {
 
-            RetModel retmodel = GsonUtil.parseJsonWithGson(result,RetModel.class);
-            Log.e(tag,"set status model is "+result);
-            // get status model is {"Mode":1,"Auto":{"Delay":90,"Lux":2},"Manual":{"Brightness":0},
-            // "Timer":{"Brightness":0,"StartH":0,"StartM":0,"StopH":0,"StopM":0},"D2D":{"Brightness":0,"Lux":0}}
-           // lod.dismiss();
-            Bundle params = new Bundle();
-            params.putString("SetLedResult", result);
+            if (result != null && result.length() > 0){
+                RetModel retmodel = GsonUtil.parseJsonWithGson(result,RetModel.class);
+                Log.e(tag,"set status model is "+result);
+                // get status model is {"Mode":1,"Auto":{"Delay":90,"Lux":2},"Manual":{"Brightness":0},
+                // "Timer":{"Brightness":0,"StartH":0,"StartM":0,"StopH":0,"StopM":0},"D2D":{"Brightness":0,"Lux":0}}
+                // lod.dismiss();
+                Bundle params = new Bundle();
+                params.putString("SetLedResult", result);
 
 
-            if (retmodel != null){
-                params.putBoolean("SetLedResultModel", true);
-                if (retmodel.ret == 1){
-                   // SouthUtil.showDialog(LedControlActivity.this,"set successfully");
+                if (retmodel != null){
+                    params.putBoolean("SetLedResultModel", true);
+                    if (retmodel.ret == 1){
+                        // SouthUtil.showDialog(LedControlActivity.this,"set successfully");
+                    }
+                    else {
+                        // SouthUtil.showDialog(LedControlActivity.this,"set failed");
+                    }
                 }
-                else {
-                   // SouthUtil.showDialog(LedControlActivity.this,"set failed");
+                else{
+                    params.putBoolean("SetLedResultModel", false);
+                    // SouthUtil.showDialog(LedControlActivity.this,"set failed");
                 }
-            }
-            else{
-                params.putBoolean("SetLedResultModel", false);
-               // SouthUtil.showDialog(LedControlActivity.this,"set failed");
-            }
 
-            mFirebaseAnalytics.logEvent("SetLed", params);
+                mFirebaseAnalytics.logEvent("SetLed", params);
+            }
             super.onPostExecute(result);
         }
     }

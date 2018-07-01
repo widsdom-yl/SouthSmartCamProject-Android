@@ -14,6 +14,10 @@ import static android.net.ConnectivityManager.TYPE_MOBILE;
 import static android.net.ConnectivityManager.TYPE_WIFI;
 
 class NetworkChangeReceiver extends BroadcastReceiver {
+    OnNetWorkBreakListener mNetWorkBreakListener;
+    public void setNetWorkBreakListener(OnNetWorkBreakListener netWorkBreakListener){
+        mNetWorkBreakListener  = netWorkBreakListener;
+    }
     @Override
     public void onReceive(Context context, Intent intent) {
         ConnectivityManager connectionManager = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
@@ -34,8 +38,16 @@ class NetworkChangeReceiver extends BroadcastReceiver {
                     break;
             }
         } else {
+            //断开所有连接
             Toast.makeText(context, "当前无网络连接", Toast.LENGTH_SHORT).show();
+            if (mNetWorkBreakListener != null){
+                mNetWorkBreakListener.OnNetWorkBreakListener();
+            }
         }
+    }
+    public interface OnNetWorkBreakListener{
+        //监听网络断开
+        void OnNetWorkBreakListener();
     }
 }
 
