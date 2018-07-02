@@ -380,7 +380,7 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
 // Calendar c = Calendar.getInstance();
         // 创建一个TimePickerDialog实例，并把它显示出来
         // 解释一哈，Activity是context的子类
-        new TimePickerDialog( this,
+        new TimePickerDialog( this,android.R.style.Theme_DeviceDefault_Light_Dialog,
                 // 绑定监听器
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override

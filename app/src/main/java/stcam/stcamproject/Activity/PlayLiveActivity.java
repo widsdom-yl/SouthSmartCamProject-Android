@@ -211,6 +211,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         @Override
         public void run() {
             // TODO Auto-generated method stub
+
             button_speech.setEnabled(true);
             button_speech_o.setEnabled(true);
             button_slient.setEnabled(true);

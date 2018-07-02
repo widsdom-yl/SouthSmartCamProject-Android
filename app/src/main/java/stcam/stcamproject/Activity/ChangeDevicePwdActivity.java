@@ -141,6 +141,10 @@ public class ChangeDevicePwdActivity extends AppCompatActivity implements View.O
     public void onClick(View view) {
         if (view.getId() == R.id.button_next){
             Log.e(tag,"----0,change pwd ,new pwd is  "+editText_new_pwd.getText().toString());
+            if (editText_new_pwd.getText().toString().length() >= 20 ){
+                SouthUtil.showDialog(ChangeDevicePwdActivity.this,getString(R.string.action_dev_pwd_limit_lessthan_19));
+                return;
+            }
             if (editText_new_pwd.getText().toString().equals(editText_confirm_pwd.getText().toString()) && editText_new_pwd.getText().toString().length() >= 4){
                 Log.e(tag,"----1,change pwd ,new pwd is  "+editText_new_pwd.getText().toString());
                 if (dbModel == null){

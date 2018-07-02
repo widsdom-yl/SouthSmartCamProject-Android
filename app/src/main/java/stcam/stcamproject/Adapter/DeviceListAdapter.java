@@ -62,7 +62,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
         List<String> files= FileUtil.getSNFilesFromPath(FileUtil.pathSnapShot(),model.SN);
         if (files.size()>0){
 
-            Bitmap bitmap = BitmapFactory.decodeFile(files.get(0));
+            Bitmap bitmap = BitmapFactory.decodeFile(files.get(files.size()-1));
             holder.deviceImageView.setImageBitmap(bitmap);
         }
         else{

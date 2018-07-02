@@ -148,4 +148,5 @@
     <string name="action_close">关</string>
     <string name="string_second">秒</string>
     <string name="string_miniute">分钟</string>
+    <string name="action_dev_pwd_limit_lessthan_19">密码不能超过19位数</string>
 </resources>
