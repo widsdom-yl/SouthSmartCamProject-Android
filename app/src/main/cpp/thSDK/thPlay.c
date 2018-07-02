@@ -1028,6 +1028,11 @@ reconnects:
 
         if (PHead->VerifyCode == Head_VideoPkt)
         {
+          //20180702 add
+          if (Play->VideoChlMask == 1 && Play->SubVideoChlMask == 0) {if (PInfo->Frame.StreamType != 0) continue;}
+          if (Play->VideoChlMask == 0 && Play->SubVideoChlMask == 1) {if (PInfo->Frame.StreamType != 1) continue;}
+          //20180702 add
+
           if (!Play->IsIFrameFlag)
           {
             if (PInfo->Frame.IsIFrame) Play->IsIFrameFlag = true;
@@ -1227,6 +1232,11 @@ reconnects:
 
     if (PInfo->Head.VerifyCode == Head_VideoPkt)
     {
+      //20180702 add
+      if (Play->VideoChlMask == 1 && Play->SubVideoChlMask == 0) {if (PInfo->Frame.StreamType != 0) continue;}
+      if (Play->VideoChlMask == 0 && Play->SubVideoChlMask == 1) {if (PInfo->Frame.StreamType != 1) continue;}
+      //20180702 add
+
       if (!Play->IsIFrameFlag)
       {
         if (PInfo->Frame.IsIFrame) Play->IsIFrameFlag = true;

@@ -298,52 +298,56 @@ void callback_AudioQueuePlay(SLAndroidSimpleBufferQueueItf bq, void* context)
 //-----------------------------------------------------------------------------
 HANDLE thSLESAudioPlay_Init()
 {
-  SLresult result;
-  TSLESAudioPlayInfo* Info = (TSLESAudioPlayInfo*)malloc(sizeof(TSLESAudioPlayInfo));
-  memset(Info, 0, sizeof(TSLESAudioPlayInfo));
-  PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
+    SLresult result;
+    TSLESAudioPlayInfo* Info = (TSLESAudioPlayInfo*)malloc(sizeof(TSLESAudioPlayInfo));
+    memset(Info, 0, sizeof(TSLESAudioPlayInfo));
+    PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
 
-  result = slCreateEngine(&engineObject, 0, NULL, 0, NULL, NULL);
-  assert(SL_RESULT_SUCCESS == result);
-  result = (*engineObject)->Realize(engineObject, SL_BOOLEAN_FALSE);
-  assert(SL_RESULT_SUCCESS == result);
-  result = (*engineObject)->GetInterface(engineObject, SL_IID_ENGINE, &engineEngine);
-  assert(SL_RESULT_SUCCESS == result);
-  const SLInterfaceID ids[1] = {SL_IID_ENVIRONMENTALREVERB};
-  const SLboolean req[1] = {SL_BOOLEAN_FALSE};
-  result = (*engineEngine)->CreateOutputMix(engineEngine, &outputMixObject, 1, ids, req);
-  assert(SL_RESULT_SUCCESS == result);
-  result = (*outputMixObject)->Realize(outputMixObject, SL_BOOLEAN_FALSE);
-  assert(SL_RESULT_SUCCESS == result);
+    result = slCreateEngine(&engineObject, 0, NULL, 0, NULL, NULL);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    result = (*engineObject)->Realize(engineObject, SL_BOOLEAN_FALSE);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    result = (*engineObject)->GetInterface(engineObject, SL_IID_ENGINE, &engineEngine);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    const SLInterfaceID ids[1] = {SL_IID_ENVIRONMENTALREVERB};
+    const SLboolean req[1] = {SL_BOOLEAN_FALSE};
+    result = (*engineEngine)->CreateOutputMix(engineEngine, &outputMixObject, 1, ids, req);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    result = (*outputMixObject)->Realize(outputMixObject, SL_BOOLEAN_FALSE);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
 
-  SLDataLocator_AndroidSimpleBufferQueue loc_bufq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
-  SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_8, SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16, SL_SPEAKER_FRONT_CENTER, SL_BYTEORDER_LITTLEENDIAN};
-  SLDataSource audioSrc = {&loc_bufq, &format_pcm};
+    SLDataLocator_AndroidSimpleBufferQueue loc_bufq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
+    SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_8, SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16, SL_SPEAKER_FRONT_CENTER, SL_BYTEORDER_LITTLEENDIAN};
+    SLDataSource audioSrc = {&loc_bufq, &format_pcm};
 
-  SLDataLocator_OutputMix loc_outmix = {SL_DATALOCATOR_OUTPUTMIX, outputMixObject};
-  SLDataSink audioSnk = {&loc_outmix, NULL};
+    SLDataLocator_OutputMix loc_outmix = {SL_DATALOCATOR_OUTPUTMIX, outputMixObject};
+    SLDataSink audioSnk = {&loc_outmix, NULL};
 
-  const SLInterfaceID ids1[2] = {SL_IID_BUFFERQUEUE, SL_IID_EFFECTSEND};
-  const SLboolean req1[2] = {SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE};
-  result = (*engineEngine)->CreateAudioPlayer(engineEngine, &Info->SLObjectPlay, &audioSrc, &audioSnk, 2, ids1, req1);
-  assert(SL_RESULT_SUCCESS == result);
-  result = (*Info->SLObjectPlay)->Realize(Info->SLObjectPlay, SL_BOOLEAN_FALSE);
-  assert(SL_RESULT_SUCCESS == result);
-  result = (*Info->SLObjectPlay)->GetInterface(Info->SLObjectPlay, SL_IID_PLAY, &Info->SLPlay);
-  assert(SL_RESULT_SUCCESS == result);
-  result = (*Info->SLObjectPlay)->GetInterface(Info->SLObjectPlay, SL_IID_BUFFERQUEUE, &Info->SLBufferQueuePlay);
-  assert(SL_RESULT_SUCCESS == result);
-  result = (*Info->SLBufferQueuePlay)->RegisterCallback(Info->SLBufferQueuePlay, callback_AudioQueuePlay, Info);
-  assert(SL_RESULT_SUCCESS == result);
-  result = (*Info->SLObjectPlay)->GetInterface(Info->SLObjectPlay, SL_IID_EFFECTSEND, &Info->SLEffectSendPlay);
-  assert(SL_RESULT_SUCCESS == result);
-  result = (*Info->SLPlay)->SetPlayState(Info->SLPlay, SL_PLAYSTATE_PLAYING);
-  assert(SL_RESULT_SUCCESS == result);
-  Info->AudioQueuePlayPkt = AudioQueue_Create(2048*sizeof(short)*1000);
-  //  Info->BufferPlay = (short*)malloc(sizeof(short) * 2048);
-  Info->BufferPlaySize = 2048;
-  Info->_isplay = 0;
-  return (HANDLE)Info;
+    const SLInterfaceID ids1[2] = {SL_IID_BUFFERQUEUE, SL_IID_EFFECTSEND};
+    const SLboolean req1[2] = {SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE};
+    result = (*engineEngine)->CreateAudioPlayer(engineEngine, &Info->SLObjectPlay, &audioSrc, &audioSnk, 2, ids1, req1);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    result = (*Info->SLObjectPlay)->Realize(Info->SLObjectPlay, SL_BOOLEAN_FALSE);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    result = (*Info->SLObjectPlay)->GetInterface(Info->SLObjectPlay, SL_IID_PLAY, &Info->SLPlay);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    result = (*Info->SLObjectPlay)->GetInterface(Info->SLObjectPlay, SL_IID_BUFFERQUEUE, &Info->SLBufferQueuePlay);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    result = (*Info->SLBufferQueuePlay)->RegisterCallback(Info->SLBufferQueuePlay, callback_AudioQueuePlay, Info);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    result = (*Info->SLObjectPlay)->GetInterface(Info->SLObjectPlay, SL_IID_EFFECTSEND, &Info->SLEffectSendPlay);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    result = (*Info->SLPlay)->SetPlayState(Info->SLPlay, SL_PLAYSTATE_PLAYING);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    Info->AudioQueuePlayPkt = AudioQueue_Create(2048*sizeof(short)*1000);
+    //  Info->BufferPlay = (short*)malloc(sizeof(short) * 2048);
+    Info->BufferPlaySize = 2048;
+    Info->_isplay = 0;
+    return (HANDLE)Info;
+
+    errors:
+    free(Info);
+    return NULL;
 }
 //-----------------------------------------------------------------------------
 bool thSLESAudioPlay_SetFormat(HANDLE audioHandle, i32 nChannels, i32 wBitsPerSample, i32 nSamplesPerSec, i32 AudioPacketSize)
@@ -420,50 +424,54 @@ void callback_AudioQueueTalk(SLAndroidSimpleBufferQueueItf bq, void* context)
 //-----------------------------------------------------------------------------
 HANDLE thSLESAudioTalk_Init()
 {
-  SLresult result;
-  TSLESAudioTalkInfo* Info = (TSLESAudioTalkInfo*)malloc(sizeof(TSLESAudioTalkInfo));
-  memset(Info, 0, sizeof(TSLESAudioTalkInfo));
+    SLresult result;
+    TSLESAudioTalkInfo* Info = (TSLESAudioTalkInfo*)malloc(sizeof(TSLESAudioTalkInfo));
+    memset(Info, 0, sizeof(TSLESAudioTalkInfo));
 
-  SLDataLocator_IODevice loc_dev = {SL_DATALOCATOR_IODEVICE, SL_IODEVICE_AUDIOINPUT,  SL_DEFAULTDEVICEID_AUDIOINPUT, NULL};
-  SLDataSource audioSrc = {&loc_dev, NULL};
+    SLDataLocator_IODevice loc_dev = {SL_DATALOCATOR_IODEVICE, SL_IODEVICE_AUDIOINPUT,  SL_DEFAULTDEVICEID_AUDIOINPUT, NULL};
+    SLDataSource audioSrc = {&loc_dev, NULL};
 
-  SLDataLocator_AndroidSimpleBufferQueue loc_bq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
-  SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_8,
-                                 SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
-                                 SL_SPEAKER_FRONT_CENTER, SL_BYTEORDER_LITTLEENDIAN};
-  SLDataSink audioSnk = {&loc_bq, &format_pcm};
+    SLDataLocator_AndroidSimpleBufferQueue loc_bq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
+    SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_8,
+                                   SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
+                                   SL_SPEAKER_FRONT_CENTER, SL_BYTEORDER_LITTLEENDIAN};
+    SLDataSink audioSnk = {&loc_bq, &format_pcm};
 
-  const SLInterfaceID id[1] = {SL_IID_ANDROIDSIMPLEBUFFERQUEUE};
-  const SLboolean req[1] = {SL_BOOLEAN_TRUE};
-  result = (*engineEngine)->CreateAudioRecorder(engineEngine, &Info->SLObjectTalk, &audioSrc, &audioSnk, 1, id, req);
-  if (SL_RESULT_SUCCESS != result) return -1;
-  PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
-  result = (*Info->SLObjectTalk)->Realize(Info->SLObjectTalk, SL_BOOLEAN_FALSE);
-  if (SL_RESULT_SUCCESS != result) return -1;
-  PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
-  result = (*Info->SLObjectTalk)->GetInterface(Info->SLObjectTalk, SL_IID_RECORD, &Info->SLTalk);
-  assert(SL_RESULT_SUCCESS == result);
-  PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
-  result = (*Info->SLObjectTalk)->GetInterface(Info->SLObjectTalk, SL_IID_ANDROIDSIMPLEBUFFERQUEUE,
-                                               &Info->SLBufferQueueTalk);
-  assert(SL_RESULT_SUCCESS == result);
-  PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
-  result = (*Info->SLBufferQueueTalk)->RegisterCallback(Info->SLBufferQueueTalk, callback_AudioQueueTalk, (void*)Info);
-  assert(SL_RESULT_SUCCESS == result);
-  PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
+    const SLInterfaceID id[1] = {SL_IID_ANDROIDSIMPLEBUFFERQUEUE};
+    const SLboolean req[1] = {SL_BOOLEAN_TRUE};
+    result = (*engineEngine)->CreateAudioRecorder(engineEngine, &Info->SLObjectTalk, &audioSrc, &audioSnk, 1, id, req);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
+    result = (*Info->SLObjectTalk)->Realize(Info->SLObjectTalk, SL_BOOLEAN_FALSE);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
+    result = (*Info->SLObjectTalk)->GetInterface(Info->SLObjectTalk, SL_IID_RECORD, &Info->SLTalk);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
+    result = (*Info->SLObjectTalk)->GetInterface(Info->SLObjectTalk, SL_IID_ANDROIDSIMPLEBUFFERQUEUE,
+                                                 &Info->SLBufferQueueTalk);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
+    result = (*Info->SLBufferQueueTalk)->RegisterCallback(Info->SLBufferQueueTalk, callback_AudioQueueTalk, (void*)Info);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
 
 
-  result = (*Info->SLTalk)->SetRecordState(Info->SLTalk, SL_RECORDSTATE_STOPPED);
-  assert(SL_RESULT_SUCCESS == result);
-  result = (*Info->SLBufferQueueTalk)->Clear(Info->SLBufferQueueTalk);
-  assert(SL_RESULT_SUCCESS == result);
+    result = (*Info->SLTalk)->SetRecordState(Info->SLTalk, SL_RECORDSTATE_STOPPED);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    result = (*Info->SLBufferQueueTalk)->Clear(Info->SLBufferQueueTalk);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
 
-  result = (*Info->SLBufferQueueTalk)->Enqueue(Info->SLBufferQueueTalk, Info->BufferTalk, AUDIO_COLLECT_SIZE);
-  assert(SL_RESULT_SUCCESS == result);
-  // start recording
-  result = (*Info->SLTalk)->SetRecordState(Info->SLTalk, SL_RECORDSTATE_RECORDING);
-  assert(SL_RESULT_SUCCESS == result);
-  return (HANDLE)Info;
+    result = (*Info->SLBufferQueueTalk)->Enqueue(Info->SLBufferQueueTalk, Info->BufferTalk, AUDIO_COLLECT_SIZE);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    // start recording
+    result = (*Info->SLTalk)->SetRecordState(Info->SLTalk, SL_RECORDSTATE_RECORDING);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    return (HANDLE)Info;
+
+    errors:
+    free(Info);
+    return NULL;
 }
 //-----------------------------------------------------------------------------
 bool thSLESAudioTalk_SetFormat(
@@ -483,24 +491,24 @@ bool thSLESAudioTalk_SetFormat(
 //-----------------------------------------------------------------------------
 bool thSLESAudioTalk_Free(HANDLE talkHandle)
 {
-  SLresult result;
-  TSLESAudioTalkInfo* Info = (TSLESAudioTalkInfo*)talkHandle;
-  if (!Info) return false;
-  PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
-  result = (*Info->SLTalk)->SetRecordState(Info->SLTalk, SL_RECORDSTATE_STOPPED);
-  assert(SL_RESULT_SUCCESS == result);
-  result = (*Info->SLBufferQueueTalk)->Clear(Info->SLBufferQueueTalk);
-  assert(SL_RESULT_SUCCESS == result);
+    SLresult result;
+    TSLESAudioTalkInfo* Info = (TSLESAudioTalkInfo*)talkHandle;
+    if (!Info) return false;
+    PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
+    result = (*Info->SLTalk)->SetRecordState(Info->SLTalk, SL_RECORDSTATE_STOPPED);
+    if (SL_RESULT_SUCCESS != result) return false;//assert(SL_RESULT_SUCCESS == result);
+    result = (*Info->SLBufferQueueTalk)->Clear(Info->SLBufferQueueTalk);
+    if (SL_RESULT_SUCCESS != result) return false;//assert(SL_RESULT_SUCCESS == result);
 
-  if (Info->SLObjectTalk != NULL)
-  {
-    (*Info->SLObjectTalk)->Destroy(Info->SLObjectTalk);
-    Info->SLObjectTalk = NULL;
-    Info->SLTalk = NULL;
-    Info->SLBufferQueueTalk = NULL;
-  }
+    if (Info->SLObjectTalk != NULL)
+    {
+        (*Info->SLObjectTalk)->Destroy(Info->SLObjectTalk);
+        Info->SLObjectTalk = NULL;
+        Info->SLTalk = NULL;
+        Info->SLBufferQueueTalk = NULL;
+    }
 
-  return true;
+    return true;
 }
 //-----------------------------------------------------------------------------
 #endif

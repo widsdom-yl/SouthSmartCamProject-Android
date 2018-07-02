@@ -83,7 +83,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        lib.P2PInit();
+        //lib.P2PInit();
         Log.e(tag, "PushRegisterID : "+JPushManager.getJPushRegisterID());
         setContentView(R.layout.activity_main_dev_list);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
