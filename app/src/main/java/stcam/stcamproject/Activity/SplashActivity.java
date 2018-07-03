@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.model.DevModel;
+
 import stcam.stcamproject.R;
 
 public class SplashActivity extends AppCompatActivity implements View.OnClickListener {
@@ -45,6 +47,14 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         new Handler().postDelayed(new Runnable() {
             public void run() {
                 // do something
+
+                for (DevModel existModel : MainDevListActivity.mDevices){
+                    if (existModel.IsConnect()){
+                        existModel.Disconn();
+                        existModel.NetHandle = 0;
+                    }
+                }
+                MainDevListActivity.mDevices.clear();
                 Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();

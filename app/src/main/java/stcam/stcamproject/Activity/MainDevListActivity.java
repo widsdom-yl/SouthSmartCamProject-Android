@@ -497,14 +497,13 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
                 break;
             }              
         }
-
-//        if (3 != tpe){
+        if (3 != tpe){
             if (!model.IsConnect()){
                 Log.e(tag,"---------------------1:not connect ");
                 SouthUtil.showDialog(MainDevListActivity.this,getString(R.string.action_net_not_connect));
                 return;
             }
-//        }
+        }
 
         if (0 == tpe){
 

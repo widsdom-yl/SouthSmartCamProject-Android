@@ -257,10 +257,14 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         if (entryType == EnumMainEntry_Visitor){
             return;
         }
+        if (!model.IsConnect()){
+            SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_net_not_connect));
+            return;
+        }
+
         if (0 == position){
-            if (model.IsConnect()){
-                changeDeviceNameDialog();
-            }
+           changeDeviceNameDialog();
+
         }
         else if(1 == position){
                 Intent intent = new Intent(this,ChangeDevicePwdActivity.class);
@@ -279,10 +283,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             startActivity(intent);
         }
         else if(3 == position){
-            if (!model.IsConnect()){
-                SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_net_not_connect));
-                return;
-            }
+
             if(model.ExistSD == 0){
                 SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_not_exist_sd));
                 return;
