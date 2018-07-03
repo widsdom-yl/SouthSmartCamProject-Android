@@ -35,4 +35,9 @@
         <item name="android:paddingRight">5dp</item>
     </style>
 
+    <style name="MyCheckBox" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/grgray</item>
+        <item name="colorControlActivated">@color/grgray</item>
+    </style>
+
 </resources>

@@ -6,9 +6,9 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">登录</string>
-    <string name="action_visitor">临时访问</string>
+    <string name="action_visitor">游客</string>
     <string name="action_Register">注册</string>
-    <string name="action_Forgetpwd">忘记密码</string>
+    <string name="action_Forgetpwd">忘记密码?</string>
     <string name="action_get_checknum">验证码</string>
     <string name="action_get_checknum_sent">验证码已经发送至邮箱</string>
     <string name="action_get_checknum_sent_failed">验证码发送失败</string>
@@ -149,4 +149,5 @@
     <string name="string_second">秒</string>
     <string name="string_miniute">分钟</string>
     <string name="action_dev_pwd_limit_lessthan_19">密码不能超过19位数</string>
+    <string name="action_check_remeber_pwd">记住密码</string>
 </resources>

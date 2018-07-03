@@ -17,13 +17,22 @@ public class AccountManager {
     {
         this.context = context;
     }
-    public void saveAccount(String usr,String pwd){
+    public void saveAccount(String usr,String pwd,boolean isRemeber){
+
         SharedPreferences pref = context.getSharedPreferences("account",MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
-        editor.putString("usr",usr);
-        editor.putString("pwd",pwd);
-
+        editor.putBoolean("remeber",isRemeber);
+        if (isRemeber){
+            editor.putString("usr",usr);
+            editor.putString("pwd",pwd);
+        }
         editor.commit();
+    }
+
+    public boolean getIsRemeberAccount(){
+        SharedPreferences pref = context.getSharedPreferences("account",MODE_PRIVATE);
+        boolean remeber = pref.getBoolean("remeber",false);//第二个参数为默认值
+        return remeber;
     }
     public String getDefaultUsr(){
         SharedPreferences pref = context.getSharedPreferences("account",MODE_PRIVATE);

@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -86,10 +86,12 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
         if (chooseModel.IsConnect()){
             holder.online_status_tx.setText(chooseModel.getConnectTypeDesc());
             holder.online_status_tx.setTextColor(Color.rgb(0, 255, 0));
+            holder.online_status_img.setBackgroundColor(Color.rgb(0, 255, 0));
         }
         else{
             holder.online_status_tx.setText(R.string.status_offline);
             holder.online_status_tx.setTextColor(Color.rgb(255, 0, 0));
+            holder.online_status_img.setBackgroundColor(Color.rgb(255, 0, 0));
         }
         holder.deviceNameView.setText(model.DevName);
         if(mItemClickListener != null){
@@ -143,16 +145,18 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
     class MyHolder extends RecyclerView.ViewHolder {
 
         private ImageView deviceImageView;
+        private ImageView online_status_img;
         private TextView deviceNameView;
-        private Button shareBtn;
-        private Button playBackBtn;
-        private Button settingBtn;
+        private ImageButton shareBtn;
+        private ImageButton playBackBtn;
+        private ImageButton settingBtn;
         private TextView online_status_tx;
 
         public MyHolder(View view) {
             super(view);
             deviceImageView = view.findViewById(R.id.device_image);
             deviceNameView =  view.findViewById(R.id.device_name_view);
+            online_status_img = view.findViewById(R.id.online_status_img);
             shareBtn = view.findViewById(R.id.btn_device_share);
             playBackBtn = view.findViewById(R.id.btn_device_play_record);
             settingBtn = view.findViewById(R.id.btn_device_setting);

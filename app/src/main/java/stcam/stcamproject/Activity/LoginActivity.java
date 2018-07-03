@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -17,6 +18,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +47,7 @@ public class LoginActivity extends AppCompatActivity  {
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+    boolean remeber;
 
     String[] permissions = new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -53,6 +56,8 @@ public class LoginActivity extends AppCompatActivity  {
             Manifest.permission.MODIFY_AUDIO_SETTINGS,
             Manifest.permission.ACCESS_FINE_LOCATION
     };
+
+    AppCompatCheckBox checkbox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +70,9 @@ public class LoginActivity extends AppCompatActivity  {
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 
-
+        checkbox = findViewById(R.id.checkbox);
+        remeber = AccountManager.getInstance().getIsRemeberAccount();
+        checkbox.setChecked(remeber);
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -81,8 +88,11 @@ public class LoginActivity extends AppCompatActivity  {
 //        mEmailView.setText("4719373@qq.com");
 //        mPasswordView.setText("admin111");
 
-        mEmailView.setText(AccountManager.getInstance().getDefaultUsr());
-        mPasswordView.setText(AccountManager.getInstance().getDefaultPwd());
+        if (remeber){
+            mEmailView.setText(AccountManager.getInstance().getDefaultUsr());
+            mPasswordView.setText(AccountManager.getInstance().getDefaultPwd());
+        }
+
 
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_login_in_button);
@@ -118,6 +128,14 @@ public class LoginActivity extends AppCompatActivity  {
             public void onClick(View view) {
                 Intent intent = new Intent(STApplication.getInstance(), ForgetPwdActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //do something
+                remeber = isChecked;
             }
         });
     }
@@ -266,7 +284,7 @@ public class LoginActivity extends AppCompatActivity  {
             if (1 == m.ret){
                 String email = mEmailView.getText().toString();
                 String password = mPasswordView.getText().toString();
-                AccountManager.getInstance().saveAccount(email,password);
+                AccountManager.getInstance().saveAccount(email,password,remeber);
                 Intent intent = new Intent(STApplication.getInstance(), MainDevListActivity.class);
                 intent.putExtra("entry", MainDevListActivity.EnumMainEntry.EnumMainEntry_Login);
                 startActivity(intent);
