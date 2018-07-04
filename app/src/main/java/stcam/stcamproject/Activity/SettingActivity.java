@@ -45,7 +45,7 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
-import static stcam.stcamproject.Activity.MainDevListActivity.EnumMainEntry.EnumMainEntry_Visitor;
+import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor;
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener, BaseAdapter.OnItemClickListener {
 
@@ -56,7 +56,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     TextView textview_uid;
     Button    button_ap_sta;
     Button button_delete_device;
-    MainDevListActivity.EnumMainEntry entryType;
+    MainDevListFragment.EnumMainEntry entryType;
 
     RecyclerView mRecyclerView;
     DeviceSettingAdapter mAdapter;
@@ -77,7 +77,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){
             model = bundle.getParcelable("devModel");
-            entryType = (MainDevListActivity.EnumMainEntry) bundle.getSerializable("entry");
+            entryType = (MainDevListFragment.EnumMainEntry) bundle.getSerializable("entry");
         }
         initView();
         initValue();
@@ -438,7 +438,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 if (retModel.ret == 1){
                     SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_STA_T_AP_Success));
                     model.NetHandle = 0;
-                    for (DevModel existModel : MainDevListActivity.mDevices){
+                    for (DevModel existModel : MainDevListFragment.mDevices){
                         if (model.SN.equals(existModel.SN)){
                             existModel.Disconn();
                             existModel.NetHandle = 0;
@@ -492,7 +492,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 if (retModel.ret == 1){
                     SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_Success));
                     model.NetHandle = 0;
-                    for (DevModel existModel : MainDevListActivity.mDevices){
+                    for (DevModel existModel : MainDevListFragment.mDevices){
                         if (model.SN.equals(existModel.SN)){
                             existModel.Disconn();
                             existModel.NetHandle = 0;
@@ -654,9 +654,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             if (1 == m.ret){
                 SouthUtil.showToast(SettingActivity.this,"delete ok");
                 DataManager.getInstance().deleteDev(model);
-                for (DevModel existModel : MainDevListActivity.mDevices){
+                for (DevModel existModel : MainDevListFragment.mDevices){
                     if (model.SN.equals(existModel.SN)){
-                        MainDevListActivity.mDevices.remove(existModel);
+                        MainDevListFragment.mDevices.remove(existModel);
                         break;
                     }
                 }

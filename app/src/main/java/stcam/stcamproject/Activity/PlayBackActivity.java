@@ -28,7 +28,7 @@ public class PlayBackActivity extends AppCompatActivity implements View.OnClickL
     GLSurfaceViewPlayBack glView;
     ImageButton imagebutton_back;
     VoiceImageButton button_snapshot,button_record;
-    MainDevListActivity.EnumMainEntry entryType;
+    MainDevListFragment.EnumMainEntry entryType;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +43,7 @@ public class PlayBackActivity extends AppCompatActivity implements View.OnClickL
         if (bundle != null){
             model = (SDVideoModel) bundle.getSerializable("model");
             devModel = (DevModel) bundle.getParcelable("devModel");
-            entryType = (MainDevListActivity.EnumMainEntry) bundle.getSerializable("entry");
+            entryType = (MainDevListFragment.EnumMainEntry) bundle.getSerializable("entry");
             Log.e(tag,"play sdVideo:"+model.sdVideo);
         }
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -106,7 +106,7 @@ public class PlayBackActivity extends AppCompatActivity implements View.OnClickL
         button_snapshot.setOnClickListener(this);
         button_record.setOnClickListener(this);
         imagebutton_back.setOnClickListener(this);
-//        if (entryType == MainDevListActivity.EnumMainEntry.EnumMainEntry_Visitor){
+//        if (entryType == MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor){
 //            button_record.setVisibility(View.INVISIBLE);
 //
 //            button_snapshot.setVisibility(View.INVISIBLE);

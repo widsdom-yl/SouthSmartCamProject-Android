@@ -116,8 +116,8 @@ public class LoginActivity extends AppCompatActivity  {
         visitor_button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(STApplication.getInstance(), MainDevListActivity.class);
-                intent.putExtra("entry", MainDevListActivity.EnumMainEntry.EnumMainEntry_Visitor);
+                Intent intent = new Intent(STApplication.getInstance(), MainDevListFragment.class);
+                intent.putExtra("entry", MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor);
                 startActivity(intent);
             }
         });
@@ -233,7 +233,7 @@ public class LoginActivity extends AppCompatActivity  {
             // form field with an error.
             focusView.requestFocus();
         } else {
-//            Intent intent = new Intent(STApplication.getInstance(), MainDevListActivity.class);
+//            Intent intent = new Intent(STApplication.getInstance(), MainDevListFragment.class);
 //            startActivity(intent);
 //            return;
             // Show a progress spinner, and kick off a background task to
@@ -285,8 +285,8 @@ public class LoginActivity extends AppCompatActivity  {
                 String email = mEmailView.getText().toString();
                 String password = mPasswordView.getText().toString();
                 AccountManager.getInstance().saveAccount(email,password,remeber);
-                Intent intent = new Intent(STApplication.getInstance(), MainDevListActivity.class);
-                intent.putExtra("entry", MainDevListActivity.EnumMainEntry.EnumMainEntry_Login);
+                Intent intent = new Intent(STApplication.getInstance(), MainActivity.class);
+                intent.putExtra("entry", MainDevListFragment.EnumMainEntry.EnumMainEntry_Login);
                 startActivity(intent);
                 LoginActivity.this.finish();
             }

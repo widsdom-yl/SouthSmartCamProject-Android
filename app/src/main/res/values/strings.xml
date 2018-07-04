@@ -33,7 +33,7 @@
     <string name="action_get_register_failed3">校验码超时</string>
     <string name="action_send_pws_success">密码已经发送至您的邮箱</string>
     <string name="action_send_pws_failed">请求失败</string>
-    <string name="title_main_dev_list">设备列表</string>
+    <string name="title_main_dev_list">设备</string>
     <string name="action_search">搜索</string>
     <string name="action_add">添加</string>
     <string name="action_add_device">添加设备</string>
@@ -54,7 +54,7 @@
     <string name="action_add_share_device">添加分享的设备(扫描二维码)</string>
     <string name="action_net_not_connect">未连接到此设备</string>
     <string name="action_not_exist_sd">此设备无SD卡</string>
-    <string name="action_alarm">报警事件</string>
+    <string name="action_alarm">警报</string>
     <string name="action_snapshot">截图</string>
     <string name="action_speech">对讲</string>
     <string name="action_record">录像</string>
@@ -67,7 +67,7 @@
     <string name="action_add_one_key_setting">一键设置</string>
     <string name="action_add_ap_sta">添加AP方式设备(AP转STA)</string>
     <string name="action_add_ap">AP热点单机直连</string>
-    <string name="action_media">图库</string>
+    <string name="action_media">图像</string>
     <string name="action_one_key_setting_desc0">听到"等待连接"或指示灯红灯、蓝灯同时长亮后，输入路由器密码，进行下一步</string>
     <string name="action_one_key_setting_desc1">听到"配置成功"或指示灯红灯熄灭，蓝灯长亮后，按"取消"后，搜索设备</string>
     <string name="ssid">路由器SSID</string>
@@ -140,7 +140,7 @@
     <string name="action_volume_record">录像分区</string>
     <string name="action_volume_left">剩余容量</string>
     <string name="action_Success_Reboot">设置成功,重启设备后生效</string>
-
+    <string name="action_mine">我的</string>
     <string name="action_push">推送</string>
     <string name="action_push_interval">消息推送间隔</string>
     <string name="action_pir_sensitivity">PIR灵敏度</string>
@@ -150,4 +150,5 @@
     <string name="string_miniute">分钟</string>
     <string name="action_dev_pwd_limit_lessthan_19">密码不能超过19位数</string>
     <string name="action_check_remeber_pwd">记住密码</string>
+    <string name="string_smart_device">智能设备</string>
 </resources>

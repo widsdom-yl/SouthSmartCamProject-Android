@@ -2,20 +2,18 @@ package stcam.stcamproject.Activity;
 
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout;
 import com.model.DevModel;
@@ -46,12 +44,13 @@ import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 
-import static stcam.stcamproject.Activity.MainDevListActivity.EnumMainEntry.EnumMainEntry_Login;
+import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.EnumMainEntry_Login;
 
-public class MainDevListActivity extends AppCompatActivity implements DeviceListAdapter.OnItemClickListener, NetworkChangeReceiver.OnNetWorkBreakListener {
+public class MainDevListFragment extends Fragment implements DeviceListAdapter.OnItemClickListener, NetworkChangeReceiver.OnNetWorkBreakListener, View.OnClickListener {
 
     RecyclerView mRecyclerView;
     DeviceListAdapter mAdapter;
+    ImageButton add_button;
     public static  List<DevModel>mDevices = new ArrayList<>();//这个list中的model，判断了连接状态
     List<DevModel>mAccountDevices = new ArrayList<>();//没有连接状态
     SuperSwipeRefreshLayout refreshLayout;
@@ -75,40 +74,85 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         mAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onClick(View view) {
+        Intent intent = new Intent(this.getActivity(), AddDeviceActivity.class);
+        startActivity(intent);
+    }
+
     public enum EnumMainEntry implements Serializable {
         EnumMainEntry_Login,
         EnumMainEntry_Visitor
     }
 
+    // TODO: Rename and change types and number of parameters
+    public static MainDevListFragment newInstance(EnumMainEntry param) {
+        MainDevListFragment fragment = new MainDevListFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("entry", param);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //lib.P2PInit();
         Log.e(tag, "PushRegisterID : "+JPushManager.getJPushRegisterID());
-        setContentView(R.layout.activity_main_dev_list);
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(R.string.title_main_dev_list);
-        Bundle bundle = this.getIntent().getExtras();
+        // setContentView(R.layout.activity_main_dev_list);
+        // android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        // actionBar.setTitle(R.string.title_main_dev_list);
+        Bundle bundle = this.getArguments();
         if (bundle != null){
             entryType = (EnumMainEntry) bundle.getSerializable("entry");
         }
 
 
-        initView();
+
 
         intentFilter = new IntentFilter();
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         networkChangeReceiver = new NetworkChangeReceiver();
         networkChangeReceiver.setNetWorkBreakListener(this);
-        registerReceiver(networkChangeReceiver, intentFilter);
+        getActivity().registerReceiver(networkChangeReceiver, intentFilter);
 
 
        // mAdapter = new DeviceListAdapter(this,null);
     }
 
     @Override
-    protected void onResume() {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view =  inflater.inflate(R.layout.activity_main_dev_list, container, false);
+        initView(view);
+
+        return view;
+    }
+
+
+    public void onResume(){
         super.onResume();
+        onMyResume();
+    }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            //相当于Fragment的onResume
+            onMyResume();
+
+        } else {
+            //相当于Fragment的onPause
+        }
+    }
+
+
+
+
+    private void onMyResume() {
         if (mDevices != null) {
             for (DevModel existModel : mDevices){
                  existModel.updateUserAndPwd();
@@ -122,81 +166,77 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         }
 
     }
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-    }
-    protected void onDestroy() {
+  
+    public void onDestroy()  {
         super.onDestroy();
-        unregisterReceiver(networkChangeReceiver);
+        getActivity().unregisterReceiver(networkChangeReceiver);
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (entryType == EnumMainEntry.EnumMainEntry_Login){
-            getMenuInflater().inflate(R.menu.menu_main, menu);
-        }
-        else{
-            getMenuInflater().inflate(R.menu.menu_search, menu);
-        }
-
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        if (entryType == EnumMainEntry.EnumMainEntry_Login){
+//            getMenuInflater().inflate(R.menu.menu_main, menu);
+//        }
+//        else{
+//            getMenuInflater().inflate(R.menu.menu_search, menu);
+//        }
+//
+//        return true;
+//    }
     String SearchMsg;
     boolean IsSearching;
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (item.getItemId() == R.id.action_add) {
-            Intent intent = new Intent(this, AddDeviceActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        if (item.getItemId() == R.id.action_alarm) {
-            Intent intent = new Intent(this, AlarmListActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        if (item.getItemId() == R.id.action_media) {
-            Intent intent = new Intent(this, MediaActivity.class);
-            Bundle bundle = new Bundle();
-            //bundle.putSerializable("devModel",model);
-            ArrayList<DevModel> devices = (ArrayList<DevModel>) mDevices;
-            bundle.putParcelableArrayList("devices",devices);
-            intent.putExtras(bundle);
-
-            startActivity(intent);
-            return true;
-        }
-        if (item.getItemId() == R.id.action_search){
-            searchDevices();
-        }
-        if (item.getItemId() == R.id.action_setting){
-            Intent intent = new Intent(this, SystemSettingActivity.class);
-            startActivity(intent);
-        }
-        if (item.getItemId() == android.R.id.home){
-            Log.e(tag,"---------------------back to home");
-            disconnectDev();
-            this.finish(); // back button
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_BACK){
-            Log.e(tag,"---------------------onKeyDown");
-            disconnectDev();
-
-            this.finish(); // back button
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        if (item.getItemId() == R.id.action_add) {
+//            Intent intent = new Intent(this.getActivity(), AddDeviceActivity.class);
+//            startActivity(intent);
+//            return true;
+//        }
+//        if (item.getItemId() == R.id.action_alarm) {
+//            Intent intent = new Intent(this.getActivity(), AlarmListActivity.class);
+//            startActivity(intent);
+//            return true;
+//        }
+//        if (item.getItemId() == R.id.action_media) {
+//            Intent intent = new Intent(this.getActivity(), MediaActivity.class);
+//            Bundle bundle = new Bundle();
+//            //bundle.putSerializable("devModel",model);
+//            ArrayList<DevModel> devices = (ArrayList<DevModel>) mDevices;
+//            bundle.putParcelableArrayList("devices",devices);
+//            intent.putExtras(bundle);
+//
+//            startActivity(intent);
+//            return true;
+//        }
+//        if (item.getItemId() == R.id.action_search){
+//            searchDevices();
+//        }
+//        if (item.getItemId() == R.id.action_setting){
+//            Intent intent = new Intent(this, SystemSettingActivity.class);
+//            startActivity(intent);
+//        }
+//        if (item.getItemId() == android.R.id.home){
+//            Log.e(tag,"---------------------back to home");
+//            disconnectDev();
+//            this.finish(); // back button
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if(keyCode == KeyEvent.KEYCODE_BACK){
+//            Log.e(tag,"---------------------onKeyDown");
+//            disconnectDev();
+//
+//            this.finish(); // back button
+//            return true;
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
     void disconnectDev(){
         new Thread() {
             @Override
@@ -214,10 +254,10 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         }.run();
 
     }
-    void initView(){
-        refreshLayout = findViewById(R.id.swipeRefreshLayout);
-        mRecyclerView = findViewById(R.id.recyler_device);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+    void initView(View view){
+        refreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        mRecyclerView = view.findViewById(R.id.recyler_device);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -268,16 +308,20 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
             refreshLayout.setEnabled(false);
         }
 
+
+        add_button = view.findViewById(R.id.add_button);
+        add_button.setOnClickListener(this);
+
     }
 
     View createFooterView(){
-        View view = LayoutInflater.from(this).inflate(R.layout.load_more, null);
+        View view = LayoutInflater.from(this.getActivity()).inflate(R.layout.load_more, null);
 
         return view;
     }
     void loadDevList(boolean refresh){
         if (lod == null){
-            lod = new LoadingDialog(this);
+            lod = new LoadingDialog(this.getActivity());
         }
         if (!refresh)
             lod.dialogShow();
@@ -295,7 +339,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         mHttpClient.newCall(getDevListRequest).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                MainDevListActivity.this.runOnUiThread(new Runnable() {
+                MainDevListFragment.this.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         lod.dismiss();
@@ -309,7 +353,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                MainDevListActivity.this.runOnUiThread(new Runnable() {
+                MainDevListFragment.this.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         lod.dismiss();
@@ -319,7 +363,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
                 });
                 //String retStr = response.body().string();
                 final String gb2312Str = new String(response.body().bytes(), "GB2312");
-                MainDevListActivity.this.runOnUiThread(new Runnable() {
+                MainDevListFragment.this.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         parseGetDevListResponse(gb2312Str);
@@ -373,8 +417,8 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
             }
 
             if (mAdapter == null){
-                mAdapter = new DeviceListAdapter(MainDevListActivity.this,mlist,entryType);
-                mAdapter.setOnItemClickListener(MainDevListActivity.this);
+                mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(),mlist,entryType);
+                mAdapter.setOnItemClickListener(MainDevListFragment.this);
                 mRecyclerView.setAdapter(mAdapter);
             }
             else{
@@ -385,8 +429,8 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         else{
             //MyContext.getInstance()
             if (mAdapter == null){
-                mAdapter = new DeviceListAdapter(MainDevListActivity.this,mlist,entryType);
-                mAdapter.setOnItemClickListener(MainDevListActivity.this);
+                mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(),mlist,entryType);
+                mAdapter.setOnItemClickListener(MainDevListFragment.this);
                 mRecyclerView.setAdapter(mAdapter);
             }
             else{
@@ -461,8 +505,8 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
                 }
 
                 if (mAdapter == null){
-                    mAdapter = new DeviceListAdapter(MainDevListActivity.this,mlist,entryType);
-                    mAdapter.setOnItemClickListener(MainDevListActivity.this);
+                    mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(),mlist,entryType);
+                    mAdapter.setOnItemClickListener(MainDevListFragment.this);
                     mRecyclerView.setAdapter(mAdapter);
                 }
                 else{
@@ -482,7 +526,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
     protected Subscription subscription;
 
-    final String tag = "MainDevListActivity";
+    final String tag = "MainDevListFragment";
     LoadingDialog lod;
 
     @Override
@@ -500,7 +544,7 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
         if (3 != tpe){
             if (!model.IsConnect()){
                 Log.e(tag,"---------------------1:not connect ");
-                SouthUtil.showDialog(MainDevListActivity.this,getString(R.string.action_net_not_connect));
+                SouthUtil.showDialog(MainDevListFragment.this.getActivity(),getString(R.string.action_net_not_connect));
                 return;
             }
         }
@@ -605,10 +649,10 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
     void searchDevices(){
         if (lod == null){
-            lod = new LoadingDialog(this);
+            lod = new LoadingDialog(this.getActivity());
         }
         lod.dialogShow();
-        SouthUtil.showToast(this,"search");
+        SouthUtil.showToast(this.getActivity(),"search");
         new Thread()
         {
             @Override
@@ -669,8 +713,8 @@ public class MainDevListActivity extends AppCompatActivity implements DeviceList
 
 
                         if (mAdapter == null){
-                            mAdapter = new DeviceListAdapter(MainDevListActivity.this,mAccountDevices,entryType);
-                            mAdapter.setOnItemClickListener(MainDevListActivity.this);
+                            mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(),mAccountDevices,entryType);
+                            mAdapter.setOnItemClickListener(MainDevListFragment.this);
                             mRecyclerView.setAdapter(mAdapter);
                         }
                         else{

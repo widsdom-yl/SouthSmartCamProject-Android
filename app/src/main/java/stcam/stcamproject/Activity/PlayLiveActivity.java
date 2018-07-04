@@ -49,14 +49,14 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     ImageButton imagebutton_to_lanscape,imagebutton_to_portrait;
 
     private GestureDetector mygesture;
-    MainDevListActivity.EnumMainEntry entryType;
+    MainDevListFragment.EnumMainEntry entryType;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){
             devModel = (DevModel) bundle.getParcelable("devModel");
-            entryType = (MainDevListActivity.EnumMainEntry) bundle.getSerializable("entry");
+            entryType = (MainDevListFragment.EnumMainEntry) bundle.getSerializable("entry");
             Log.e(tag,"NetHandle:"+devModel.NetHandle+",SN:"+devModel.SN);
         }
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -194,7 +194,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 
         configurationChanged();
 
-//        if (entryType == MainDevListActivity.EnumMainEntry.EnumMainEntry_Visitor){
+//        if (entryType == MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor){
 //            button_record.setVisibility(View.INVISIBLE);
 //            button_record_o.setVisibility(View.INVISIBLE);
 //            button_snapshot.setVisibility(View.INVISIBLE);

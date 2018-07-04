@@ -48,13 +48,13 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
             public void run() {
                 // do something
 
-                for (DevModel existModel : MainDevListActivity.mDevices){
+                for (DevModel existModel : MainDevListFragment.mDevices){
                     if (existModel.IsConnect()){
                         existModel.Disconn();
                         existModel.NetHandle = 0;
                     }
                 }
-                MainDevListActivity.mDevices.clear();
+                MainDevListFragment.mDevices.clear();
                 Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();

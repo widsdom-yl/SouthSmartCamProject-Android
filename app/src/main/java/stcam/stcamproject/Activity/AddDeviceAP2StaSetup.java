@@ -166,7 +166,7 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
             lod.dismiss();
             Log.e(tag,"---------------------1:"+e.getLocalizedMessage());
             SouthUtil.showDialog(AddDeviceAP2StaSetup.this,getString(R.string.device_reboot));
-            for (DevModel existModel : MainDevListActivity.mDevices){
+            for (DevModel existModel : MainDevListFragment.mDevices){
                 if (devModel.SN.equals(existModel.SN)){
                     existModel.Disconn();
                     existModel.NetHandle = 0;
@@ -181,7 +181,7 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
             Log.e(tag,"---------------------0:"+m.ret);
             if (1 == m.ret){
                 SouthUtil.showDialog(AddDeviceAP2StaSetup.this,getString(R.string.action_AP_T_STA_Success));
-                for (DevModel existModel : MainDevListActivity.mDevices){
+                for (DevModel existModel : MainDevListFragment.mDevices){
                     if (devModel.SN.equals(existModel.SN)){
                         existModel.Disconn();
                         existModel.NetHandle = 0;
@@ -189,7 +189,7 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
                 }
             }
             else if(2 == m.ret){
-                for (DevModel existModel : MainDevListActivity.mDevices){
+                for (DevModel existModel : MainDevListFragment.mDevices){
                     if (devModel.SN.equals(existModel.SN)){
                         existModel.Disconn();
                         existModel.NetHandle = 0;

@@ -18,20 +18,20 @@ import com.model.DevModel;
 
 import java.util.List;
 
-import stcam.stcamproject.Activity.MainDevListActivity;
+import stcam.stcamproject.Activity.MainDevListFragment;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
 
-import static stcam.stcamproject.Activity.MainDevListActivity.EnumMainEntry.EnumMainEntry_Login;
+import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.EnumMainEntry_Login;
 
 public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.MyHolder> {
 
     private Context mContext;
     private List<DevModel> mDatas;
-    private MainDevListActivity.EnumMainEntry mEntryType;
+    private MainDevListFragment.EnumMainEntry mEntryType;
 
     public static String tag = "DeviceListAdapter";
-    public DeviceListAdapter(Context context, List<DevModel> datas,MainDevListActivity.EnumMainEntry entryType) {
+    public DeviceListAdapter(Context context, List<DevModel> datas,MainDevListFragment.EnumMainEntry entryType) {
         super();
         this.mContext = context;
         this.mDatas = datas;
@@ -71,10 +71,10 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
 
         DevModel chooseModel = null;
 
-        for (DevModel existModel : MainDevListActivity.mDevices){
+        for (DevModel existModel : MainDevListFragment.mDevices){
             if (model.SN.equals(existModel.SN)){
                 chooseModel = existModel;
-                Log.e(tag,"NetConn reloadview get exist model:"+chooseModel.SN+",isconnect is "+chooseModel.IsConnect()+",mdevice size "+MainDevListActivity.mDevices.size()+",handel is "+chooseModel.NetHandle);
+                Log.e(tag,"NetConn reloadview get exist model:"+chooseModel.SN+",isconnect is "+chooseModel.IsConnect()+",mdevice size "+MainDevListFragment.mDevices.size()+",handel is "+chooseModel.NetHandle);
                 break;
             }
         }
@@ -86,12 +86,14 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
         if (chooseModel.IsConnect()){
             holder.online_status_tx.setText(chooseModel.getConnectTypeDesc());
             holder.online_status_tx.setTextColor(Color.rgb(0, 255, 0));
-            holder.online_status_img.setBackgroundColor(Color.rgb(0, 255, 0));
+            holder.online_status_img.setImageResource(R.drawable.shape_online);
         }
         else{
             holder.online_status_tx.setText(R.string.status_offline);
             holder.online_status_tx.setTextColor(Color.rgb(255, 0, 0));
-            holder.online_status_img.setBackgroundColor(Color.rgb(255, 0, 0));
+           // holder.online_status_img.setImageResource(R.drawable.shape_offline);
+            holder.online_status_img.setImageResource(R.drawable.shape_offline);
+
         }
         holder.deviceNameView.setText(model.DevName);
         if(mItemClickListener != null){

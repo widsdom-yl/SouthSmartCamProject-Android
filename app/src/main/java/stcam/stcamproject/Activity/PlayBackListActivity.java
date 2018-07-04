@@ -40,7 +40,7 @@ public class PlayBackListActivity extends AppCompatActivity implements BaseAdapt
 
     boolean refresh;//true:执行刷新 false:loadmore
     int page ;//当前正在加载的页数
-    MainDevListActivity.EnumMainEntry entryType;
+    MainDevListFragment.EnumMainEntry entryType;
     LoadingDialog lod;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,7 @@ public class PlayBackListActivity extends AppCompatActivity implements BaseAdapt
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){
             devModel = (DevModel) bundle.getParcelable("devModel");
-            entryType = (MainDevListActivity.EnumMainEntry) bundle.getSerializable("entry");
+            entryType = (MainDevListFragment.EnumMainEntry) bundle.getSerializable("entry");
             Log.e(tag,"NetHandle:"+devModel.NetHandle+",SN:"+devModel.SN);
         }
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();

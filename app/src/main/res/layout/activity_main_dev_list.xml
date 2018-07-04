@@ -1,24 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.MainDevListActivity">
+    tools:context=".Activity.MainDevListFragment">
 
 
+    <View
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="#2197d8"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textColor="#ffffff"
+        android:layout_height="44dp"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:text="@string/string_smart_device"
+        />
+
+    <ImageButton
+        android:id="@+id/add_button"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_width="40dp"
+        android:layout_height="24dp"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:scaleType="fitCenter"
+        android:background="@color/transparent"
+        android:src="@drawable/icon_add"
+        android:clickable="true"
+        android:textSize="12sp" />
 
     <com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout
+
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/navigation">
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyler_device"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+          />
     </com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout>
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

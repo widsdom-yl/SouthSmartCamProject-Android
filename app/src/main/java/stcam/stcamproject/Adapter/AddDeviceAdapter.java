@@ -8,7 +8,7 @@ import com.model.SearchDevModel;
 
 import java.util.List;
 
-import stcam.stcamproject.Activity.MainDevListActivity;
+import stcam.stcamproject.Activity.MainDevListFragment;
 import stcam.stcamproject.Manager.DataManager;
 import stcam.stcamproject.R;
 
@@ -24,7 +24,7 @@ public class AddDeviceAdapter extends BaseAdapter<SearchDevModel>{
         TextView device_name_view = holder.getView(R.id.device_name_view);
         TextView device_sn_view = holder.getView(R.id.device_sn_view);
         boolean exist  = false;
-        for (DevModel devModel :  MainDevListActivity.mDevices){
+        for (DevModel devModel :  MainDevListFragment.mDevices){
             if (devModel.SN.equals(model.getSN())){
                 exist = true;
                 break;

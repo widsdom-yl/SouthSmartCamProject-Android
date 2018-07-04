@@ -40,7 +40,7 @@
             android:name=".Activity.RegisterActivity"
             android:label="@string/title_activity_register" />
         <activity
-            android:name=".Activity.MainDevListActivity"
+            android:name=".Activity.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
@@ -87,7 +87,7 @@
             android:name="io.fabric.ApiKey"
             android:value="d4fed762adbf5636271fae1e9fffd1bad9abf368" />
 
-        <activity android:name=".Activity.PushSettingActivity"></activity>
+        <activity android:name=".Activity.PushSettingActivity" />
     </application>
 
 </manifest>
