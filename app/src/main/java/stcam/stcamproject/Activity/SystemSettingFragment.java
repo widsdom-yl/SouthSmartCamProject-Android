@@ -4,14 +4,17 @@ import android.app.Notification;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,23 +27,32 @@ import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.R;
 
-public class SystemSettingActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener {
+public class SystemSettingFragment extends Fragment implements BaseAdapter.OnItemClickListener {
     RecyclerView rv;
     List<String> settingArray = new ArrayList<>();//没有连接状态
     SytstmSettingListAdapter adapter;
+
+    public static SystemSettingFragment newInstance() {
+        SystemSettingFragment fragment = new SystemSettingFragment();
+        return fragment;
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_system_setting);
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_system_setting);
-        }
-        rv = findViewById(R.id.system_list_view);
-        rv.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
-        rv.setLayoutManager(new LinearLayoutManager(this));
+
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view =  inflater.inflate(R.layout.activity_system_setting, container, false);
+        rv = view.findViewById(R.id.system_list_view);
+        rv.addItemDecoration(new DividerItemDecoration(this.getContext(),DividerItemDecoration.VERTICAL));
+        rv.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
         settingArray.add(getString(R.string.action_alarm_sound));
         settingArray.add(getString(R.string.action_app_version));
@@ -50,17 +62,10 @@ public class SystemSettingActivity extends AppCompatActivity implements BaseAdap
         adapter = new SytstmSettingListAdapter(settingArray);
         rv.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
+        return view;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish(); // back button
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
 
 
     @Override
@@ -84,7 +89,7 @@ public class SystemSettingActivity extends AppCompatActivity implements BaseAdap
     private void dialogChoice1() {
 
         final String items[] = {getString(R.string.action_open), getString(R.string.action_close)};
-        AlertDialog.Builder builder = new AlertDialog.Builder(this,3);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(),3);
         builder.setTitle(getString(R.string.action_alarm_sound));
         builder.setIcon(R.mipmap.ic_launcher);
 
@@ -115,7 +120,7 @@ public class SystemSettingActivity extends AppCompatActivity implements BaseAdap
 
     //自定义报警通知（震动铃声都要）
     public void setNotification1(){
-        BasicPushNotificationBuilder builder = new BasicPushNotificationBuilder(SystemSettingActivity.this);
+        BasicPushNotificationBuilder builder = new BasicPushNotificationBuilder(SystemSettingFragment.this.getContext());
         builder.statusBarDrawable = R.mipmap.ic_launcher;//消息栏显示的图标
         builder.notificationFlags = Notification.FLAG_AUTO_CANCEL;  //设置为自动消失
         builder.notificationDefaults = Notification.DEFAULT_SOUND| Notification.DEFAULT_VIBRATE|Notification.DEFAULT_LIGHTS;// 设置为铃声与震动都要
@@ -123,7 +128,7 @@ public class SystemSettingActivity extends AppCompatActivity implements BaseAdap
     }
     //自定义报警通知（铃声）
     public void setNotification2(){
-        BasicPushNotificationBuilder builder = new BasicPushNotificationBuilder(SystemSettingActivity.this);
+        BasicPushNotificationBuilder builder = new BasicPushNotificationBuilder(SystemSettingFragment.this.getContext());
         builder.statusBarDrawable = R.mipmap.ic_launcher;//消息栏显示的图标</span>
                 builder.notificationFlags = Notification.FLAG_AUTO_CANCEL;  //设置为自动消失
         builder.notificationDefaults = Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS;// 设置为铃声与震动都要
@@ -131,7 +136,7 @@ public class SystemSettingActivity extends AppCompatActivity implements BaseAdap
     }
     //自定义报警通知（震动）
     public void setNotification3(){
-        BasicPushNotificationBuilder builder = new BasicPushNotificationBuilder(SystemSettingActivity.this);
+        BasicPushNotificationBuilder builder = new BasicPushNotificationBuilder(SystemSettingFragment.this.getContext());
         builder.statusBarDrawable = R.mipmap.ic_launcher;//消息栏显示的图标</span>
                 builder.notificationFlags = Notification.FLAG_AUTO_CANCEL;  //设置为自动消失
         builder.notificationDefaults = Notification.DEFAULT_VIBRATE|Notification.DEFAULT_LIGHTS;// 震动
@@ -139,7 +144,7 @@ public class SystemSettingActivity extends AppCompatActivity implements BaseAdap
     }
     //自定义报警通知（震动铃声都不要）
     public void setNotification4(){
-        BasicPushNotificationBuilder builder = new BasicPushNotificationBuilder(SystemSettingActivity.this);
+        BasicPushNotificationBuilder builder = new BasicPushNotificationBuilder(SystemSettingFragment.this.getContext());
         builder.statusBarDrawable = R.mipmap.ic_launcher;
         builder.notificationFlags = Notification.FLAG_AUTO_CANCEL;  //设置为自动消失
         builder.notificationDefaults = Notification.DEFAULT_LIGHTS;// 设置为铃声与震动都不要

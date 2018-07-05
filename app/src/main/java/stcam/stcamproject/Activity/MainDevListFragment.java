@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout;
@@ -45,12 +46,14 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 
 import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.EnumMainEntry_Login;
+import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor;
 
 public class MainDevListFragment extends Fragment implements DeviceListAdapter.OnItemClickListener, NetworkChangeReceiver.OnNetWorkBreakListener, View.OnClickListener {
 
     RecyclerView mRecyclerView;
     DeviceListAdapter mAdapter;
     ImageButton add_button;
+    Button search_button;
     public static  List<DevModel>mDevices = new ArrayList<>();//这个list中的model，判断了连接状态
     List<DevModel>mAccountDevices = new ArrayList<>();//没有连接状态
     SuperSwipeRefreshLayout refreshLayout;
@@ -76,8 +79,14 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
     @Override
     public void onClick(View view) {
-        Intent intent = new Intent(this.getActivity(), AddDeviceActivity.class);
-        startActivity(intent);
+        if (view.getId() == R.id.add_button){
+            Intent intent = new Intent(this.getActivity(), AddDeviceActivity.class);
+            startActivity(intent);
+        }
+        else if (view.getId() == R.id.search_button){
+            searchDevices();
+        }
+
     }
 
     public enum EnumMainEntry implements Serializable {
@@ -137,17 +146,17 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
         super.onResume();
         onMyResume();
     }
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            //相当于Fragment的onResume
-            onMyResume();
-
-        } else {
-            //相当于Fragment的onPause
-        }
-    }
+//    @Override
+//    public void setUserVisibleHint(boolean isVisibleToUser) {
+//        super.setUserVisibleHint(isVisibleToUser);
+//        if (isVisibleToUser) {
+//            //相当于Fragment的onResume
+//            onMyResume();
+//
+//        } else {
+//            //相当于Fragment的onPause
+//        }
+//    }
 
 
 
@@ -311,6 +320,17 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
         add_button = view.findViewById(R.id.add_button);
         add_button.setOnClickListener(this);
+        search_button = view.findViewById(R.id.search_button);
+        search_button.setOnClickListener(this);
+        if (entryType == EnumMainEntry_Visitor){
+            add_button.setVisibility(View.GONE);
+            search_button.setVisibility(View.VISIBLE);
+        }
+        else{
+            add_button.setVisibility(View.VISIBLE);
+            search_button.setVisibility(View.GONE);
+        }
+
 
     }
 

@@ -151,4 +151,6 @@
     <string name="action_dev_pwd_limit_lessthan_19">密码不能超过19位数</string>
     <string name="action_check_remeber_pwd">记住密码</string>
     <string name="string_smart_device">智能设备</string>
+    <string name="action_clear">清空</string>
+    <string name="action_visitor_mode_disable_excute">当前为游客模式，不能操作</string>
 </resources>

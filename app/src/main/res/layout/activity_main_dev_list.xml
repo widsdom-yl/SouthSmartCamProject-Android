@@ -34,8 +34,21 @@
         android:scaleType="fitCenter"
         android:background="@color/transparent"
         android:src="@drawable/icon_add"
+        android:clickable="true" />
+
+    <Button
+        android:id="@+id/search_button"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_width="40dp"
+        android:layout_height="24dp"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="@color/transparent"
+        android:text="@string/action_search"
         android:clickable="true"
-        android:textSize="12sp" />
+        android:textColor="@drawable/white_text_color"
+        android:textSize="14sp" />
 
     <com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout
 

@@ -2,13 +2,14 @@ package stcam.stcamproject.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.model.AlarmImageModel;
 
@@ -28,7 +29,7 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
-public class AlarmListActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener {
+public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemClickListener {
 
     AlarmListAdapter adapter;
     RecyclerView rv;
@@ -36,38 +37,37 @@ public class AlarmListActivity extends AppCompatActivity implements BaseAdapter.
     final String tag = "AlarmListActivity";
     LoadingDialog lod;
 
+    // TODO: Rename and change types and number of parameters
+    public static AlarmListFragment newInstance() {
+        AlarmListFragment fragment = new AlarmListFragment();
+        return fragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_alarm_list);
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_alarm);
-        }
-
-        rv = findViewById(R.id.alarm_list_view);
-        rv.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
-        rv.setLayoutManager(new LinearLayoutManager(this));
-        getAlarmList(false);
-
+        
     }
-
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish(); // back button
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view =  inflater.inflate(R.layout.activity_alarm_list, container, false);
+        rv = view.findViewById(R.id.alarm_list_view);
+        rv.addItemDecoration(new DividerItemDecoration(this.getContext(),DividerItemDecoration.VERTICAL));
+        rv.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        getAlarmList(false);
+        return view;
     }
+
+
+
+
 
     void getAlarmList(boolean refresh){
         if (lod == null){
-            lod = new LoadingDialog(this);
+            lod = new LoadingDialog(this.getContext());
         }
         if (!refresh)
             lod.dialogShow();
@@ -109,7 +109,7 @@ public class AlarmListActivity extends AppCompatActivity implements BaseAdapter.
                 alarmImageArray = mlist;
                 if (adapter == null){
                     adapter = new AlarmListAdapter(alarmImageArray);
-                    adapter.setOnItemClickListener(AlarmListActivity.this);
+                    adapter.setOnItemClickListener(AlarmListFragment.this);
                 }
                 rv.setAdapter(adapter);
             }

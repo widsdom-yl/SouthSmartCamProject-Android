@@ -36,7 +36,7 @@
 
             <ImageView
                 android:id="@+id/appicon"
-                android:src="@drawable/camlogo"
+                android:src="@drawable/appicon100"
                 android:background="@drawable/shape_quart_green"
                 android:layout_marginTop="10dp"
                 android:layout_width="100dp"

@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity  {
         visitor_button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(STApplication.getInstance(), MainDevListFragment.class);
+                Intent intent = new Intent(STApplication.getInstance(), MainActivity.class);
                 intent.putExtra("entry", MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor);
                 startActivity(intent);
             }

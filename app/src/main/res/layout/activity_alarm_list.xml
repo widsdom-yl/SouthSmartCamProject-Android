@@ -1,18 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.AlarmListActivity">
+    tools:context=".Activity.AlarmListFragment">
+
+    <View
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="#2197d8"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textColor="#ffffff"
+        android:layout_height="44dp"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:text="@string/action_alarm"
+        />
+
+    <Button
+    android:id="@+id/clear_button"
+    android:layout_alignParentRight="true"
+    android:layout_marginRight="10dp"
+    android:layout_width="40dp"
+    android:layout_height="24dp"
+    android:gravity="center"
+    android:layout_marginTop="10dp"
+    android:background="@color/transparent"
+    android:text="@string/action_clear"
+    android:clickable="true"
+    android:textColor="@drawable/white_text_color"
+    android:textSize="14sp" />
+
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/alarm_list_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/navigation"
         android:divider="#FFB900"
         android:dividerHeight="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</android.support.constraint.ConstraintLayout>
+       />
+</RelativeLayout>
