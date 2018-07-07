@@ -15,14 +15,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.TableLayout;
 
 import com.model.DevModel;
 import com.thSDK.lib;
 
+import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.ConstraintUtil;
 import stcam.stcamproject.Util.FileUtil;
@@ -34,17 +33,16 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 
     GLSurfaceViewLive glView;
     DevModel devModel;
-    TableLayout layout_control;
-    RelativeLayout layout_land;
-    VoiceImageButton button_snapshot,button_snapshot_o;
-    ImageButton button_speech,button_speech_o;
-    VoiceImageButton button_record,button_record_o;
+    VoiceImageButton button_snapshot;
+    ImageButton button_speech,button_setting;
+    VoiceImageButton button_record;
     ImageButton button_slient;
     RelativeLayout ptz_layout;
-    Button button_led,button_pix;
+    ImageButton button_led,button_pix;
     boolean pix_low = true;
     ImageButton button_ptz_left,button_ptz_right,button_ptz_up,button_ptz_down;
-    Button button_ptz;
+    ImageButton button_back;
+//    ImageButton button_ptz;
 
     ImageButton imagebutton_to_lanscape,imagebutton_to_portrait;
 
@@ -65,12 +63,12 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(devModel.DevName);
         }
-        setContentView(R.layout.activity_play_live);
-        initView();
+
 
         pix_low = true;
+//
+        configurationChanged();
         glView.Play();
-
         mygesture = new GestureDetector(this);
     }
     @Override
@@ -118,50 +116,47 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     }
     void configurationChanged(){
         if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            layout_land.setVisibility(View.INVISIBLE);
-            layout_control.setVisibility(View.VISIBLE);
+
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             getSupportActionBar().show();
 
-            imagebutton_to_portrait.setVisibility(View.INVISIBLE);
-            imagebutton_to_lanscape.setVisibility(View.VISIBLE);
+
+            setContentView(R.layout.activity_play_live);
+            initView(true);
 
 
             //设置当前窗体为全屏显示
 
 
         }else if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-            layout_land.setVisibility(View.VISIBLE);
-            layout_control.setVisibility(View.INVISIBLE);
 
-            imagebutton_to_portrait.setVisibility(View.VISIBLE);
-            imagebutton_to_lanscape.setVisibility(View.INVISIBLE);
+
+//            imagebutton_to_portrait.setVisibility(View.VISIBLE);
+//            imagebutton_to_lanscape.setVisibility(View.INVISIBLE);
             getSupportActionBar().hide();
             int flag= WindowManager.LayoutParams.FLAG_FULLSCREEN;
             //设置当前窗体为全屏显示
             Window window = getWindow();
             window.setFlags(flag, flag);
 
+            setContentView(R.layout.activity_play_live);
+            initView(false);
+
         }
     }
-    void initView(){
+    void initView(boolean isPortrait){
         glView = findViewById(R.id.glPlayLive);
         glView.setOnTouchListener(this);
-        layout_control = findViewById(R.id.layout_control);
+
         glView.setModel(devModel);
-        layout_land = findViewById(R.id.layout_land);
 
 
         button_snapshot = findViewById(R.id.button_snapshot);
-        button_snapshot_o = findViewById(R.id.button_snapshot_o);
         button_snapshot.setEnumSoundWav(PlayVoice.EnumSoundWav.SNAP);
-        button_snapshot_o.setEnumSoundWav(PlayVoice.EnumSoundWav.SNAP);
         button_speech = findViewById(R.id.button_speech);
-        button_speech_o = findViewById(R.id.button_speech_o);
         button_record = findViewById(R.id.button_record);
-        button_record_o = findViewById(R.id.button_record_o);
+        button_setting = findViewById(R.id.button_setting);
         button_record.setEnumSoundWav(PlayVoice.EnumSoundWav.CLICK);
-        button_record_o.setEnumSoundWav(PlayVoice.EnumSoundWav.CLICK);
         button_ptz_left = findViewById(R.id.button_ptz_left);
         button_ptz_right = findViewById(R.id.button_ptz_right);
         button_ptz_up = findViewById(R.id.button_ptz_up);
@@ -170,29 +165,32 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         button_pix = findViewById(R.id.button_pix);
         button_slient = findViewById(R.id.button_slient);
         button_snapshot.setOnClickListener(this);
-        button_snapshot_o.setOnClickListener(this);
         button_speech.setOnClickListener(this);
-        button_speech_o.setOnClickListener(this);
         button_record.setOnClickListener(this);
-        button_record_o.setOnClickListener(this);
         button_led.setOnClickListener(this);
         button_slient.setOnClickListener(this);
         button_pix.setOnClickListener(this);
-
+        button_setting.setOnClickListener(this);
         ptz_layout = findViewById(R.id.ptz_control_layout);
-        button_ptz = findViewById(R.id.button_ptz);
-        button_ptz.setOnClickListener(this);
+//        button_ptz = findViewById(R.id.button_ptz);
+//        button_ptz.setOnClickListener(this);
         button_ptz_left.setOnClickListener(this);
         button_ptz_right.setOnClickListener(this);
         button_ptz_up.setOnClickListener(this);
         button_ptz_down.setOnClickListener(this);
 
-        imagebutton_to_lanscape = findViewById(R.id.imagebutton_to_lanscape);
-        imagebutton_to_portrait = findViewById(R.id.imagebutton_to_portrait);
-        imagebutton_to_lanscape.setOnClickListener(this);
-        imagebutton_to_portrait.setOnClickListener(this);
+        if (isPortrait){
+            imagebutton_to_lanscape = findViewById(R.id.button_fullscreen);
+//        imagebutton_to_portrait = findViewById(R.id.imagebutton_to_portrait);
+            imagebutton_to_lanscape.setOnClickListener(this);
+//        imagebutton_to_portrait.setOnClickListener(this);
+        }
+        else{
+            button_back = findViewById(R.id.button_back);
+            button_back.setOnClickListener(this);
+        }
 
-        configurationChanged();
+        //configurationChanged();
 
 //        if (entryType == MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor){
 //            button_record.setVisibility(View.INVISIBLE);
@@ -213,20 +211,16 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
             // TODO Auto-generated method stub
 
             button_speech.setEnabled(true);
-            button_speech_o.setEnabled(true);
             button_slient.setEnabled(true);
             button_record.setEnabled(true);
-            button_record_o.setEnabled(true);
             button_pix.setEnabled(true);
         }
     };
 
     void enableBtnAfterSeconds(){
         button_speech.setEnabled(false);
-        button_speech_o.setEnabled(false);
         button_slient.setEnabled(false);
         button_record.setEnabled(false);
-        button_record_o.setEnabled(false);
         button_pix.setEnabled(false);
         handler.postDelayed(runnable,2500);
     }
@@ -235,27 +229,21 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.button_snapshot:
-            case R.id.button_snapshot_o:
                 String fileName = FileUtil.generatePathSnapShotFileName(devModel.SN);
                 if (fileName != null){
                     lib.thNetSaveToJpg(devModel.NetHandle,fileName);
                 }
                 break;
             case R.id.button_speech:
-            case R.id.button_speech_o:
                 enableBtnAfterSeconds();
                 if (button_speech.isSelected()){
                     button_speech.setSelected(false);
-                    button_speech.setImageResource(R.drawable.microphonedefault);
-                    button_speech_o.setSelected(false);
-                    button_speech_o.setImageResource(R.drawable.microphonedefault);
+                    button_speech.setImageResource(R.drawable.livespeech_nor);
                     lib.thNetTalkClose(devModel.NetHandle);
                 }
                 else{
                     button_speech.setSelected(true);
-                    button_speech.setImageResource(R.drawable.microphoneselected);
-                    button_speech_o.setSelected(true);
-                    button_speech_o.setImageResource(R.drawable.microphoneselected);
+                    button_speech.setImageResource(R.drawable.livespeech_sel);
                     lib.thNetTalkOpen(devModel.NetHandle);
                 }
                 break;
@@ -263,31 +251,28 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 enableBtnAfterSeconds();
                 if (button_slient.isSelected()){
                     button_slient.setSelected(false);
-                    button_slient.setImageResource(R.drawable.talk_nor);
+                    button_slient.setImageResource(R.drawable.livetalkoff_nor);
                     lib.thNetAudioPlayClose(devModel.NetHandle);
                 }
                 else{
                     button_slient.setSelected(true);
-                    button_slient.setImageResource(R.drawable.talk_sel);
+                    button_slient.setImageResource(R.drawable.livetalkoff_sel);
                     lib.thNetAudioPlayOpen(devModel.NetHandle);
                 }
                 break;
             case R.id.button_record:
-            case R.id.button_record_o:
                 enableBtnAfterSeconds();
                 if (lib.thNetIsRec(devModel.NetHandle)){
                     lib.thNetStopRec(devModel.NetHandle);
                     if (FileUtil.isFileEmpty(recordfileName)){
                         FileUtil.delFiles(recordfileName);
                     }
-                    button_record.setImageResource(R.drawable.btnrecorddefault);
-                    button_record_o.setImageResource(R.drawable.btnrecorddefault);
+                    button_record.setImageResource(R.drawable.liverecord_nor);
                 }
                 else{
                     recordfileName = FileUtil.generatePathRecordFileName(devModel.SN);
                    lib.thNetStartRec(devModel.NetHandle,recordfileName);
-                    button_record.setImageResource(R.drawable.btnrecorddown);
-                    button_record_o.setImageResource(R.drawable.btnrecorddown);
+                    button_record.setImageResource(R.drawable.liverecord_sel);
                 }
 
                 break;
@@ -317,18 +302,19 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 Log.e(tag,"down");
                 task3.execute(3);
                 break;
-            case R.id.button_ptz:
-                if (ptz_layout.getVisibility() ==View.VISIBLE){
-                    ptz_layout.setVisibility(View.INVISIBLE);
-                }
-                else{
-                    ptz_layout.setVisibility(View.VISIBLE);
-                }
-                break;
+//            case R.id.button_ptz:
+//                if (ptz_layout.getVisibility() ==View.VISIBLE){
+//                    ptz_layout.setVisibility(View.INVISIBLE);
+//                }
+//                else{
+//                    ptz_layout.setVisibility(View.VISIBLE);
+//                }
+//                break;
             case R.id.button_pix:
                 enableBtnAfterSeconds();
                 pix_low = !pix_low;
-                button_pix.setText(pix_low?R.string.action_pix_low:R.string.action_pix_high);
+               // button_pix.setText(pix_low?R.string.action_pix_low:R.string.action_pix_high);
+                button_pix.setImageResource(pix_low?R.drawable.livehd_nor:R.drawable.livehd_sel);
                 //线程操作
                 new Thread()
                 {
@@ -342,17 +328,29 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 
 
                 break;
-            case R.id.imagebutton_to_portrait:
+            case R.id.button_back:
                 if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 }
-
                 break;
-            case R.id.imagebutton_to_lanscape:
+            case R.id.button_fullscreen:
                 if (this.getResources().getConfiguration().orientation ==Configuration.ORIENTATION_PORTRAIT) {
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 }
                 break;
+            case R.id.button_setting:
+            {
+                Intent intentSetting = new Intent(STApplication.getInstance(), SettingActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("devModel",devModel);
+                bundle.putSerializable("entry",entryType);
+                intentSetting.putExtras(bundle);
+                Log.e(tag,"to SettingActivity NetHandle:"+devModel.NetHandle);
+
+                startActivity(intentSetting);
+            }
+
             default:
                 break;
         }

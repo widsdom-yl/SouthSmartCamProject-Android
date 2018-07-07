@@ -25,7 +25,6 @@ import stcam.stcamproject.Adapter.BaseAdapter;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.R;
-import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
@@ -116,7 +115,7 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
             else{
                 //MyContext.getInstance()
                 Log.e(tag,"---------------------1:no dev");
-                SouthUtil.showToast(STApplication.getInstance(),"No Alarm");
+//                SouthUtil.showToast(STApplication.getInstance(),"No Alarm");
             }
 
         }
