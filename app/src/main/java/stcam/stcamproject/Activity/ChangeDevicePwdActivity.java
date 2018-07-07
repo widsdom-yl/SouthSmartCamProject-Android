@@ -48,10 +48,10 @@ public class ChangeDevicePwdActivity extends AppCompatActivity implements View.O
     ShareModel shareModel;
     DevModel setModel;
     DevModel dbModel;
-    TextView text_uid;
     EditText editText_confirm_pwd;
     EditText editText_new_pwd;
     EditText editText_old_pwd;
+    TextView text_uid_detail;
     Button confirmButton;
     String SN;
     @Override
@@ -62,7 +62,7 @@ public class ChangeDevicePwdActivity extends AppCompatActivity implements View.O
         if(actionBar != null){
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_change_password);
+            actionBar.setTitle(R.string.action_device_password_manager);
         }
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){
@@ -106,25 +106,25 @@ public class ChangeDevicePwdActivity extends AppCompatActivity implements View.O
         return super.onOptionsItemSelected(item);
     }
     void initView(){
-        text_uid = findViewById(R.id.text_uid);
+
         editText_confirm_pwd = findViewById(R.id.editText_confirm_pwd);
         editText_new_pwd = findViewById(R.id.editText_new_pwd);
         editText_old_pwd = findViewById(R.id.editText_old_pwd);
         confirmButton = findViewById(R.id.button_next);
-
+        text_uid_detail = findViewById(R.id.text_uid_detail);
 
         switch (enumType) {
             case SHARE:
                 //ShareModel model
-                text_uid.setText("UID  " + shareModel.UID);
+                text_uid_detail.setText(shareModel.UID);
                 break;
             case WLAN:
             case STA:
             case AP:
-                text_uid.setText("UID  " + model.getUID());
+                text_uid_detail.setText( model.getUID());
                 break;
             case DEVICE_SETTING:
-                text_uid.setText("UID  " + setModel.UID);
+                text_uid_detail.setText( setModel.UID);
             default:
                 break;
         }

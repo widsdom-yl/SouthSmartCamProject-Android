@@ -3,39 +3,69 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="20dp"
+    android:background="@drawable/button_shape_white_nor"
     tools:context=".Activity.ChangeDevicePwdActivity">
 
     <TextView
         android:id="@+id/text_uid"
-        android:layout_width="0dp"
+        android:layout_width="65dp"
+        android:textSize="15sp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="60dp"
-        android:layout_marginLeft="60dp"
-        android:layout_marginRight="60dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="60dp"
-        android:gravity="center"
-        android:text="UID "
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:gravity="left"
+        android:text="ID :"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/text_uid_detail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:gravity="left"
+        android:textColor="@color/appGreenColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/text_uid"
+        app:layout_constraintTop_toTopOf="parent" />
 
+
+
+    <TextView
+        android:id="@+id/text_old_pwd"
+        android:layout_width="65dp"
+        android:textSize="15sp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        android:gravity="left"
+        android:text="@string/device_old_pwd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_uid"/>
 
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/layout_old_pwd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="60dp"
-        android:layout_marginLeft="60dp"
-        android:layout_marginRight="60dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         android:ems="10"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/text_old_pwd"
         app:layout_constraintTop_toBottomOf="@+id/text_uid"
         app:passwordToggleEnabled="true">
 
@@ -51,19 +81,32 @@
 
 
 
+    <TextView
+        android:id="@+id/text_new_pwd"
+        android:layout_width="65dp"
+        android:textSize="15sp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        android:gravity="left"
+        android:text="@string/device_new_pwd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_old_pwd" />
+
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/layout_new_pwd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="63dp"
-        android:layout_marginLeft="60dp"
-        android:layout_marginRight="63dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         android:ems="10"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/text_new_pwd"
         app:layout_constraintTop_toBottomOf="@+id/layout_old_pwd"
         app:passwordToggleEnabled="true">
 
@@ -79,21 +122,32 @@
 
 
 
-
+    <TextView
+        android:id="@+id/text_confirm_pwd"
+        android:layout_width="70dp"
+        android:textSize="14sp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        android:gravity="left"
+        android:text="@string/device_confirm_pwd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_new_pwd" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/layout_confirm_pwd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="60dp"
-        android:layout_marginLeft="60dp"
-        android:layout_marginRight="60dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         android:ems="10"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/text_confirm_pwd"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layout_new_pwd"
         app:passwordToggleEnabled="true"
         >
@@ -109,21 +163,20 @@
     </android.support.design.widget.TextInputLayout>
 
 
-
-
-
-
-
     <Button
         android:id="@+id/button_next"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="60dp"
-        android:layout_marginLeft="60dp"
-        android:layout_marginRight="60dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="40dp"
-        android:text="@string/OK"
+        android:layout_height="40dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_green_corner"
+        android:textColor="#ffffff"
+        android:text="@string/action_change"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

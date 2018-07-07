@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SouthSmartCamProject</string>
+    <string name="app_name">智能灯</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
@@ -38,6 +38,8 @@
     <string name="action_add">添加</string>
     <string name="action_add_device">添加设备</string>
     <string name="action_change_password">设置设备密码</string>
+    <string name="action_device_password_manager">设备密码管理</string>
+    <string name="action_change">修改</string>
     <string name="action_add_device_search">添加同一路由器下设备（局域网搜索）</string>
     <string name="action_device_share">分享</string>
     <string name="action_device_play_record">回放</string>
@@ -75,9 +77,9 @@
     <string name="next">下一步</string>
     <string name="OK">确定</string>
     <string name="cancel">取消</string>
-    <string name="device_old_pwd">密码</string>
-    <string name="device_new_pwd">新密码</string>
-    <string name="device_confirm_pwd">确认新密码</string>
+    <string name="device_old_pwd">旧密码:</string>
+    <string name="device_new_pwd">新密码:</string>
+    <string name="device_confirm_pwd">确认密码:</string>
     <string name="action_setting">设置</string>
     <string name="action_dev_setting">设备设置</string>
     <string name="device_name">设备名称</string>
