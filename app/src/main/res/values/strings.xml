@@ -92,10 +92,10 @@
     <string name="action_led_model_2">手动</string>
     <string name="action_led_model_3">定时</string>
     <string name="action_led_model_4">D2D</string>
-    <string name="action_time">时间</string>
+    <string name="action_time">亮灯时间</string>
     <string name="action_led_open_time">亮灯时间(秒)</string>
     <string name="action_led_sensitive">光感灵敏度</string>
-    <string name="action_led_brightness">亮度</string>
+    <string name="action_led_brightness">亮度调节</string>
     <string name="action_level_high">高</string>
     <string name="action_level_middle">中</string>
     <string name="action_level_low">低</string>
