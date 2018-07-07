@@ -32,7 +32,7 @@ public class AddDeviceOneStepNext extends AppCompatActivity implements View.OnCl
         if(actionBar != null){
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.SmartConfig);
+            actionBar.setTitle(R.string.SmartConfig_connect);
         }
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){

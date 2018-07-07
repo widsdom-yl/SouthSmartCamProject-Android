@@ -61,6 +61,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         if(actionBar != null){
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
+
             actionBar.setTitle(devModel.DevName);
         }
 

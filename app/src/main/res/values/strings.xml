@@ -39,7 +39,6 @@
     <string name="action_add_device">添加设备</string>
     <string name="action_change_password">设置设备密码</string>
     <string name="action_add_device_search">添加同一路由器下设备（局域网搜索）</string>
-
     <string name="action_device_share">分享</string>
     <string name="action_device_play_record">回放</string>
     <string name="action_device_play_setting">设置</string>
@@ -64,12 +63,13 @@
     <string name="action_pix_low">标清</string>
     <string name="action_pix_high">高清</string>
     <string name="action_ok">确定</string>
-    <string name="action_add_one_key_setting">一键设置</string>
+    <string name="action_add_one_key_setting">智能添加</string>
     <string name="action_add_ap_sta">添加AP方式设备(AP转STA)</string>
     <string name="action_add_ap">AP热点单机直连</string>
     <string name="action_media">图像</string>
-    <string name="action_one_key_setting_desc0">听到"等待连接"或指示灯红灯、蓝灯同时长亮后，输入路由器密码，进行下一步</string>
-    <string name="action_one_key_setting_desc1">听到"配置成功"或指示灯红灯熄灭，蓝灯长亮后，按"取消"后，搜索设备</string>
+    <string name="action_one_key_setting_desc0">听到\"等待连接\"或指示灯红灯、蓝灯同时长亮后，输入路由器密码，进行下一步</string>
+    <string name="action_one_key_setting_desc1">听到\"配置成功\"或指示灯红灯熄灭，蓝灯长亮后，按\"取消\"后，搜索设备</string>
+    <string name="string_tip">温馨提示</string>
     <string name="ssid">路由器SSID</string>
     <string name="ssid_pwd">密码</string>
     <string name="next">下一步</string>
@@ -79,6 +79,7 @@
     <string name="device_new_pwd">新密码</string>
     <string name="device_confirm_pwd">确认新密码</string>
     <string name="action_setting">设置</string>
+    <string name="action_dev_setting">设备设置</string>
     <string name="device_name">设备名称</string>
     <string name="device_pwd">连接密码</string>
     <string name="action_device_pwd">设备登录密码</string>
@@ -117,7 +118,7 @@
     <string name="action_app_version">App版本</string>
     <string name="action_change_system_password">修改密码</string>
     <string name="action_about">关于</string>
-    <string name="action_change_login_password">修改App登录密码</string>
+    <string name="action_change_login_password">重置密码</string>
     <string name="device_logn_old_pwd">原密码</string>
     <string name="device_reboot">设备正在重启，请退出app重新连接</string>
     <string name="action_send">发送</string>
@@ -131,7 +132,8 @@
     <string name="action_version">版本</string>
     <string name="action_request_ssid">请填写wifi信息</string>
     <string name="SmartConfigOver">Configuration finish</string>
-    <string name="SmartConfig">SmartConfig</string>
+    <string name="SmartConfig">智能配置</string>
+    <string name="SmartConfig_connect">连接</string>
     <string name="SmartConfiging">SmartConfiging...</string>
     <string name="action_record_recycle">循环录像</string>
     <string name="action_record_stop">停止录像</string>
@@ -153,4 +155,13 @@
     <string name="string_smart_device">智能设备</string>
     <string name="action_clear">清空</string>
     <string name="action_visitor_mode_disable_excute">当前为游客模式，不能操作</string>
+    <string name="string_user">用户名</string>
+    <string name="string_pwd">密码</string>
+    <string name="string_user_email">用户邮箱</string>
+    <string name="string_user_password">登录密码</string>
+
+    <string name="string_new_pwd_title">密     码</string>
+    <string name="string_confirm_pwd_title">确认密码</string>
+    <string name="string_input_new_password">请输入新的用户密码</string>
+    <string name="string_confirm_new_password">请输入用户确认密码</string>
 </resources>

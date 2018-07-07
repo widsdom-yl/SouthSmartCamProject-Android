@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -54,7 +53,7 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
         if(actionBar != null){
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_add_device_search);
+            actionBar.setTitle(R.string.action_search);
         }
         initView();
         searchDevices();
@@ -72,7 +71,7 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
 
     void initView(){
         rv = findViewById(R.id.device_list_view);
-        rv.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+       // rv.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         rv.setLayoutManager(new LinearLayoutManager(this));
     }
     void searchDevices(){

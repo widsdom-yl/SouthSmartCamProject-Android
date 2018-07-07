@@ -22,7 +22,7 @@ import stcam.stcamproject.network.ServerNetWork;
 public class ChangeLoginPasswordActivity extends AppCompatActivity implements View.OnClickListener {
     EditText editText_confirm_pwd;
     EditText editText_new_pwd;
-    EditText editText_old_pwd;
+//    EditText editText_old_pwd;
     Button confirmButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class ChangeLoginPasswordActivity extends AppCompatActivity implements Vi
     void initView(){
         editText_confirm_pwd = findViewById(R.id.editText_confirm_pwd);
         editText_new_pwd = findViewById(R.id.editText_new_pwd);
-        editText_old_pwd = findViewById(R.id.editText_old_pwd);
+//        editText_old_pwd = findViewById(R.id.editText_old_pwd);
         confirmButton = findViewById(R.id.button_next);
         confirmButton.setOnClickListener(this);
     }
@@ -59,12 +59,13 @@ public class ChangeLoginPasswordActivity extends AppCompatActivity implements Vi
 
     @Override
     public void onClick(View view) {
-        if (!editText_old_pwd.getText().toString().equals(AccountManager.getInstance().getDefaultPwd())){
-            //原密码不正确
-            SouthUtil.showDialog(ChangeLoginPasswordActivity.this,"old password is wrong");
-            return;
-        }
-        else if(editText_new_pwd.getText().length() < 4){
+//        if (!editText_old_pwd.getText().toString().equals(AccountManager.getInstance().getDefaultPwd())){
+//            //原密码不正确
+//            SouthUtil.showDialog(ChangeLoginPasswordActivity.this,"old password is wrong");
+//            return;
+//        }
+//        else
+        if(editText_new_pwd.getText().length() < 4){
             //密码小于4位
             SouthUtil.showDialog(ChangeLoginPasswordActivity.this,"Password length should not less than 4!");
             return;

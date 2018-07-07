@@ -39,7 +39,7 @@ public class AddDeviceAdapter extends BaseAdapter<SearchDevModel>{
             device_name_view.setTextColor(Color.rgb(0,0,0));
             device_sn_view.setTextColor(Color.rgb(0,0,0));
         }
-        holder.setText(R.id.device_name_view,model.getDevName()).setText(R.id.device_sn_view,model.getSN());
+        holder.setText(R.id.device_name_view,model.getDevIP()).setText(R.id.device_sn_view,model.getSN());
 
     }
 }

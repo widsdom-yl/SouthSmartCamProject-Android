@@ -64,6 +64,13 @@ public class LoginActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+
+
+            actionBar.setTitle(getString(R.string.action_sign_in));
+        }
+
         requestPermisson();
 
         Log.e(tag, "onCreate: "+ JPushManager.getJPushRegisterID());

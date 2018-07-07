@@ -15,8 +15,9 @@
 
             <TextView
                 android:id="@+id/device_sn_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:gravity="center"
@@ -24,12 +25,14 @@
                 android:textSize="14sp" />
             <TextView
                 android:id="@+id/device_name_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:gravity="center"
                 android:layout_below="@id/device_sn_view"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="5dp"
                 android:textColor="#535353"
                 android:textSize="14sp" />
 

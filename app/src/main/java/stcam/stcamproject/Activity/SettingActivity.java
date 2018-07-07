@@ -72,7 +72,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         if(actionBar != null){
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_setting);
+            actionBar.setTitle(R.string.action_dev_setting);
         }
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){
