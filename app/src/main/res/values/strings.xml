@@ -118,7 +118,7 @@
     <string name="action_system_setting">系统设置</string>
     <string name="action_alarm_sound">报警声音</string>
     <string name="action_app_version">App版本</string>
-    <string name="action_change_system_password">修改密码</string>
+    <string name="action_change_system_password">账号密码管理</string>
     <string name="action_about">关于</string>
     <string name="action_change_login_password">重置密码</string>
     <string name="device_logn_old_pwd">原密码</string>
@@ -166,4 +166,7 @@
     <string name="string_confirm_pwd_title">确认密码</string>
     <string name="string_input_new_password">请输入新的用户密码</string>
     <string name="string_confirm_new_password">请输入用户确认密码</string>
+    <string name="action_check_update">    检查更新</string>
+    <string name="string_current_newer">当前为最新版本</string>
+    <string name="string_current_older">当前版本需要升级，请到App store升级</string>
 </resources>

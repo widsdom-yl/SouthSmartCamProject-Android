@@ -56,7 +56,7 @@ public class SystemSettingFragment extends Fragment implements BaseAdapter.OnIte
 
         settingArray.add(getString(R.string.action_alarm_sound));
         settingArray.add(getString(R.string.action_app_version));
-        settingArray.add(getString(R.string.action_change_system_password));
+        settingArray.add( getString(R.string.action_change_system_password));
         settingArray.add(getString(R.string.action_about));
 
         adapter = new SytstmSettingListAdapter(settingArray);
@@ -75,6 +75,11 @@ public class SystemSettingFragment extends Fragment implements BaseAdapter.OnIte
         }
         else if (2 == position){
             Intent intent = new Intent(STApplication.getInstance(), ChangeLoginPasswordActivity.class);
+            startActivity(intent);
+        }
+        else if(3 == position){
+
+            Intent intent = new Intent(STApplication.getInstance(), AboutActivity.class);
             startActivity(intent);
         }
     }

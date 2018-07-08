@@ -87,6 +87,7 @@
             android:value="d4fed762adbf5636271fae1e9fffd1bad9abf368" />
 
         <activity android:name=".Activity.PushSettingActivity" />
+        <activity android:name=".Activity.AboutActivity"></activity>
     </application>
 
 </manifest>

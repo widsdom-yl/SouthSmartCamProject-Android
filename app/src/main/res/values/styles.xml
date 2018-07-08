@@ -40,4 +40,9 @@
         <item name="colorControlActivated">@color/grgray</item>
     </style>
 
+
+    <style name="CustomGreenCheckboxTheme" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/checkbox_green_style</item>
+    </style>
+
 </resources>
