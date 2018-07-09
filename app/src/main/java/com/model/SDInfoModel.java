@@ -46,4 +46,26 @@ public class SDInfoModel {
             return ""+FreeSize+"M";
         }
     }
+    public String getUsedPercent(){
+        try {
+            int usedPercent = (DiskSize-FreeSize)*100/DiskSize;
+            return usedPercent+"%";
+        }
+        catch (Exception e){
+            return "";
+        }
+
+    }
+    public String getFreePercent(){
+
+
+
+        try {
+            int freePercent = FreeSize*100/DiskSize;
+            return freePercent+"%";
+        }
+        catch (Exception e){
+            return "";
+        }
+    }
 }

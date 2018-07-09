@@ -14,7 +14,7 @@ public class STApplication extends Application {
     public static final String TAG = STApplication.class
             .getSimpleName();
     private static STApplication mInstance;
-    //private FirebaseAnalytics mFirebaseAnalytics;
+    //private c mFirebaseAnalytics;
     @Override
     public void onCreate() {
         super.onCreate();

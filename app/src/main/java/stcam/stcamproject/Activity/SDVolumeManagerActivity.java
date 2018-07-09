@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.model.DevModel;
 import com.model.RetModel;
@@ -28,7 +29,7 @@ import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 
-public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener, View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener, View.OnClickListener, RadioGroup.OnCheckedChangeListener, SDVolumeSettingAdapter.OnRecordClickListener {
 
     List<String> items = new ArrayList<>();
     SDVolumeSettingAdapter mAdapter;
@@ -39,6 +40,9 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
     SDInfoModel sdInfoModel;
 
     RadioGroup record_group ;
+
+    TextView textView_left;
+    TextView textView_used;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,16 +97,24 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
         button_format = findViewById(R.id.button_format);
         button_format.setOnClickListener(this);
 
-        record_group = findViewById(R.id.record_group);
+//        record_group = findViewById(R.id.record_group);
+
+        textView_left = findViewById(R.id.textView_left);
+        textView_used = findViewById(R.id.textView_used);
+
 
     }
     void initValue(){
         items.add(getString(R.string.action_volume_total));
-        items.add(getString(R.string.action_volume_record));
+//        items.add(getString(R.string.action_volume_record));
         items.add(getString(R.string.action_volume_left));
+        items.add(getString(R.string.action_record_recycle));
+
+
 
         mAdapter = new SDVolumeSettingAdapter(items);
         mAdapter.setOnItemClickListener(this);
+        mAdapter.setOnRecordClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
     }
@@ -131,18 +143,32 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
 
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-        switch (checkedId) {
-            case R.id.record_stop_radio:
-                ControlRecordStateTask task = new ControlRecordStateTask();
-                task.execute(22);
-                break;
-            case R.id.record_recycle_radio:
-                ControlRecordStateTask task1 = new ControlRecordStateTask();
-                task1.execute(21);
-                break;
-            default:
-                break;
+//        switch (checkedId) {
+//            case R.id.record_stop_radio:
+//                ControlRecordStateTask task = new ControlRecordStateTask();
+//                task.execute(22);
+//                break;
+//            case R.id.record_recycle_radio:
+//                ControlRecordStateTask task1 = new ControlRecordStateTask();
+//                task1.execute(21);
+//                break;
+//            default:
+//                break;
+//        }
+
+    }
+
+    @Override
+    public void onRecordClickListener(boolean record) {
+        if (!record){
+            ControlRecordStateTask task = new ControlRecordStateTask();
+            task.execute(22);
         }
+        else{
+            ControlRecordStateTask task1 = new ControlRecordStateTask();
+            task1.execute(21);
+        }
+
 
     }
 
@@ -217,17 +243,21 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
 
             RetModel retModel = GsonUtil.parseJsonWithGson(result,RetModel.class);
             if (retModel != null){
-                if (retModel.ret == 1){
-                    isRecord = 1;
-                    record_group.check(R.id.record_recycle_radio);
-
-                }
-                else{
-                    record_group.check(R.id.record_stop_radio);
-                    isRecord = 0;
-                }
+//                if (retModel.ret == 1){
+//                    isRecord = 1;
+//                    //record_group.check(R.id.record_recycle_radio);
+//
+//
+//                }
+//                else{
+//                    //record_group.check(R.id.record_stop_radio);
+//                    isRecord = 0;
+//
+//                }
+                mAdapter.setIsRecord(retModel.ret == 1? true:false);
+                mAdapter.notifyDataSetChanged();
             }
-            record_group.setOnCheckedChangeListener(SDVolumeManagerActivity.this);
+            //record_group.setOnCheckedChangeListener(SDVolumeManagerActivity.this);
 
             super.onPostExecute(result);
         }
@@ -263,6 +293,8 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
             if (sdInfoModel != null){
                 mAdapter.setSdInfoModel(sdInfoModel);
                 mAdapter.notifyDataSetChanged();
+                textView_left.setText(SDVolumeManagerActivity.this.getString(R.string.action_volume_left_percent)+sdInfoModel.getFreePercent());
+                textView_used.setText(SDVolumeManagerActivity.this.getString(R.string.action_volume_left_percent)+sdInfoModel.getUsedPercent());
             }
 
             super.onPostExecute(result);

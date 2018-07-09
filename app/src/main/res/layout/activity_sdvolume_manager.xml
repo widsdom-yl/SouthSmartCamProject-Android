@@ -6,64 +6,91 @@
     android:layout_height="match_parent"
     tools:context=".Activity.SDVolumeManagerActivity">
 
+    <RelativeLayout
+        android:id="@+id/percent_layout"
+        android:background="@color/appGreenColor"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <TextView
+            android:id="@+id/textView_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:textColor="#ffffff"
+            android:textSize="13sp"
+            android:text="@string/action_volume_left_percent" />
+
+        <TextView
+            android:id="@+id/textView_used"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:textColor="#ffffff"
+            android:textSize="13sp"
+            android:text="@string/action_volume_used"/>
+    </RelativeLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/percent_layout" />
 
 
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="15dp"
-        android:textColor="#000000"
-        android:text="@string/action_record"
-        android:gravity="center"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+    <!--<TextView-->
+        <!--android:id="@+id/textView9"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="24dp"-->
+        <!--android:layout_marginStart="24dp"-->
+        <!--android:layout_marginTop="15dp"-->
+        <!--android:textColor="#000000"-->
+        <!--android:text="@string/action_record"-->
+        <!--android:gravity="center"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/recyclerView" />-->
 
-    <RadioGroup
-        android:id="@+id/record_group"
-        android:gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/textView9"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView">
+    <!--<RadioGroup-->
+        <!--android:id="@+id/record_group"-->
+        <!--android:gravity="center"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="15dp"-->
+        <!--android:orientation="horizontal"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="@id/textView9"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/recyclerView">-->
 
-        <RadioButton
-            android:id="@+id/record_stop_radio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/action_record_stop" />
+        <!--<RadioButton-->
+            <!--android:id="@+id/record_stop_radio"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/action_record_stop" />-->
 
-        <RadioButton
-            android:id="@+id/record_recycle_radio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/action_record_recycle" />
-    </RadioGroup>
+        <!--<RadioButton-->
+            <!--android:id="@+id/record_recycle_radio"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/action_record_recycle" />-->
+    <!--</RadioGroup>-->
 
     <Button
         android:id="@+id/button_format"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="50dp"
+        android:background="#ff0000"
         android:text="@string/action_sd_format"
+        android:textColor="#ffffff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/record_group" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
