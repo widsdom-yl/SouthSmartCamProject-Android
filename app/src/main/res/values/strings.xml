@@ -113,7 +113,7 @@
     <string name="action_AP_T_STA_Success">设置成功,请手动重启设备</string>
 
     <string name="action_AP_T_STA_Failed">设置失败</string>
-    <string name="action_STA_T_AP_Success">设置成功</string>
+    <string name="action_STA_T_AP_Success">设备转换成功，正在重启</string>
     <string name="action_STA_T_AP_Failed">设置失败</string>
     <string name="action_system_setting">系统设置</string>
     <string name="action_alarm_sound">报警声音</string>

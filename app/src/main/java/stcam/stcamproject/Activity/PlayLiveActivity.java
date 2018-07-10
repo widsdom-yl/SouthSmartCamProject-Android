@@ -147,7 +147,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     }
     void initView(boolean isPortrait){
         glView = findViewById(R.id.glPlayLive);
-        glView.setOnTouchListener(this);
+       // glView.setOnTouchListener(this);
 
         glView.setModel(devModel);
 
@@ -179,7 +179,8 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         button_ptz_right.setOnClickListener(this);
         button_ptz_up.setOnClickListener(this);
         button_ptz_down.setOnClickListener(this);
-
+        ptz_layout.setOnClickListener(this);
+        glView.setOnClickListener(this);
         if (isPortrait){
             imagebutton_to_lanscape = findViewById(R.id.button_fullscreen);
 //        imagebutton_to_portrait = findViewById(R.id.imagebutton_to_portrait);
@@ -303,14 +304,15 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 Log.e(tag,"down");
                 task3.execute(3);
                 break;
-//            case R.id.button_ptz:
-//                if (ptz_layout.getVisibility() ==View.VISIBLE){
-//                    ptz_layout.setVisibility(View.INVISIBLE);
-//                }
-//                else{
-//                    ptz_layout.setVisibility(View.VISIBLE);
-//                }
-//                break;
+            case R.id.ptz_control_layout:
+            case R.id.glPlayLive:
+                if (ptz_layout.getVisibility() ==View.VISIBLE){
+                    ptz_layout.setVisibility(View.INVISIBLE);
+                }
+                else{
+                    ptz_layout.setVisibility(View.VISIBLE);
+                }
+                break;
             case R.id.button_pix:
                 enableBtnAfterSeconds();
                 pix_low = !pix_low;

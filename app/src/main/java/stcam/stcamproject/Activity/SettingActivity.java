@@ -446,7 +446,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                     }
                 }
                 else if(retModel.ret == 2){
-                    SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_STA_T_AP_Success));
+                   // SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_STA_T_AP_Success));
                     RebootTask task = new RebootTask();
                     task.execute();
                 }
@@ -490,7 +490,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             RetModel retModel = GsonUtil.parseJsonWithGson(result,RetModel.class);
             if (retModel != null){
                 if (retModel.ret == 1){
-                    SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_Success));
+                    SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_STA_T_AP_Success));
                     model.NetHandle = 0;
                     for (DevModel existModel : MainDevListFragment.mDevices){
                         if (model.SN.equals(existModel.SN)){

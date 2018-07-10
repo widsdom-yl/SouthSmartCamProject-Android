@@ -29,7 +29,13 @@ public class DeviceSettingAdapter extends BaseAdapter<String>{
                 holder.setText(R.id.detail_text,devModel.DevName);
             }
             else if(1 == position){
-                holder.setText(R.id.detail_text,devModel.pwd);
+                int length = devModel.pwd.length();
+                StringBuilder stringBuilder = new StringBuilder();
+                for (int i = 0;i<length;i++){
+                    stringBuilder.append("*");
+                }
+
+                holder.setText(R.id.detail_text,stringBuilder.toString());
             }
             else if(4 == position && MD_Sensitive != -1){
                 if (MD_Sensitive <= 100){
