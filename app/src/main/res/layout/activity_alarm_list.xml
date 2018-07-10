@@ -37,12 +37,18 @@
     android:textSize="14sp" />
 
 
+
+    <com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout
+
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/navigation">
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/alarm_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/navigation"
-        android:divider="#FFB900"
-        android:dividerHeight="1dp"
        />
+    </com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout>
 </RelativeLayout>

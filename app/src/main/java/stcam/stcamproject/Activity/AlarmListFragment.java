@@ -3,7 +3,6 @@ package stcam.stcamproject.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout;
 import com.model.AlarmImageModel;
 
 import java.text.SimpleDateFormat;
@@ -35,7 +35,7 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
     List<AlarmImageModel> alarmImageArray;
     final String tag = "AlarmListActivity";
     LoadingDialog lod;
-
+    SuperSwipeRefreshLayout refreshLayout;
     // TODO: Rename and change types and number of parameters
     public static AlarmListFragment newInstance() {
         AlarmListFragment fragment = new AlarmListFragment();
@@ -54,9 +54,32 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.activity_alarm_list, container, false);
         rv = view.findViewById(R.id.alarm_list_view);
-        rv.addItemDecoration(new DividerItemDecoration(this.getContext(),DividerItemDecoration.VERTICAL));
+        refreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+//        rv.addItemDecoration(new DividerItemDecoration(this.getContext(),DividerItemDecoration.VERTICAL));
         rv.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        getAlarmList(false);
+        getAlarmList(true);
+
+        refreshLayout
+                .setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
+
+                    @Override
+                    public void onRefresh() {
+                        //TODO 开始刷新
+                        getAlarmList(true);
+                    }
+
+                    @Override
+                    public void onPullDistance(int distance) {
+                        //TODO 下拉距离
+                    }
+
+                    @Override
+                    public void onPullEnable(boolean enable) {
+                        //TODO 下拉过程中，下拉的距离是否足够出发刷新
+                    }
+                });
+
+
         return view;
     }
 
@@ -91,13 +114,14 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
             // refreshLayout.setLoading(false);
 
             Log.e(tag,"---------------------2");
-
+            refreshLayout.setRefreshing(false);
         }
         @Override
         public void onError(Throwable e) {
             lod.dismiss();
 
             Log.e(tag,"---------------------1:"+e.getLocalizedMessage());
+            refreshLayout.setRefreshing(false);
         }
 
         @Override
