@@ -38,7 +38,7 @@
             android:layout_toRightOf="@+id/alarm_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="时间需要老朱提供"
+            android:text=""
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="10dp"
             android:layout_alignParentBottom="true"

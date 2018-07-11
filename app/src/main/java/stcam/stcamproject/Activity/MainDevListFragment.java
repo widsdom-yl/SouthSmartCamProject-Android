@@ -1,5 +1,6 @@
 package stcam.stcamproject.Activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;

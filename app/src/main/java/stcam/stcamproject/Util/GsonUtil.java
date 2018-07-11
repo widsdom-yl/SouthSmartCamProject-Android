@@ -12,8 +12,14 @@ public class GsonUtil {
                      return null;
                  }
                  Gson gson = new Gson();
-                 T result = gson.fromJson(jsonData, type);
-                 return result;
+                 try {
+                     T result = gson.fromJson(jsonData, type);
+                     return result;
+                 }
+                 catch (Exception e){
+                     return null;
+                 }
+
             }
 
 

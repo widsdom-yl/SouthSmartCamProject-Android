@@ -2,6 +2,8 @@
 
 package stcam.stcamproject.network.api;
 
+        import com.model.RetModel;
+
         import java.util.List;
 
 import retrofit2.http.GET;
@@ -209,6 +211,15 @@ public interface ServerCommandApi {
                                                                           @Query("dt") String dt,
                                                                           @Query("line") int line,
                                                                           @Query("page") int page
+
+    );
+
+
+
+    @GET("app_user_delalmfile.asp")
+    Observable<RetModel> app_user_delalmfile(@Query("user") String user,
+                                             @Query("psd") String psd,
+                                             @Query("id") String id
 
     );
 

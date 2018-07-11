@@ -7,6 +7,14 @@ public class AlarmImageModel implements Serializable {
     public int AlmType;
     public String AlmName;
     public String Img;
+    public String AlmTime;
+    public String DevName;
+//    "ID": 4431,
+//            "SN": "80001035",
+//            "AlmType": 1,
+//            "AlmName": "移动警报",
+//            "AlmTime": "2018-07-11 13:37:11",
+//            "Img": ""
     public String getAlarmDescribe(){
         switch (AlmType){
             case 0:

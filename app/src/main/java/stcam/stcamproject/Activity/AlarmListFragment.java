@@ -9,9 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout;
 import com.model.AlarmImageModel;
+import com.model.RetModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,10 +27,11 @@ import stcam.stcamproject.Adapter.BaseAdapter;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.R;
+import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
-public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemClickListener {
+public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemClickListener, View.OnClickListener {
 
     AlarmListAdapter adapter;
     RecyclerView rv;
@@ -36,6 +39,7 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
     final String tag = "AlarmListActivity";
     LoadingDialog lod;
     SuperSwipeRefreshLayout refreshLayout;
+    Button clear_button ;
     // TODO: Rename and change types and number of parameters
     public static AlarmListFragment newInstance() {
         AlarmListFragment fragment = new AlarmListFragment();
@@ -57,6 +61,8 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
         refreshLayout = view.findViewById(R.id.swipeRefreshLayout);
 //        rv.addItemDecoration(new DividerItemDecoration(this.getContext(),DividerItemDecoration.VERTICAL));
         rv.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
+        clear_button = view.findViewById(R.id.clear_button);
         getAlarmList(true);
 
         refreshLayout
@@ -78,6 +84,8 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
                         //TODO 下拉过程中，下拉的距离是否足够出发刷新
                     }
                 });
+
+        clear_button.setOnClickListener(this);
 
 
         return view;
@@ -103,6 +111,32 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer_get_alarmlst);
+    }
+
+    void deleAlarmList(String ids){
+        Log.e(tag,"deleAlarmList,ids:"+ids);
+//        Date d = new Date();
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+//        final String dateNowStr = sdf.format(d);
+//        ServerNetWork.getCommandApi().app_user_delalmfile(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance().getDefaultPwd(),
+//                ids)
+//                .flatMap(new Func1<RetModel, Observable<List<AlarmImageModel>>>() {
+//                    @Override
+//                    public Observable<List<AlarmImageModel>> call(RetModel model) {
+//                        // 返回 Observable<Messages>，在订阅时请求消息列表，并在响应后发送请求到的消息列表
+//                        return ServerNetWork.getCommandApi().app_user_getalmfilelst(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance().getDefaultPwd(),dateNowStr,100,0);
+//                    }
+//                })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(observer_get_alarmlst);
+
+
+        ServerNetWork.getCommandApi()
+                .app_user_delalmfile(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance().getDefaultPwd(), ids)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer_del_alarmlst);
     }
 
     Observer<List<AlarmImageModel>> observer_get_alarmlst = new Observer<List<AlarmImageModel>>() {
@@ -145,6 +179,43 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
         }
     };
 
+    Observer<RetModel> observer_del_alarmlst = new Observer<RetModel>() {
+        @Override
+        public void onCompleted() {
+            lod.dismiss();
+
+
+            // refreshLayout.setLoading(false);
+
+            Log.e(tag,"---------------------2");
+
+        }
+        @Override
+        public void onError(Throwable e) {
+            lod.dismiss();
+
+            Log.e(tag,"---------------------1:"+e.getLocalizedMessage());
+
+        }
+
+        @Override
+        public void onNext(RetModel retModel) {
+            lod.dismiss();
+            if (retModel.ret == 1){
+                if (alarmImageArray != null){
+                    alarmImageArray.clear();
+                }
+                adapter.resetMList(alarmImageArray);
+                adapter.notifyDataSetChanged();
+            }
+            else{
+                SouthUtil.showDialog(AlarmListFragment.this.getContext(),AlarmListFragment.this.getContext().getString(R.string.action_Failed));
+            }
+
+
+        }
+    };
+
 
     @Override
     public void onItemClick(View view, int position) {
@@ -160,6 +231,31 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
 
     @Override
     public void onLongClick(View view, int position) {
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.clear_button){
+            if (alarmImageArray == null || alarmImageArray.size() == 0){
+                return;
+            }
+            if (lod == null){
+                lod = new LoadingDialog(this.getContext());
+            }
+            lod.dialogShow();
+
+            StringBuilder stringBuilder = new StringBuilder();
+            int size = alarmImageArray.size();
+            for (int i =0;i<size;++i ){
+                stringBuilder.append(alarmImageArray.get(i).ID);
+                if (i != size-1)
+                stringBuilder.append("@");
+            }
+            deleAlarmList(stringBuilder.toString());
+
+        }
+
 
     }
 }

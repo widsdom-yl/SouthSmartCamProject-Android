@@ -16,7 +16,7 @@ public class AlarmListAdapter extends BaseAdapter<AlarmImageModel>{
 
     protected void convert(BaseHolder holder, AlarmImageModel model,int position) {
         super.convert(holder,model,position);
-        holder.setText(R.id.file_name_text,model.getAlarmDescribe());
+        holder.setText(R.id.file_name_text,model.DevName).setText(R.id.time_text,model.AlmTime);
         ImageView imageView = holder.getView(R.id.alarm_image);
         GlideApp.with(STApplication.getInstance()).asBitmap()
                 .load(model.Img)

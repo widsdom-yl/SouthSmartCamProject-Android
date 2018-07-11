@@ -484,8 +484,9 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
         protected void onPostExecute(String result) {
 
             if (result != null && result.length() > 0){
-                RetModel retmodel = GsonUtil.parseJsonWithGson(result,RetModel.class);
                 Log.e(tag,"set status model is "+result);
+                RetModel retmodel = GsonUtil.parseJsonWithGson(result,RetModel.class);
+
                 // get status model is {"Mode":1,"Auto":{"Delay":90,"Lux":2},"Manual":{"Brightness":0},
                 // "Timer":{"Brightness":0,"StartH":0,"StartM":0,"StopH":0,"StopM":0},"D2D":{"Brightness":0,"Lux":0}}
                 // lod.dismiss();
