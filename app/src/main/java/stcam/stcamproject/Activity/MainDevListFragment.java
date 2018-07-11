@@ -74,7 +74,9 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
                 devModel.Disconn();
             }
         }
-        mAdapter.notifyDataSetChanged();
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -359,6 +361,10 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
         mHttpClient.newCall(getDevListRequest).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                Activity activity = MainDevListFragment.this.getActivity();
+                if (activity == null) {
+                    return;
+                }
                 MainDevListFragment.this.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -373,6 +379,10 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                Activity activity = MainDevListFragment.this.getActivity();
+                if (activity == null) {
+                    return;
+                }
                 MainDevListFragment.this.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
