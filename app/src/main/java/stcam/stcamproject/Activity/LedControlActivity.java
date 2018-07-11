@@ -66,7 +66,7 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
     private FirebaseAnalytics mFirebaseAnalytics;
 
 
-    private  int minbrintness = 20;
+    private  int minLightSpan = 20;
     Handler handler=new Handler();
     Runnable runnable=new Runnable(){
         @Override
@@ -281,7 +281,7 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
             switch (statusModel.getMode()){
                 case 1:
                     modeGroup.check(R.id.btn_mode_1);
-                    seekBar.setProgress(statusModel.getAuto().getDelay());
+                    seekBar.setProgress(statusModel.getAuto().getDelay()-minLightSpan);
                     light_time_span.setText(""+statusModel.getAuto().getDelay());
                     if (statusModel.getAuto().getLux() == 0 ){
                         segmented3.check(R.id.btn_sensitive_1);
@@ -293,23 +293,23 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
                         segmented3.check(R.id.btn_sensitive_3);
                     }
                     light_brintness.setText(""+statusModel.getAuto().getBrightness());
-                    seekBar_brintness.setProgress(statusModel.getAuto().getBrightness()-minbrintness);
+                    seekBar_brintness.setProgress(statusModel.getAuto().getBrightness());
                     break;
                 case 2:
                     modeGroup.check(R.id.btn_mode_2);
-                    seekBar_brintness.setProgress(statusModel.getManual().getBrightness()-minbrintness);
+                    seekBar_brintness.setProgress(statusModel.getManual().getBrightness());
                     light_brintness.setText(""+statusModel.getManual().getBrightness());
                     break;
                 case 3:
                     modeGroup.check(R.id.btn_mode_3);
                     button_time_start.setText(statusModel.getTimer().getStartH()+":"+statusModel.getTimer().getStartM());
                     button_time_stop.setText(statusModel.getTimer().getStopH()+":"+statusModel.getTimer().getStopM());
-                    seekBar_brintness.setProgress(statusModel.getTimer().getBrightness()-minbrintness);
+                    seekBar_brintness.setProgress(statusModel.getTimer().getBrightness());
                     light_brintness.setText(""+statusModel.getTimer().getBrightness());
                     break;
                 case 4:
                     modeGroup.check(R.id.btn_mode_4);
-                    seekBar_brintness.setProgress(statusModel.getD2D().getBrightness()-minbrintness);
+                    seekBar_brintness.setProgress(statusModel.getD2D().getBrightness());
                     light_brintness.setText(""+statusModel.getD2D().getBrightness());
                     if (statusModel.getD2D().getLux() == 0 ){
                         segmented3.check(R.id.btn_sensitive_1);
@@ -333,24 +333,24 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
     @Override
     public void onProgressChanged(SeekBar bar, int i, boolean b) {
         if (bar == seekBar){
-            statusModel.getAuto().setDelay(i);
-            light_time_span.setText(""+i);
+            int value = i+minLightSpan;
+            statusModel.getAuto().setDelay(value);
+            light_time_span.setText(""+value);
         }
         else if(bar == seekBar_brintness){
-            int value = i+minbrintness;
-            light_brintness.setText(""+value);
+            light_brintness.setText(""+i);
             switch (statusModel.getMode()){
                 case 1:
-                    statusModel.getAuto().setBrightness(value);
+                    statusModel.getAuto().setBrightness(i);
                     break;
                 case 2:
-                    statusModel.getManual().setBrightness(value);
+                    statusModel.getManual().setBrightness(i);
                     break;
                 case 3:
-                    statusModel.getTimer().setBrightness(value);
+                    statusModel.getTimer().setBrightness(i);
                     break;
                 case 4:
-                    statusModel.getD2D().setBrightness(value);
+                    statusModel.getD2D().setBrightness(i);
                     break;
                 default:
                     break;

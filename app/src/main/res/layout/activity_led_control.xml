@@ -107,8 +107,9 @@
 
         <Button
             android:id="@+id/light_time_span"
-            android:layout_width="24dp"
+            android:layout_width="44dp"
             android:layout_height="45dp"
+            android:gravity="left|center"
             android:layout_marginRight="10dp"
             android:background="@color/transparent"
             android:text="1"
@@ -119,13 +120,12 @@
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:layout_marginEnd="25dp"
+            android:layout_marginEnd="45dp"
             android:layout_marginLeft="14dp"
-            android:layout_marginRight="25dp"
+            android:layout_marginRight="45dp"
             android:layout_marginStart="14dp"
             android:layout_toRightOf="@id/textView4"
-            android:min="20"
-            android:max="620"/>
+            android:max="600"/>
 
     </RelativeLayout>
 
@@ -226,7 +226,6 @@
             android:layout_marginLeft="14dp"
             android:layout_marginRight="45dp"
             android:layout_marginStart="14dp"
-            android:max="80"
         android:layout_toRightOf="@id/textView10"/>
 
 
