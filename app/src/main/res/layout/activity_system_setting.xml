@@ -27,5 +27,21 @@
         android:divider="#FFB900"
         android:dividerHeight="1dp"
         />
+
+    <Button
+        android:id="@+id/exit_button"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/button_green_corner"
+        android:text="@string/action_exit"
+        android:textColor="#ffffff"
+       />
+
 </RelativeLayout>
 

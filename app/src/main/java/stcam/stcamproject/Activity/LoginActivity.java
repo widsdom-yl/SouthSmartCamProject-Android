@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity  {
         checkbox = findViewById(R.id.checkbox);
         remeber = AccountManager.getInstance().getIsRemeberAccount();
         checkbox.setChecked(remeber);
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = (EditText) findViewById(R.id.editText_password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {

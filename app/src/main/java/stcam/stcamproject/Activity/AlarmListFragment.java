@@ -295,4 +295,16 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
     public void onDeleteBtnCilck(View view, int position) {
         deleAlarmList(""+alarmImageArray.get(position).ID);
     }
+
+    @Override
+    public void onItemCilck(View view, int position) {
+        AlarmImageModel model = alarmImageArray.get(position);
+        Intent intent = new Intent(STApplication.getInstance(), AlarmDetailActivity.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("model",model);
+
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
 }

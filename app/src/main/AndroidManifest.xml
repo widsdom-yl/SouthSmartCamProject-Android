@@ -34,8 +34,8 @@
         </activity>
         <activity
             android:name=".Activity.LoginActivity"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden"
-            android:label="@string/title_activity_login" />
+            android:label="@string/title_activity_login"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity
             android:name=".Activity.RegisterActivity"
             android:label="@string/title_activity_register" />
@@ -88,7 +88,8 @@
             android:value="d4fed762adbf5636271fae1e9fffd1bad9abf368" />
 
         <activity android:name=".Activity.PushSettingActivity" />
-        <activity android:name=".Activity.AboutActivity"></activity>
+        <activity android:name=".Activity.AboutActivity" />
+        <activity android:name=".Activity.ResetPwdActivity"></activity>
     </application>
 
 </manifest>

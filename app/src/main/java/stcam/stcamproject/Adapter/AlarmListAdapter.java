@@ -61,6 +61,11 @@ public class AlarmListAdapter extends BaseAdapter<AlarmImageModel> implements Sl
                 if (menuIsOpen()) {
                     closeMenu();//关闭菜单
                 }
+                else{
+                    int n = holder.getLayoutPosition();
+                    if (mDeleteClickListener != null)
+                        mDeleteClickListener.onItemCilck(view,n);
+                }
             }
         });
     }
@@ -105,6 +110,7 @@ public class AlarmListAdapter extends BaseAdapter<AlarmImageModel> implements Sl
 
     public interface DeleteClickListener {
         void onDeleteBtnCilck(View view,int position);
+        void onItemCilck(View view,int position);
     }
 
     DeleteClickListener mDeleteClickListener;

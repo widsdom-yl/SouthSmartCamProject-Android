@@ -15,6 +15,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import com.model.DevModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +30,11 @@ import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.R;
 
-public class SystemSettingFragment extends Fragment implements BaseAdapter.OnItemClickListener {
+public class SystemSettingFragment extends Fragment implements BaseAdapter.OnItemClickListener, View.OnClickListener {
     RecyclerView rv;
     List<String> settingArray = new ArrayList<>();//没有连接状态
     SytstmSettingListAdapter adapter;
+    Button exit_button;
 
     public static SystemSettingFragment newInstance() {
         SystemSettingFragment fragment = new SystemSettingFragment();
@@ -51,6 +55,7 @@ public class SystemSettingFragment extends Fragment implements BaseAdapter.OnIte
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.activity_system_setting, container, false);
         rv = view.findViewById(R.id.system_list_view);
+        exit_button = view.findViewById(R.id.exit_button);
         rv.addItemDecoration(new DividerItemDecoration(this.getContext(),DividerItemDecoration.VERTICAL));
         rv.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
@@ -62,6 +67,7 @@ public class SystemSettingFragment extends Fragment implements BaseAdapter.OnIte
         adapter = new SytstmSettingListAdapter(settingArray);
         rv.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
+        exit_button.setOnClickListener(this);
         return view;
     }
 
@@ -157,4 +163,19 @@ public class SystemSettingFragment extends Fragment implements BaseAdapter.OnIte
     }
 
 
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.exit_button){
+            for (DevModel existModel : MainDevListFragment.mDevices){
+                if (existModel.IsConnect()){
+                    existModel.Disconn();
+                    existModel.NetHandle = 0;
+                }
+            }
+            MainDevListFragment.mDevices.clear();
+            Intent intent = new Intent(this.getContext(), LoginActivity.class);
+            startActivity(intent);
+            this.getActivity().finish();
+        }
+    }
 }

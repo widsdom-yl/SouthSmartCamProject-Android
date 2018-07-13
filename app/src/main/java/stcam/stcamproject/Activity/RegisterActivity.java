@@ -2,17 +2,15 @@ package stcam.stcamproject.Activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.model.RetModel;
 
@@ -33,11 +31,34 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     // UI references.
-    private AutoCompleteTextView mEmailView;
+    private EditText mEmailView;
     private EditText mPasswordView;
     private EditText mChecknum;
-    private int checkNum;//验证码
+    private EditText editText_confirm_pwd;
+    String checkNum;
     Context context;
+
+
+    Button button_send;
+    int leftTime =0;
+    int TIME = 1000;
+    Handler handler_refresh = new Handler();
+    Runnable runnable_fresh = new Runnable() {
+        @Override
+        public void run() {
+            //
+
+            if (--leftTime>0){
+                button_send.setText(leftTime+"s");
+                handler_refresh.postDelayed(runnable_fresh,TIME);
+            }
+            else{
+                button_send.setEnabled(true);
+                button_send.setText(getString(R.string.action_send_verification_number));
+            }
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,24 +66,24 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         context = this;
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(R.string.action_Register);
+
+
+
+        if(actionBar != null){
+            actionBar.setTitle(R.string.action_Register);
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
 
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = findViewById(R.id.email);
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = (EditText) findViewById(R.id.editText_password);
 
-        mChecknum = (EditText) findViewById(R.id.checknum);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptRegitster();
-                    return true;
-                }
-                return false;
-            }
-        });
+        mChecknum = (EditText) findViewById(R.id.editText_checknum);
+        editText_confirm_pwd = findViewById(R.id.editText_confirm_pwd);
+
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_register_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -72,8 +93,8 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        Button sender_check_button = (Button) findViewById(R.id.sender_check_button);
-        sender_check_button.setOnClickListener(new OnClickListener() {
+        button_send = (Button) findViewById(R.id.sender_check_button);
+        button_send.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 getCheckNum();
@@ -82,31 +103,28 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish(); // back button
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void getCheckNum(){
         // Reset errors.
-        mEmailView.setError(null);
-
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
 
-        boolean cancel = false;
-        View focusView = null;
 
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
+        if (!isEmailValid(email)){
+            SouthUtil.showDialog(this,getString(R.string.error_invalid_email));
+            return;
         }
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
+
             // Show a progress spinner, and kick off a background task to
 
             if (lod == null){
@@ -119,7 +137,7 @@ public class RegisterActivity extends AppCompatActivity {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(observer_getCheckNum);
 
-        }
+
     }
 
 
@@ -132,48 +150,61 @@ public class RegisterActivity extends AppCompatActivity {
     private void attemptRegitster() {
 
         // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
-        mChecknum.setError(null);
+
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-        String checkNum = mChecknum.getText().toString();
+        String confirmPassword = editText_confirm_pwd.getText().toString();
+        String check = mChecknum.getText().toString();
 
-        boolean cancel = false;
-        View focusView = null;
+
+        if (TextUtils.isEmpty(email)) {
+            SouthUtil.showDialog(this,getString(R.string.error_field_required));
+            return;
+
+        } else if (!isEmailValid(email)) {
+            SouthUtil.showDialog(this,getString(R.string.error_invalid_email));
+            return;
+
+        }
+
 
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
+
+            SouthUtil.showDialog(this,getString(R.string.error_invalid_password));
+            return;
         }
+
+        if (!password.equals(confirmPassword)){
+            SouthUtil.showDialog(this,getString(R.string.error_invalid_confirm_password));
+            return;
+        }
+
 
         if (TextUtils.isEmpty(checkNum)) {
             Log.e(tag,checkNum);
-            mChecknum.setError(getString(R.string.error_invalid_checknum));
-            focusView = mChecknum;
-            cancel = true;
+            SouthUtil.showDialog(this,getString(R.string.error_invalid_checknum));
+            return;
+
         }
+
+        if (!check.equals(checkNum)) {
+            Log.e(tag,checkNum);
+            SouthUtil.showDialog(this,getString(R.string.error_invalid_checknum));
+            return;
+
+        }
+
+
+
+
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
 
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
+
+
             // Show a progress spinner, and kick off a background task to
             if (lod == null){
                 lod = new LoadingDialog(this);
@@ -184,7 +215,7 @@ public class RegisterActivity extends AppCompatActivity {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(observer_register);
-        }
+
     }
 
     private boolean isEmailValid(String email) {
@@ -194,7 +225,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() >= 4 &&  password.length() <= 16;
     }
 
     Observer<RetModel> observer_getCheckNum = new Observer<RetModel>() {
@@ -220,7 +251,11 @@ public class RegisterActivity extends AppCompatActivity {
                 SouthUtil.showToast(context,getString(R.string.action_get_checknum_aleady_register));
             }
             else if(m.ret > 0){
-                checkNum = m.ret;
+                leftTime = 300;
+                button_send.setEnabled(false);
+                button_send.setText(leftTime+"s");
+                handler_refresh.postDelayed(runnable_fresh,TIME);
+                checkNum = ""+m.ret;
                 SouthUtil.showToast(context,getString(R.string.action_get_checknum_sent));
             }
 
@@ -257,6 +292,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
             else if(m.ret == 1){
                 SouthUtil.showToast(context,getString(R.string.action_get_register_success));
+                RegisterActivity.this.finish();
             }
 
         }

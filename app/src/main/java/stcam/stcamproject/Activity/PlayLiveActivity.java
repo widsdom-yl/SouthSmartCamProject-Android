@@ -193,7 +193,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     }
     void initView(boolean isPortrait){
         glView = findViewById(R.id.glPlayLive);
-       // glView.setOnTouchListener(this);
+        glView.setOnTouchListener(this);
 
         glView.setModel(devModel);
 
@@ -225,8 +225,8 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         button_ptz_right.setOnClickListener(this);
         button_ptz_up.setOnClickListener(this);
         button_ptz_down.setOnClickListener(this);
-        ptz_layout.setOnClickListener(this);
-        glView.setOnClickListener(this);
+        //ptz_layout.setOnClickListener(this);
+        //glView.setOnClickListener(this);
         if (isPortrait){
             imagebutton_to_lanscape = findViewById(R.id.button_fullscreen);
 //        imagebutton_to_portrait = findViewById(R.id.imagebutton_to_portrait);

@@ -108,7 +108,7 @@ public class ChangeDevicePwdActivity extends AppCompatActivity implements View.O
     void initView(){
 
         editText_confirm_pwd = findViewById(R.id.editText_confirm_pwd);
-        editText_new_pwd = findViewById(R.id.editText_new_pwd);
+        editText_new_pwd = findViewById(R.id.editText_password);
         editText_old_pwd = findViewById(R.id.editText_old_pwd);
         confirmButton = findViewById(R.id.button_next);
         text_uid_detail = findViewById(R.id.text_uid_detail);

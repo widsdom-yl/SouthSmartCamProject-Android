@@ -76,6 +76,12 @@ public interface ServerCommandApi {
     Observable<com.model.RetModel> app_user_reg_send_verifycode(@Query("user") String user
     );
 
+
+
+    @GET("app_user_forgotpsd_send_verifycode.asp")
+    Observable<com.model.RetModel> app_user_forgotpsd_send_verifycode(@Query("user") String user
+    );
+
     /**
      * 用户登录
      * @return
@@ -95,6 +101,21 @@ public interface ServerCommandApi {
     Observable<com.model.RetModel> app_user_reg(@Query("user") String user,
                                                   @Query("psd") String psd,
                                                   @Query("verifycode") String verifycode
+    );
+
+
+ //   http://xxx.xxx.xxx.xxx:800/app_user_forgotpsd.asp?user=aaaa@abcdcba.com&verifycode=1234 &newpsd=123456
+
+
+    /**
+     * 用户注册
+     * @return
+     * 成功返回 json {"ret":1} 失败返回 json {"ret":0} 用户已存在返回 json {"ret":-1} 校验码错误返回 json {"ret":-2} 校验码超时返回 json {"ret":-3}
+     */
+    @GET("app_user_forgotpsd.asp")
+    Observable<com.model.RetModel> app_user_forgotpsd(@Query("user") String user,
+                                                @Query("newpsd") String psd,
+                                                @Query("verifycode") String verifycode
     );
 
     /**

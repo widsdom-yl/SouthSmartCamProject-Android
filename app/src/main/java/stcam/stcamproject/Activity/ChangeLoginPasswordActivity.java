@@ -50,7 +50,7 @@ public class ChangeLoginPasswordActivity extends AppCompatActivity implements Vi
 
     void initView(){
         editText_confirm_pwd = findViewById(R.id.editText_confirm_pwd);
-        editText_new_pwd = findViewById(R.id.editText_new_pwd);
+        editText_new_pwd = findViewById(R.id.editText_password);
 //        editText_old_pwd = findViewById(R.id.editText_old_pwd);
         confirmButton = findViewById(R.id.button_next);
         confirmButton.setOnClickListener(this);

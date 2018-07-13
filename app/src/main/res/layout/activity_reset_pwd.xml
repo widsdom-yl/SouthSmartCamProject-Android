@@ -3,9 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-
+    android:layout_height="match_parent"
+    tools:context=".Activity.ResetPwdActivity">
 
 
 
@@ -38,9 +37,26 @@
         android:hint="@string/string_confirm_new_password"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/textView8"
         app:layout_constraintTop_toBottomOf="@+id/editText_password" />
 
+
+    <EditText
+        android:id="@+id/editText_checknum"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="40dp"
+        android:ems="10"
+        android:hint="@string/action_input_verify_code"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toStartOf="@+id/sender_check_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText_confirm_pwd" />
 
     <Button
         android:id="@+id/button_next"
@@ -55,9 +71,9 @@
         android:text="@string/action_change_login_password"
         android:textColor="#ffffff"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_confirm_pwd" />
+        app:layout_constraintTop_toBottomOf="@+id/editText_checknum" />
 
     <TextView
         android:id="@+id/textView7"
@@ -83,4 +99,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/editText_confirm_pwd"
         android:text="@string/string_confirm_pwd_title" />
+
+    <Button
+        android:id="@+id/sender_check_button"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/button_green_corner"
+        android:text="@string/action_get_verify_code"
+        android:textColor="#ffffff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText_confirm_pwd" />
+
+
 </android.support.constraint.ConstraintLayout>
