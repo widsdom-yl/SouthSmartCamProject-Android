@@ -44,6 +44,8 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     ImageButton button_back;
 //    ImageButton button_ptz;
 
+    boolean isPlayAudio;
+
     ImageButton imagebutton_to_lanscape,imagebutton_to_portrait;
 
     private GestureDetector mygesture;
@@ -241,24 +243,33 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 if (button_speech.isSelected()){
                     button_speech.setSelected(false);
                     button_speech.setImageResource(R.drawable.livespeech_nor);
+                    if (isPlayAudio){
+                        lib.thNetAudioPlayOpen(devModel.NetHandle);
+                    }
                     lib.thNetTalkClose(devModel.NetHandle);
                 }
                 else{
                     button_speech.setSelected(true);
+
                     button_speech.setImageResource(R.drawable.livespeech_sel);
+                    if (isPlayAudio){
+                        lib.thNetAudioPlayClose(devModel.NetHandle);
+                    }
                     lib.thNetTalkOpen(devModel.NetHandle);
                 }
                 break;
             case R.id.button_slient:
                 enableBtnAfterSeconds();
                 if (button_slient.isSelected()){
+                    isPlayAudio = false;
                     button_slient.setSelected(false);
                     button_slient.setImageResource(R.drawable.livetalkoff_nor);
                     lib.thNetAudioPlayClose(devModel.NetHandle);
                 }
                 else{
                     button_slient.setSelected(true);
-                    button_slient.setImageResource(R.drawable.livetalkoff_sel);
+                    isPlayAudio = true;
+                    button_slient.setImageResource(R.drawable.livetalkon_sel);
                     lib.thNetAudioPlayOpen(devModel.NetHandle);
                 }
                 break;
