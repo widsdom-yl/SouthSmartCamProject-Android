@@ -21,6 +21,18 @@
         app:layout_constraintVertical_bias="0.0" />
 
 
+    <TextView
+        android:id="@+id/tx_record"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:textColor="#ff0000"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TableLayout
         android:id="@+id/layout_control1"

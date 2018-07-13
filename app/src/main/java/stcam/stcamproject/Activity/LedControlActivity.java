@@ -74,6 +74,9 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
             // TODO Auto-generated method stub
             SetLedStatusTask task = new SetLedStatusTask();
             task.execute(0);
+
+            GetLedStatusTask task1 = new GetLedStatusTask();
+            task1.execute(0);
         }
     };
 

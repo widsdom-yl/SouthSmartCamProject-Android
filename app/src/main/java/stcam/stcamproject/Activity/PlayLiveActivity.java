@@ -17,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.model.DevModel;
 import com.thSDK.lib;
@@ -26,6 +27,7 @@ import stcam.stcamproject.R;
 import stcam.stcamproject.Util.ConstraintUtil;
 import stcam.stcamproject.Util.FileUtil;
 import stcam.stcamproject.Util.PlayVoice;
+import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.GLSurfaceViewLive;
 import stcam.stcamproject.View.VoiceImageButton;
 
@@ -46,10 +48,40 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 
     boolean isPlayAudio;
 
-    ImageButton imagebutton_to_lanscape,imagebutton_to_portrait;
+    TextView tx_record;
+    int recordTotalTime=0;
+    boolean isRecording;
+
+    ImageButton imagebutton_to_lanscape;
 
     private GestureDetector mygesture;
     MainDevListFragment.EnumMainEntry entryType;
+
+    //定时刷新列表
+    public int TIME = 1000;
+
+    Handler handler_refresh = new Handler();
+    Runnable runnable_fresh = new Runnable() {
+        @Override
+        public void run() {
+            //
+
+            if (isRecording ){
+                recordTotalTime++;
+                tx_record.setVisibility(View.VISIBLE);
+                tx_record.setText("REC   "+ SouthUtil.getTimeSSMM(recordTotalTime));
+            }
+            else{
+                tx_record.setText("REC   ");
+            }
+
+            handler_refresh.postDelayed(runnable_fresh,TIME);
+
+
+        }
+    };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +123,18 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         }
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        handler_refresh.postDelayed(runnable_fresh,TIME);
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        handler_refresh.removeCallbacks(runnable_fresh);
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK){
@@ -153,7 +197,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 
         glView.setModel(devModel);
 
-
+        tx_record = findViewById(R.id.tx_record);
         button_snapshot = findViewById(R.id.button_snapshot);
         button_snapshot.setEnumSoundWav(PlayVoice.EnumSoundWav.SNAP);
         button_speech = findViewById(R.id.button_speech);
@@ -276,6 +320,10 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
             case R.id.button_record:
                 enableBtnAfterSeconds();
                 if (lib.thNetIsRec(devModel.NetHandle)){
+
+                    isRecording = false;
+                    recordTotalTime = 0;
+                    tx_record.setVisibility(View.INVISIBLE);
                     lib.thNetStopRec(devModel.NetHandle);
                     if (FileUtil.isFileEmpty(recordfileName)){
                         FileUtil.delFiles(recordfileName);
@@ -283,6 +331,9 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                     button_record.setImageResource(R.drawable.liverecord_nor);
                 }
                 else{
+                    isRecording = true;
+                    recordTotalTime = 0;
+                    tx_record.setVisibility(View.VISIBLE);
                     recordfileName = FileUtil.generatePathRecordFileName(devModel.SN);
                    lib.thNetStartRec(devModel.NetHandle,recordfileName);
                     button_record.setImageResource(R.drawable.liverecord_sel);
