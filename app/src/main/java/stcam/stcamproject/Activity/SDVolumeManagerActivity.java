@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import com.model.DevModel;
 import com.model.RetModel;
@@ -41,8 +40,8 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
 
     RadioGroup record_group ;
 
-    TextView textView_left;
-    TextView textView_used;
+//    TextView textView_left;
+//    TextView textView_used;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,8 +98,8 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
 
 //        record_group = findViewById(R.id.record_group);
 
-        textView_left = findViewById(R.id.textView_left);
-        textView_used = findViewById(R.id.textView_used);
+//        textView_left = findViewById(R.id.textView_left);
+//        textView_used = findViewById(R.id.textView_used);
 
 
     }
@@ -293,8 +292,8 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
             if (sdInfoModel != null){
                 mAdapter.setSdInfoModel(sdInfoModel);
                 mAdapter.notifyDataSetChanged();
-                textView_left.setText(SDVolumeManagerActivity.this.getString(R.string.action_volume_left_percent)+sdInfoModel.getFreePercent());
-                textView_used.setText(SDVolumeManagerActivity.this.getString(R.string.action_volume_left_percent)+sdInfoModel.getUsedPercent());
+//                textView_left.setText(SDVolumeManagerActivity.this.getString(R.string.action_volume_left_percent)+sdInfoModel.getFreePercent());
+//                textView_used.setText(SDVolumeManagerActivity.this.getString(R.string.action_volume_left_percent)+sdInfoModel.getUsedPercent());
             }
 
             super.onPostExecute(result);

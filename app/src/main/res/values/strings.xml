@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">智能灯</string>
+    <string name="app_name">CAMLS</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
@@ -33,9 +33,9 @@
     <string name="action_get_register_failed3">校验码超时</string>
     <string name="action_send_pws_success">密码已经发送至您的邮箱</string>
     <string name="action_send_pws_failed">请求失败</string>
-    <string name="title_main_dev_list">设备</string>
+    <string name="title_main_dev_list">设备列表</string>
     <string name="action_search">搜索</string>
-    <string name="action_add">添加</string>
+    <string name="action_add">Add</string>
     <string name="action_add_device">添加设备</string>
     <string name="action_change_password">设置设备密码</string>
     <string name="action_device_password_manager">设备密码管理</string>
@@ -44,7 +44,7 @@
     <string name="action_device_share">分享</string>
     <string name="action_device_play_record">回放</string>
     <string name="action_device_play_setting">设置</string>
-
+    <string name="action_refresh">刷新 </string>
     <string name="action_share_vid">视频</string>
     <string name="action_share_playback">回放</string>
     <string name="action_share_push">推送</string>
@@ -65,8 +65,9 @@
     <string name="action_pix_low">标清</string>
     <string name="action_pix_high">高清</string>
     <string name="action_ok">确定</string>
+    <string name="action_cancel">取消</string>
     <string name="action_add_one_key_setting">智能添加</string>
-    <string name="action_add_ap_sta">添加AP方式设备(AP转STA)</string>
+    <string name="action_add_ap_sta">AP转STA</string>
     <string name="action_add_ap">AP热点单机直连</string>
     <string name="action_media">图像</string>
     <string name="action_one_key_setting_desc0">听到\"等待连接\"或指示灯红灯、蓝灯同时长亮后，输入路由器密码，进行下一步</string>
@@ -173,4 +174,7 @@
     <string name="action_check_update">    检查更新</string>
     <string name="string_current_newer">当前为最新版本</string>
     <string name="string_current_older">当前版本需要升级，请到App store升级</string>
+    <string name="string_search_no_device">未搜索到设备</string>
+
+    <string name="action_clear_alarm_image">确定清空报警图片?</string>
 </resources>

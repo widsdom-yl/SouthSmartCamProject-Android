@@ -56,7 +56,7 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
         btn_add_device_share.setOnClickListener(this);
         findViewById(R.id.btn_add_device_one_key).setOnClickListener(this);
         findViewById(R.id.btn_add_device_ap_sta).setOnClickListener(this);
-        findViewById(R.id.btn_add_device_ap).setOnClickListener(this);
+        //findViewById(R.id.btn_add_device_ap).setOnClickListener(this);
     }
 
     @Override
@@ -133,11 +133,11 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
                 intent2.putExtra("type",1);
                 startActivity(intent2);
                 break;
-            case R.id.btn_add_device_ap:
-                Intent intent3 = new Intent(STApplication.getInstance(), AddDeviceAP2StaActivity.class);
-                intent3.putExtra("type",2);
-                startActivity(intent3);
-                break;
+//            case R.id.btn_add_device_ap:
+//                Intent intent3 = new Intent(STApplication.getInstance(), AddDeviceAP2StaActivity.class);
+//                intent3.putExtra("type",2);
+//                startActivity(intent3);
+//                break;
             default:
                 break;
         }

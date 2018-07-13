@@ -91,7 +91,7 @@
         android:id="@+id/relativelayout_time_span"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="10dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -102,7 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="24dp"
-            android:layout_marginTop="10dp"
+            android:layout_centerVertical="true"
             android:text="@string/action_led_open_time" />
 
         <TextView
@@ -118,6 +118,7 @@
 
         <SeekBar
             android:id="@+id/seekBar"
+            android:layout_centerVertical="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="45dp"
@@ -193,7 +194,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="24dp"
-            android:layout_marginTop="10dp"
+            android:layout_centerVertical="true"
             android:text="@string/action_led_brightness" />
 
         <TextView
@@ -220,12 +221,14 @@
 
         <SeekBar
             android:id="@+id/seekBar_brintness"
+            android:layout_centerVertical="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="45dp"
             android:layout_marginLeft="14dp"
             android:layout_marginRight="45dp"
             android:layout_marginStart="14dp"
+            android:max="90"
         android:layout_toRightOf="@id/textView10"/>
 
 

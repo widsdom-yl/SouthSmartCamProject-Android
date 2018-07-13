@@ -54,6 +54,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     RecyclerView mRecyclerView;
     DeviceListAdapter mAdapter;
     ImageButton add_button;
+    Button  add_text_button;
     Button search_button;
     public static  List<DevModel>mDevices = new ArrayList<>();//这个list中的model，判断了连接状态
     List<DevModel>mAccountDevices = new ArrayList<>();//没有连接状态
@@ -82,7 +83,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.add_button){
+        if (view.getId() == R.id.add_button || view.getId() == R.id.add_text_button){
             Intent intent = new Intent(this.getActivity(), AddDeviceActivity.class);
             startActivity(intent);
         }
@@ -172,6 +173,9 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
         }
         if (entryType == EnumMainEntry.EnumMainEntry_Login){
             loadDevList(false);
+        }
+        else{
+            searchDevices();
         }
         if (mAdapter != null){
             mAdapter.notifyDataSetChanged();
@@ -324,12 +328,18 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
         add_button = view.findViewById(R.id.add_button);
         add_button.setOnClickListener(this);
         search_button = view.findViewById(R.id.search_button);
+
+        add_text_button = view.findViewById(R.id.add_text_button);
+        add_text_button.setOnClickListener(this);
+        add_text_button.setOnClickListener(this);
         search_button.setOnClickListener(this);
         if (entryType == EnumMainEntry_Visitor){
             add_button.setVisibility(View.GONE);
             search_button.setVisibility(View.VISIBLE);
+            add_text_button.setVisibility(View.GONE);
         }
         else{
+            add_text_button.setVisibility(View.VISIBLE);
             add_button.setVisibility(View.VISIBLE);
             search_button.setVisibility(View.GONE);
         }

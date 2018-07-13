@@ -1,11 +1,14 @@
 package stcam.stcamproject.Activity;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import stcam.stcamproject.R;
@@ -52,5 +55,19 @@ public class MediaPhotoDetailActivity extends AppCompatActivity {
         ImageView imageView = findViewById(R.id.detail_image);
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         imageView.setImageBitmap(bitmap);
+
+        WindowManager wm = (WindowManager) this
+                .getSystemService(Context.WINDOW_SERVICE);
+        int screenWidth = wm.getDefaultDisplay().getWidth();
+
+
+
+        ViewGroup.LayoutParams lp = imageView.getLayoutParams();
+        lp.width = screenWidth;
+        lp.height =  bitmap.getHeight()*screenWidth/bitmap.getWidth();
+        imageView.setLayoutParams(lp);
+
+
+
     }
 }

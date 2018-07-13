@@ -6,43 +6,42 @@
     android:layout_height="match_parent"
     tools:context=".Activity.SDVolumeManagerActivity">
 
-    <RelativeLayout
-        android:id="@+id/percent_layout"
-        android:background="@color/appGreenColor"
-        android:layout_width="match_parent"
-        android:layout_height="80dp">
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/percent_layout"-->
+        <!--android:background="@color/appGreenColor"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="80dp">-->
 
-        <TextView
-            android:id="@+id/textView_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:textColor="#ffffff"
-            android:textSize="13sp"
-            android:text="@string/action_volume_left_percent" />
+        <!--<TextView-->
+            <!--android:id="@+id/textView_left"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="15dp"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:textColor="#ffffff"-->
+            <!--android:textSize="13sp"-->
+            <!--android:text="@string/action_volume_left_percent" />-->
 
-        <TextView
-            android:id="@+id/textView_used"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="15dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:textColor="#ffffff"
-            android:textSize="13sp"
-            android:text="@string/action_volume_used"/>
-    </RelativeLayout>
+        <!--<TextView-->
+            <!--android:id="@+id/textView_used"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_marginBottom="15dp"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:textColor="#ffffff"-->
+            <!--android:textSize="13sp"-->
+            <!--android:text="@string/action_volume_used"/>-->
+    <!--</RelativeLayout>-->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/percent_layout" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <!--<TextView-->

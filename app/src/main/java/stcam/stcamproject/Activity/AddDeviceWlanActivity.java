@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -58,6 +59,12 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
         initView();
         searchDevices();
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        return true;
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -65,6 +72,11 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
             case android.R.id.home:
                 this.finish(); // back button
                 return true;
+            case R.id.action_search:
+                searchDevices();
+                default:
+                    break;
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -106,6 +118,7 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
                     lod.dismiss();
                     if (SearchMsg.equals(""))
                     {
+                        SouthUtil.showDialog(AddDeviceWlanActivity.this,AddDeviceWlanActivity.this.getString(R.string.string_search_no_device));
                         return;
                     }
                     Log.e(tag,SearchMsg);

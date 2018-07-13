@@ -1,5 +1,6 @@
 package stcam.stcamproject.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,6 +16,7 @@ import com.github.ybq.android.spinkit.SpinKitView;
 import com.thSDK.TMsg;
 import com.thSDK.lib;
 
+import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
 public class AddDeviceOneStepNext extends AppCompatActivity implements View.OnClickListener {
     Button button_cancel;
@@ -124,6 +126,8 @@ public class AddDeviceOneStepNext extends AppCompatActivity implements View.OnCl
                     AddDeviceOneStepNext.this.SmartConfigStop();
                     //actSmartConfig.this.mydialog.dismiss();
                     Toast.makeText(AddDeviceOneStepNext.this, R.string.SmartConfigOver, Toast.LENGTH_SHORT).show();
+                    Intent intent4 = new Intent(STApplication.getInstance(), AddDeviceWlanActivity.class);
+                    startActivity(intent4);
                     break;
             }
             super.handleMessage(msg);
