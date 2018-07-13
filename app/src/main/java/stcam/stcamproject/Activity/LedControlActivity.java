@@ -15,6 +15,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -43,7 +44,7 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
     RelativeLayout layout_time;
     RelativeLayout layout_brintness;
 
-    Button light_time_span;
+    TextView light_time_span;
     SeekBar seekBar;//亮灯时间
     SegmentedGroup segmented3;//光感灵敏度
     RadioButton btn_sensitive_1;
@@ -51,7 +52,7 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
     RadioButton btn_sensitive_3;
 
     //亮度
-    Button light_brintness;
+    TextView light_brintness;
     SeekBar seekBar_brintness;
 
     Button button_time_start;
