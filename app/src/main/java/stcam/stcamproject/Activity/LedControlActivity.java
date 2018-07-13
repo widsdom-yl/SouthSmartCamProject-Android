@@ -74,11 +74,24 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
             // TODO Auto-generated method stub
             SetLedStatusTask task = new SetLedStatusTask();
             task.execute(0);
-
-            GetLedStatusTask task1 = new GetLedStatusTask();
-            task1.execute(0);
         }
     };
+
+   //
+
+    Handler handler_refresh = new Handler();
+    Runnable runnable_fresh = new Runnable() {
+        @Override
+        public void run() {
+            //
+            RefreshLedStatusTask task = new RefreshLedStatusTask();
+            task.execute(0);
+            handler_refresh.postDelayed(runnable_fresh,1000);
+
+
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +125,19 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
 //        return true;
 //    }
 
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        handler_refresh.postDelayed(runnable_fresh,1000);
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        handler_refresh.removeCallbacks(runnable_fresh);
+    }
 
 
     void initValue(){
@@ -250,7 +276,7 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
                         break;
                 }
                 handler.removeCallbacks(runnable);
-                handler.postDelayed(runnable,2000);
+                handler.postDelayed(runnable,1000);
             } else if (statusModel.getMode() == 4) {
                 switch (checkedId) {
                     case R.id.btn_sensitive_1:
@@ -267,7 +293,7 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
                         break;
                 }
                 handler.removeCallbacks(runnable);
-                handler.postDelayed(runnable,2000);
+                handler.postDelayed(runnable,1000);
             }
         }
     }
@@ -360,7 +386,7 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
             }
         }
         handler.removeCallbacks(runnable);
-        handler.postDelayed(runnable,2000);
+        handler.postDelayed(runnable,1000);
     }
 
     @Override
@@ -408,7 +434,7 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
                         }
 
                         handler.removeCallbacks(runnable);
-                        handler.postDelayed(runnable,2000);
+                        handler.postDelayed(runnable,1000);
                     }
                 }
                 // 设置初始时间
@@ -416,6 +442,47 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
                 , start?statusModel.getTimer().getStartM():statusModel.getTimer().getStopM()
                 // true表示采用24小时制
                 ,true).show();
+    }
+
+
+    class RefreshLedStatusTask extends AsyncTask<Integer, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(Integer... params) {
+            //第二个执行方法,onPreExecute()执行完后执行
+            String url = devModel.getHttpCfg1UsrPwd() +"&MsgID=96";
+            Log.e(tag,"url "+url);
+            String ret = lib.thNetHttpGet(devModel.NetHandle,url);
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+
+            LedStatusModel  model = GsonUtil.parseJsonWithGson(result,LedStatusModel.class);
+            Log.e(tag,"RefreshLedStatusTask status model is "+result);
+
+            if (model != null){
+                statusModel.setStatus(model.getStatus());
+                if (model.getStatus() == 1){
+                    imageView_light.setImageResource(R.drawable.light_open);
+                }
+                else{
+                    imageView_light.setImageResource(R.drawable.light_close);
+                }
+
+            }
+            // get status model is {"Mode":1,"Auto":{"Delay":90,"Lux":2},"Manual":{"Brightness":0},
+            // "Timer":{"Brightness":0,"StartH":0,"StartM":0,"StopH":0,"StopM":0},"D2D":{"Brightness":0,"Lux":0}}
+
+
+            super.onPostExecute(result);
+        }
     }
 
 
