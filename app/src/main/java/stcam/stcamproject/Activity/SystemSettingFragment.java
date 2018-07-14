@@ -186,17 +186,31 @@ public class SystemSettingFragment extends Fragment implements BaseAdapter.OnIte
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.exit_button){
-            for (DevModel existModel : MainDevListFragment.mDevices){
-                if (existModel.IsConnect()){
-                    existModel.Disconn();
-                    existModel.NetHandle = 0;
-                }
-            }
-            MainDevListFragment.mDevices.clear();
-            Intent intent = new Intent(this.getContext(), LoginActivity.class);
-            AccountManager.getInstance().saveRemeber(false);
-            startActivity(intent);
-            this.getActivity().finish();
+
+
+            new AlertDialog.Builder(this.getContext())
+                    .setTitle(this.getContext().getString(R.string.action_exit_ask))
+                    .setPositiveButton(this.getContext().getString(R.string.action_ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            for (DevModel existModel : MainDevListFragment.mDevices){
+                                if (existModel.IsConnect()){
+                                    existModel.Disconn();
+                                    existModel.NetHandle = 0;
+                                }
+                            }
+                            MainDevListFragment.mDevices.clear();
+                            Intent intent = new Intent(SystemSettingFragment.this.getContext(), LoginActivity.class);
+                            AccountManager.getInstance().saveRemeber(false);
+                            startActivity(intent);
+                            SystemSettingFragment.this.getActivity().finish();
+
+                        }
+                    })
+                    .setNegativeButton(this.getContext().getString(R.string.action_cancel), null)
+                    .show();
+
+
         }
 
     }

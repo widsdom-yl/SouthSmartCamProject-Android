@@ -96,10 +96,10 @@ public class LoginActivity extends AppCompatActivity  {
 //        mEmailView.setText("4719373@qq.com");
 //        mPasswordView.setText("admin111");
 
-        if (remeber){
+
             mEmailView.setText(AccountManager.getInstance().getDefaultUsr());
             mPasswordView.setText(AccountManager.getInstance().getDefaultPwd());
-        }
+
 
 
 

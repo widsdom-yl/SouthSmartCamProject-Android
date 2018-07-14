@@ -214,4 +214,5 @@
     <string name="action_share_aud">音频</string>
     <string name="string_no_record_permisson">当前没有回放权限</string>
     <string name="string_no_push_permisson">当前没有推送权限</string>
+    <string name="action_exit_ask">确定退出登录?</string>
 </resources>
