@@ -46,6 +46,7 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
     int MD_Sensitive = -1;
     RecConfigModel mRecConfigModel = new  RecConfigModel();
     Handler handler=new Handler();
+    boolean AUDIO_IsPlayPromptSound;
     Runnable runnable=new Runnable(){
         @Override
         public void run() {
@@ -147,6 +148,9 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
 
         getRecConfigTask recConfigTask = new getRecConfigTask();
         recConfigTask.execute();
+
+        getAudioPlayPromptSoundTask audioConfigTask = new getAudioPlayPromptSoundTask();
+        audioConfigTask.execute();
     }
 
     @Override
@@ -160,6 +164,9 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
         }
         else if(2 == position){
             dialogChoice3();
+        }
+        else if(3 == position){
+            dialogChoice1();
         }
         else if(4 == position){
             dialogChoice_alarm_time();
@@ -219,22 +226,31 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
         builder.create().show();
     }
 
-    /*开关*/
+    /*声音开关*/
     private void dialogChoice1() {
 
         final String items[] = {getString(R.string.action_close), getString(R.string.action_open)};
         AlertDialog.Builder builder = new AlertDialog.Builder(this,3);
-        builder.setTitle(getString(R.string.action_push));
+        builder.setTitle(getString(R.string.action_dev_sound));
         builder.setIcon(R.mipmap.ic_launcher);
 
 
-        builder.setSingleChoiceItems(items, mPushSettingModel.getPushActive(),
+        builder.setSingleChoiceItems(items,AUDIO_IsPlayPromptSound?1:0,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.e(tag,"choose :"+which);
-                        mPushSettingModel.setPushActive(which);
+                        AUDIO_IsPlayPromptSound = (which == 0 ? false : true);
+                        mAdapter.setAUDIO_IsPlayPromptSound(AUDIO_IsPlayPromptSound);
                         mAdapter.notifyDataSetChanged();
+                        SetAudioPlayPromptSoundTask task = new SetAudioPlayPromptSoundTask();
+                        if (AUDIO_IsPlayPromptSound){
+
+                            task.execute(1);
+                        }
+                        else{
+                            task.execute(0);
+                        }
                     }
                 });
         builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
@@ -341,9 +357,9 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.refresh_button){
+        if (view.getId() == R.id.button_reset){
             new AlertDialog.Builder(this)
-                    .setTitle(this.getString(R.string.action_clear_alarm_image))
+                    .setTitle(this.getString(R.string.action_reset_origin_ask))
                     .setPositiveButton(this.getString(R.string.action_ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -632,17 +648,118 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
 
             RetModel retModel = GsonUtil.parseJsonWithGson(result,RetModel.class);
             if (retModel != null){
-                if (retModel.ret == 1){
+                if (retModel.ret == 0){
 
-                    SouthUtil.showDialog(PushSettingActivity.this,getString(R.string.action_Success));
+                    SouthUtil.showDialog(PushSettingActivity.this,getString(R.string.action_Failed));
                 }
                 else {
-                    SouthUtil.showDialog(PushSettingActivity.this,getString(R.string.action_Failed));
+                    SouthUtil.showDialog(PushSettingActivity.this,getString(R.string.action_Success));
+                    for (DevModel existModel : MainDevListFragment.mDevices){
+                        if (model.SN.equals(existModel.SN)){
+                            existModel.Disconn();
+                            existModel.NetHandle = 0;
+                        }
+                    }
+                }
+
+
+
+                //需要断开连接，需要查看
+            }
+            super.onPostExecute(result);
+        }
+    }
+
+
+    class getAudioPlayPromptSoundTask extends AsyncTask<String, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            //第二个执行方法,onPreExecute()执行完后执行
+            // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
+            //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
+            String url = "http://"+model.IPUID+":"+model.WebPort+"/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=41";
+            Log.e(tag,url+"" +
+                    ""+model.NetHandle);
+            String ret = lib.thNetHttpGet(model.NetHandle,url);
+            Log.e(tag,"ret :"+ret);
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
+            //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
+            //Log.e(tag,"get playback list :"+result);
+            lod.dismiss();
+            if (result == null){
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                AUDIO_IsPlayPromptSound = jsonObject.getInt("AUDIO_IsPlayPromptSound") == 1 ? true : false;
+                mAdapter.setAUDIO_IsPlayPromptSound(AUDIO_IsPlayPromptSound);
+                mAdapter.notifyDataSetChanged();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            super.onPostExecute(result);
+        }
+    }
+
+    class SetAudioPlayPromptSoundTask extends AsyncTask<Integer, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(Integer... params) {
+            //第二个执行方法,onPreExecute()执行完后执行
+            // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
+            //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
+
+
+
+            String url = "http://"+model.IPUID+":"+model.WebPort+"/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=42&AUDIO_IsPlayPromptSound="+params[0];
+            Log.e(tag,url+",MD_Sensitive,NetHandle is "+model.NetHandle);
+            String ret = lib.thNetHttpGet(model.NetHandle,url);
+            Log.e(tag,"ret :"+ret);
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
+            //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
+            //Log.e(tag,"get playback list :"+result);
+            lod.dismiss();
+
+
+
+            RetModel retModel = GsonUtil.parseJsonWithGson(result,RetModel.class);
+            if (retModel != null){
+                if (retModel.ret == 1){
+
+                   // SouthUtil.showDialog(PushSettingActivity.this,getString(R.string.action_Success));
+                }
+                else {
+                   // SouthUtil.showDialog(PushSettingActivity.this,getString(R.string.action_Failed));
                 }
             }
             super.onPostExecute(result);
         }
     }
+
 
 
     LoadingDialog lod;

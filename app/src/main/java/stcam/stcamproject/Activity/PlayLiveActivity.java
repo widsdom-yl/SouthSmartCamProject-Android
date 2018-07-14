@@ -60,6 +60,8 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     //定时刷新列表
     public int TIME = 1000;
 
+    boolean isTalk = false;
+
     Handler handler_refresh = new Handler();
     Runnable runnable_fresh = new Runnable() {
         @Override
@@ -193,7 +195,11 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
     }
     void initView(boolean isPortrait){
         glView = findViewById(R.id.glPlayLive);
-        glView.setOnTouchListener(this);
+
+        if (devModel.IsControl == 1){
+            glView.setOnTouchListener(this);
+        }
+
 
         glView.setModel(devModel);
 
@@ -240,6 +246,31 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 
         //configurationChanged();
 
+        if (devModel.IsVideo == 0){
+            //音频
+            button_speech.setVisibility(View.INVISIBLE);
+            button_slient.setVisibility(View.INVISIBLE);
+        }
+
+        if (!isRecording){
+            button_record.setImageResource(R.drawable.liverecord_nor);
+        }
+        else{
+            button_record.setImageResource(R.drawable.liverecord_sel);
+        }
+
+        button_pix.setImageResource(pix_low?R.drawable.livehd_nor:R.drawable.livehd_sel);
+
+
+        if (!isTalk){
+            button_speech.setSelected(false);
+            button_speech.setImageResource(R.drawable.livespeech_nor);}
+        else{
+            button_speech.setSelected(true);
+            button_speech.setImageResource(R.drawable.livespeech_sel);
+        }
+
+
 //        if (entryType == MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor){
 //            button_record.setVisibility(View.INVISIBLE);
 //            button_record_o.setVisibility(View.INVISIBLE);
@@ -284,12 +315,13 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.button_speech:
                 enableBtnAfterSeconds();
-                if (button_speech.isSelected()){
+                if (isTalk){
                     button_speech.setSelected(false);
                     button_speech.setImageResource(R.drawable.livespeech_nor);
 //                    if (isPlayAudio){
 //                        lib.thNetAudioPlayOpen(devModel.NetHandle);
 //                    }
+                    isTalk = false;
                     lib.thNetTalkClose(devModel.NetHandle);
                 }
                 else{
@@ -299,6 +331,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 //                    if (isPlayAudio){
 //                        lib.thNetAudioPlayClose(devModel.NetHandle);
 //                    }
+                    isTalk = true;
                     lib.thNetTalkOpen(devModel.NetHandle);
                 }
                 break;

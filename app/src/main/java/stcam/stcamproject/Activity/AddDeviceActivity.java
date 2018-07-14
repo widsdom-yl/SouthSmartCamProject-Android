@@ -74,7 +74,7 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
                     }
                     if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
                         String result = bundle.getString(CodeUtils.RESULT_STRING);
-                        Toast.makeText(this, "解析结果:" + result, Toast.LENGTH_LONG).show();
+                       // Toast.makeText(this, "解析结果:" + result, Toast.LENGTH_LONG).show();
                         addDevice_share(result);
 
                     } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {

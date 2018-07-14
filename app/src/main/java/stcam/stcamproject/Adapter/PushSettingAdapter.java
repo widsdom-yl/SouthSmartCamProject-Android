@@ -15,6 +15,7 @@ public class PushSettingAdapter extends BaseAdapter<String>{
     PushSettingModel mPushSettingModel;
     int MD_Sensitive = -1;
     RecConfigModel mRecConfigModel;
+    boolean mAUDIO_IsPlayPromptSound;
     public PushSettingAdapter( List<String> list) {
         super(R.layout.list_setting, list);
     }
@@ -24,6 +25,9 @@ public class PushSettingAdapter extends BaseAdapter<String>{
     public void setmRecConfigModel(RecConfigModel mRecConfigModel) {
         this.mRecConfigModel = mRecConfigModel;
         this.notifyDataSetChanged();
+    }
+    public void setAUDIO_IsPlayPromptSound(boolean AUDIO_IsPlayPromptSound){
+        mAUDIO_IsPlayPromptSound = AUDIO_IsPlayPromptSound;
     }
     public void setMD_Sensitive(int MD_Sensitive){
         this.MD_Sensitive = MD_Sensitive;
@@ -50,6 +54,14 @@ public class PushSettingAdapter extends BaseAdapter<String>{
             }
             else if(2 == position){
                 holder.setText(R.id.detail_text,mPushSettingModel.getPIRSensitiveDesc());
+            }
+            else if(3 == position){
+                if (mAUDIO_IsPlayPromptSound){
+                    holder.setText(R.id.detail_text,STApplication.getInstance().getString(R.string.action_open));
+                }
+                else{
+                    holder.setText(R.id.detail_text,STApplication.getInstance().getString(R.string.action_close));
+                }
             }
             else if(4 == position){
                 if (mRecConfigModel != null){

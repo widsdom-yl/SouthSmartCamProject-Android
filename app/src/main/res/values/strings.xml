@@ -208,5 +208,10 @@
     <string name="string_record_list">录像列表</string>
     <string name="action_make_change">确认修改</string>
     <string name="string_device_is_share">当前为分享设备，不能进行此操作</string>
+    <string name="string_mode_visitor">当前为游客模式，不能进行此操作</string>
     <string name="action_format_sd_ask">确定格式化SD卡?</string>
+    <string name="action_reset_origin_ask">确定恢复出厂设置?</string>
+    <string name="action_share_aud">音频</string>
+    <string name="string_no_record_permisson">当前没有回放权限</string>
+    <string name="string_no_push_permisson">当前没有推送权限</string>
 </resources>

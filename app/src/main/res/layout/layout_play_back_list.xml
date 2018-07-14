@@ -10,6 +10,16 @@
         android:layout_centerVertical="true"
         android:textColor="#000000"
          />
+
+    <TextView
+        android:id="@+id/file_size_text"
+        android:layout_marginLeft="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/file_name_text"
+        android:textColor="#000000"
+        />
     
     <ImageView
         android:layout_width="30dp"

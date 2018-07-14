@@ -282,22 +282,34 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         items.add(getString(R.string.action_version));
         * */
         if (entryType == EnumMainEntry_Visitor){
+            SouthUtil.showDialog(this,getString(R.string.string_mode_visitor));
             return;
         }
+
+
+
         if (!model.IsConnect()){
             SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_net_not_connect));
             return;
         }
 
         if (0 == position){
-           changeDeviceNameDialog();
 
-        }
-        else if(1 == position){
             if (model.IsShare == 0){
                 SouthUtil.showDialog(this,getString(R.string.string_device_is_share));
                 return;
             }
+
+           changeDeviceNameDialog();
+
+        }
+        else if(1 == position){
+
+            if (model.IsShare == 0){
+                SouthUtil.showDialog(this,getString(R.string.string_device_is_share));
+                return;
+            }
+
                 Intent intent = new Intent(this,ChangeDevicePwdActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("model",model);
@@ -307,9 +319,20 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(intent);
         }
         else if(2 == position){
+
+            if (model.IsPush == 0){
+                SouthUtil.showDialog(this,getString(R.string.string_no_push_permisson));
+                return;
+            }
+
             dialogChoice1();
         }
         else if(3 == position){
+            if (model.IsShare == 0){
+                SouthUtil.showDialog(this,getString(R.string.string_device_is_share));
+                return;
+            }
+
             Intent intent = new Intent(this,PushSettingActivity.class);
             Bundle bundle = new Bundle();
             bundle.putParcelable("devModel",model);
@@ -338,12 +361,14 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                         Log.e(tag,"choose :"+which);
                         mPushSettingModel.setPushActive(which);
                         mAdapter.notifyDataSetChanged();
+
                     }
                 });
         builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                setPushConfigTask task = new setPushConfigTask();
+                task.execute();
             }
         });
         builder.create().show();

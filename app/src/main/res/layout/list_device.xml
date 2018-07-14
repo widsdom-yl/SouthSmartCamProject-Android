@@ -62,20 +62,20 @@
                 android:scaleType="centerInside"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_below="@id/device_image"
-                android:layout_marginBottom="5dp"
                 android:background="@color/transparent"
+
                 android:src="@drawable/setting"/>
 
 
             <ImageButton
                 android:id="@+id/btn_device_play_record"
                 android:scaleType="centerInside"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginRight="20dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="30dp"
                 android:layout_toLeftOf="@id/btn_device_setting"
                 android:layout_below="@id/device_image"
                 android:background="@color/transparent"
@@ -85,9 +85,9 @@
             <ImageButton
                 android:id="@+id/btn_device_share"
                 android:scaleType="centerInside"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginRight="20dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="30dp"
                 android:layout_toLeftOf="@id/btn_device_play_record"
                 android:layout_below="@id/device_image"
                 android:background="@color/transparent"

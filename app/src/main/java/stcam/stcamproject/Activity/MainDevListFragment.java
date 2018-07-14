@@ -607,6 +607,11 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
 
             if (entryType == EnumMainEntry_Login){
+                if (model.IsShare == 0){
+                    SouthUtil.showDialog(this.getActivity(),getString(R.string.string_device_is_share));
+                    return;
+                }
+
                 Intent intent = new Intent(STApplication.getInstance(), DeviceShareActivity.class);
 
                 Bundle bundle = new Bundle();
@@ -635,6 +640,11 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
             if(model.ExistSD == 0){
                 SouthUtil.showToast(STApplication.getInstance(),getString(R.string.action_not_exist_sd));
+                return;
+            }
+
+            if (model.IsRecord){
+                SouthUtil.showToast(STApplication.getInstance(),getString(R.string.string_no_record_permisson));
                 return;
             }
             Intent intent = new Intent(STApplication.getInstance(), PlayBackListActivity.class);

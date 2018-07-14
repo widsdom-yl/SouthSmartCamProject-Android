@@ -71,9 +71,9 @@ public class SystemSettingFragment extends Fragment implements BaseAdapter.OnIte
 
         textview_user.setText(AccountManager.getInstance().getDefaultUsr());
         settingArray.add(getString(R.string.action_alarm_sound));
-        settingArray.add(getString(R.string.action_app_version));
         settingArray.add( getString(R.string.action_change_system_password));
         settingArray.add( getString(R.string.action_share_manager));
+        settingArray.add(getString(R.string.action_app_version));
         settingArray.add(getString(R.string.action_about));
 
         adapter = new SytstmSettingListAdapter(settingArray);
@@ -91,16 +91,17 @@ public class SystemSettingFragment extends Fragment implements BaseAdapter.OnIte
         if (0 == position){
             dialogChoice1();
         }
-        else if(1 ==  position){
-            checkUpdate();
-        }
-        else if (2 == position){
+
+        else if (1 == position){
             Intent intent = new Intent(STApplication.getInstance(), ChangeLoginPasswordActivity.class);
             startActivity(intent);
         }
-        else if(3 == position){
+        else if(2 == position){
             Intent intent = new Intent(STApplication.getInstance(), ShareManagerActivity.class);
             startActivity(intent);
+        }
+        else if(3 ==  position){
+            checkUpdate();
         }
         else if(4 == position){
 
