@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.model.DevModel;
+import com.model.PushSettingModel;
 import com.model.RetModel;
 import com.thSDK.lib;
 
@@ -61,6 +62,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     RecyclerView mRecyclerView;
     DeviceSettingAdapter mAdapter;
     DevModel model;
+    PushSettingModel mPushSettingModel;
     int MD_Sensitive = -1;
 
     List<String> items = new ArrayList<>();
@@ -88,8 +90,11 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             }
             lod.dialogShow();
 
-            getConfigTask configTask = new getConfigTask();
-            configTask.execute();
+//            getConfigTask configTask = new getConfigTask();
+//            configTask.execute();
+
+            getPushConfigTask pushConfigTask = new getPushConfigTask();
+            pushConfigTask.execute();
         }
 
 
@@ -143,9 +148,10 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     void initValue(){
         items.add(getString(R.string.device_name));
         items.add(getString(R.string.action_device_pwd));
-        items.add(getString(R.string.action_manager_push));
+        items.add(getString(R.string.action_push));
+        items.add(getString(R.string.action_manager_senior));
         items.add(getString(R.string.action_manager_volume));
-        items.add(getString(R.string.action_manager_alarm_level));
+//        items.add(getString(R.string.action_manager_alarm_level));
         items.add(getString(R.string.action_version));
 
         mAdapter = new DeviceSettingAdapter(items);
@@ -254,6 +260,16 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onItemClick(View view, int position) {
 
+
+        /*
+         items.add(getString(R.string.device_name));
+        items.add(getString(R.string.action_device_pwd));
+        items.add(getString(R.string.action_push));
+        items.add(getString(R.string.action_manager_senior));
+        items.add(getString(R.string.action_manager_volume));
+//        items.add(getString(R.string.action_manager_alarm_level));
+        items.add(getString(R.string.action_version));
+        * */
         if (entryType == EnumMainEntry_Visitor){
             return;
         }
@@ -276,13 +292,16 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(intent);
         }
         else if(2 == position){
+            dialogChoice1();
+        }
+        else if(3 == position){
             Intent intent = new Intent(this,PushSettingActivity.class);
             Bundle bundle = new Bundle();
             bundle.putParcelable("devModel",model);
             intent.putExtras(bundle);
             startActivity(intent);
         }
-        else if(3 == position){
+        else if(4 == position){
 
             if(model.ExistSD == 0){
                 SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_not_exist_sd));
@@ -295,11 +314,40 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             startActivity(intent);
 
         }
-        else if(4 == position){
-            dialogChoice();
-        }
+//        else if(4 == position){
+//            dialogChoice();
+//        }
     }
 
+    /*开关*/
+    private void dialogChoice1() {
+
+        final String items[] = {getString(R.string.action_close), getString(R.string.action_open)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this,3);
+        builder.setTitle(getString(R.string.action_push));
+        builder.setIcon(R.mipmap.ic_launcher);
+
+
+        builder.setSingleChoiceItems(items, mPushSettingModel.getPushActive(),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.e(tag,"choose :"+which);
+                        mPushSettingModel.setPushActive(which);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
+        builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.create().show();
+    }
+
+
+    /*报警灵明度*/
     int chooseLevel = -1;
     private void dialogChoice() {
         chooseLevel = -1;
@@ -660,6 +708,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                         break;
                     }
                 }
+                SettingActivity.this.finish();
 
             }
             else{
@@ -668,6 +717,72 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
         }
     };
+
+    class getPushConfigTask extends AsyncTask<String, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            //第二个执行方法,onPreExecute()执行完后执行
+            // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
+            //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
+            String url = "http://"+model.IPUID+":"+model.WebPort+"/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=98";
+            Log.e(tag,url+"" +
+                    ""+model.NetHandle);
+            String ret = lib.thNetHttpGet(model.NetHandle,url);
+            Log.e(tag,"ret :"+ret);
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
+            //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
+            //Log.e(tag,"get playback list :"+result);
+            lod.dismiss();
+
+            PushSettingModel pushSettingModel = GsonUtil.parseJsonWithGson(result,PushSettingModel.class);
+            if (pushSettingModel != null){
+                mPushSettingModel = pushSettingModel;
+                mAdapter.setmPushSettingModel(mPushSettingModel);
+            }
+            super.onPostExecute(result);
+        }
+    }
+
+    class setPushConfigTask extends AsyncTask<String, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            //第二个执行方法,onPreExecute()执行完后执行
+            // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
+            //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
+            String url = "http://"+model.IPUID+":"+model.WebPort+"/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=99&PushActive="+
+                    mPushSettingModel.getPushActive()+"&PushInterval="+mPushSettingModel.getPushInterval()+"&PIRSensitive="+mPushSettingModel.getPIRSensitive();
+            Log.e(tag,url+"," +
+                    ""+model.NetHandle);
+            String ret = lib.thNetHttpGet(model.NetHandle,url);
+            Log.e(tag,"MsgID=99：ret :"+ret);
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+
+
+            super.onPostExecute(result);
+        }
+    }
+
 
 
     LoadingDialog lod;

@@ -145,8 +145,12 @@
     <string name="action_Success">设置成功</string>
     <string name="action_Failed">设置失败</string>
     <string name="action_manager_push">推送管理</string>
+    <string name="action_manager_senior">高级设置</string>
+    <string name="action_dev_sound">设备提示音开关</string>
+    <string name="action_alarm_time_span">报警录像时间</string>
+    <string name="action_reset_origin">恢复初厂设置</string>
     <string name="action_manager_volume">视频储存管理</string>
-    <string name="action_manager_alarm_level">报警灵敏度</string>
+    <string name="action_manager_alarm_level">图像侦测灵敏度</string>
     <string name="action_version">版本</string>
     <string name="action_request_ssid">请填写wifi信息</string>
     <string name="SmartConfigOver">Configuration finish</string>
@@ -201,4 +205,5 @@
     <string name="action_reboot_seconds">s后返回主页面</string>
     <string name="string_aleady_added">(已添加)</string>
     <string name="string_record_list">录像列表</string>
+    <string name="action_make_change">确认修改</string>
 </resources>

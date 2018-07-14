@@ -14,10 +14,15 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import com.model.DevModel;
 import com.model.PushSettingModel;
+import com.model.RetModel;
 import com.thSDK.lib;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +31,17 @@ import stcam.stcamproject.Adapter.BaseAdapter;
 import stcam.stcamproject.Adapter.PushSettingAdapter;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.GsonUtil;
+import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 
-public class PushSettingActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener {
+public class PushSettingActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener, View.OnClickListener {
     List<String> items = new ArrayList<>();
     RecyclerView mRecyclerView;
     PushSettingAdapter mAdapter;
     DevModel model;
     PushSettingModel mPushSettingModel = new PushSettingModel();
+    Button button_reset;
+    int MD_Sensitive = -1;
 
     Handler handler=new Handler();
     Runnable runnable=new Runnable(){
@@ -51,7 +59,7 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
         if(actionBar != null){
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_manager_push);
+            actionBar.setTitle(R.string.action_manager_senior);
         }
         setContentView(R.layout.activity_push_setting);
 
@@ -104,11 +112,16 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        button_reset = findViewById(R.id.button_reset);
+        button_reset.setOnClickListener(this);
+
     }
     void initValue(){
-        items.add(getString(R.string.action_push));
+        items.add(getString(R.string.action_manager_alarm_level));
         items.add(getString(R.string.action_push_interval));
         items.add(getString(R.string.action_pir_sensitivity));
+        items.add(getString(R.string.action_dev_sound));
+        items.add(getString(R.string.action_alarm_time_span));
         mAdapter = new PushSettingAdapter(items);
 
         mAdapter.setOnItemClickListener(this);
@@ -123,12 +136,14 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
         getPushConfigTask configTask = new getPushConfigTask();
         configTask.execute();
 
+        getConfigTask mdtask = new getConfigTask();
+        mdtask.execute();
     }
 
     @Override
     public void onItemClick(View view, int position) {
         if (0 == position){
-            dialogChoice1();
+            dialogChoice();
         }
         else if(1 == position){
             dialogChoice2();
@@ -136,6 +151,48 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
         else if(2 == position){
             dialogChoice3();
         }
+    }
+
+    /*报警灵明度*/
+    int chooseLevel = -1;
+    private void dialogChoice() {
+        chooseLevel = -1;
+        final String items[] = {getString(R.string.action_level_low), getString(R.string.action_level_middle), getString(R.string.action_level_high)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this,3);
+        builder.setTitle(getString(R.string.action_manager_alarm_level));
+        builder.setIcon(R.mipmap.ic_launcher);
+        if (MD_Sensitive <= 100){
+            chooseLevel = 0;
+        }
+        else if(MD_Sensitive <= 150){
+            chooseLevel = 1;
+        }
+        else if(MD_Sensitive <= 200){
+            chooseLevel = 2;
+        }
+
+        builder.setSingleChoiceItems(items, chooseLevel,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.e(tag,"choose :"+which);
+                        chooseLevel = which;
+                    }
+                });
+        builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Log.e(tag,"final choose :"+which);
+                if (lod == null){
+                    lod = new LoadingDialog(PushSettingActivity.this);
+                }
+                lod.dialogShow();
+                SetMdSensitiveConfigTask task = new SetMdSensitiveConfigTask();
+                task.execute(chooseLevel);
+            }
+        });
+        builder.create().show();
     }
 
     /*开关*/
@@ -196,7 +253,7 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
 
         final String items[] = {getString(R.string.action_level_low),getString(R.string.action_level_middle),getString(R.string.action_level_high)};
         AlertDialog.Builder builder = new AlertDialog.Builder(this,3);
-        builder.setTitle(getString(R.string.action_push_interval));
+        builder.setTitle(getString(R.string.action_pir_sensitivity));
         builder.setIcon(R.mipmap.ic_launcher);
 
 
@@ -223,6 +280,29 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
     @Override
     public void onLongClick(View view, int position) {
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.refresh_button){
+            new AlertDialog.Builder(this)
+                    .setTitle(this.getString(R.string.action_clear_alarm_image))
+                    .setPositiveButton(this.getString(R.string.action_ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                            if (lod == null){
+                                lod = new LoadingDialog(PushSettingActivity.this);
+                            }
+                            lod.dialogShow();
+
+                            resetConfigTask task = new resetConfigTask();
+                            task.execute();
+                        }
+                    })
+                    .setNegativeButton(this.getString(R.string.action_cancel), null)
+                    .show();
+        }
     }
 
     class getPushConfigTask extends AsyncTask<String, Void, String> {
@@ -291,6 +371,151 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
             super.onPostExecute(result);
         }
     }
+
+    class getConfigTask extends AsyncTask<String, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            //第二个执行方法,onPreExecute()执行完后执行
+            // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
+            //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
+            String url = "http://"+model.IPUID+":"+model.WebPort+"/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=45";
+            Log.e(tag,url+"" +
+                    ""+model.NetHandle);
+            String ret = lib.thNetHttpGet(model.NetHandle,url);
+            Log.e(tag,"ret :"+ret);
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
+            //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
+            //Log.e(tag,"get playback list :"+result);
+            lod.dismiss();
+            if (result == null){
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                MD_Sensitive = jsonObject.getInt("MD_Sensitive");
+                mAdapter.setMD_Sensitive(MD_Sensitive);
+                mAdapter.notifyDataSetChanged();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            super.onPostExecute(result);
+        }
+    }
+
+
+    class SetMdSensitiveConfigTask extends AsyncTask<Integer, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(Integer... params) {
+            //第二个执行方法,onPreExecute()执行完后执行
+            // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
+            //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
+
+            if (params[0] == 0){
+                MD_Sensitive = 100;
+            }
+            else if (params[0] == 1){
+                MD_Sensitive = 150;
+            }
+            else if (params[0] == 2){
+                MD_Sensitive = 200;
+            }
+
+            String url = "http://"+model.IPUID+":"+model.WebPort+"/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=46&MD_Sensitive="+MD_Sensitive+"&MD_Active=1";
+            Log.e(tag,url+",MD_Sensitive,NetHandle is "+model.NetHandle);
+            String ret = lib.thNetHttpGet(model.NetHandle,url);
+            Log.e(tag,"ret :"+ret);
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
+            //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
+            //Log.e(tag,"get playback list :"+result);
+            lod.dismiss();
+
+
+
+            RetModel retModel = GsonUtil.parseJsonWithGson(result,RetModel.class);
+            if (retModel != null){
+                if (retModel.ret == 1){
+                    mAdapter.setMD_Sensitive(MD_Sensitive);
+                    mAdapter.notifyDataSetChanged();
+                    SouthUtil.showDialog(PushSettingActivity.this,getString(R.string.action_Success));
+                }
+                else {
+                    SouthUtil.showDialog(PushSettingActivity.this,getString(R.string.action_STA_T_AP_Failed));
+                }
+            }
+            super.onPostExecute(result);
+        }
+    }
+
+    class resetConfigTask extends AsyncTask<Integer, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(Integer... params) {
+            //第二个执行方法,onPreExecute()执行完后执行
+            // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
+            //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
+
+
+
+            String url = "http://"+model.IPUID+":"+model.WebPort+"/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=19";
+            Log.e(tag,url+",MD_Sensitive,NetHandle is "+model.NetHandle);
+            String ret = lib.thNetHttpGet(model.NetHandle,url);
+            Log.e(tag,"ret :"+ret);
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
+            //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
+            //Log.e(tag,"get playback list :"+result);
+            lod.dismiss();
+
+
+
+            RetModel retModel = GsonUtil.parseJsonWithGson(result,RetModel.class);
+            if (retModel != null){
+                if (retModel.ret == 1){
+
+                    SouthUtil.showDialog(PushSettingActivity.this,getString(R.string.action_Success));
+                }
+                else {
+                    SouthUtil.showDialog(PushSettingActivity.this,getString(R.string.action_Failed));
+                }
+            }
+            super.onPostExecute(result);
+        }
+    }
+
 
     LoadingDialog lod;
     final String tag = "PushSettingActivity";
