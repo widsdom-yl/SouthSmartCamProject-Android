@@ -84,7 +84,7 @@
     <string name="action_add_ap">AP热点单机直连</string>
     <string name="action_media">图像</string>
     <string name="action_one_key_setting_desc0">听到\"等待连接\"或指示灯红灯、蓝灯同时长亮后，输入路由器密码，进行下一步</string>
-    <string name="action_one_key_setting_desc1">听到\"配置成功\"或指示灯红灯熄灭，蓝灯长亮后，按\"取消\"后，搜索设备</string>
+    <string name="action_one_key_setting_desc1">听到\"配置成功\"或指示灯红灯熄灭，蓝灯闪烁后，按\"取消\"后，搜索设备</string>
     <string name="string_tip">温馨提示</string>
     <string name="ssid">路由器SSID</string>
     <string name="ssid_pwd">密码</string>
@@ -182,10 +182,13 @@
     <string name="string_pwd_span2">密&#160;&#8195;&#160;码:</string>
     <string name="string_new_pwd_title">密     码</string>
     <string name="string_confirm_pwd_title">确认密码</string>
+    <string name="string_old_pwd">原&#160;&#160;密&#160;&#160;码:</string>
+    <string name="string_new_pwd">新&#160;&#160;密&#160;&#160;码:</string>
     <string name="string_confirm_pwd_title2">确认密码:</string>
-    <string name="string_input_new_password">请输入新的用户密码</string>
+    <string name="string_input_old_password">请输入原密码</string>
+    <string name="string_input_new_password">请输入新密码</string>
     <string name="string_input_password">请输入用户密码</string>
-    <string name="string_confirm_new_password">请输入用户确认密码</string>
+    <string name="string_confirm_new_password">请输入确认密码</string>
     <string name="action_check_update">    检查更新</string>
     <string name="string_current_newer">当前为最新版本</string>
     <string name="string_current_older">当前版本需要升级，请到App store升级</string>
@@ -194,4 +197,5 @@
     <string name="action_get_verify_code">获取验证码</string>
     <string name="action_clear_alarm_image">确定清空报警图片?</string>
     <string name="action_reboot_seconds">s后返回主页面</string>
+    <string name="string_aleady_added">(已添加)</string>
 </resources>

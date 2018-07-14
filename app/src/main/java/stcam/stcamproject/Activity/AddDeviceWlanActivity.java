@@ -1,6 +1,7 @@
 package stcam.stcamproject.Activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -151,6 +152,12 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
     boolean IsSearching;
 
 
+    void back2TopActivity(){
+            Intent intent= new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+
+    }
     @Override
     public void onItemClick(View view, int position) {
         final SearchDevModel model = lists.get(position);
@@ -270,6 +277,7 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
             Log.e(tag,"---------------------0:"+m.ret);
             if (1 == m.ret){
                 SouthUtil.showToast(AddDeviceWlanActivity.this,"device has added successfully");
+                back2TopActivity();
             }
             else{
                 SouthUtil.showToast(AddDeviceWlanActivity.this,"device  added failed");
