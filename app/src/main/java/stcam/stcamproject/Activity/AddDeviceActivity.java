@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.model.RetModel;
@@ -50,8 +50,8 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
         }
 
         setContentView(R.layout.activity_add_device);
-        Button btn_search = findViewById(R.id.btn_add_device_search);
-        Button btn_add_device_share = findViewById(R.id.btn_add_device_share);
+        TextView btn_search = findViewById(R.id.btn_add_device_search);
+        TextView btn_add_device_share = findViewById(R.id.btn_add_device_share);
         btn_search.setOnClickListener(this);
         btn_add_device_share.setOnClickListener(this);
         findViewById(R.id.btn_add_device_one_key).setOnClickListener(this);
