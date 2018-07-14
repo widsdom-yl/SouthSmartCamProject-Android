@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.model.DevModel;
 import com.model.RetModel;
@@ -51,7 +50,6 @@ public class ChangeDevicePwdActivity extends AppCompatActivity implements View.O
     EditText editText_confirm_pwd;
     EditText editText_new_pwd;
     EditText editText_old_pwd;
-    TextView text_uid_detail;
     Button confirmButton;
     String SN;
     @Override
@@ -111,23 +109,22 @@ public class ChangeDevicePwdActivity extends AppCompatActivity implements View.O
         editText_new_pwd = findViewById(R.id.editText_password);
         editText_old_pwd = findViewById(R.id.editText_old_pwd);
         confirmButton = findViewById(R.id.button_next);
-        text_uid_detail = findViewById(R.id.text_uid_detail);
 
-        switch (enumType) {
-            case SHARE:
-                //ShareModel model
-                text_uid_detail.setText(shareModel.UID);
-                break;
-            case WLAN:
-            case STA:
-            case AP:
-                text_uid_detail.setText( model.getUID());
-                break;
-            case DEVICE_SETTING:
-                text_uid_detail.setText( setModel.UID);
-            default:
-                break;
-        }
+//        switch (enumType) {
+//            case SHARE:
+//                //ShareModel model
+//                text_uid_detail.setText(shareModel.UID);
+//                break;
+//            case WLAN:
+//            case STA:
+//            case AP:
+//                text_uid_detail.setText( model.getUID());
+//                break;
+//            case DEVICE_SETTING:
+//                text_uid_detail.setText( setModel.UID);
+//            default:
+//                break;
+//        }
 
 
 

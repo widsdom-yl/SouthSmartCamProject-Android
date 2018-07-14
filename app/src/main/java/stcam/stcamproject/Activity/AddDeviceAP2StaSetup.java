@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,17 +33,18 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.Network;
 
-public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnClickListener {
+public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     SearchDevModel model;
     DevModel devModel;
     Spinner spiner_ssid_name;
     private ArrayAdapter<String> arr_adapter;
-
+    List<SSIDModel> mSsidModels;
     EditText edittext_ssid_pwd;
     TextView textView_uid;
     TextView textView_ip;
     Button button_next;
     LoadingDialog lod;
+    int currentSSIDPosition = 0;
     final static  String tag =  "AddDeviceAP2StaSetup";
 
     int leftTime = 20;
@@ -121,6 +123,8 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
 
         textView_uid.setText(devModel.UID);
         textView_ip.setText(devModel.IPUID);
+
+        spiner_ssid_name.setOnItemSelectedListener(this);
     }
 
     void getSSIDList(){
@@ -149,8 +153,10 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
 //            SetSSIDTask task = new SetSSIDTask();
 //            task.execute(edittext_ssid_name.getText().toString(),edittext_ssid_pwd.getText().toString());
 
+
+            String ssid = mSsidModels.get(currentSSIDPosition).SSID;
             Network.getCommandApi(devModel)
-                    .AP2STA_changeValue(devModel.usr,devModel.pwd,38,1,0,spiner_ssid_name.getSelectedItem().toString(),
+                    .AP2STA_changeValue(devModel.usr,devModel.pwd,38,1,0,ssid,
                             edittext_ssid_pwd.getText().toString(),0)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -179,11 +185,11 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
         public void onNext(List<SSIDModel> ssidModels) {
             lod.dismiss();
             Log.e(tag,"observer_SSIDList ---------------------1:"+ssidModels.size());
-
+            mSsidModels = ssidModels;
             //数据
             List data_list = new ArrayList<String>();
             for (SSIDModel model : ssidModels){
-                data_list.add(model.SSID);
+                data_list.add(model.SSID+"("+model.Siganl+")");
             }
 
             //适配器
@@ -268,6 +274,17 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
 
         }
     };
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        currentSSIDPosition = i;
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
 
     class SetSSIDTask extends AsyncTask<String, Void, String> {
         // AsyncTask<Params, Progress, Result>

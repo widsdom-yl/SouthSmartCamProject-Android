@@ -17,5 +17,9 @@ public class SDVideoModel implements Serializable {
         checked=false;
         viewed = false;
     }
+    public String getSdVideoName(){
+        String[]array = sdVideo.split("/");
+        return array[array.length-1];
+    }
 
 }

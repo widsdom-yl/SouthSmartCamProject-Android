@@ -133,6 +133,8 @@
     <string name="action_alarm_sound">报警声音</string>
     <string name="action_app_version">App版本</string>
     <string name="action_change_system_password">账号密码管理</string>
+    <string name="action_share_manager">分享管理</string>
+    <string name="action_share_account_manager">分享账号管理</string>
     <string name="action_about">关于</string>
     <string name="action_change_login_password">重置密码</string>
     <string name="device_logn_old_pwd">原密码</string>
@@ -198,4 +200,5 @@
     <string name="action_clear_alarm_image">确定清空报警图片?</string>
     <string name="action_reboot_seconds">s后返回主页面</string>
     <string name="string_aleady_added">(已添加)</string>
+    <string name="string_record_list">录像列表</string>
 </resources>

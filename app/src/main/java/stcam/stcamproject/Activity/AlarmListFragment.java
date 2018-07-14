@@ -182,12 +182,13 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
 
             }
             else{
-                if (alarmImageArray != null){
+                if (alarmImageArray != null && adapter != null){
                     alarmImageArray.clear();
                     adapter.resetMList(alarmImageArray);
+                    adapter.notifyDataSetChanged();
                 }
 
-                adapter.notifyDataSetChanged();
+
                 //MyContext.getInstance()
                 Log.e(tag,"---------------------1:no dev");
 //                SouthUtil.showToast(STApplication.getInstance(),"No Alarm");

@@ -270,7 +270,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         button_slient.setEnabled(false);
         button_record.setEnabled(false);
         button_pix.setEnabled(false);
-        handler.postDelayed(runnable,2500);
+        handler.postDelayed(runnable,1500);
     }
 
     @Override

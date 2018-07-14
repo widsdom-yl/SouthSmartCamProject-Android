@@ -284,6 +284,7 @@ public class ForgetPwdActivity extends AppCompatActivity implements View.OnClick
             }
             else if(m.ret == 1){
                 SouthUtil.showToast(ForgetPwdActivity.this,getString(R.string.action_reset_pwd_success));
+                back2TopActivity();
             }
 
         }
@@ -298,6 +299,11 @@ public class ForgetPwdActivity extends AppCompatActivity implements View.OnClick
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() >= 4 &&  password.length() <= 16;
+    }
+
+    void back2TopActivity(){
+        this.finish();
+
     }
 
     final String tag = "ForgetPwdActivity";
