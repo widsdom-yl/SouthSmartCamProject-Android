@@ -1,7 +1,9 @@
 package stcam.stcamproject.Activity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -10,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.model.DevModel;
 import com.model.RetModel;
@@ -34,21 +37,46 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
     DevModel devModel;
     Spinner spiner_ssid_name;
     private ArrayAdapter<String> arr_adapter;
-    EditText edittext_ssid_name;
+
     EditText edittext_ssid_pwd;
+    TextView textView_uid;
+    TextView textView_ip;
     Button button_next;
     LoadingDialog lod;
     final static  String tag =  "AddDeviceAP2StaSetup";
+
+    int leftTime = 20;
+    Handler handler_refresh = new Handler();
+    Runnable runnable_fresh = new Runnable() {
+        @Override
+        public void run() {
+            //
+            if (--leftTime >0){
+                lod.setMessage(leftTime+getString(R.string.action_reboot_seconds));
+
+                handler_refresh.postDelayed(runnable_fresh,1000);
+            }
+            else{
+                lod.dismiss();
+                back2TopActivity(false);
+            }
+
+
+
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_device_ap2_sta_setup);
 
+
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_AP_T_STA);
+            actionBar.setTitle(R.string.action_add_ap_sta);
         }
 
         Bundle bundle = this.getIntent().getExtras();
@@ -58,6 +86,15 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
         initView();
         getSSIDList();
 
+
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        handler_refresh.removeCallbacks(runnable_fresh);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -65,15 +102,25 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
             case android.R.id.home:
                 this.finish(); // back button
                 return true;
+
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
     void initView(){
         spiner_ssid_name = findViewById(R.id.spiner_ssid_name);
-        edittext_ssid_name = findViewById(R.id.edittext_ssid_name);
+
         edittext_ssid_pwd = findViewById(R.id.edittext_ssid_pwd);
+
         button_next = findViewById(R.id.button_next);
         button_next.setOnClickListener(this);
+
+        textView_uid = findViewById(R.id.textView_uid);
+        textView_ip = findViewById(R.id.textView_ip);
+
+        textView_uid.setText(devModel.UID);
+        textView_ip.setText(devModel.IPUID);
     }
 
     void getSSIDList(){
@@ -116,7 +163,7 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
     Observer<List<SSIDModel>> observer_SSIDList = new Observer<List<SSIDModel>>() {
         @Override
         public void onCompleted() {
-            lod.dismiss();
+            //lod.dismiss();
             Log.e(tag,"observer_SSIDList---------------------2");
         }
         @Override
@@ -124,19 +171,14 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
             lod.dismiss();
             Log.e(tag,"observer_SSIDList ---------------------1:"+e.getLocalizedMessage());
 
+          //  SouthUtil.showDialog(AddDeviceAP2StaSetup.this,getString(R.string.error_dev_pass));
+
         }
 
         @Override
         public void onNext(List<SSIDModel> ssidModels) {
             lod.dismiss();
             Log.e(tag,"observer_SSIDList ---------------------1:"+ssidModels.size());
-            if(ssidModels.size() == 0){
-                edittext_ssid_name.setVisibility(View.VISIBLE);
-                spiner_ssid_name.setVisibility(View.INVISIBLE);
-                return;
-            }
-            edittext_ssid_name.setVisibility(View.INVISIBLE);
-            spiner_ssid_name.setVisibility(View.VISIBLE);
 
             //数据
             List data_list = new ArrayList<String>();
@@ -151,27 +193,48 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
             //加载适配器
             spiner_ssid_name.setAdapter(arr_adapter);
 
+
+
         }
     };
 
 
+    void back2TopActivity(boolean wait){
+        if (wait){
+            leftTime = 20;
+            if (lod == null){
+                lod = new LoadingDialog(this);
+            }
+            lod.setMessage(leftTime+getString(R.string.action_reboot_seconds));
+            lod.dialogShow();
+            handler_refresh.postDelayed(runnable_fresh,1000);
+        }
+        else{
+            Intent intent= new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+
+    }
     Observer<RetModel> observer_ret = new Observer<RetModel>() {
         @Override
         public void onCompleted() {
-            lod.dismiss();
+           // lod.dismiss();
             Log.e(tag,"---------------------2");
         }
         @Override
         public void onError(Throwable e) {
-            lod.dismiss();
+           // lod.dismiss();
             Log.e(tag,"---------------------1:"+e.getLocalizedMessage());
-            SouthUtil.showDialog(AddDeviceAP2StaSetup.this,getString(R.string.device_reboot));
+            SouthUtil.showToast(AddDeviceAP2StaSetup.this,getString(R.string.device_reboot));
             for (DevModel existModel : MainDevListFragment.mDevices){
                 if (devModel.SN.equals(existModel.SN)){
                     existModel.Disconn();
                     existModel.NetHandle = 0;
                 }
             }
+            back2TopActivity(true);
+
 
         }
 
@@ -180,21 +243,24 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
             lod.dismiss();
             Log.e(tag,"---------------------0:"+m.ret);
             if (1 == m.ret){
-                SouthUtil.showDialog(AddDeviceAP2StaSetup.this,getString(R.string.action_AP_T_STA_Success));
+                SouthUtil.showToast(AddDeviceAP2StaSetup.this,getString(R.string.action_AP_T_STA_Success));
                 for (DevModel existModel : MainDevListFragment.mDevices){
                     if (devModel.SN.equals(existModel.SN)){
                         existModel.Disconn();
                         existModel.NetHandle = 0;
                     }
                 }
+                back2TopActivity(true);
             }
             else if(2 == m.ret){
+                SouthUtil.showToast(AddDeviceAP2StaSetup.this,getString(R.string.action_AP_T_STA_Success));
                 for (DevModel existModel : MainDevListFragment.mDevices){
                     if (devModel.SN.equals(existModel.SN)){
                         existModel.Disconn();
                         existModel.NetHandle = 0;
                     }
                 }
+                back2TopActivity(true);
             }
             else{
                 SouthUtil.showDialog(AddDeviceAP2StaSetup.this,getString(R.string.action_AP_T_STA_Failed));

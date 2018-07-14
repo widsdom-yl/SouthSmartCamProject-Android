@@ -235,6 +235,9 @@ public class ForgetPwdActivity extends AppCompatActivity implements View.OnClick
             if (m.ret == 0){
                 SouthUtil.showToast(ForgetPwdActivity.this,getString(R.string.action_get_checknum_sent_failed));
             }
+            if (m.ret == -5){
+                SouthUtil.showToast(ForgetPwdActivity.this,getString(R.string.action_no_user));
+            }
             else if(m.ret == -1){
                 SouthUtil.showToast(ForgetPwdActivity.this,getString(R.string.action_get_checknum_aleady_register));
             }

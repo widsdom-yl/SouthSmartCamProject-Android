@@ -29,6 +29,14 @@ public class AccountManager {
         editor.commit();
     }
 
+    public void saveRemeber(boolean isRemeber){
+
+        SharedPreferences pref = context.getSharedPreferences("account",MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putBoolean("remeber",isRemeber);
+        editor.commit();
+    }
+
     public boolean getIsRemeberAccount(){
         SharedPreferences pref = context.getSharedPreferences("account",MODE_PRIVATE);
         boolean remeber = pref.getBoolean("remeber",false);//第二个参数为默认值

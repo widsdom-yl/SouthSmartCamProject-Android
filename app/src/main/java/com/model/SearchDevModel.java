@@ -193,8 +193,14 @@ public class SearchDevModel implements Parcelable {
         if (devModel == null){
             devModel = new DevModel();
         }
+
+
+
         devModel.SN = this.getSN();
         devModel.UID = this.getUID();
+        if (devModel.UID.equals("NULL") || devModel.UID == null){
+            devModel.UID = DevName;
+        }
         devModel.IPUID = this.getDevIP();
         devModel.DataPort = this.getDataPort();
         devModel.WebPort = this.getHttpPort();

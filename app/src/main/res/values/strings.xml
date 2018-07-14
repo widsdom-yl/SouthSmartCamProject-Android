@@ -13,6 +13,7 @@
     <string name="action_get_checknum">验证码</string>
     <string name="action_get_checknum_sent">验证码已经发送至邮箱</string>
     <string name="action_get_checknum_sent_failed">验证码发送失败</string>
+    <string name="action_no_user">用户不存在</string>
     <string name="action_get_checknum_aleady_register">此邮箱已经注册</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">无效的邮箱</string>
@@ -46,6 +47,8 @@
     <string name="action_search">搜索</string>
     <string name="action_add">Add</string>
     <string name="action_add_device">添加设备</string>
+    <string name="error_dev_pass">设备密码错误，请返回重新设置</string>
+    <string name="string_dev_password">设备密码:</string>
     <string name="action_change_password">设置设备密码</string>
     <string name="action_device_password_manager">设备密码管理</string>
     <string name="action_change">修改</string>
@@ -166,7 +169,7 @@
     <string name="string_second">秒</string>
     <string name="string_miniute">分钟</string>
     <string name="action_dev_pwd_limit_lessthan_19">密码不能超过19位数</string>
-    <string name="action_check_remeber_pwd">记住密码</string>
+    <string name="action_check_remeber_pwd">记住密码自动登录</string>
     <string name="string_smart_device">智能设备</string>
     <string name="action_clear">清空</string>
     <string name="action_visitor_mode_disable_excute">当前为游客模式，不能操作</string>
@@ -190,4 +193,5 @@
     <string name="action_input_verify_code">请输入验证码</string>
     <string name="action_get_verify_code">获取验证码</string>
     <string name="action_clear_alarm_image">确定清空报警图片?</string>
+    <string name="action_reboot_seconds">s后返回主页面</string>
 </resources>

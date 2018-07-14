@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.model.DevModel;
 
+import stcam.stcamproject.Application.STApplication;
+import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.R;
 
 public class SplashActivity extends AppCompatActivity implements View.OnClickListener {
@@ -44,6 +46,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
             e.printStackTrace();
         }
 
+
         new Handler().postDelayed(new Runnable() {
             public void run() {
                 // do something
@@ -55,9 +58,21 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
                     }
                 }
                 MainDevListFragment.mDevices.clear();
-                Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                boolean isRemeber = AccountManager.getInstance().getIsRemeberAccount();
+                String usr = AccountManager.getInstance().getDefaultUsr();
+                String pwd = AccountManager.getInstance().getDefaultPwd();
+                if (isRemeber && usr.length()>0 && pwd.length()>0){
+                    Intent intent = new Intent(STApplication.getInstance(), MainActivity.class);
+                    intent.putExtra("entry", MainDevListFragment.EnumMainEntry.EnumMainEntry_Login);
+                    startActivity(intent);
+                    finish();
+                }
+                else{
+                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+
             }
 
         }, 1 * 1000);
