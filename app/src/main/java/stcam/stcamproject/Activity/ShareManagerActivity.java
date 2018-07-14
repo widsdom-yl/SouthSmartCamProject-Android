@@ -105,17 +105,17 @@ public class ShareManagerActivity extends AppCompatActivity implements ShareMana
         @Override
         public void onCompleted() {
             lod.dismiss();
-
+            refreshLayout.setRefreshing(false);
 
             // refreshLayout.setLoading(false);
 
             Log.e(tag,"---------------------2");
-            refreshLayout.setRefreshing(false);
+
         }
         @Override
         public void onError(Throwable e) {
             lod.dismiss();
-
+            refreshLayout.setRefreshing(false);
             Log.e(tag,"---------------------1:"+e.getLocalizedMessage());
             refreshLayout.setRefreshing(false);
         }
@@ -123,7 +123,7 @@ public class ShareManagerActivity extends AppCompatActivity implements ShareMana
         @Override
         public void onNext(List<UserModel> mlist) {
             lod.dismiss();
-
+            refreshLayout.setRefreshing(false);
             if (mlist.size() > 0){
                 if (mAdapter == null){
                     mUserList = mlist;
@@ -148,11 +148,13 @@ public class ShareManagerActivity extends AppCompatActivity implements ShareMana
         @Override
         public void onCompleted() {
             lod.dismiss();
+            refreshLayout.setRefreshing(false);
             Log.e(tag,"---------------------2");
         }
         @Override
         public void onError(Throwable e) {
             lod.dismiss();
+            refreshLayout.setRefreshing(false);
             Log.e(tag,"---------------------1:"+e.getLocalizedMessage());
 
             SouthUtil.showDialog(ShareManagerActivity.this,getString(R.string.action_Failed));
@@ -161,6 +163,7 @@ public class ShareManagerActivity extends AppCompatActivity implements ShareMana
         @Override
         public void onNext(RetModel m) {
             lod.dismiss();
+            refreshLayout.setRefreshing(false);
             Log.e(tag,"---------------------0:"+m.ret);
             if (1 == m.ret){
 

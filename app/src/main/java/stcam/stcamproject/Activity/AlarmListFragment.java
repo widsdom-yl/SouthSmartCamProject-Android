@@ -44,7 +44,7 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
     final String tag = "AlarmListActivity";
     LoadingDialog lod;
     SuperSwipeRefreshLayout refreshLayout;
-    Button clear_button ;
+    Button clear_button ,refresh_button;
     // TODO: Rename and change types and number of parameters
     public static AlarmListFragment newInstance() {
         AlarmListFragment fragment = new AlarmListFragment();
@@ -68,6 +68,7 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
         rv.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
         clear_button = view.findViewById(R.id.clear_button);
+        refresh_button =view.findViewById(R.id.refresh_button);
         getAlarmList(true);
 
         refreshLayout
@@ -91,7 +92,7 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
                 });
 
         clear_button.setOnClickListener(this);
-
+        refresh_button.setOnClickListener(this);
 
         return view;
     }
@@ -287,6 +288,9 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
 
 
 
+        }
+        else if(view.getId() == R.id.refresh_button){
+            getAlarmList(false);
         }
 
 

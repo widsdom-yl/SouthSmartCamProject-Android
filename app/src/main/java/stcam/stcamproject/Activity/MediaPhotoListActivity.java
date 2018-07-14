@@ -1,7 +1,6 @@
 package stcam.stcamproject.Activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -130,9 +129,14 @@ public class MediaPhotoListActivity extends AppCompatActivity implements BaseAda
             startActivity(intent);
         }
         else if(FileUtil.checkIsVideoFile(mediaPath)){
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.parse(mediaPath), "video/mov");
-             startActivity(intent);
+//            Intent intent = new Intent(Intent.ACTION_VIEW);
+//            intent.setDataAndType(Uri.parse(mediaPath), "video/mp4");
+//             startActivity(intent);
+
+
+            Intent intent = new Intent(this, VideoPlayerAct.class);
+            intent.putExtra("url",mediaPath);
+            startActivity(intent);
 
         }
 

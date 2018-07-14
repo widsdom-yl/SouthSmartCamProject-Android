@@ -91,6 +91,9 @@
         <activity android:name=".Activity.AboutActivity" />
         <activity android:name=".Activity.ResetPwdActivity" />
         <activity android:name=".Activity.ShareManagerActivity"></activity>
+        <activity android:name=".Activity.VideoPlayerAct"
+            android:screenOrientation="landscape"></activity>
+
     </application>
 
 </manifest>
