@@ -1,6 +1,7 @@
 package stcam.stcamproject.Activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import android.widget.Button;
 
 import com.model.DevModel;
 import com.model.PushSettingModel;
+import com.model.RecConfigModel;
 import com.model.RetModel;
 import com.thSDK.lib;
 
@@ -42,7 +44,7 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
     PushSettingModel mPushSettingModel = new PushSettingModel();
     Button button_reset;
     int MD_Sensitive = -1;
-
+    RecConfigModel mRecConfigModel = new  RecConfigModel();
     Handler handler=new Handler();
     Runnable runnable=new Runnable(){
         @Override
@@ -117,11 +119,15 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
 
     }
     void initValue(){
-        items.add(getString(R.string.action_manager_alarm_level));
+
         items.add(getString(R.string.action_push_interval));
+
+        items.add(getString(R.string.action_manager_alarm_level));
+
         items.add(getString(R.string.action_pir_sensitivity));
         items.add(getString(R.string.action_dev_sound));
         items.add(getString(R.string.action_alarm_time_span));
+        items.add(getString(R.string.action_manager_volume));
         mAdapter = new PushSettingAdapter(items);
 
         mAdapter.setOnItemClickListener(this);
@@ -138,18 +144,36 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
 
         getConfigTask mdtask = new getConfigTask();
         mdtask.execute();
+
+        getRecConfigTask recConfigTask = new getRecConfigTask();
+        recConfigTask.execute();
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        if (0 == position){
-            dialogChoice();
-        }
-        else if(1 == position){
+
+        if(0 == position){
             dialogChoice2();
+        }
+        else if (1 == position){
+            dialogChoice();
         }
         else if(2 == position){
             dialogChoice3();
+        }
+        else if(4 == position){
+            dialogChoice_alarm_time();
+        }
+        else if(5 == position){
+            if(model.ExistSD == 0){
+                SouthUtil.showDialog(PushSettingActivity.this,getString(R.string.action_not_exist_sd));
+                return;
+            }
+            Intent intent = new Intent(this,SDVolumeManagerActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("devModel",model);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
     }
 
@@ -264,6 +288,39 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
                         Log.e(tag,"choose :"+which);
                         mPushSettingModel.setPIRSensitive(which);
                         mAdapter.notifyDataSetChanged();
+                    }
+                });
+        builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.create().show();
+    }
+
+
+
+    /*报警时间间隔*/
+    private void dialogChoice_alarm_time() {
+
+        final String items[] = {5+getString(R.string.string_second), 10+getString(R.string.string_second),20+getString(R.string.string_second)
+                ,30+getString(R.string.string_second),60+getString(R.string.string_second)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this,3);
+        builder.setTitle(getString(R.string.action_alarm_time_span));
+        builder.setIcon(R.mipmap.ic_launcher);
+
+
+        builder.setSingleChoiceItems(items, mPushSettingModel.getPushIntervalLevel(),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.e(tag,"choose :"+which);
+                        mRecConfigModel.setRec_AlmTimeLenChoice(which);
+                        mAdapter.setmRecConfigModel(mRecConfigModel);
+                        mAdapter.notifyDataSetChanged();
+                        setRecConfigTask task = new setRecConfigTask();
+                        task.execute();
                     }
                 });
         builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
@@ -411,6 +468,77 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
                 e.printStackTrace();
             }
 
+
+            super.onPostExecute(result);
+        }
+    }
+
+    class getRecConfigTask extends AsyncTask<String, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            //第二个执行方法,onPreExecute()执行完后执行
+            // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
+            //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
+            String url = "http://"+model.IPUID+":"+model.WebPort+"/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=55";
+            Log.e(tag,url+"" +
+                    ""+model.NetHandle);
+            String ret = lib.thNetHttpGet(model.NetHandle,url);
+            Log.e(tag,"ret :"+ret);
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
+            //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
+            //Log.e(tag,"get playback list :"+result);
+            lod.dismiss();
+            if (result != null && result.length() > 0){
+                RecConfigModel recConfigModel = GsonUtil.parseJsonWithGson(result,RecConfigModel.class);
+                if (recConfigModel != null){
+                    mRecConfigModel = recConfigModel;
+                    mAdapter.setmRecConfigModel(mRecConfigModel);
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+
+
+
+            super.onPostExecute(result);
+        }
+    }
+
+    class setRecConfigTask extends AsyncTask<String, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            //第二个执行方法,onPreExecute()执行完后执行
+            // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
+            //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
+            String url = "http://"+model.IPUID+":"+model.WebPort+"/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=56&Rec_AlmTimeLen="+mRecConfigModel.getRec_AlmTimeLen();
+            Log.e(tag,url+"" +
+                    ""+model.NetHandle);
+            String ret = lib.thNetHttpGet(model.NetHandle,url);
+            Log.e(tag,"ret :"+ret);
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
+            //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
+            //Log.e(tag,"get playback list :"+result);
 
             super.onPostExecute(result);
         }

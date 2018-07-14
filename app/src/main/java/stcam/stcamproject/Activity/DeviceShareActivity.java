@@ -46,6 +46,7 @@ public class DeviceShareActivity extends AppCompatActivity implements View.OnCli
         shareModel.SN = devModel.SN;
         shareModel.From = AccountManager.getInstance().getDefaultUsr();
         shareModel.UID = devModel.UID;
+        shareModel.Pwd = devModel.pwd;
         initView();
 
     }

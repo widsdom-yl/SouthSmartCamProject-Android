@@ -7,6 +7,7 @@ public class ShareModel implements Parcelable {
     public String From;
     public String UID;
     public String SN;
+    public String Pwd;
     public int Video;
     public int History;
     public int Push;
@@ -19,6 +20,7 @@ public class ShareModel implements Parcelable {
         From = in.readString();
         UID = in.readString();
         SN = in.readString();
+        Pwd = in.readString();
         Video = in.readInt();
         History = in.readInt();
         Push = in.readInt();
@@ -48,6 +50,7 @@ public class ShareModel implements Parcelable {
         parcel.writeString(From);
         parcel.writeString(UID);
         parcel.writeString(SN);
+        parcel.writeString(Pwd);
         parcel.writeInt(Video);
         parcel.writeInt(History);
         parcel.writeInt(Push);

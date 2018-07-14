@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.model.DevModel;
 import com.model.RetModel;
 import com.model.SearchDevModel;
 import com.model.ShareModel;
@@ -28,6 +29,7 @@ import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.AccountManager;
+import stcam.stcamproject.Manager.DataManager;
 import stcam.stcamproject.Manager.JPushManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.DeviceParseUtil;
@@ -144,6 +146,14 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    void back2TopActivity(){
+        Intent intent= new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
+    }
+
+
     public final Handler ipc = new Handler()
     {
         @Override
@@ -197,10 +207,28 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
 //                    .subscribe(observer_add_dev);
 
             //ChangeDevicePwdActivity
-            Intent intent = new Intent(this,ChangeDevicePwdActivity.class);
-            intent.putExtra("type",ChangeDevicePwdActivity.EnumChangeDevicePwd.SHARE);
-            intent.putExtra("model",model);
-            startActivity(intent);
+//            Intent intent = new Intent(this,ChangeDevicePwdActivity.class);
+//            intent.putExtra("type",ChangeDevicePwdActivity.EnumChangeDevicePwd.SHARE);
+//            intent.putExtra("model",model);
+//            startActivity(intent);
+
+            DevModel devModel = new DevModel();
+            devModel.SN = model.SN;
+            devModel.usr = "admin";//默认填写admin
+            devModel.pwd = model.Pwd;
+            boolean ret  = DataManager.getInstance().addDev(devModel);
+
+            if (lod == null){
+                lod = new LoadingDialog(this);
+            }
+            lod.dialogShow();
+            ServerNetWork.getCommandApi().app_share_add_dev(AccountManager.getInstance().getDefaultUsr(),AccountManager.getInstance().getDefaultPwd(),
+                    model.From,JPushManager.getJPushRegisterID(),1,0,0,model.SN,model.Video,model.History,model.Push,
+                    model.Setup,model.Control).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observer_add_dev);
+
+
         }
         else{
             Log.e(tag,"parseJsonWithGson failed");
@@ -250,7 +278,7 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
             lod.dismiss();
             Log.e(tag,"---------------------0:"+m.ret);
             if (1 == m.ret){
-
+                back2TopActivity();
             }
             else{
 

@@ -98,9 +98,6 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
     }
 
 
-
-
-
     void getAlarmList(boolean refresh){
         if (lod == null){
             lod = new LoadingDialog(this.getContext());

@@ -150,7 +150,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         items.add(getString(R.string.action_device_pwd));
         items.add(getString(R.string.action_push));
         items.add(getString(R.string.action_manager_senior));
-        items.add(getString(R.string.action_manager_volume));
+
 //        items.add(getString(R.string.action_manager_alarm_level));
         items.add(getString(R.string.action_version));
 
@@ -202,16 +202,27 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         switch (view.getId()){
 
             case R.id.button_delete_device:
-                if (lod == null){
-                    lod = new LoadingDialog(this);
-                }
-                lod.dialogShow();
-                ServerNetWork.getCommandApi()
-                        .app_user_del_dev(AccountManager.getInstance().getDefaultUsr(),AccountManager.getInstance().getDefaultPwd(),
-                                model.SN, 0)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(observer_delete);
+                new AlertDialog.Builder(this)
+                        .setTitle(this.getString(R.string.action_delete_device_ask))
+                        .setPositiveButton(this.getString(R.string.action_ok), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (lod == null){
+                                    lod = new LoadingDialog(SettingActivity.this);
+                                }
+                                lod.dialogShow();
+                                ServerNetWork.getCommandApi()
+                                        .app_user_del_dev(AccountManager.getInstance().getDefaultUsr(),AccountManager.getInstance().getDefaultPwd(),
+                                                model.SN, 0)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(observer_delete);
+                            }
+                        })
+                        .setNegativeButton(this.getString(R.string.action_cancel), null)
+                        .show();
+
+
                 break;
 
 //                break;
@@ -283,6 +294,10 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
         }
         else if(1 == position){
+            if (model.IsShare == 0){
+                SouthUtil.showDialog(this,getString(R.string.string_device_is_share));
+                return;
+            }
                 Intent intent = new Intent(this,ChangeDevicePwdActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("model",model);
@@ -301,19 +316,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             intent.putExtras(bundle);
             startActivity(intent);
         }
-        else if(4 == position){
 
-            if(model.ExistSD == 0){
-                SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_not_exist_sd));
-                return;
-            }
-            Intent intent = new Intent(this,SDVolumeManagerActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("devModel",model);
-            intent.putExtras(bundle);
-            startActivity(intent);
-
-        }
 //        else if(4 == position){
 //            dialogChoice();
 //        }
@@ -708,8 +711,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                         break;
                     }
                 }
-                SettingActivity.this.finish();
 
+                back2TopActivity();
             }
             else{
                 SouthUtil.showToast(SettingActivity.this,"delete failed");
@@ -717,6 +720,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
         }
     };
+
+    void back2TopActivity(){
+        Intent intent= new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
+    }
 
     class getPushConfigTask extends AsyncTask<String, Void, String> {
         // AsyncTask<Params, Progress, Result>

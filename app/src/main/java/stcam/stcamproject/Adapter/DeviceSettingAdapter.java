@@ -68,7 +68,7 @@ public class DeviceSettingAdapter extends BaseAdapter<String>{
 //                    holder.setText(R.id.detail_text, STApplication.getInstance().getString(R.string.action_level_high));
 //                }
 //            }
-            else if (5 == position){
+            else if (4 == position){
                 holder.setText(R.id.detail_text,devModel.SoftVersion);
             }
             else{

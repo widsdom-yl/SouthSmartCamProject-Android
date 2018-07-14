@@ -1,7 +1,9 @@
 package stcam.stcamproject.Activity;
 
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -14,6 +16,7 @@ import android.widget.Button;
 import android.widget.RadioGroup;
 
 import com.model.DevModel;
+import com.model.RecConfigModel;
 import com.model.RetModel;
 import com.model.SDInfoModel;
 import com.thSDK.lib;
@@ -37,6 +40,7 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
     Button button_format;
     int isRecord;
     SDInfoModel sdInfoModel;
+    RecConfigModel mRecConfigModel = new  RecConfigModel();
 
     RadioGroup record_group ;
 
@@ -131,12 +135,24 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
     @Override
     public void onClick(View view) {
         if (view == button_format){
-            if (lod == null){
-                lod = new LoadingDialog(this);
-            }
-            lod.dialogShow();
-            SDFormatTask task = new SDFormatTask();
-            task.execute();
+
+            new AlertDialog.Builder(this)
+                    .setTitle(this.getString(R.string.action_format_sd_ask))
+                    .setPositiveButton(this.getString(R.string.action_ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if (lod == null){
+                                lod = new LoadingDialog(SDVolumeManagerActivity.this);
+                            }
+                            lod.dialogShow();
+                            SDFormatTask task = new SDFormatTask();
+                            task.execute();
+                        }
+                    })
+                    .setNegativeButton(this.getString(R.string.action_cancel), null)
+                    .show();
+
+
         }
     }
 
@@ -161,11 +177,11 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
     public void onRecordClickListener(boolean record) {
         if (!record){
             ControlRecordStateTask task = new ControlRecordStateTask();
-            task.execute(22);
+            task.execute(3);
         }
         else{
             ControlRecordStateTask task1 = new ControlRecordStateTask();
-            task1.execute(21);
+            task1.execute(1);
         }
 
 
@@ -227,7 +243,7 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
             //第二个执行方法,onPreExecute()执行完后执行
             // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
             //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-            String url = model.getHttpCfg1UsrPwd() +"&MsgID=85";
+            String url = model.getHttpCfg1UsrPwd() +"&MsgID=55";
             Log.e(tag,url+",NetHandle is "+model.NetHandle);
             String ret = lib.thNetHttpGet(model.NetHandle,url);
             Log.e(tag,"ret :"+ret);
@@ -240,21 +256,15 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
             //Log.e(tag,"get playback list :"+result);
             lod.dismiss();
 
-            RetModel retModel = GsonUtil.parseJsonWithGson(result,RetModel.class);
-            if (retModel != null){
-//                if (retModel.ret == 1){
-//                    isRecord = 1;
-//                    //record_group.check(R.id.record_recycle_radio);
-//
-//
-//                }
-//                else{
-//                    //record_group.check(R.id.record_stop_radio);
-//                    isRecord = 0;
-//
-//                }
-                mAdapter.setIsRecord(retModel.ret == 1? true:false);
-                mAdapter.notifyDataSetChanged();
+
+            if (result != null && result.length() > 0){
+                RecConfigModel recConfigModel = GsonUtil.parseJsonWithGson(result,RecConfigModel.class);
+                if (recConfigModel != null){
+                    mRecConfigModel = recConfigModel;
+                    //mAdapter.setmRecConfigModel(mRecConfigModel);
+                    mAdapter.setIsRecord(mRecConfigModel.getRec_RecStyle() == 1? true:false);
+                    mAdapter.notifyDataSetChanged();
+                }
             }
             //record_group.setOnCheckedChangeListener(SDVolumeManagerActivity.this);
 
@@ -313,7 +323,7 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
             //第二个执行方法,onPreExecute()执行完后执行
             // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
             //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-            String url = model.getHttpCfg1UsrPwd() +"&MsgID="+params[0];
+            String url = model.getHttpCfg1UsrPwd() +"&MsgID=56&Rec_RecStyle="+params[0];
             Log.e(tag,url+",NetHandle is "+model.NetHandle);
             String ret = lib.thNetHttpGet(model.NetHandle,url);
             Log.e(tag,"ret :"+ret);
