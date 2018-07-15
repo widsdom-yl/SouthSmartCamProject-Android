@@ -23,6 +23,7 @@ import stcam.stcamproject.network.ServerNetWork;
 public class AboutActivity extends AppCompatActivity implements View.OnClickListener {
 
     TextView text_version;
+    
     RelativeLayout layout_checkupdate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
