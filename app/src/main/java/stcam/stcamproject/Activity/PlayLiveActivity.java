@@ -227,7 +227,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
         button_pix = findViewById(R.id.button_pix);
         button_slient = findViewById(R.id.button_slient);
         button_snapshot.setOnClickListener(this);
-        button_speech.setOnClickListener(this);
+      //  button_speech.setOnClickListener(this);
         button_record.setOnClickListener(this);
         button_led.setOnClickListener(this);
         button_slient.setOnClickListener(this);
@@ -278,6 +278,34 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
             button_speech.setSelected(true);
             button_speech.setImageResource(R.drawable.livespeech_sel);
         }
+
+        button_speech.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_UP://松开事件发生后执行代码的区域
+                        Log.e(tag,"talk off");
+
+                        button_speech.setImageResource(R.drawable.livespeech_nor);
+                        lib.thNetTalkClose(devModel.NetHandle);
+
+
+                        break;
+                    case MotionEvent.ACTION_DOWN://按住事件发生后执行代码的区域
+                        Log.e(tag,"talk on ");
+
+                        button_speech.setImageResource(R.drawable.livespeech_sel);
+                        lib.thNetTalkOpen(devModel.NetHandle);
+
+
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+
 
 
 //        if (entryType == MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor){
