@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -36,7 +37,7 @@ import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 
-public class PushSettingActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener, View.OnClickListener {
+public class PushSettingActivity extends BaseAppCompatActivity implements BaseAdapter.OnItemClickListener, View.OnClickListener {
     List<String> items = new ArrayList<>();
     RecyclerView mRecyclerView;
     PushSettingAdapter mAdapter;
@@ -55,14 +56,25 @@ public class PushSettingActivity extends AppCompatActivity implements BaseAdapte
             task.execute();
         }
     };
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_manager_senior);
+//            actionBar.setHomeButtonEnabled(true);
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setTitle(R.string.action_manager_senior);
+
+            setCustomTitle(getString(R.string.action_manager_senior),true);
+
+
         }
         setContentView(R.layout.activity_push_setting);
 

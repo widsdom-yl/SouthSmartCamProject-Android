@@ -13,6 +13,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -48,7 +49,7 @@ import stcam.stcamproject.network.ServerNetWork;
 
 import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor;
 
-public class SettingActivity extends AppCompatActivity implements View.OnClickListener, BaseAdapter.OnItemClickListener {
+public class SettingActivity extends BaseAppCompatActivity implements View.OnClickListener, BaseAdapter.OnItemClickListener {
 
 
 
@@ -66,15 +67,25 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     int MD_Sensitive = -1;
 
     List<String> items = new ArrayList<>();
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_dev_setting);
+//            actionBar.setHomeButtonEnabled(true);
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setTitle(R.string.action_dev_setting);
+
+            setCustomTitle(getString(R.string.action_dev_setting),true);
+
         }
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){

@@ -6,10 +6,10 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,7 +31,7 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.GLSurfaceViewLive;
 import stcam.stcamproject.View.VoiceImageButton;
 
-public class PlayLiveActivity extends AppCompatActivity implements View.OnClickListener , GestureDetector.OnGestureListener, View.OnTouchListener {
+public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnClickListener , GestureDetector.OnGestureListener, View.OnTouchListener {
 
     GLSurfaceViewLive glView;
     DevModel devModel;
@@ -85,6 +85,12 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = this.getIntent().getExtras();
@@ -98,7 +104,10 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
 
-            actionBar.setTitle(devModel.DevName);
+            //actionBar.setTitle(devModel.DevName);
+
+            setCustomTitle(devModel.DevName,true);
+
         }
 
 

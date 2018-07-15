@@ -5,6 +5,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -14,18 +15,26 @@ import android.widget.Toast;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.SouthUtil;
 
-public class AddDeviceOneStepActivity extends AppCompatActivity implements View.OnClickListener {
+public class AddDeviceOneStepActivity extends BaseAppCompatActivity implements View.OnClickListener {
     EditText edittext_ssid_name;
     EditText edittext_ssid_pwd;
     Button button_next;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.SmartConfig);
+
+
+            setCustomTitle(getString(R.string.SmartConfig),true);
+
         }
 
         setContentView(R.layout.activity_add_device_one_step);

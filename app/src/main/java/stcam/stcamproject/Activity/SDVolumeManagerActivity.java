@@ -4,12 +4,12 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -31,7 +31,7 @@ import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 
-public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener, View.OnClickListener, RadioGroup.OnCheckedChangeListener, SDVolumeSettingAdapter.OnRecordClickListener {
+public class SDVolumeManagerActivity extends BaseAppCompatActivity implements BaseAdapter.OnItemClickListener, View.OnClickListener, RadioGroup.OnCheckedChangeListener, SDVolumeSettingAdapter.OnRecordClickListener {
 
     List<String> items = new ArrayList<>();
     SDVolumeSettingAdapter mAdapter;
@@ -46,6 +46,13 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
 
 //    TextView textView_left;
 //    TextView textView_used;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,9 +60,12 @@ public class SDVolumeManagerActivity extends AppCompatActivity implements BaseAd
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_manager_volume);
+//            actionBar.setHomeButtonEnabled(true);
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setTitle(R.string.action_manager_volume);
+
+            setCustomTitle(getString(R.string.action_manager_volume),true);
+
         }
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){

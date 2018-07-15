@@ -3,8 +3,8 @@ package stcam.stcamproject.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,7 +30,7 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
-public class ChangeDevicePwdActivity extends AppCompatActivity implements View.OnClickListener {
+public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
     final String tag = "ChangeDevicePwdActivity";
 
@@ -53,14 +53,19 @@ public class ChangeDevicePwdActivity extends AppCompatActivity implements View.O
     Button confirmButton;
     String SN;
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_device_pwd);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_device_password_manager);
+
+            setCustomTitle(getString(R.string.action_device_password_manager),true);
+
         }
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){

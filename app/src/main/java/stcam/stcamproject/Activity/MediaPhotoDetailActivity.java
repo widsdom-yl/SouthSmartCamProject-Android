@@ -4,26 +4,29 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageView;
+
+import com.github.chrisbanes.photoview.PhotoView;
 
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
 
-public class MediaPhotoDetailActivity extends AppCompatActivity {
+public class MediaPhotoDetailActivity extends BaseAppCompatActivity {
     String imagePath;
+    PhotoView imageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_photo_detail);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setHomeButtonEnabled(true);
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+
+            setCustomTitle("",true);
         }
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){
@@ -52,7 +55,7 @@ public class MediaPhotoDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     void initView(){
-        ImageView imageView = findViewById(R.id.detail_image);
+        imageView = findViewById(R.id.detail_image);
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         imageView.setImageBitmap(bitmap);
 

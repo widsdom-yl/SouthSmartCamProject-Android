@@ -4,12 +4,12 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -29,7 +29,7 @@ import stcam.stcamproject.R;
 import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.View.LoadingDialog;
 
-public class PlayBackListActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener {
+public class PlayBackListActivity extends BaseAppCompatActivity implements BaseAdapter.OnItemClickListener {
     static final String tag = "PlayBackListActivity";
     DevModel devModel;
     PlayBackListAdapter adapter;
@@ -42,6 +42,13 @@ public class PlayBackListActivity extends AppCompatActivity implements BaseAdapt
     int page ;//当前正在加载的页数
     MainDevListFragment.EnumMainEntry entryType;
     LoadingDialog lod;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,9 +61,12 @@ public class PlayBackListActivity extends AppCompatActivity implements BaseAdapt
         }
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(getString(R.string.string_record_list));
+//            actionBar.setHomeButtonEnabled(true);
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setTitle(getString(R.string.string_record_list));
+
+            setCustomTitle(getString(R.string.string_record_list),true);
+
         }
 
         refreshLayout = findViewById(R.id.swipeRefreshLayout);
