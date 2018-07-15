@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,7 +28,7 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 
 /*这个类包含了ap 2 sta 和 直接ap*/
-public class AddDeviceAP2StaActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener {
+public class AddDeviceAP2StaActivity extends BaseAppCompatActivity implements BaseAdapter.OnItemClickListener {
     final static  String tag =  "AddDeviceAP2StaActivity";
     AddDeviceAdapter adapter;
     RecyclerView rv;
@@ -38,6 +37,10 @@ public class AddDeviceAP2StaActivity extends AppCompatActivity implements BaseAd
     boolean IsSearching;
     int type;//1:ap2sta 2:ap
     List<SearchDevModel> lists;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +54,8 @@ public class AddDeviceAP2StaActivity extends AppCompatActivity implements BaseAd
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(R.string.action_add_ap_sta);
+
+            setCustomTitle(getString(R.string.action_add_ap_sta),true);
 
         }
 

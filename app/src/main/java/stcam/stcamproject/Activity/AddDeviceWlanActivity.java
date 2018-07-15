@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -42,7 +41,7 @@ import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.Network;
 import stcam.stcamproject.network.ServerNetWork;
 
-public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener {
+public class AddDeviceWlanActivity extends BaseAppCompatActivity implements BaseAdapter.OnItemClickListener {
 
     AddDeviceAdapter adapter;
     RecyclerView rv;
@@ -57,9 +56,7 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_search);
+            setCustomTitle(getString(R.string.action_search),true);
         }
         initView();
         searchDevices();

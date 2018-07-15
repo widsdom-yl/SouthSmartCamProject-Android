@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,7 +33,7 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.Network;
 
-public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     SearchDevModel model;
     DevModel devModel;
     Spinner spiner_ssid_name;
@@ -69,6 +69,12 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
     };
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_device_ap2_sta_setup);
@@ -76,9 +82,9 @@ public class AddDeviceAP2StaSetup extends AppCompatActivity implements View.OnCl
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_add_ap_sta);
+
+
+            setCustomTitle(getString(R.string.action_add_ap_sta),true);
         }
 
         Bundle bundle = this.getIntent().getExtras();

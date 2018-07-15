@@ -1,8 +1,8 @@
 package stcam.stcamproject.Activity;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -19,11 +19,16 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
-public class ChangeLoginPasswordActivity extends AppCompatActivity implements View.OnClickListener {
+public class ChangeLoginPasswordActivity extends BaseAppCompatActivity implements View.OnClickListener {
     EditText editText_confirm_pwd;
     EditText editText_new_pwd;
     EditText editText_old_pwd;
     Button confirmButton;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,9 +36,10 @@ public class ChangeLoginPasswordActivity extends AppCompatActivity implements Vi
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_change_login_password);
+
+            setCustomTitle(getString(R.string.action_change_login_password),true);
+
+
         }
         initView();
     }

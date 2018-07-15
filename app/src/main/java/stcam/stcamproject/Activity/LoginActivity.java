@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.text.TextUtils;
 import android.util.Log;
@@ -41,7 +40,7 @@ import stcam.stcamproject.network.ServerNetWork;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity  {
+public class LoginActivity extends BaseAppCompatActivity  {
 
 
     // UI references.
@@ -68,8 +67,7 @@ public class LoginActivity extends AppCompatActivity  {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
 
-
-            actionBar.setTitle(getString(R.string.action_sign_in));
+            setCustomTitle(getString(R.string.action_sign_in),false);
         }
 
         requestPermisson();

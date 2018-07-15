@@ -1,11 +1,11 @@
 package stcam.stcamproject.Activity;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -27,13 +27,20 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
-public class ShareManagerActivity extends AppCompatActivity implements ShareManagerAdapter.DeleteClickListener {
+public class ShareManagerActivity extends BaseAppCompatActivity implements ShareManagerAdapter.DeleteClickListener {
     static final String tag = "ShareManagerActivity";
     SuperSwipeRefreshLayout refreshLayout;
     RecyclerView rv;
     LoadingDialog lod;
     ShareManagerAdapter mAdapter;
     List<UserModel> mUserList;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,9 +48,12 @@ public class ShareManagerActivity extends AppCompatActivity implements ShareMana
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(getString(R.string.action_share_account_manager));
+//            actionBar.setHomeButtonEnabled(true);
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setTitle(getString(R.string.action_share_account_manager));
+
+            setCustomTitle(getString(R.string.action_share_account_manager),true);
+
         }
 
         rv = findViewById(R.id.account_list_view);

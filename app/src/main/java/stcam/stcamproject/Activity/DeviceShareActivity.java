@@ -2,8 +2,8 @@ package stcam.stcamproject.Activity;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
@@ -17,7 +17,7 @@ import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.R;
-public class DeviceShareActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class DeviceShareActivity extends BaseAppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     static final String tag = "DeviceShareActivity";
     DevModel devModel;
     ShareModel shareModel;
@@ -27,15 +27,23 @@ public class DeviceShareActivity extends AppCompatActivity implements View.OnCli
     CheckBox checkbox_push;
     CheckBox checkbox_setting;
     ImageView qr_imageView;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_share);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_device_share);
+
+
+            setCustomTitle(getString(R.string.action_device_share),true);
+
         }
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){

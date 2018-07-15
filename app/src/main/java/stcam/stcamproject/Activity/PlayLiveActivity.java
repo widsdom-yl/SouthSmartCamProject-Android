@@ -6,10 +6,10 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,7 +31,7 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.GLSurfaceViewLive;
 import stcam.stcamproject.View.VoiceImageButton;
 
-public class PlayLiveActivity extends AppCompatActivity implements View.OnClickListener , GestureDetector.OnGestureListener, View.OnTouchListener {
+public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnClickListener , GestureDetector.OnGestureListener, View.OnTouchListener {
 
     GLSurfaceViewLive glView;
     DevModel devModel;
@@ -85,6 +85,12 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
 
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = this.getIntent().getExtras();
@@ -98,7 +104,10 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
 
-            actionBar.setTitle(devModel.DevName);
+            //actionBar.setTitle(devModel.DevName);
+
+            setCustomTitle(devModel.DevName,true);
+
         }
 
 
@@ -218,7 +227,7 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
         button_pix = findViewById(R.id.button_pix);
         button_slient = findViewById(R.id.button_slient);
         button_snapshot.setOnClickListener(this);
-        button_speech.setOnClickListener(this);
+      //  button_speech.setOnClickListener(this);
         button_record.setOnClickListener(this);
         button_led.setOnClickListener(this);
         button_slient.setOnClickListener(this);
@@ -269,6 +278,34 @@ public class PlayLiveActivity extends AppCompatActivity implements View.OnClickL
             button_speech.setSelected(true);
             button_speech.setImageResource(R.drawable.livespeech_sel);
         }
+
+        button_speech.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_UP://松开事件发生后执行代码的区域
+                        Log.e(tag,"talk off");
+
+                        button_speech.setImageResource(R.drawable.livespeech_nor);
+                        lib.thNetTalkClose(devModel.NetHandle);
+
+
+                        break;
+                    case MotionEvent.ACTION_DOWN://按住事件发生后执行代码的区域
+                        Log.e(tag,"talk on ");
+
+                        button_speech.setImageResource(R.drawable.livespeech_sel);
+                        lib.thNetTalkOpen(devModel.NetHandle);
+
+
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+
 
 
 //        if (entryType == MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor){

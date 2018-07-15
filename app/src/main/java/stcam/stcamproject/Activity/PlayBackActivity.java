@@ -2,9 +2,9 @@ package stcam.stcamproject.Activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -21,7 +21,7 @@ import stcam.stcamproject.Util.PlayVoice;
 import stcam.stcamproject.View.GLSurfaceViewPlayBack;
 import stcam.stcamproject.View.VoiceImageButton;
 
-public class PlayBackActivity extends AppCompatActivity implements View.OnClickListener {
+public class PlayBackActivity extends BaseAppCompatActivity implements View.OnClickListener {
     static final String tag = "PlayBackActivity";
     SDVideoModel model;
     DevModel devModel;
@@ -29,6 +29,13 @@ public class PlayBackActivity extends AppCompatActivity implements View.OnClickL
     ImageButton imagebutton_back;
     VoiceImageButton button_snapshot,button_record;
     MainDevListFragment.EnumMainEntry entryType;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,9 +55,12 @@ public class PlayBackActivity extends AppCompatActivity implements View.OnClickL
         }
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(model.sdVideo);
+//            actionBar.setHomeButtonEnabled(true);
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setTitle(model.sdVideo);
+
+            setCustomTitle(model.sdVideo,true);
+
         }
         initView();
         glView.Play();

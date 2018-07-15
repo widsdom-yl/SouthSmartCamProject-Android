@@ -3,9 +3,9 @@ package stcam.stcamproject.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,7 +26,7 @@ import stcam.stcamproject.network.ServerNetWork;
 /**
  * A login screen that offers login via email/password.
  */
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends BaseAppCompatActivity {
 
 
 
@@ -61,6 +61,13 @@ public class RegisterActivity extends AppCompatActivity {
     };
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
@@ -70,9 +77,12 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         if(actionBar != null){
-            actionBar.setTitle(R.string.action_Register);
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setTitle(R.string.action_Register);
+//            actionBar.setHomeButtonEnabled(true);
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+
+            setCustomTitle(getString(R.string.action_Register),true);
+
         }
 
 

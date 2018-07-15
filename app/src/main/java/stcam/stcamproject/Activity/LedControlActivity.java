@@ -4,9 +4,9 @@ import android.app.TimePickerDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -29,7 +29,7 @@ import stcam.stcamproject.R;
 import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.View.LoadingDialog;
 
-public class LedControlActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener, View.OnClickListener {
+public class LedControlActivity extends BaseAppCompatActivity implements RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener, View.OnClickListener {
     DevModel devModel;
     static final String tag = "LedControlActivity";
 
@@ -93,6 +93,11 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
         }
     };
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,9 +107,10 @@ public class LedControlActivity extends AppCompatActivity implements RadioGroup.
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_led_control);
+
+
+            setCustomTitle(getString(R.string.action_led_control),true);
+
         }
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){

@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +18,7 @@ import com.thSDK.lib;
 
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
-public class AddDeviceOneStepNext extends AppCompatActivity implements View.OnClickListener {
+public class AddDeviceOneStepNext extends BaseAppCompatActivity implements View.OnClickListener {
     Button button_cancel;
     final  static  String tag = "AddDeviceOneStepNext";
     String SSID;
@@ -26,15 +26,21 @@ public class AddDeviceOneStepNext extends AppCompatActivity implements View.OnCl
     SpinKitView spin_kit;
     boolean isConfig;
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_device_one_step_next);
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.SmartConfig_connect);
+
+            setCustomTitle(getString(R.string.SmartConfig_connect),true);
+
+
         }
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null){
