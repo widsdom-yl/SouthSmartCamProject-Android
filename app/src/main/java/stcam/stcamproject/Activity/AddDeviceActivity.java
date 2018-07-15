@@ -40,6 +40,7 @@ import stcam.stcamproject.network.ServerNetWork;
 public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
     static final String tag = "AddDeviceActivity";
+
     final int REQUEST_CODE = 10001;
 
 
