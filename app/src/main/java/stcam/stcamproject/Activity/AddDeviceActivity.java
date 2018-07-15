@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -37,18 +37,31 @@ import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
-public class AddDeviceActivity extends AppCompatActivity implements View.OnClickListener {
+public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
     static final String tag = "AddDeviceActivity";
     final int REQUEST_CODE = 10001;
+
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_add_device);
+
+            setCustomTitle(getString(R.string.action_add_device),true);
+
+
         }
 
         setContentView(R.layout.activity_add_device);
