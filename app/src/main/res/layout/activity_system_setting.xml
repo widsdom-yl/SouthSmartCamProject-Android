@@ -12,12 +12,21 @@
         android:background="#2197d8"
         />
     <ImageView
+        android:id="@+id/icon_image"
         android:layout_width="70dp"
         android:src="@drawable/appicon100"
         android:layout_centerHorizontal="true"
         android:layout_height="70dp"
         android:layout_marginTop="25dp"
         />
+
+    <TextView
+        android:id="@+id/textview_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/icon_image"
+        android:layout_marginTop="5dp"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/system_list_view"

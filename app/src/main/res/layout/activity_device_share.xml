@@ -19,12 +19,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <View
+
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:text="@string/action_share_aud"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:layout_editor_absoluteY="35dp" />
             <CheckBox
                 android:id="@+id/checkBox_vid"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/action_share_vid"
+                android:text="@string/action_share_aud"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:layout_editor_absoluteY="35dp" />
 
@@ -42,15 +50,6 @@
                 android:layout_weight="1"
                 android:text="@string/action_share_push"
                 app:layout_constraintStart_toEndOf="@+id/checkBox_vid"
-                tools:layout_editor_absoluteY="35dp" />
-
-            <CheckBox
-                android:id="@+id/checkBox_setting"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/action_share_setting"
-                tools:layout_editor_absoluteX="205dp"
                 tools:layout_editor_absoluteY="35dp" />
 
             <CheckBox

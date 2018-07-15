@@ -6,16 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".Activity.AddDeviceActivity">
 
-    <Button
+    <TextView
         android:id="@+id/btn_add_device_one_key"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:clickable="true"
+        android:gravity="center"
         android:layout_marginEnd="24dp"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
-        android:background="@drawable/button_white_corner"
+        android:background="@drawable/shape_green_line_cornor"
         android:text="@string/action_add_one_key_setting"
         android:textColor="#666666"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,33 +25,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <TextView
         android:id="@+id/btn_add_device_ap_sta"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:clickable="true"
+        android:gravity="center"
         android:layout_marginEnd="24dp"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:text="@string/action_add_ap_sta"
-        android:background="@drawable/button_white_corner"
+        android:background="@drawable/shape_green_line_cornor"
         android:textColor="#666666"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_add_device_one_key" />
 
-    <Button
+    <TextView
         android:id="@+id/btn_add_device_search"
         android:layout_width="0dp"
-        android:layout_height="54dp"
+        android:layout_height="50dp"
+        android:clickable="true"
+        android:gravity="center"
         android:layout_marginEnd="24dp"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:text="@string/action_add_device_search"
-        android:background="@drawable/button_white_corner"
+        android:background="@drawable/shape_green_line_cornor"
         android:textColor="#666666"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -57,10 +63,12 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_add_device_ap_sta"
         tools:text="@string/action_add_device_search" />
 
-    <Button
+    <TextView
         android:id="@+id/btn_add_device_share"
         android:layout_width="0dp"
-        android:layout_height="54dp"
+        android:layout_height="50dp"
+        android:clickable="true"
+        android:gravity="center"
         android:layout_marginEnd="24dp"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
@@ -69,7 +77,7 @@
         android:text="@string/action_add_share_device"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        android:background="@drawable/button_white_corner"
+        android:background="@drawable/shape_green_line_cornor"
         android:textColor="#666666"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_add_device_search" />

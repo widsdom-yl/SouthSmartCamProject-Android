@@ -9,6 +9,7 @@ import com.model.SearchDevModel;
 import java.util.List;
 
 import stcam.stcamproject.Activity.MainDevListFragment;
+import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.DataManager;
 import stcam.stcamproject.R;
 
@@ -31,7 +32,10 @@ public class AddDeviceAdapter extends BaseAdapter<SearchDevModel>{
             }
         }
 
-        if (dbModel != null || exist){
+        holder.setText(R.id.device_name_view,model.getDevIP()).setText(R.id.device_sn_view,model.getSN());
+
+        if (exist){
+            holder.setText(R.id.device_sn_view,model.getSN()+ STApplication.getInstance().getString(R.string.string_aleady_added));
             device_name_view.setTextColor(Color.rgb(0,255,0));
             device_sn_view.setTextColor(Color.rgb(0,255,0));
         }
@@ -39,7 +43,7 @@ public class AddDeviceAdapter extends BaseAdapter<SearchDevModel>{
             device_name_view.setTextColor(Color.rgb(0,0,0));
             device_sn_view.setTextColor(Color.rgb(0,0,0));
         }
-        holder.setText(R.id.device_name_view,model.getDevIP()).setText(R.id.device_sn_view,model.getSN());
+
 
     }
 }

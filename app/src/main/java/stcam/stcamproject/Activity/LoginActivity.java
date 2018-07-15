@@ -54,7 +54,8 @@ public class LoginActivity extends AppCompatActivity  {
             Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.MODIFY_AUDIO_SETTINGS,
-            Manifest.permission.ACCESS_FINE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_WIFI_STATE
     };
 
     AppCompatCheckBox checkbox;
@@ -95,10 +96,10 @@ public class LoginActivity extends AppCompatActivity  {
 //        mEmailView.setText("4719373@qq.com");
 //        mPasswordView.setText("admin111");
 
-        if (remeber){
+
             mEmailView.setText(AccountManager.getInstance().getDefaultUsr());
             mPasswordView.setText(AccountManager.getInstance().getDefaultPwd());
-        }
+
 
 
 

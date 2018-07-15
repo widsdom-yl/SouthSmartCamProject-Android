@@ -46,6 +46,7 @@ public class DeviceShareActivity extends AppCompatActivity implements View.OnCli
         shareModel.SN = devModel.SN;
         shareModel.From = AccountManager.getInstance().getDefaultUsr();
         shareModel.UID = devModel.UID;
+        shareModel.Pwd = devModel.pwd;
         initView();
 
     }
@@ -53,12 +54,12 @@ public class DeviceShareActivity extends AppCompatActivity implements View.OnCli
         checkbox_vid = findViewById(R.id.checkBox_vid);
         checkbox_control = findViewById(R.id.checkBox_control);
         checkbox_push = findViewById(R.id.checkBox_push);
-        checkbox_setting = findViewById(R.id.checkBox_setting);
+       // checkbox_setting = findViewById(R.id.checkBox_setting);
         checkbox_playback = findViewById(R.id.checkBox_playback);
         checkbox_vid.setOnCheckedChangeListener(this);
         checkbox_control.setOnCheckedChangeListener(this);
         checkbox_push.setOnCheckedChangeListener(this);
-        checkbox_setting.setOnCheckedChangeListener(this);
+//        checkbox_setting.setOnCheckedChangeListener(this);
         qr_imageView = findViewById(R.id.qr_imageView);
         findViewById(R.id.btn_generate_share).setOnClickListener(this);
     }
@@ -94,9 +95,9 @@ public class DeviceShareActivity extends AppCompatActivity implements View.OnCli
             case R.id.checkBox_push:
                 shareModel.Push = b?1:0;
                 break;
-            case R.id.checkBox_setting:
-                shareModel.Setup = b?1:0;
-                break;
+//            case R.id.checkBox_setting:
+//                shareModel.Setup = b?1:0;
+//                break;
             case R.id.checkBox_control:
                 shareModel.Control = b?1:0;
                 break;

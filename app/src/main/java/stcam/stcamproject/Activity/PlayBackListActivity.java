@@ -56,7 +56,7 @@ public class PlayBackListActivity extends AppCompatActivity implements BaseAdapt
         if(actionBar != null){
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(devModel.DevName);
+            actionBar.setTitle(getString(R.string.string_record_list));
         }
 
         refreshLayout = findViewById(R.id.swipeRefreshLayout);

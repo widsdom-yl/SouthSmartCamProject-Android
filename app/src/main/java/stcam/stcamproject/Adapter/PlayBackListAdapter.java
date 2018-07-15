@@ -17,8 +17,10 @@ public class PlayBackListAdapter extends BaseAdapter<SDVideoModel>{
 
     protected void convert(BaseHolder holder, SDVideoModel model,int position) {
         super.convert(holder,model,position);
-        holder.setText(R.id.file_name_text,model.sdVideo);
+        holder.setText(R.id.file_name_text,model.getSdVideoName());
         TextView file_name_text = holder.getView(R.id.file_name_text);
+
+        holder.setText(R.id.file_size_text,model.getFileSizeDesc());
         SDVideoModel sdVideoModelInData =  DataManager.getInstance().getCertainSDVideo(model);
         if (sdVideoModelInData != null && sdVideoModelInData.viewed){
             file_name_text.setTextColor(Color.rgb(0,0,255));

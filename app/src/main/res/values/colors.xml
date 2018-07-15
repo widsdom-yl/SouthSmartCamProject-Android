@@ -19,4 +19,5 @@
     <color name="radio_button_selected_color">#ff33b5e5</color>
     <color name="radio_button_unselected_color">#e0e0e0</color>
     <color name="appGreenColor">#2197d8</color>
+    <color name="whiteColor">#ffffff</color>
 </resources>

@@ -1,6 +1,7 @@
 package stcam.stcamproject.Activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 
 import com.model.DevModel;
 import com.model.RetModel;
+import com.model.SSIDModel;
 import com.model.SearchDevModel;
 import com.thSDK.TMsg;
 import com.thSDK.lib;
@@ -37,6 +39,7 @@ import stcam.stcamproject.R;
 import stcam.stcamproject.Util.DeviceParseUtil;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
+import stcam.stcamproject.network.Network;
 import stcam.stcamproject.network.ServerNetWork;
 
 public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener {
@@ -45,6 +48,8 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
     RecyclerView rv;
     final static  String tag =  "AddDeviceWlanActivity";
     List<SearchDevModel> lists;
+
+    int selectPosition;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,8 +156,15 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
     boolean IsSearching;
 
 
+    void back2TopActivity(){
+            Intent intent= new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+
+    }
     @Override
     public void onItemClick(View view, int position) {
+        selectPosition = position;
         final SearchDevModel model = lists.get(position);
         final DevModel dbModel = DataManager.getInstance().getSNDev(model.getSN());
 
@@ -199,7 +211,18 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
                                 Log.e(tag,"updateDev ,ret is "+ret);
                             }
 
-                           addDevice(model);
+                            //先判断这个密码正确不正确
+                            if (lod == null){
+                                lod = new LoadingDialog(AddDeviceWlanActivity.this);
+                            }
+                            lod.dialogShow();
+                            DevModel devModelForm =  model.exportDevModelForm();
+                            Network.getCommandApi(devModelForm)
+                                    .getSSIDList(devModelForm.usr,content,36,0)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(observer_SSIDList);
+
 
                         }
                        // Toast.makeText(MainActivity.this, content, Toast.LENGTH_SHORT).show();
@@ -270,6 +293,7 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
             Log.e(tag,"---------------------0:"+m.ret);
             if (1 == m.ret){
                 SouthUtil.showToast(AddDeviceWlanActivity.this,"device has added successfully");
+                back2TopActivity();
             }
             else{
                 SouthUtil.showToast(AddDeviceWlanActivity.this,"device  added failed");
@@ -277,5 +301,31 @@ public class AddDeviceWlanActivity extends AppCompatActivity implements BaseAdap
 
         }
     };
+
+
+    Observer<List<SSIDModel>> observer_SSIDList = new Observer<List<SSIDModel>>() {
+        @Override
+        public void onCompleted() {
+            //lod.dismiss();
+            Log.e(tag,"observer_SSIDList---------------------2");
+        }
+        @Override
+        public void onError(Throwable e) {
+            lod.dismiss();
+            Log.e(tag,"observer_SSIDList ---------------------1:"+e.getLocalizedMessage());
+
+            SouthUtil.showDialog(AddDeviceWlanActivity.this,getString(R.string.error_dev_pass));
+
+        }
+
+        @Override
+        public void onNext(List<SSIDModel> ssidModels) {
+            lod.dismiss();
+            SearchDevModel model = lists.get(selectPosition);
+            addDevice(model);
+
+        }
+    };
+
 
 }

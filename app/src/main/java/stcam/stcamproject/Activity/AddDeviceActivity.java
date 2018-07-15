@@ -4,13 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.model.DevModel;
 import com.model.RetModel;
 import com.model.SearchDevModel;
 import com.model.ShareModel;
@@ -28,6 +29,7 @@ import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.AccountManager;
+import stcam.stcamproject.Manager.DataManager;
 import stcam.stcamproject.Manager.JPushManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.DeviceParseUtil;
@@ -35,23 +37,36 @@ import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
-public class AddDeviceActivity extends AppCompatActivity implements View.OnClickListener {
+public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
     static final String tag = "AddDeviceActivity";
     final int REQUEST_CODE = 10001;
+
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blank_menu, menu);
+        return true;
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_add_device);
+
+            setCustomTitle(getString(R.string.action_add_device),true);
+
+
         }
 
         setContentView(R.layout.activity_add_device);
-        Button btn_search = findViewById(R.id.btn_add_device_search);
-        Button btn_add_device_share = findViewById(R.id.btn_add_device_share);
+        TextView btn_search = findViewById(R.id.btn_add_device_search);
+        TextView btn_add_device_share = findViewById(R.id.btn_add_device_share);
         btn_search.setOnClickListener(this);
         btn_add_device_share.setOnClickListener(this);
         findViewById(R.id.btn_add_device_one_key).setOnClickListener(this);
@@ -72,7 +87,7 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
                     }
                     if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
                         String result = bundle.getString(CodeUtils.RESULT_STRING);
-                        Toast.makeText(this, "解析结果:" + result, Toast.LENGTH_LONG).show();
+                       // Toast.makeText(this, "解析结果:" + result, Toast.LENGTH_LONG).show();
                         addDevice_share(result);
 
                     } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
@@ -144,6 +159,14 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    void back2TopActivity(){
+        Intent intent= new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
+    }
+
+
     public final Handler ipc = new Handler()
     {
         @Override
@@ -197,10 +220,28 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
 //                    .subscribe(observer_add_dev);
 
             //ChangeDevicePwdActivity
-            Intent intent = new Intent(this,ChangeDevicePwdActivity.class);
-            intent.putExtra("type",ChangeDevicePwdActivity.EnumChangeDevicePwd.SHARE);
-            intent.putExtra("model",model);
-            startActivity(intent);
+//            Intent intent = new Intent(this,ChangeDevicePwdActivity.class);
+//            intent.putExtra("type",ChangeDevicePwdActivity.EnumChangeDevicePwd.SHARE);
+//            intent.putExtra("model",model);
+//            startActivity(intent);
+
+            DevModel devModel = new DevModel();
+            devModel.SN = model.SN;
+            devModel.usr = "admin";//默认填写admin
+            devModel.pwd = model.Pwd;
+            boolean ret  = DataManager.getInstance().addDev(devModel);
+
+            if (lod == null){
+                lod = new LoadingDialog(this);
+            }
+            lod.dialogShow();
+            ServerNetWork.getCommandApi().app_share_add_dev(AccountManager.getInstance().getDefaultUsr(),AccountManager.getInstance().getDefaultPwd(),
+                    model.From,JPushManager.getJPushRegisterID(),1,0,0,model.SN,model.Video,model.History,model.Push,
+                    model.Setup,model.Control).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observer_add_dev);
+
+
         }
         else{
             Log.e(tag,"parseJsonWithGson failed");
@@ -250,7 +291,7 @@ public class AddDeviceActivity extends AppCompatActivity implements View.OnClick
             lod.dismiss();
             Log.e(tag,"---------------------0:"+m.ret);
             if (1 == m.ret){
-
+                back2TopActivity();
             }
             else{
 

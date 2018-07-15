@@ -21,7 +21,7 @@ public class SytstmSettingListAdapter extends BaseAdapter<String>{
             boolean alarmSoundOpen = AccountManager.getInstance().getAlarmSoundSetting();
             holder.setText(R.id.detail_info_text,alarmSoundOpen?STApplication.getInstance().getString(R.string.action_open):STApplication.getInstance().getString(R.string.action_close));
         }
-        if (1 == position){
+        if (3 == position){
             try {
                 PackageInfo packageInfo = STApplication.getInstance()
                         .getPackageManager()

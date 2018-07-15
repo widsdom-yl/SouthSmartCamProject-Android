@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<stcam.stcamproject.View.SlidingButtonView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/slidingButtonView"
+    android:layout_height="45dp"
+    android:background="@android:color/white"
+    android:layout_marginBottom="1dp"
+    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <TextView
+            android:id="@+id/tv_delete"
+            android:layout_height="match_parent"
+            android:layout_width="80dp"
+            android:gravity="center"
+            android:layout_toRightOf="@+id/layout_content"
+            android:text="@string/action_delete"
+            android:background="@drawable/btn_click_red_havebackground"
+            android:textColor="#DDFFFFFF"
+            />
+        <RelativeLayout
+            android:id="@+id/layout_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:clickable="true"
+            >
+
+            <TextView
+                android:id="@+id/file_name_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:textColor="#000000"
+                />
+        </RelativeLayout>
+
+    </RelativeLayout>
+</stcam.stcamproject.View.SlidingButtonView>
