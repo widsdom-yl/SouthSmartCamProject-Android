@@ -255,7 +255,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
 
         //configurationChanged();
 
-        if (devModel.IsVideo == 0){
+        if (devModel.IsVideo == 0 && entryType != MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor){
             //音频
             button_speech.setVisibility(View.INVISIBLE);
             button_slient.setVisibility(View.INVISIBLE);
@@ -288,12 +288,15 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
 
                         button_speech.setImageResource(R.drawable.livespeech_nor);
                         lib.thNetTalkClose(devModel.NetHandle);
-
-
+                        if (isPlayAudio){
+                            lib.thNetAudioPlayOpen(devModel.NetHandle);
+                        }
                         break;
                     case MotionEvent.ACTION_DOWN://按住事件发生后执行代码的区域
                         Log.e(tag,"talk on ");
-
+                        if (isPlayAudio){
+                            lib.thNetAudioPlayClose(devModel.NetHandle);
+                        }
                         button_speech.setImageResource(R.drawable.livespeech_sel);
                         lib.thNetTalkOpen(devModel.NetHandle);
 

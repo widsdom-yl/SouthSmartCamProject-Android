@@ -295,20 +295,38 @@ void callback_AudioQueuePlay(SLAndroidSimpleBufferQueueItf bq, void* context)
     usleep(1000 * 500);
   }
 }
+void thSLESCreateEngine(){
+    if (engineObject == NULL){
+        SLresult result;
+        result = slCreateEngine(&engineObject, 0, NULL, 0, NULL, NULL);
+        if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+        result = (*engineObject)->Realize(engineObject, SL_BOOLEAN_FALSE);
+        if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+        result = (*engineObject)->GetInterface(engineObject, SL_IID_ENGINE, &engineEngine);
+        if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+
+    }
+    errors:
+
+    return ;
+}
 //-----------------------------------------------------------------------------
 HANDLE thSLESAudioPlay_Init()
 {
+    PRINTF("========================== thSLESAudioPlay_Init");
     SLresult result;
     TSLESAudioPlayInfo* Info = (TSLESAudioPlayInfo*)malloc(sizeof(TSLESAudioPlayInfo));
     memset(Info, 0, sizeof(TSLESAudioPlayInfo));
     PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
 
-    result = slCreateEngine(&engineObject, 0, NULL, 0, NULL, NULL);
+
+   /* result = slCreateEngine(&engineObject, 0, NULL, 0, NULL, NULL);
     if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
     result = (*engineObject)->Realize(engineObject, SL_BOOLEAN_FALSE);
     if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
     result = (*engineObject)->GetInterface(engineObject, SL_IID_ENGINE, &engineEngine);
-    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
+    if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);*/
+    thSLESCreateEngine();
     const SLInterfaceID ids[1] = {SL_IID_ENVIRONMENTALREVERB};
     const SLboolean req[1] = {SL_BOOLEAN_FALSE};
     result = (*engineEngine)->CreateOutputMix(engineEngine, &outputMixObject, 1, ids, req);
@@ -383,6 +401,7 @@ bool thSLESAudioPlay_PlayFrame(HANDLE audioHandle, char* Buf, i32 BufLen)
 //-----------------------------------------------------------------------------
 bool thSLESAudioPlay_Free(HANDLE audioHandle)
 {
+    PRINTF("========================== thSLESAudioPlay_Free");
   TSLESAudioPlayInfo* Info = (TSLESAudioPlayInfo*)audioHandle;
   if (!Info) return false;
   PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
@@ -424,6 +443,8 @@ void callback_AudioQueueTalk(SLAndroidSimpleBufferQueueItf bq, void* context)
 //-----------------------------------------------------------------------------
 HANDLE thSLESAudioTalk_Init()
 {
+    thSLESCreateEngine();
+    PRINTF("========================== talk init");
     SLresult result;
     TSLESAudioTalkInfo* Info = (TSLESAudioTalkInfo*)malloc(sizeof(TSLESAudioTalkInfo));
     memset(Info, 0, sizeof(TSLESAudioTalkInfo));
@@ -491,6 +512,7 @@ bool thSLESAudioTalk_SetFormat(
 //-----------------------------------------------------------------------------
 bool thSLESAudioTalk_Free(HANDLE talkHandle)
 {
+    PRINTF("========================== thSLESAudioTalk_Free");
     SLresult result;
     TSLESAudioTalkInfo* Info = (TSLESAudioTalkInfo*)talkHandle;
     if (!Info) return false;
