@@ -22,10 +22,11 @@ public class AccountManager {
         SharedPreferences pref = context.getSharedPreferences("account",MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putBoolean("remeber",isRemeber);
-        if (isRemeber){
+       // if (isRemeber){
+
             editor.putString("usr",usr);
             editor.putString("pwd",pwd);
-        }
+       // }
         editor.commit();
     }
 

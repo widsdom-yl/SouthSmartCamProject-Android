@@ -84,9 +84,16 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
         }
         Log.e(tag,"NetConn reloadview sn:"+chooseModel.SN);
         if (chooseModel.IsConnect()){
+            if (chooseModel.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_P2P){
+                holder.online_status_tx.setTextColor(Color.rgb(0, 255, 0));
+                holder.online_status_img.setImageResource(R.drawable.shape_online_p2p);
+            }
+            else{
+                holder.online_status_tx.setTextColor(Color.rgb(0, 0x55, 0xaa));
+                holder.online_status_img.setImageResource(R.drawable.shape_online_ddns);
+            }
             holder.online_status_tx.setText(chooseModel.getConnectTypeDesc());
-            holder.online_status_tx.setTextColor(Color.rgb(0, 255, 0));
-            holder.online_status_img.setImageResource(R.drawable.shape_online);
+
         }
         else{
             holder.online_status_tx.setText(R.string.status_offline);
@@ -131,6 +138,12 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
 
                 }
             });
+            if (chooseModel.IsShare == 1){
+                holder.shareBtn.setVisibility(View.VISIBLE);
+            }
+            else{
+                holder.shareBtn.setVisibility(View.INVISIBLE);
+            }
         }
     }
 

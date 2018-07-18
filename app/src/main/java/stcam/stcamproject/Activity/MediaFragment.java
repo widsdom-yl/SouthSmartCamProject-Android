@@ -71,7 +71,9 @@ public class MediaFragment extends Fragment implements BaseAdapter.OnItemClickLi
             if (adapter == null){
                 adapter = new MediaDeviceAdapter(mDevices);
                 adapter.setOnItemClickListener(this);
-                rv.setAdapter(adapter);
+                if (rv != null){
+                    rv.setAdapter(adapter);
+                }
             }
             else{
                 adapter.resetMList(mDevices);

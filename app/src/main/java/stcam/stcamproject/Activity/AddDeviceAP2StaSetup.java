@@ -1,6 +1,5 @@
 package stcam.stcamproject.Activity;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -222,9 +221,10 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
             handler_refresh.postDelayed(runnable_fresh,1000);
         }
         else{
-            Intent intent= new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+//            Intent intent= new Intent(this, MainActivity.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
+            finish();
         }
 
     }

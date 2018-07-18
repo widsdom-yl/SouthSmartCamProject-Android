@@ -138,12 +138,23 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
     protected void onResume() {
         super.onResume();
         handler_refresh.postDelayed(runnable_fresh,TIME);
+        if (isPlayAudio){
+            lib.thNetAudioPlayOpen(devModel.NetHandle);
+        }
     }
     @Override
     protected void onPause() {
         super.onPause();
 
         handler_refresh.removeCallbacks(runnable_fresh);
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isPlayAudio){
+            lib.thNetAudioPlayClose(devModel.NetHandle);
+        }
+
     }
 
     @Override
