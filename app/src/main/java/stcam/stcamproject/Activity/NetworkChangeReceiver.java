@@ -26,12 +26,25 @@ class NetworkChangeReceiver extends BroadcastReceiver {
             switch (networkInfo.getType()) {
                 case TYPE_MOBILE:
                     Toast.makeText(context, "正在使用2G/3G/4G网络", Toast.LENGTH_SHORT).show();
+                    //
+                    if (mNetWorkBreakListener != null){
+                        mNetWorkBreakListener.OnNetWorkBreakListener();
+                    }
                     lib.P2PFree();
                     lib.P2PInit();
+                    if (mNetWorkBreakListener != null){
+                        mNetWorkBreakListener.OnNetWorkChangeListener();
+                    }
                     break;
                 case TYPE_WIFI:
+                    if (mNetWorkBreakListener != null){
+                        mNetWorkBreakListener.OnNetWorkBreakListener();
+                    }
                     lib.P2PFree();
                     lib.P2PInit();
+                    if (mNetWorkBreakListener != null){
+                        mNetWorkBreakListener.OnNetWorkChangeListener();
+                    }
                     Toast.makeText(context, "正在使用wifi上网", Toast.LENGTH_SHORT).show();
                     break;
                 default:
@@ -48,6 +61,7 @@ class NetworkChangeReceiver extends BroadcastReceiver {
     public interface OnNetWorkBreakListener{
         //监听网络断开
         void OnNetWorkBreakListener();
+        void OnNetWorkChangeListener();
     }
 }
 

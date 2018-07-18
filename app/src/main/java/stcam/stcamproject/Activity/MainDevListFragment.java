@@ -82,6 +82,16 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     }
 
     @Override
+    public void OnNetWorkChangeListener() {
+        for (DevModel model : mDevices){
+
+            Log.e(tag,"---------------------1 dev0 name"+model.DevName);
+            if (!model.IsConnect())
+                DevModel.threadConnect(ipc,model,false);
+        }
+    }
+
+    @Override
     public void onClick(View view) {
         if (view.getId() == R.id.add_button || view.getId() == R.id.add_text_button){
             Intent intent = new Intent(this.getActivity(), AddDeviceActivity.class);
