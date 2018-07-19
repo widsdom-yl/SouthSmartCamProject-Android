@@ -175,6 +175,8 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
             editText.setText(dbModel.pwd);
         }
 
+        editText.setSelection(editText.getText().toString().length());
+
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.action_add_device_search))//设置对话框的标题
                 .setView(halfview)

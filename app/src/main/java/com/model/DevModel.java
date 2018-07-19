@@ -304,6 +304,7 @@ final static String tag = "DevModel";
 
                     if (DevNode.IsConnect())
                     {
+                        if (ipc != null)
                         ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_NetConnSucceed, DevNode.Index, 0, DevNode));
                         String tmpStr = DevNode.GetAllCfg();
                         Log.e("java", "tmpStr is :" + tmpStr);
@@ -321,6 +322,7 @@ final static String tag = "DevModel";
                     }
                     else
                     {
+                        if (ipc != null)
                         ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_NetConnFail, DevNode.Index, 0, DevNode));
                         return;
                     }

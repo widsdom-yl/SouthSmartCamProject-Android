@@ -88,10 +88,15 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
                 holder.online_status_tx.setTextColor(Color.rgb(0, 255, 0));
                 holder.online_status_img.setImageResource(R.drawable.shape_online_p2p);
             }
-            else{
+            else if(chooseModel.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_DDNS){
                 holder.online_status_tx.setTextColor(Color.rgb(0, 0x55, 0xaa));
                 holder.online_status_img.setImageResource(R.drawable.shape_online_ddns);
             }
+            else{
+                holder.online_status_tx.setTextColor(Color.rgb(0x22, 0x77, 0x11));
+                holder.online_status_img.setImageResource(R.drawable.shape_online_lan);
+            }
+           // 227711
             holder.online_status_tx.setText(chooseModel.getConnectTypeDesc());
 
         }

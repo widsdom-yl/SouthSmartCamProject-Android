@@ -71,7 +71,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
     @Override
     public void OnNetWorkBreakListener() {
-        for (DevModel devModel : mAccountDevices){
+        for (DevModel devModel : mDevices){
             if (devModel.IsConnect()){
                 devModel.Disconn();
             }
@@ -82,13 +82,20 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     }
 
     @Override
-    public void OnNetWorkChangeListener() {
-        for (DevModel model : mDevices){
-
-            Log.e(tag,"---------------------1 dev0 name"+model.DevName);
-            if (!model.IsConnect())
-                DevModel.threadConnect(ipc,model,false);
+    public void OnNetWorkChangeListener(int type) {
+        if (0 == type){
+            mDevices.clear();
+            loadDevList(false);
         }
+        else if(1 == type){
+            for (DevModel model : mDevices){
+
+                Log.e(tag,"---------------------1 dev0 name"+model.DevName);
+                if (!model.IsConnect())
+                    DevModel.threadConnect(ipc,model,false);
+            }
+        }
+
     }
 
     @Override

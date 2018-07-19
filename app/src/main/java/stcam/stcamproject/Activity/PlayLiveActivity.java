@@ -154,8 +154,27 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
         if (isPlayAudio){
             lib.thNetAudioPlayClose(devModel.NetHandle);
         }
+        handler_enterbackground.postDelayed(runnable_enterbackground,500);
+
 
     }
+    Handler handler_enterbackground = new Handler();
+    Runnable runnable_enterbackground = new Runnable() {
+        @Override
+        public void run() {
+            //
+            if (STApplication.getInstance().getIsRunInBackground()){
+                Log.e(tag,"---------------------Enterbackground");
+                glView.Stop();
+                PlayLiveActivity.this.finish();
+
+            }
+
+
+
+        }
+    };
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -282,13 +301,23 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
         button_pix.setImageResource(pix_low?R.drawable.livehd_nor:R.drawable.livehd_sel);
 
 
-        if (!isTalk){
-            button_speech.setSelected(false);
-            button_speech.setImageResource(R.drawable.livespeech_nor);}
-        else{
-            button_speech.setSelected(true);
-            button_speech.setImageResource(R.drawable.livespeech_sel);
+
+        if (!isPlayAudio){
+            button_slient.setSelected(false);
+            button_slient.setImageResource(R.drawable.livetalkoff_nor);
         }
+        else{
+            button_slient.setSelected(true);
+            button_slient.setImageResource(R.drawable.livetalkon_sel);
+        }
+
+//        if (!isTalk){
+//            button_speech.setSelected(false);
+//            button_speech.setImageResource(R.drawable.livespeech_nor);}
+//        else{
+//            button_speech.setSelected(true);
+//            button_speech.setImageResource(R.drawable.livespeech_sel);
+//        }
 
         button_speech.setOnTouchListener(new View.OnTouchListener() {
             @Override

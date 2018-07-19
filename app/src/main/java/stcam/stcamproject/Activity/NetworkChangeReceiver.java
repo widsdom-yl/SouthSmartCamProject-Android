@@ -33,7 +33,7 @@ class NetworkChangeReceiver extends BroadcastReceiver {
                     lib.P2PFree();
                     lib.P2PInit();
                     if (mNetWorkBreakListener != null){
-                        mNetWorkBreakListener.OnNetWorkChangeListener();
+                        mNetWorkBreakListener.OnNetWorkChangeListener(0);
                     }
                     break;
                 case TYPE_WIFI:
@@ -43,7 +43,7 @@ class NetworkChangeReceiver extends BroadcastReceiver {
                     lib.P2PFree();
                     lib.P2PInit();
                     if (mNetWorkBreakListener != null){
-                        mNetWorkBreakListener.OnNetWorkChangeListener();
+                        mNetWorkBreakListener.OnNetWorkChangeListener(1);
                     }
                     Toast.makeText(context, "正在使用wifi上网", Toast.LENGTH_SHORT).show();
                     break;
@@ -61,7 +61,7 @@ class NetworkChangeReceiver extends BroadcastReceiver {
     public interface OnNetWorkBreakListener{
         //监听网络断开
         void OnNetWorkBreakListener();
-        void OnNetWorkChangeListener();
+        void OnNetWorkChangeListener(int type);//0-手机网络，1-wlan
     }
 }
 

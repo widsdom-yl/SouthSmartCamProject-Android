@@ -2,6 +2,7 @@ package stcam.stcamproject.Activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -15,6 +16,7 @@ import com.model.DevModel;
 import com.model.SDVideoModel;
 import com.thSDK.lib;
 
+import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
 import stcam.stcamproject.Util.PlayVoice;
@@ -65,6 +67,30 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
         initView();
         glView.Play();
     }
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        handler_enterbackground.postDelayed(runnable_enterbackground,500);
+
+
+    }
+    Handler handler_enterbackground = new Handler();
+    Runnable runnable_enterbackground = new Runnable() {
+        @Override
+        public void run() {
+            //
+            if (STApplication.getInstance().getIsRunInBackground()){
+                Log.e(tag,"---------------------Enterbackground");
+                glView.Stop();
+                PlayBackActivity.this.finish();
+
+            }
+
+
+
+        }
+    };
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
