@@ -84,16 +84,20 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     @Override
     public void OnNetWorkChangeListener(int type) {
         if (0 == type){
+            if (mDevices != null)
             mDevices.clear();
             loadDevList(false);
         }
         else if(1 == type){
-            for (DevModel model : mDevices){
-
-                Log.e(tag,"---------------------1 dev0 name"+model.DevName);
-                if (!model.IsConnect())
-                    DevModel.threadConnect(ipc,model,false);
-            }
+//            for (DevModel model : mDevices){
+//
+//                Log.e(tag,"---------------------1 dev0 name"+model.DevName);
+//                if (!model.IsConnect())
+//                    DevModel.threadConnect(ipc,model,false);
+//            }
+            if (mDevices != null)
+            mDevices.clear();
+            loadDevList(false);
         }
 
     }

@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
+import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
 
 public class VideoPlayerAct extends AppCompatActivity implements OnPreparedListener, OnErrorListener{
@@ -65,7 +67,32 @@ public class VideoPlayerAct extends AppCompatActivity implements OnPreparedListe
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        handler_enterbackground.postDelayed(runnable_enterbackground,500);
+
+
+    }
+
+    Handler handler_enterbackground = new Handler();
+    Runnable runnable_enterbackground = new Runnable() {
+        @Override
+        public void run() {
+            //
+            if (STApplication.getInstance().getIsRunInBackground()){
+
+                vv_video.pause();
+                VideoPlayerAct.this.finish();
+            }
+
+
+
+        }
+    };
     public void back(View v){
+        vv_video.pause();
         this.finish();
     }
     @Override
