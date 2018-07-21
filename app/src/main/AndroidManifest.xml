@@ -62,11 +62,11 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".Activity.AlarmListActivity" />
-        <activity android:name=".Activity.AlarmDetailActivity" />
-        <activity android:name=".Activity.MediaActivity" />
+        <activity android:name=".Activity.AlarmDetailActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Activity.MediaPhotoListActivity" />
-        <activity android:name=".Activity.MediaPhotoDetailActivity" />
+        <activity android:name=".Activity.MediaPhotoDetailActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Activity.AddDeviceOneStepNext" />
         <activity android:name=".Activity.AddDeviceAP2StaActivity" />
         <activity android:name=".Activity.ChangeDevicePwdActivity" />
@@ -78,7 +78,6 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".Activity.SystemSettingActivity" />
         <activity android:name=".Activity.ChangeLoginPasswordActivity" />
         <activity android:name=".Activity.ForgetPwdActivity" />
         <activity android:name=".Activity.SDVolumeManagerActivity" />

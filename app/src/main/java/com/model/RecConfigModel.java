@@ -62,4 +62,21 @@ public class RecConfigModel {
                 break;
         }
     }
+    public int getRec_AlmTimeLenChoice(){
+        if (Rec_AlmTimeLen <= 5){
+            return 0;
+        }
+        else if(Rec_AlmTimeLen <= 10){
+            return 1;
+        }
+        else if(Rec_AlmTimeLen <= 20){
+            return 2;
+        }
+        else if(Rec_AlmTimeLen <= 30){
+            return 3;
+        }
+        else {
+            return 4;
+        }
+    }
 }

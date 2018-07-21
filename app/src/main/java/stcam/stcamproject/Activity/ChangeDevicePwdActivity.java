@@ -137,6 +137,7 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
 
         if (dbModel != null){
             editText_old_pwd.setText(dbModel.pwd);
+            editText_old_pwd.setSelection(editText_old_pwd.getText().toString().length());
         }
     }
     @Override

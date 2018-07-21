@@ -83,22 +83,31 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
     @Override
     public void OnNetWorkChangeListener(int type) {
-        if (0 == type){
-            if (mDevices != null)
-            mDevices.clear();
-            loadDevList(false);
-        }
-        else if(1 == type){
+        Log.e(tag,"---------------------1 OnNetWorkChangeListener");
+        if (entryType == EnumMainEntry_Login){
+            if (0 == type){
+                if (mDevices != null)
+                    mDevices.clear();
+                loadDevList(false);
+            }
+            else if(1 == type){
 //            for (DevModel model : mDevices){
 //
 //                Log.e(tag,"---------------------1 dev0 name"+model.DevName);
 //                if (!model.IsConnect())
 //                    DevModel.threadConnect(ipc,model,false);
 //            }
-            if (mDevices != null)
-            mDevices.clear();
-            loadDevList(false);
+                if (mDevices != null)
+                    mDevices.clear();
+                loadDevList(false);
+            }
         }
+        else {
+            if (mDevices != null)
+                mDevices.clear();
+            searchDevices();
+        }
+
 
     }
 
@@ -748,18 +757,26 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
             {
                 case TMsg.Msg_SearchOver:
                     lod.dismiss();
-                    if (SearchMsg.equals(""))
+                    if (SearchMsg == null || SearchMsg.equals(""))
                     {
                         return;
                     }
                     Log.e(tag,SearchMsg);
+                    if (mAccountDevices != null){
+                        mAccountDevices.clear();
+                    }
+                    Log.e(tag,"search result is :"+SearchMsg);
                     //[{"SN":"80005556","DevModal":"401H","DevName":"IPCAM_80005556","DevMAC":"00:C1:A1:62:55:56",
                     // "DevIP":"192.168.0.199","SubMask":"255.255.255.0","Gateway":"192.168.0.1","DNS1":"192.168.0.1",
                     // "SoftVersion":"V7.113.1759.00","DataPort":7556,"HttpPort":8556,"rtspPort":554,
                     // "DDNSServer":"211.149.199.247","DDNSHost":"80005556.southtech.xyz","UID":"NULL"}]
                     searchList = DeviceParseUtil.parseSearchMsg(SearchMsg);
+
+                    if (searchList == null){
+                        return;
+                    }
                     if (searchList.size()>0){
-                        mAccountDevices.clear();
+
                         for (SearchDevModel model : searchList){
                             DevModel devModel  = model.exportDevModelForm();
                             mAccountDevices.add(devModel);

@@ -339,7 +339,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
         builder.setIcon(R.mipmap.ic_launcher);
 
 
-        builder.setSingleChoiceItems(items, mPushSettingModel.getPushIntervalLevel(),
+        builder.setSingleChoiceItems(items, mRecConfigModel.getRec_AlmTimeLenChoice(),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -666,6 +666,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
                 }
                 else {
                     SouthUtil.showDialog(PushSettingActivity.this,getString(R.string.action_Success));
+                    back2TopActivity();
                     for (DevModel existModel : MainDevListFragment.mDevices){
                         if (model.SN.equals(existModel.SN)){
                             existModel.Disconn();
@@ -677,6 +678,9 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
 
 
                 //需要断开连接，需要查看
+            }
+            else{
+                back2TopActivity();
             }
             super.onPostExecute(result);
         }
@@ -772,6 +776,12 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
         }
     }
 
+    void back2TopActivity(){
+        Intent intent= new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
+    }
 
 
     LoadingDialog lod;
