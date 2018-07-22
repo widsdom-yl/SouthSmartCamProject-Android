@@ -608,7 +608,9 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
         for (DevModel existModel : mDevices){
             if (currentModel.SN.equals(existModel.SN)){
-                model = existModel;
+                model = currentModel;
+                model.NetHandle = existModel.NetHandle;
+                model.ConnType = existModel.ConnType;
                 break;
             }              
         }

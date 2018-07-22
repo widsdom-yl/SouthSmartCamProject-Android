@@ -69,8 +69,11 @@ public class AddDeviceAP2StaActivity extends BaseAppCompatActivity implements Ba
         startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
 
 
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
         searchDevices();
-
     }
 
     void searchDevices(){
