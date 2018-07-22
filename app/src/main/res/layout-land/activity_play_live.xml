@@ -19,6 +19,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
+    <ProgressBar
+        android:id="@+id/load_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/glPlayLive"
+        app:layout_constraintTop_toTopOf="@id/glPlayLive"
+        app:layout_constraintLeft_toLeftOf="@id/glPlayLive"
+        app:layout_constraintStart_toStartOf= "@id/glPlayLive"
+        app:layout_constraintRight_toRightOf="@id/glPlayLive"
+        app:layout_constraintEnd_toEndOf="@id/glPlayLive" />
+
 
     <TextView
         android:id="@+id/tx_record"

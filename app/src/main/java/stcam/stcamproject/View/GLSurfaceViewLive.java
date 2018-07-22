@@ -2,9 +2,12 @@ package stcam.stcamproject.View;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 
 import com.model.DevModel;
+import com.thSDK.TMsg;
 import com.thSDK.lib;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -17,12 +20,19 @@ public class GLSurfaceViewLive extends GLSurfaceView {
     //public actPlayLive Activity;
     DevModel model;
     boolean hasCapture;
+    boolean hasGotFirstFrame;
+    private Handler mHandler;
 
     public GLSurfaceViewLive(Context context, AttributeSet attrs) {
         super(context, attrs);
         setRenderer(new MyRenderer());
         requestFocus();
         setFocusableInTouchMode(true);
+        hasGotFirstFrame = false;
+    }
+
+    public void  setmHandler(Handler mHandler){
+        this.mHandler = mHandler;
     }
 
     public void setModel(DevModel m) {
@@ -58,6 +68,11 @@ public class GLSurfaceViewLive extends GLSurfaceView {
 
             if (lib.thNetOpenGLRender(model.NetHandle)) {
 
+                if (!hasGotFirstFrame){
+                    hasGotFirstFrame = true;
+                    if (mHandler != null)
+                    mHandler.sendMessage(Message.obtain(mHandler, TMsg.Msg_GotFirstFrame, null));
+                }
                 if (hasCapture == false) {
                     hasCapture = true;
                     String fileName = FileUtil.generatePathSnapShotFileName(model.SN);
