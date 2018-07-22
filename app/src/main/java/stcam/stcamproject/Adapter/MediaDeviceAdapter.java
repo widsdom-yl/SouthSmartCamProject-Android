@@ -24,7 +24,8 @@ public class MediaDeviceAdapter extends BaseAdapter<DevModel>{
         List<String> files= FileUtil.getSNFilesFromPath(FileUtil.pathSnapShot(),model.SN);
         if (files.size()>0){
 
-            Bitmap bitmap = BitmapFactory.decodeFile(files.get(0));
+           // Bitmap bitmap = BitmapFactory.decodeFile(files.get(0));
+            Bitmap bitmap = BitmapFactory.decodeFile(files.get(files.size()-1));
             imageView.setImageBitmap(bitmap);
         }
         else{
