@@ -203,7 +203,7 @@
     <string name="action_get_verify_code">获取验证码</string>
     <string name="action_clear_alarm_image">确定清空报警图片?</string>
     <string name="action_delete_device_ask">确定删除设备?</string>
-    <string name="action_reboot_seconds">s后返回主页面</string>
+    <string name="action_reboot_seconds">s后返回到wifi搜索页面</string>
     <string name="string_aleady_added">(已添加)</string>
     <string name="string_record_list">录像列表</string>
     <string name="action_make_change">确认修改</string>

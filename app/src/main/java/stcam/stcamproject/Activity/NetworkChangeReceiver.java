@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import com.thSDK.lib;
 
+import stcam.stcamproject.Application.STApplication;
+
 import static android.content.Context.CONNECTIVITY_SERVICE;
 import static android.net.ConnectivityManager.TYPE_MOBILE;
 import static android.net.ConnectivityManager.TYPE_WIFI;
@@ -23,6 +25,9 @@ class NetworkChangeReceiver extends BroadcastReceiver {
         ConnectivityManager connectionManager = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectionManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isAvailable()) {
+            if (STApplication.getInstance().getIsRunInBackground()){
+                return;
+            }
             switch (networkInfo.getType()) {
                 case TYPE_MOBILE:
                     Toast.makeText(context, "正在使用2G/3G/4G网络", Toast.LENGTH_SHORT).show();

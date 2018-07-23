@@ -118,7 +118,7 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
             {
                 case TMsg.Msg_SearchOver:
                     lod.dismiss();
-                    if (SearchMsg != null || SearchMsg.equals(""))
+                    if (SearchMsg == null || SearchMsg.equals(""))
                     {
                         SouthUtil.showDialog(AddDeviceWlanActivity.this,AddDeviceWlanActivity.this.getString(R.string.string_search_no_device));
                         return;

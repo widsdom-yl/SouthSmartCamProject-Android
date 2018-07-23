@@ -1,5 +1,6 @@
 package stcam.stcamproject.Activity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,6 +27,7 @@ import java.util.List;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.Util.SouthUtil;
@@ -221,10 +223,13 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
             handler_refresh.postDelayed(runnable_fresh,1000);
         }
         else{
-//            Intent intent= new Intent(this, MainActivity.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//            startActivity(intent);
-            finish();
+            Intent intent= new Intent(this, AddDeviceActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+
+            Intent intent1= new Intent(this, AddDeviceWlanActivity.class);
+            STApplication.getInstance().startActivity(intent1);
+
         }
 
     }

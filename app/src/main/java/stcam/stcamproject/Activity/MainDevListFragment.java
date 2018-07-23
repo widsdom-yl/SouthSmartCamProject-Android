@@ -203,13 +203,19 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
             for (DevModel existModel : mDevices){
                  existModel.updateUserAndPwd();
             }
+
+            if (mDevices.size() > 0){
+                if (entryType == EnumMainEntry.EnumMainEntry_Login){
+                    loadDevList(false);
+                }
+                else{
+                    searchDevices();
+                }
+            }
+
         }
-        if (entryType == EnumMainEntry.EnumMainEntry_Login){
-            loadDevList(false);
-        }
-        else{
-            searchDevices();
-        }
+
+
         if (mAdapter != null){
             mAdapter.notifyDataSetChanged();
         }
@@ -218,6 +224,14 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
   
     public void onDestroy()  {
         super.onDestroy();
+        if (mDevices != null && mDevices.size() > 0){
+            for (DevModel devModel : mDevices){
+                if (devModel.IsConnect()){
+                    devModel.Disconn();
+                }
+            }
+            mDevices.clear();
+        }
         getActivity().unregisterReceiver(networkChangeReceiver);
     }
 
@@ -495,6 +509,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
             if (mAdapter == null){
                 mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(),mlist,entryType);
                 mAdapter.setOnItemClickListener(MainDevListFragment.this);
+                if (mRecyclerView != null)
                 mRecyclerView.setAdapter(mAdapter);
             }
             else{
@@ -616,6 +631,14 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
                 model = currentModel;
                 model.NetHandle = existModel.NetHandle;
                 model.ConnType = existModel.ConnType;
+                model.DevCfg = existModel.DevCfg;
+                model.ExistSD = existModel.ExistSD;
+                model.Brightness = existModel.Brightness;
+                model.Contrast = existModel.Contrast;
+                model.Sharpness = existModel.Contrast;
+                model.UID = existModel.UID;
+                model.DevName = existModel.DevName;
+                model.SoftVersion = existModel.SoftVersion;
                 break;
             }              
         }

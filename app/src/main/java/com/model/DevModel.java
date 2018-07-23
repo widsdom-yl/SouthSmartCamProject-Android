@@ -46,9 +46,9 @@ final static String tag = "DevModel";
     public JSONObject DevCfg = null;
 
     public int ExistSD = 0;
-    int Brightness;
-    int Contrast;
-    int Sharpness;
+    public int Brightness;
+    public int Contrast;
+    public int Sharpness;
     public String SoftVersion = "";
 
 
