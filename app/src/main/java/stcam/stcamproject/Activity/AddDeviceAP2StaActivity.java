@@ -114,7 +114,7 @@ public class AddDeviceAP2StaActivity extends BaseAppCompatActivity implements Ba
             {
                 case TMsg.Msg_SearchOver:
                     lod.dismiss();
-                    if (SearchMsg.equals(""))
+                    if (SearchMsg ==  null || SearchMsg.equals(""))
                     {
                         return;
                     }
@@ -124,6 +124,9 @@ public class AddDeviceAP2StaActivity extends BaseAppCompatActivity implements Ba
                     // "SoftVersion":"V7.113.1759.00","DataPort":7556,"HttpPort":8556,"rtspPort":554,
                     // "DDNSServer":"211.149.199.247","DDNSHost":"80005556.southtech.xyz","UID":"NULL"}]
                     List<SearchDevModel> list = DeviceParseUtil.parseSearchMsg(SearchMsg);
+                    if (list == null){
+                        return;
+                    }
                     if (list.size()>0){
                         lists = list;
                         adapter = new AddDeviceAdapter(lists);

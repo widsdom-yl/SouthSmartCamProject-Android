@@ -71,14 +71,17 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
     @Override
     public void OnNetWorkBreakListener() {
-        for (DevModel devModel : mDevices){
-            if (devModel.IsConnect()){
-                devModel.Disconn();
+        if (mDevices != null){
+            for (DevModel devModel : mDevices){
+                if (devModel.IsConnect()){
+                    devModel.Disconn();
+                }
+            }
+            if (mAdapter != null) {
+                mAdapter.notifyDataSetChanged();
             }
         }
-        if (mAdapter != null) {
-            mAdapter.notifyDataSetChanged();
-        }
+
     }
 
     @Override
@@ -428,8 +431,10 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
                     @Override
                     public void run() {
                         lod.dismiss();
-                        refreshLayout.setRefreshing(false);
-                        refreshLayout.setLoadMore(false);
+                        if (refreshLayout != null){
+                            refreshLayout.setRefreshing(false);
+                            refreshLayout.setLoadMore(false);
+                        }
                     }
                 });
                 //String retStr = response.body().string();

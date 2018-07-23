@@ -118,7 +118,7 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
             {
                 case TMsg.Msg_SearchOver:
                     lod.dismiss();
-                    if (SearchMsg.equals(""))
+                    if (SearchMsg != null || SearchMsg.equals(""))
                     {
                         SouthUtil.showDialog(AddDeviceWlanActivity.this,AddDeviceWlanActivity.this.getString(R.string.string_search_no_device));
                         return;
@@ -129,6 +129,9 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
                     // "SoftVersion":"V7.113.1759.00","DataPort":7556,"HttpPort":8556,"rtspPort":554,
                     // "DDNSServer":"211.149.199.247","DDNSHost":"80005556.southtech.xyz","UID":"NULL"}]
                     lists = DeviceParseUtil.parseSearchMsg(SearchMsg);
+                    if (lists == null){
+                        return;
+                    }
                     if (lists.size()>0){
                         adapter = new AddDeviceAdapter(lists);
                         rv.setAdapter(adapter);
