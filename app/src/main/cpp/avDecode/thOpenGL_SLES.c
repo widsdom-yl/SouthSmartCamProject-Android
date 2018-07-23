@@ -21,6 +21,7 @@
 typedef struct TOpenGLInfo {
     i32 IsExit;
     H_THREADLOCK Lock;
+
     TavPicture FrameV420;
     TavPicture FrameV565;
     char rgbBuf565[2592*1944*2];
@@ -42,6 +43,9 @@ HANDLE thOpenGLVideo_Init()
   memset(Info, 0, sizeof(TOpenGLInfo));
   Info->IsExit = false;
 
+
+
+    ThreadLockInit(&Info->Lock);
   return (HANDLE)Info;
 }
 //-----------------------------------------------------------------------------
@@ -50,6 +54,10 @@ bool thOpenGLVideo_Free(HANDLE Handle)
   TOpenGLInfo* Info = (TOpenGLInfo*)Handle;
   if (!Info) return false;
   Info->IsExit = true;
+
+    //thOpenGLVideo_DisplayEnd(Handle);
+    ThreadLockFree(&Info->Lock);
+
   free(Info);
   return true;
 }
@@ -60,9 +68,13 @@ bool thOpenGLVideo_FillMem(HANDLE Handle, TavPicture FrameV420, i32 ImgWidth, i3
   if (!Info) return false;
   if (FrameV420.data[0] == NULL) return false;
   if (ImgWidth == 0 || ImgHeight==0) return false;
+
   Info->FrameV420 = FrameV420;
+
   Info->ImgWidth = ImgWidth;
   Info->ImgHeight = ImgHeight;
+
+
 
   return true;
 }
@@ -83,18 +95,7 @@ bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
   if (Info->ScreenWidth <= 0) return false;
   if (Info->ScreenHeight <= 0) return false;
 
-
-
-
-//    int screenTpe = 1;
-//    if (Info->ScreenHeight > Info->ScreenWidth){
-//        screenTpe = 1;
-//    }
-//    else{
-//        screenTpe = 2;
-//    }
-//    if (Info->mScreenTpe != screenTpe){
-//        Info->mScreenTpe = screenTpe;
+    //ThreadLock(&Info->Lock);
         glDeleteTextures(1, &Info->gl_texture);
         GLuint* start = s_disable_caps;
         while (*start) glDisable(*start++);
@@ -106,10 +107,6 @@ bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
         glShadeModel(GL_FLAT);
         glColor4x(0x10000, 0x10000, 0x10000, 0x10000);
         glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_CROP_RECT_OES, rect);
-
-//    }
-
-
 
   thImgConvertFill(&Info->FrameV565, Info->rgbBuf565, AV_PIX_FMT_RGB565, TEXTURE_WIDTH, TEXTURE_HEIGHT);
   thImgConvertScale1(//only copy ?
@@ -154,6 +151,7 @@ bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
     glViewport(0, 0, Info->ScreenWidth, Info->ScreenHeight);
   glDrawTexiOES(left, top, 0, viewWidth, viewHeight);
    // glDrawTexiOES(0, 0, 0, Info->ScreenWidth, Info->ScreenHeight);
+    //ThreadUnlock(&Info->Lock);
   return true;
 
 }

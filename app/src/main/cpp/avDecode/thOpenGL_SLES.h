@@ -17,6 +17,7 @@ extern "C"
   HANDLE thOpenGLVideo_Init();
   bool thOpenGLVideo_FillMem(HANDLE Handle, TavPicture FrameV420, i32 ImgWidth, i32 ImgHeight);
   bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect);
+  bool thOpenGLVideo_DisplayEnd(HANDLE Handle);
   bool thOpenGLVideo_Free(HANDLE Handle);
 
 
