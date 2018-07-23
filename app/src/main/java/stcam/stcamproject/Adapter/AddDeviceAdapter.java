@@ -32,10 +32,10 @@ public class AddDeviceAdapter extends BaseAdapter<SearchDevModel>{
             }
         }
 
-        holder.setText(R.id.device_name_view,model.getDevIP()).setText(R.id.device_sn_view,model.getSN());
+        holder.setText(R.id.device_name_view,model.getDevIP()).setText(R.id.device_sn_view,model.getDevName());
 
         if (exist){
-            holder.setText(R.id.device_sn_view,model.getSN()+ STApplication.getInstance().getString(R.string.string_aleady_added));
+            holder.setText(R.id.device_sn_view,model.getDevName()+ STApplication.getInstance().getString(R.string.string_aleady_added));
             device_name_view.setTextColor(Color.rgb(0,255,0));
             device_sn_view.setTextColor(Color.rgb(0,255,0));
         }

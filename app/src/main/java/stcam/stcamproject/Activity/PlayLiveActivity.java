@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -16,10 +17,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.model.DevModel;
+import com.thSDK.TMsg;
 import com.thSDK.lib;
 
 import stcam.stcamproject.Application.STApplication;
@@ -44,6 +47,8 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
     boolean pix_low = true;
     ImageButton button_ptz_left,button_ptz_right,button_ptz_up,button_ptz_down;
     ImageButton button_back;
+    ProgressBar load_progress;
+    boolean hasGotFirstFrame = false;//是否收到了第一帧
 //    ImageButton button_ptz;
 
     boolean isPlayAudio;
@@ -241,6 +246,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
 
 
         glView.setModel(devModel);
+        glView.setmHandler(gotFrameHandler);
 
         tx_record = findViewById(R.id.tx_record);
         button_snapshot = findViewById(R.id.button_snapshot);
@@ -263,6 +269,13 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
         button_slient.setOnClickListener(this);
         button_pix.setOnClickListener(this);
         button_setting.setOnClickListener(this);
+        load_progress = findViewById(R.id.load_progress);
+        if (hasGotFirstFrame){
+            load_progress.setVisibility(View.GONE);
+        }
+        else{
+            load_progress.setVisibility(View.VISIBLE);
+        }
         ptz_layout = findViewById(R.id.ptz_control_layout);
 //        button_ptz = findViewById(R.id.button_ptz);
 //        button_ptz.setOnClickListener(this);
@@ -270,6 +283,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
         button_ptz_right.setOnClickListener(this);
         button_ptz_up.setOnClickListener(this);
         button_ptz_down.setOnClickListener(this);
+
         //ptz_layout.setOnClickListener(this);
         //glView.setOnClickListener(this);
         if (isPortrait){
@@ -363,6 +377,26 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
 
     String recordfileName;
 
+    private Handler gotFrameHandler = new Handler()
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
+
+
+            super.handleMessage(msg);
+            switch (msg.what)
+            {
+                case TMsg.Msg_GotFirstFrame:
+                    hasGotFirstFrame = true;
+                    load_progress.setVisibility(View.GONE);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    };
     Handler handler=new Handler();
     Runnable runnable=new Runnable(){
         @Override

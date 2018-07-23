@@ -73,7 +73,10 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
 
         for (DevModel existModel : MainDevListFragment.mDevices){
             if (model.SN.equals(existModel.SN)){
-                chooseModel = existModel;
+                chooseModel = model;
+                chooseModel.ConnType = existModel.ConnType;
+                chooseModel.NetHandle = existModel.NetHandle;
+
                 Log.e(tag,"NetConn reloadview get exist model:"+chooseModel.SN+",isconnect is "+chooseModel.IsConnect()+",mdevice size "+MainDevListFragment.mDevices.size()+",handel is "+chooseModel.NetHandle);
                 break;
             }

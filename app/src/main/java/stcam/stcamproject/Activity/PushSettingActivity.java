@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -665,7 +664,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
                     SouthUtil.showDialog(PushSettingActivity.this,getString(R.string.action_Failed));
                 }
                 else {
-                    SouthUtil.showDialog(PushSettingActivity.this,getString(R.string.action_Success));
+                    SouthUtil.showToast(PushSettingActivity.this,getString(R.string.action_Success));
                     back2TopActivity();
                     for (DevModel existModel : MainDevListFragment.mDevices){
                         if (model.SN.equals(existModel.SN)){
@@ -680,6 +679,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
                 //需要断开连接，需要查看
             }
             else{
+                SouthUtil.showToast(PushSettingActivity.this,getString(R.string.action_Success));
                 back2TopActivity();
             }
             super.onPostExecute(result);

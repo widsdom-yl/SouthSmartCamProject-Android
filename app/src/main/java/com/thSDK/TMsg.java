@@ -14,6 +14,7 @@ public class TMsg
     public static final int Msg_NetConnFail = 3;
     public static final int Msg_NetConnSucceed = 4;
     public static final int Msg_ActiveSplash = 5;
+    public static final int Msg_GotFirstFrame = 6;
     //public static final int Msg_LoadP2PSuccess = 6;
 
 }
