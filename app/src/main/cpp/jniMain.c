@@ -1,5 +1,6 @@
 #include <mtk_SmartConfig.h>
 #include "../include/libthSDK.h"
+#include "../include/TFun.h"
 #include "jni.h"
 #include "avDecode/thffmpeg.h"
 #include "avDecode/thOpenGL_SLES.h"

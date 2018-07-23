@@ -21,6 +21,7 @@
 typedef struct TOpenGLInfo {
     i32 IsExit;
     H_THREADLOCK Lock;
+
     TavPicture FrameV420;
     TavPicture FrameV565;
     char rgbBuf565[2592*1944*2];
@@ -32,8 +33,6 @@ typedef struct TOpenGLInfo {
     int mScreenTpe ;//0-初始未知状态 1-竖屏幕 2-横屏幕
     GLuint gl_texture;
 
-    int FrameIDOld, FrameIDNew;
-
 }TOpenGLInfo;
 //-----------------------------------------------------------------------------
 HANDLE thOpenGLVideo_Init()
@@ -44,8 +43,8 @@ HANDLE thOpenGLVideo_Init()
   memset(Info, 0, sizeof(TOpenGLInfo));
   Info->IsExit = false;
 
-    Info->FrameIDNew = 0;
-    Info->FrameIDOld = 0;
+
+
     ThreadLockInit(&Info->Lock);
   return (HANDLE)Info;
 }
@@ -55,7 +54,10 @@ bool thOpenGLVideo_Free(HANDLE Handle)
   TOpenGLInfo* Info = (TOpenGLInfo*)Handle;
   if (!Info) return false;
   Info->IsExit = true;
+
+    //thOpenGLVideo_DisplayEnd(Handle);
     ThreadLockFree(&Info->Lock);
+
   free(Info);
   return true;
 }
@@ -66,12 +68,14 @@ bool thOpenGLVideo_FillMem(HANDLE Handle, TavPicture FrameV420, i32 ImgWidth, i3
   if (!Info) return false;
   if (FrameV420.data[0] == NULL) return false;
   if (ImgWidth == 0 || ImgHeight==0) return false;
-    //ThreadLock(&Info->Lock);
+
   Info->FrameV420 = FrameV420;
+
   Info->ImgWidth = ImgWidth;
   Info->ImgHeight = ImgHeight;
-  Info->FrameIDNew++;
-    //ThreadUnlock(&Info->Lock);
+
+
+
   return true;
 }
 //-----------------------------------------------------------------------------
@@ -83,9 +87,6 @@ bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
 
   TOpenGLInfo* Info = (TOpenGLInfo*)Handle;
   if (!Info) return false;
-
-    if (Info->FrameIDOld == Info->FrameIDNew) return true;
-    Info->FrameIDOld = Info->FrameIDNew;
 
   Info->ScreenWidth = dspRect.right - dspRect.left;
   Info->ScreenHeight = dspRect.bottom - dspRect.top;
