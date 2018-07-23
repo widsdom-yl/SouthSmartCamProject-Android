@@ -280,8 +280,8 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSetAudioIsMute(JNIEnv* env, jclas
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetOpenGLUpdateArea(JNIEnv* env, jclass obj, u64 NetHandle, int Left, int Top, int Right, int Bottom)
 {
-  static TDspInfo DspInfo;
-  DspInfo.DspHandle = 0;
+  TDspInfo DspInfo;
+  DspInfo.DspHandle = 12345;
   DspInfo.Channel = 0;
   DspInfo.DspRect.left = Left;
   DspInfo.DspRect.top = Top;

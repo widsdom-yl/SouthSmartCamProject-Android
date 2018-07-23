@@ -319,6 +319,10 @@ extern "C"
   EXPORT bool DTMFWavFileToText(char* FileName, char* txt);
   EXPORT bool DTMFBufToText(char* Buf, int BufLen, int iSample/*=8000*/, int iBits/*=16*/, char* txt);
 
+#if defined(ANDROID)
+EXPORT bool thNet_ExtendDraw(HANDLE NetHandle);
+#endif
+
 #ifdef __cplusplus
 }
 #endif 

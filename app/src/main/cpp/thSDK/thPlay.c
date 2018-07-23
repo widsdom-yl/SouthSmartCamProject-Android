@@ -59,7 +59,7 @@ typedef struct TPlayParam {
   TMediaType VideoMediaType;//视频类型
 
 #define MAX_DSPINFO_COUNT  10
-  TDspInfo* DspInfoLst[MAX_DSPINFO_COUNT];//显示区域
+  TDspInfo DspInfoLst[MAX_DSPINFO_COUNT];//显示区域
 
   bool IsInsideDecode;//0=外部解码 1=内部解码
   bool IsQueue;//是否队列解码显示
@@ -529,8 +529,8 @@ void STDCALL Time_QueueDraw(HANDLE mmHandle, u32 uMsg, void* dwUser, u32 dw1, u3
     ret = thRender_FillMem(Play->RenderHandle, *pFrameV, Play->ImgWidth, Play->ImgHeight);
     for (i=0; i<MAX_DSPINFO_COUNT; i++)
     {
-      TDspInfo* PDspInfo = Play->DspInfoLst[i];
-      if (PDspInfo == NULL) continue;
+      TDspInfo* PDspInfo = &Play->DspInfoLst[i];
+      if (PDspInfo->DspHandle == NULL) continue;
       ret = thRender_Display(Play->RenderHandle, PDspInfo->DspHandle, PDspInfo->DspRect);
     }
     //zhb ThreadUnlock(&Play->Lock);
@@ -805,6 +805,7 @@ void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo* PInfo, char* Buf, int
     }
     else
     {
+        if (PInfo->Frame.StreamType != Play->DisplayStreamType) return;
       //1
       if (Play->DisplayStreamTypeOld != Play->DisplayStreamType)
       {
@@ -853,8 +854,8 @@ void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo* PInfo, char* Buf, int
           ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth, Play->ImgHeight);//ddraw yuv420->rgb32
           for (i=0; i<MAX_DSPINFO_COUNT; i++)
           {
-            TDspInfo* PDspInfo = Play->DspInfoLst[i];
-            if (PDspInfo == NULL) continue;
+            TDspInfo* PDspInfo = &Play->DspInfoLst[i];
+            if (PDspInfo->DspHandle == NULL) continue;
             ret = thRender_Display(Play->RenderHandle, PDspInfo->DspHandle, PDspInfo->DspRect);
           }
 #endif        
@@ -1613,11 +1614,15 @@ bool thNet_Play(HANDLE NetHandle, u32 VideoChlMask, u32 AudioChlMask, u32 SubVid
     Play->ImgWidth = Play->DevCfg.VideoCfgPkt.VideoFormat.Width;
     Play->ImgHeight = Play->DevCfg.VideoCfgPkt.VideoFormat.Height;
     Play->FrameRate = Play->DevCfg.VideoCfgPkt.VideoFormat.FrameRate;
+    Play->DisplayStreamType = 0;
+
   }
   else if (Play->SubVideoChlMask)
   {
     GetWidthHeightFromStandard(Play->DevCfg.VideoCfgPkt.VideoFormat.Sub.StandardEx, &Play->ImgWidth, &Play->ImgHeight);
     Play->FrameRate = Play->DevCfg.VideoCfgPkt.VideoFormat.Sub.FrameRate;
+    Play->DisplayStreamType = 1;
+
   }
 
   if (!Play->Isp2pConn)
@@ -2259,14 +2264,19 @@ bool thNet_AddDspInfo(HANDLE NetHandle, TDspInfo* PDspInfo)
 
   for (i=0; i<MAX_DSPINFO_COUNT; i++)
   {
-    if (Play->DspInfoLst[i] == PDspInfo) return true;
+    if (Play->DspInfoLst[i].DspHandle == PDspInfo->DspHandle)
+    {
+        Play->DspInfoLst[i].Channel = PDspInfo->Channel;
+        Play->DspInfoLst[i].DspRect = PDspInfo->DspRect;
+        return true;
+    }
   }
 
   for (i=0; i<MAX_DSPINFO_COUNT; i++)
   {
-    if (Play->DspInfoLst[i] == NULL)
+    if (Play->DspInfoLst[i].DspHandle == NULL)
     {
-      Play->DspInfoLst[i] = PDspInfo;
+      Play->DspInfoLst[i] = *PDspInfo;
       return true;
     }
   }
@@ -2280,9 +2290,9 @@ bool thNet_DelDspInfo(HANDLE NetHandle, TDspInfo* PDspInfo)
   if (NetHandle == 0) return false;
   for (i=0; i<MAX_DSPINFO_COUNT; i++)
   {
-    if (Play->DspInfoLst[i] == PDspInfo)
+    if (Play->DspInfoLst[i].DspHandle == PDspInfo->DspHandle)
     {
-      Play->DspInfoLst[i] = NULL;
+      memset(&Play->DspInfoLst[i], 0, sizeof(TDspInfo));
       return true;
     }
   }
@@ -2360,8 +2370,8 @@ bool thNet_ExtendDraw(HANDLE NetHandle)//android opengl render
   {
     for (i=0; i<MAX_DSPINFO_COUNT; i++)
     {
-      TDspInfo* PDspInfo = Play->DspInfoLst[i];
-      if (PDspInfo == NULL) continue;
+      TDspInfo* PDspInfo = &Play->DspInfoLst[i];
+      if (PDspInfo->DspHandle == NULL) continue;
       if (PDspInfo->DspRect.right - PDspInfo->DspRect.left > 0 &&PDspInfo->DspRect.bottom - PDspInfo->DspRect.top > 0)
       {
         ret = thRender_Display(Play->RenderHandle, PDspInfo->DspHandle, PDspInfo->DspRect);
