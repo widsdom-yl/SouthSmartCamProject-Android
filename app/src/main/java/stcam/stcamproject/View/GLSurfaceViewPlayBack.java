@@ -42,8 +42,18 @@ public class GLSurfaceViewPlayBack extends GLSurfaceView
 
   public void Stop()
   {
-    lib.thNetRemoteFileStop(mDevModel.NetHandle);
-    lib.thNetAudioPlayClose(mDevModel.NetHandle);
+    //线程操作
+    new Thread()
+    {
+      @Override
+      public void run()
+      {
+        lib.thNetRemoteFileStop(mDevModel.NetHandle);
+        lib.thNetAudioPlayClose(mDevModel.NetHandle);
+      }
+    }.start();
+
+
   }
 
   class MyRenderer implements GLSurfaceView.Renderer

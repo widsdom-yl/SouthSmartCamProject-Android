@@ -10,8 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.model.DevModel;
-
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.R;
@@ -51,13 +49,13 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
             public void run() {
                 // do something
 
-                for (DevModel existModel : MainDevListFragment.mDevices){
-                    if (existModel.IsConnect()){
-                        existModel.Disconn();
-                        existModel.NetHandle = 0;
-                    }
-                }
-                MainDevListFragment.mDevices.clear();
+//                for (DevModel existModel : MainDevListFragment.mDevices){
+//                    if (existModel.IsConnect()){
+//                        existModel.Disconn();
+//                        existModel.NetHandle = 0;
+//                    }
+//                }
+//                MainDevListFragment.mDevices.clear();
                 boolean isRemeber = AccountManager.getInstance().getIsRemeberAccount();
                 String usr = AccountManager.getInstance().getDefaultUsr();
                 String pwd = AccountManager.getInstance().getDefaultPwd();

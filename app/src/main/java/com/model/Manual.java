@@ -12,6 +12,9 @@ package com.model;
 public class Manual {
 
     private int Brightness;
+    Manual(){
+        Brightness = 10;
+    }
     public void setBrightness(int Brightness) {
          this.Brightness = Brightness;
      }

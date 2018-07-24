@@ -193,13 +193,13 @@ public class SystemSettingFragment extends Fragment implements BaseAdapter.OnIte
                     .setPositiveButton(this.getContext().getString(R.string.action_ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            for (DevModel existModel : MainDevListFragment.mDevices){
-                                if (existModel.IsConnect()){
-                                    existModel.Disconn();
-                                    existModel.NetHandle = 0;
-                                }
-                            }
-                            MainDevListFragment.mDevices.clear();
+//                            for (DevModel existModel : MainDevListFragment.mDevices){
+//                                if (existModel.IsConnect()){
+//                                    existModel.Disconn();
+//                                    existModel.NetHandle = 0;
+//                                }
+//                            }
+//                            MainDevListFragment.mDevices.clear();
                             Intent intent = new Intent(SystemSettingFragment.this.getContext(), LoginActivity.class);
                             AccountManager.getInstance().saveRemeber(false);
                             startActivity(intent);

@@ -3,6 +3,7 @@ package stcam.stcamproject.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -311,10 +312,12 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
     load_progress = findViewById(R.id.load_progress);
     if (hasGotFirstFrame)
     {
+      glView.setBackgroundColor(Color.TRANSPARENT);
       load_progress.setVisibility(View.GONE);
     }
     else
     {
+      glView.setBackgroundColor(Color.rgb(0,0,0));
       load_progress.setVisibility(View.VISIBLE);
     }
     ptz_layout = findViewById(R.id.ptz_control_layout);
@@ -442,6 +445,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
         case TMsg.Msg_GotFirstFrame:
           hasGotFirstFrame = true;
           load_progress.setVisibility(View.GONE);
+          glView.setBackgroundColor(Color.TRANSPARENT);
           break;
 
         default:

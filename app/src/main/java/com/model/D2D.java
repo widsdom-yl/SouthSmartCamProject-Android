@@ -13,6 +13,9 @@ public class D2D {
 
     private int Brightness;
     private int Lux;
+    D2D(){
+        Brightness = 10;
+    }
     public void setBrightness(int Brightness) {
          this.Brightness = Brightness;
      }

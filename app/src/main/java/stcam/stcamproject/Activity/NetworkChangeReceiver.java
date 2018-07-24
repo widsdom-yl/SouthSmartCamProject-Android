@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.thSDK.lib;
@@ -16,10 +18,27 @@ import static android.net.ConnectivityManager.TYPE_MOBILE;
 import static android.net.ConnectivityManager.TYPE_WIFI;
 
 class NetworkChangeReceiver extends BroadcastReceiver {
+    private static String tag = "NetworkChangeReceiver";
     OnNetWorkBreakListener mNetWorkBreakListener;
     public void setNetWorkBreakListener(OnNetWorkBreakListener netWorkBreakListener){
         mNetWorkBreakListener  = netWorkBreakListener;
     }
+    boolean switchingNetwork = false;
+
+    Handler handler_reset = new Handler();
+    Runnable runnable_reset = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            //
+
+            switchingNetwork = false;
+
+
+        }
+    };
+
     @Override
     public void onReceive(Context context, Intent intent) {
         ConnectivityManager connectionManager = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
@@ -28,6 +47,11 @@ class NetworkChangeReceiver extends BroadcastReceiver {
             if (STApplication.getInstance().getIsRunInBackground()){
                 return;
             }
+            if(switchingNetwork){
+                return;
+            }
+            switchingNetwork = true;
+            handler_reset.postDelayed(runnable_reset,1500);
             switch (networkInfo.getType()) {
                 case TYPE_MOBILE:
                     Toast.makeText(context, "正在使用2G/3G/4G网络", Toast.LENGTH_SHORT).show();
@@ -35,6 +59,7 @@ class NetworkChangeReceiver extends BroadcastReceiver {
                     if (mNetWorkBreakListener != null){
                         mNetWorkBreakListener.OnNetWorkBreakListener();
                     }
+                    Log.e(tag,"TYPE_MOBILE");
                     lib.P2PFree();
                     lib.P2PInit();
                     if (mNetWorkBreakListener != null){
@@ -42,6 +67,7 @@ class NetworkChangeReceiver extends BroadcastReceiver {
                     }
                     break;
                 case TYPE_WIFI:
+                    Log.e(tag,"TYPE_WIFI");
                     if (mNetWorkBreakListener != null){
                         mNetWorkBreakListener.OnNetWorkBreakListener();
                     }

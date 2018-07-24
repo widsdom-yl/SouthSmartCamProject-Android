@@ -95,12 +95,12 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (lib.thNetIsRec(devModel.NetHandle)) {
-                    lib.thNetStopRec(devModel.NetHandle);
-                    if (FileUtil.isFileEmpty(recordfileName)){
-                        FileUtil.delFiles(recordfileName);
-                    }
-                }
+//                if (lib.thNetIsRec(devModel.NetHandle)) {
+//                    lib.thNetStopRec(devModel.NetHandle);
+//                    if (FileUtil.isFileEmpty(recordfileName)){
+//                        FileUtil.delFiles(recordfileName);
+//                    }
+//                }
                 glView.Stop();
                 this.finish(); // back button
 
@@ -155,12 +155,12 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.imagebutton_back:
-                if (lib.thNetIsRec(devModel.NetHandle)) {
-                    lib.thNetStopRec(devModel.NetHandle);
-                    if (FileUtil.isFileEmpty(recordfileName)){
-                        FileUtil.delFiles(recordfileName);
-                    }
-                }
+//                if (lib.thNetIsRec(devModel.NetHandle)) {
+//                    lib.thNetStopRec(devModel.NetHandle);
+//                    if (FileUtil.isFileEmpty(recordfileName)){
+//                        FileUtil.delFiles(recordfileName);
+//                    }
+//                }
                 glView.Stop();
                 this.finish(); // back button
                 break;

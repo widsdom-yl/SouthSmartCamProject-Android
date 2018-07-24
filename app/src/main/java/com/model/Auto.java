@@ -14,6 +14,10 @@ public class Auto {
     private int Delay;
     private int Lux;
     private int Brightness;
+    Auto(){
+        Brightness = 10;
+        Delay = 20;
+    }
     public void setDelay(int Delay) {
          this.Delay = Delay;
      }

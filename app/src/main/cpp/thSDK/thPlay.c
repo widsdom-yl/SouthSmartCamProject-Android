@@ -1217,7 +1217,7 @@ void thread_RecvData_P2P(HANDLE NetHandle)
       }
 
       Play->IsConnect = false;
-      if (Play->AlmEvent) Play->AlmEvent(Net_Disconn, t1, 0, Play->UserCustom);
+      //if (Play->AlmEvent) Play->AlmEvent(Net_Disconn, t1, 0, Play->UserCustom);
 
       ret = net_Connect_P2P(NetHandle, false);
       if (ret)

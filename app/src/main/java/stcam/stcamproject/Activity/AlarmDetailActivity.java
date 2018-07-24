@@ -26,7 +26,7 @@ public class AlarmDetailActivity extends BaseAppCompatActivity {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
 
-            setCustomTitle(getString(R.string.action_search),true);
+            setCustomTitle(getString(R.string.action_alarm),true);
 
 
         }

@@ -16,6 +16,9 @@ public class Timer {
     private int StartM;
     private int StopH;
     private int StopM;
+    Timer(){
+        Brightness = 10;
+    }
     public void setBrightness(int Brightness) {
          this.Brightness = Brightness;
      }

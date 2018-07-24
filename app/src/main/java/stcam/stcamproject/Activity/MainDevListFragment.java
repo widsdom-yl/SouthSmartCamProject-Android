@@ -427,8 +427,10 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
                     @Override
                     public void run() {
                         lod.dismiss();
-                        refreshLayout.setRefreshing(false);
-                        refreshLayout.setLoadMore(false);
+                        if (refreshLayout != null){
+                            refreshLayout.setRefreshing(false);
+                            refreshLayout.setLoadMore(false);
+                        }
                     }
                 });
 
