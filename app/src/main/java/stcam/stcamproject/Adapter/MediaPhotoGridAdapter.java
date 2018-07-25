@@ -1,15 +1,18 @@
 package stcam.stcamproject.Adapter;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 
+import java.io.File;
 import java.util.List;
 
+import stcam.stcamproject.Application.STApplication;
+import stcam.stcamproject.GlideApp;
 import stcam.stcamproject.R;
 
 public class MediaPhotoGridAdapter extends BaseAdapter<String>{
@@ -30,8 +33,16 @@ public class MediaPhotoGridAdapter extends BaseAdapter<String>{
 //        BitmapFactory.Options options = new BitmapFactory.Options();
 //        options.inSampleSize = 8;
         if (path.contains("jpg")){
-            Bitmap bitmap = BitmapFactory.decodeFile(path);
-            imageView.setImageBitmap(bitmap);
+            File file = new File(path);
+            Uri imageUri = Uri.fromFile(file);
+            GlideApp.with(STApplication.getInstance()).asBitmap()
+                    .load(imageUri)
+                    .centerCrop()
+                    .override(120, 80)
+                    .placeholder(R.drawable.imagethumb)
+                    .into(imageView);
+//            Bitmap bitmap = BitmapFactory.decodeFile(path);
+//            imageView.setImageBitmap(bitmap);
             play_image.setVisibility(View.INVISIBLE);
         }
         else if(path.contains("mp4")){
