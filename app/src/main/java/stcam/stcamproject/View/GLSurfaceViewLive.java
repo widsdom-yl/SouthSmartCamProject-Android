@@ -75,7 +75,7 @@ public class GLSurfaceViewLive extends GLSurfaceView {
                 }
                 if (hasCapture == false) {
                     hasCapture = true;
-                    String fileName = FileUtil.generatePathSnapShotFileName(model.SN);
+                    String fileName = FileUtil.generateThumbFileName(model.SN);
                     if (fileName != null){
                         lib.thNetSaveToJpg(model.NetHandle,fileName);
                     }

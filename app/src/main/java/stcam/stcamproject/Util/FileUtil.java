@@ -186,6 +186,23 @@ public class FileUtil {
         return null;
 
     }
+    public static String pathThumb(){
+        String rootPath = FileUtil.getSDRootPath();
+        if (rootPath != null){
+            String stPath = rootPath+"/STCam";
+            boolean ret = FileUtil.makeDir(stPath);
+            if (ret){
+                String snapPath = stPath+"/Thumb/";
+                ret = FileUtil.makeDir(snapPath);
+                if (ret){
+                    return snapPath;
+                }
+            }
+
+        }
+        return null;
+
+    }
     public static String pathRecord(){
         String rootPath = FileUtil.getSDRootPath();
         if (rootPath != null){
@@ -202,6 +219,16 @@ public class FileUtil {
         }
         return null;
     }
+    public static String generateThumbFileName(String sn){
+        String snapPath = FileUtil.pathThumb();
+        if (snapPath!=null){
+
+            String fileName = snapPath+sn+".jpg";
+            return fileName;
+        }
+        return null;
+    }
+
     public static String generatePathSnapShotFileName(String sn){
         String snapPath = FileUtil.pathSnapShot();
         if (snapPath!=null){
