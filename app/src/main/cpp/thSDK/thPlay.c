@@ -1123,7 +1123,7 @@ bool net_Connect_IP(HANDLE NetHandle, bool IsCreateRecvThread)
   }
 
   Play->IsExit = false;
-  if (IsCreateRecvThread) Play->thRecv = ThreadCreate(thread_RecvData_TCP, (void *) NetHandle, false);
+  if (IsCreateRecvThread) Play->thRecv = ThreadCreate((void*)thread_RecvData_TCP, (void *) NetHandle, false);
 
   Play->IsConnect = ret;
 
@@ -1374,7 +1374,7 @@ if (Play->p2p_SessionID < 0) goto exits;
   if (Play->DevCfg.p2pCfgPkt.Version > 1) Play->p2pSoftVersion = Play->DevCfg.p2pCfgPkt.Version;//由StreamType改过来的
   PRINTF("p2pSoftVersion:%d\n", Play->p2pSoftVersion);
 
-  if (IsCreateRecvThread) Play->thRecv = ThreadCreate(thread_RecvData_P2P, (void *) NetHandle, false);
+  if (IsCreateRecvThread) Play->thRecv = ThreadCreate((void*)thread_RecvData_P2P, (void *) NetHandle, false);
 
   Play->IsConnect = true;
   return Play->IsConnect;
@@ -1437,9 +1437,10 @@ bool thNet_Connect(HANDLE NetHandle, char *UserName, char *Password, char *IPUID
       Play->hQueueAudio = avQueue_Init(MAX_QUEUE_COUNT, true, true);
       Play->hQueueRec = avQueue_Init(MAX_QUEUE_COUNT, true, true);
 
-      Play->thQueueVideo = ThreadCreate(thread_QueueVideo, Play, false);
-      Play->thQueueAudio = ThreadCreate(thread_QueueAudio, Play, false);
-      Play->thQueueRec = ThreadCreate(thread_QueueRec, Play, false);
+      Play->thQueueVideo = ThreadCreate((void*)thread_QueueVideo, Play, false);
+      Play->thQueueAudio = ThreadCreate((void*)thread_QueueAudio, Play, false);
+      Play->thQueueRec = ThreadCreate((void*)
+                                        thread_QueueRec, Play, false);
     }
 
     if (Play->IsInsideDecode)
