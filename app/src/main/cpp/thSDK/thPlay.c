@@ -813,7 +813,10 @@ void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo *PInfo, char *Buf, int
       avQueue_Write(Play->hQueueVideo, Buf, BufLen, (char *) PInfo, sizeof(TDataFrameInfo));
     } else
     {
-      if (PInfo->Frame.StreamType != Play->DisplayStreamType) return;
+      if (Play->GroupType != pt_PlayHistory)
+      {
+        if (PInfo->Frame.StreamType != Play->DisplayStreamType) return;
+      }
       //1
       if (Play->DisplayStreamTypeOld != Play->DisplayStreamType)
       {
@@ -1046,11 +1049,18 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//·Ç×èÈû·½Ê½
 
         if (PHead->VerifyCode == Head_VideoPkt)
         {
-          //20180702 add
-          if (Play->VideoChlMask == 1 && Play->SubVideoChlMask == 0)
-          { if (PInfo->Frame.StreamType != 0) continue; }
-          if (Play->VideoChlMask == 0 && Play->SubVideoChlMask == 1)
-          { if (PInfo->Frame.StreamType != 1) continue; }
+          if (Play->GroupType != pt_PlayHistory)
+          {
+            //20180702 add
+            if (Play->VideoChlMask == 1 && Play->SubVideoChlMask == 0)
+            {
+              if (PInfo->Frame.StreamType != 0) continue;
+            }
+            if (Play->VideoChlMask == 0 && Play->SubVideoChlMask == 1)
+            {
+              if (PInfo->Frame.StreamType != 1) continue;
+            }
+          }
           //20180702 add
 
           if (!Play->IsIFrameFlag)
@@ -1273,12 +1283,19 @@ void thread_RecvData_P2P(HANDLE NetHandle)
 
     if (PInfo->Head.VerifyCode == Head_VideoPkt)
     {
-      //20180702 add
-      if (Play->VideoChlMask == 1 && Play->SubVideoChlMask == 0)
-      { if (PInfo->Frame.StreamType != 0) continue; }
-      if (Play->VideoChlMask == 0 && Play->SubVideoChlMask == 1)
-      { if (PInfo->Frame.StreamType != 1) continue; }
-      //20180702 add
+      if (Play->GroupType != pt_PlayHistory)
+      {
+        //20180702 add
+        if (Play->VideoChlMask == 1 && Play->SubVideoChlMask == 0)
+        {
+          if (PInfo->Frame.StreamType != 0) continue;
+        }
+        if (Play->VideoChlMask == 0 && Play->SubVideoChlMask == 1)
+        {
+          if (PInfo->Frame.StreamType != 1) continue;
+        }
+        //20180702 add
+      }
 
       if (!Play->IsIFrameFlag)
       {
@@ -1806,13 +1823,13 @@ bool thNet_RemoteFilePlay(HANDLE NetHandle, char *FileName)
   TPlayParam *Play = (TPlayParam *) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
-  PRINTF("%s(%s)(%s) FileName:%s\n", Play->IPUID, Play->LocalIP, FileName);
+  PRINTF("%s(%s) FileName:%s\n", Play->IPUID, Play->LocalIP, FileName);
   if (!Play->Isp2pConn)
   {
     TNetCmdPkt Pkt;
     bool ret = false;
     if (Play->Session == 0) return false;
-    Play->VideoChlMask = 0;
+    Play->VideoChlMask = 1;
     Play->AudioChlMask = 1;
     Play->SubVideoChlMask = 1;
     Play->GroupType = pt_PlayHistory;
@@ -1831,7 +1848,7 @@ bool thNet_RemoteFilePlay(HANDLE NetHandle, char *FileName)
 #ifdef IsUsedP2P
     i32 ret = false;
     TNewCmdPkt Pkt;
-    Play->VideoChlMask = 0;
+    Play->VideoChlMask = 1;
     Play->AudioChlMask = 1;
     Play->SubVideoChlMask = 1;
     Play->GroupType = pt_PlayHistory;
