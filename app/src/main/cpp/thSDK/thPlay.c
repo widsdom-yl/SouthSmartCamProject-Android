@@ -1123,7 +1123,7 @@ bool net_Connect_IP(HANDLE NetHandle, bool IsCreateRecvThread)
   }
 
   Play->IsExit = false;
-  if (IsCreateRecvThread) Play->thRecv = ThreadCreate((void*)thread_RecvData_TCP, (void *) NetHandle, false);
+  if (IsCreateRecvThread) Play->thRecv = ThreadCreate((void *) thread_RecvData_TCP, (void *) NetHandle, false);
 
   Play->IsConnect = ret;
 
@@ -1374,7 +1374,7 @@ if (Play->p2p_SessionID < 0) goto exits;
   if (Play->DevCfg.p2pCfgPkt.Version > 1) Play->p2pSoftVersion = Play->DevCfg.p2pCfgPkt.Version;//由StreamType改过来的
   PRINTF("p2pSoftVersion:%d\n", Play->p2pSoftVersion);
 
-  if (IsCreateRecvThread) Play->thRecv = ThreadCreate((void*)thread_RecvData_P2P, (void *) NetHandle, false);
+  if (IsCreateRecvThread) Play->thRecv = ThreadCreate((void *) thread_RecvData_P2P, (void *) NetHandle, false);
 
   Play->IsConnect = true;
   return Play->IsConnect;
@@ -1437,10 +1437,9 @@ bool thNet_Connect(HANDLE NetHandle, char *UserName, char *Password, char *IPUID
       Play->hQueueAudio = avQueue_Init(MAX_QUEUE_COUNT, true, true);
       Play->hQueueRec = avQueue_Init(MAX_QUEUE_COUNT, true, true);
 
-      Play->thQueueVideo = ThreadCreate((void*)thread_QueueVideo, Play, false);
-      Play->thQueueAudio = ThreadCreate((void*)thread_QueueAudio, Play, false);
-      Play->thQueueRec = ThreadCreate((void*)
-                                        thread_QueueRec, Play, false);
+      Play->thQueueVideo = ThreadCreate((void *) thread_QueueVideo, Play, false);
+      Play->thQueueAudio = ThreadCreate((void *) thread_QueueAudio, Play, false);
+      Play->thQueueRec = ThreadCreate((void *) thread_QueueRec, Play, false);
     }
 
     if (Play->IsInsideDecode)
@@ -1488,11 +1487,7 @@ bool thNet_DisConn(HANDLE NetHandle)
   ThreadUnlock(&Play->Lock);
   if (!Play->Isp2pConn)
   {
-    if (Play->thRecv > 0)
-    {
-      ThreadExit(Play->thRecv, 0);//1000;
-      Play->thRecv = 0;
-    }
+    ThreadExit(Play->thRecv, 0);//1000;
 
     Play->Session = 0;
     if (Play->hSocket > 0)
@@ -1503,11 +1498,8 @@ bool thNet_DisConn(HANDLE NetHandle)
   } else
   {
 #ifdef IsUsedP2P
-    if (Play->thRecv > 0)
-    {
-      ThreadExit(Play->thRecv, 0);//1000;
-      Play->thRecv = 0;
-    }
+    ThreadExit(Play->thRecv, 0);//1000;
+
     if (Play->p2p_avIndex >= 0)
     {
       avClientStop(Play->p2p_avIndex);
@@ -1554,11 +1546,7 @@ bool thNet_DisConn(HANDLE NetHandle)
       Play->hQueueDraw = NULL;
     }
 
-    if (Play->thQueueVideo)
-    {
-      ThreadExit(Play->thQueueVideo, 0);//1000;
-      Play->thQueueVideo = NULL;
-    }
+    ThreadExit(Play->thQueueVideo, 0);//1000;
 
     if (Play->hQueueVideo)
     {
@@ -1566,11 +1554,7 @@ bool thNet_DisConn(HANDLE NetHandle)
       Play->hQueueVideo = NULL;
     }
 
-    if (Play->thQueueAudio)
-    {
-      ThreadExit(Play->thQueueAudio, 0);//1000;
-      Play->thQueueAudio = NULL;
-    }
+    ThreadExit(Play->thQueueAudio, 0);//1000;
 
     if (Play->hQueueAudio)
     {
@@ -1578,11 +1562,7 @@ bool thNet_DisConn(HANDLE NetHandle)
       Play->hQueueAudio = 0;
     }
 
-    if (Play->thQueueRec)
-    {
-      ThreadExit(Play->thQueueRec, 0);//1000;
-      Play->thQueueRec = NULL;
-    }
+    ThreadExit(Play->thQueueRec, 0);//1000;
 
     if (Play->hQueueRec)
     {
