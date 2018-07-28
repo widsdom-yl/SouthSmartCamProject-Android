@@ -253,14 +253,24 @@ public class DevModel implements Parcelable
 
   public boolean Disconn()
   {
-    //return lib.thNetDisConn(NetHandle);
-    boolean ret = lib.thNetDisConn(NetHandle);
-    if (ret)
+
+    new Thread()
     {
-      lib.thNetFree(NetHandle);
-      NetHandle = 0;
-    }
-    return ret;
+      @Override
+      public void run()
+      {
+        boolean ret = lib.thNetDisConn(NetHandle);
+        if (ret)
+        {
+          lib.thNetFree(NetHandle);
+          NetHandle = 0;
+        }
+
+      }
+    }.start();
+    return true;
+    //return lib.thNetDisConn(NetHandle);
+
   }
 
   public boolean IsConnect()

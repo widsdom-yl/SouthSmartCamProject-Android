@@ -116,6 +116,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
       .show(f1)
       .commit();
 
+//    getSupportFragmentManager().beginTransaction()
+//            .replace(R.id.content_container,f1).commit();
+
 
     this.settab();
     tx1.setTextColor(Config.greenColor);
@@ -131,6 +134,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
       .hide(f3)
       .hide(f4)
       .commit();
+
+//    getSupportFragmentManager().beginTransaction()
+//            .replace(R.id.content_container,f2).commit();
 
 
     this.settab();
@@ -150,6 +156,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
       .show(f3)
       .commit();
 
+//    getSupportFragmentManager().beginTransaction()
+//            .replace(R.id.content_container,f3).commit();
+
 
     this.settab();
     tx3.setTextColor(Config.greenColor);
@@ -167,6 +176,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
       .show(f4)
       .commit();
 
+//    getSupportFragmentManager().beginTransaction()
+//            .replace(R.id.content_container,f4).commit();
 
     this.settab();
     tx4.setTextColor(Config.greenColor);

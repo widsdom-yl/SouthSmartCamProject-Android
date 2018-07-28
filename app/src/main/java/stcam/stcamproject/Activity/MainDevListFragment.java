@@ -71,6 +71,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
     @Override
     public void OnNetWorkBreakListener() {
+        Log.e(tag,"OnNetWorkBreakListener ---------------0");
         if (mDevices != null){
             for (DevModel devModel : mDevices){
                 if (devModel.IsConnect()){
@@ -81,6 +82,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
                 mAdapter.notifyDataSetChanged();
             }
         }
+        Log.e(tag,"OnNetWorkBreakListener ---------------1");
 
     }
 
