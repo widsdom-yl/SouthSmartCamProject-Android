@@ -60,7 +60,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
                 String usr = AccountManager.getInstance().getDefaultUsr();
                 String pwd = AccountManager.getInstance().getDefaultPwd();
                 if (isRemeber && usr.length()>0 && pwd.length()>0){
-                    Intent intent = new Intent(STApplication.getInstance(), MainActivity.class);
+                    Intent intent = new Intent(STApplication.getInstance(), MainViewPagerActivity.class);
                     intent.putExtra("entry", MainDevListFragment.EnumMainEntry.EnumMainEntry_Login);
                     startActivity(intent);
                     finish();
@@ -80,7 +80,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(this, MainViewPagerActivity.class);
         startActivity(intent);
         finish();
     }

@@ -62,11 +62,13 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".Activity.AlarmDetailActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Activity.AlarmDetailActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".Activity.MediaPhotoListActivity" />
-        <activity android:name=".Activity.MediaPhotoDetailActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Activity.MediaPhotoDetailActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".Activity.AddDeviceOneStepNext" />
         <activity android:name=".Activity.AddDeviceAP2StaActivity" />
         <activity android:name=".Activity.ChangeDevicePwdActivity" />
@@ -93,7 +95,8 @@
         <activity
             android:name=".Activity.VideoPlayerAct"
             android:screenOrientation="landscape" />
-        <activity android:name=".Activity.BaseAppCompatActivity"></activity>
+        <activity android:name=".Activity.BaseAppCompatActivity" />
+        <activity android:name=".Activity.MainViewPagerActivity"></activity>
     </application>
 
 </manifest>
