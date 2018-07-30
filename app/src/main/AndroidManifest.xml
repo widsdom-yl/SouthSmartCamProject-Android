@@ -96,7 +96,10 @@
             android:name=".Activity.VideoPlayerAct"
             android:screenOrientation="landscape" />
         <activity android:name=".Activity.BaseAppCompatActivity" />
-        <activity android:name=".Activity.MainViewPagerActivity"></activity>
+        <activity android:name=".Activity.MainViewPagerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

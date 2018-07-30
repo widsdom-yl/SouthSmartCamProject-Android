@@ -52,6 +52,15 @@ public class MainViewPagerActivity extends AppCompatActivity implements View.OnC
 
 
 
+
+//        if (entryType == MainDevListFragment.EnumMainEntry.EnumMainEntry_Login){
+//            mViewPager.setOffscreenPageLimit(4);
+//        }
+//        else{
+//            mViewPager.setOffscreenPageLimit(1);
+//        }
+
+
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -125,6 +134,7 @@ public class MainViewPagerActivity extends AppCompatActivity implements View.OnC
         else if(2 == position){
             tx3.setTextColor(Config.greenColor);
             image_3.setSelected(true);
+            MediaFragment.newInstance().refreshUI();
         }
         else if(3 == position){
             tx4.setTextColor(Config.greenColor);

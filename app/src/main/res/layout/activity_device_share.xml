@@ -9,71 +9,118 @@
     <TableLayout
         android:id="@+id/tableLayout"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="50dp"
         android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <View
 
                 android:layout_width="0dp"
+
                 android:layout_height="wrap_content"
                 android:layout_weight="0.2"
-                android:text="@string/action_share_aud"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="35dp" />
-            <CheckBox
-                android:id="@+id/checkBox_vid"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/action_share_aud"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="35dp" />
+                android:text="@string/action_share_aud" />
 
-            <CheckBox
-                android:id="@+id/checkBox_playback"
+            <RelativeLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_weight="1"
-                android:text="@string/action_share_playback" />
+                >
+                <CheckBox
+                    android:id="@+id/checkBox_vid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
 
-            <CheckBox
-                android:id="@+id/checkBox_push"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/action_share_push"
-                app:layout_constraintStart_toEndOf="@+id/checkBox_vid"
-                tools:layout_editor_absoluteY="35dp" />
+                    android:layout_centerVertical="true"
+                     />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/action_share_aud"
+                    android:textColor="#000000"
+                    android:layout_toRightOf="@+id/checkBox_vid"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
 
-            <CheckBox
-                android:id="@+id/checkBox_control"
+
+
+
+            <RelativeLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_weight="1"
-                android:text="@string/action_share_control"
-                tools:layout_editor_absoluteX="308dp"
-                tools:layout_editor_absoluteY="35dp" />
+                >
+                <CheckBox
+                    android:id="@+id/checkBox_playback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_centerVertical="true"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/action_share_playback"
+                    android:textColor="#000000"
+                    android:layout_toRightOf="@+id/checkBox_playback"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+
+
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                >
+                <CheckBox
+                    android:id="@+id/checkBox_push"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_centerVertical="true"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/action_share_push"
+                    android:textColor="#000000"
+                    android:layout_toRightOf="@+id/checkBox_push"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+
+
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                >
+                <CheckBox
+                    android:id="@+id/checkBox_control"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_centerVertical="true"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/action_share_control"
+                    android:textColor="#000000"
+                    android:layout_toRightOf="@+id/checkBox_control"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
 
         </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
     </TableLayout>
 
     <Button
@@ -84,13 +131,13 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="90dp"
         android:background="@drawable/button_green_corner"
         android:text="@string/action_generate_share"
         android:textColor="#ffffff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/qr_imageView"
