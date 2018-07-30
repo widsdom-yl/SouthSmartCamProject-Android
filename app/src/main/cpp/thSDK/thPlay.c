@@ -371,6 +371,7 @@ bool thNet_Free(HANDLE NetHandle)
   if (NetHandle == 0) return false;
   PRINTF("%s(%s)(%s)\n", __FUNCTION__, Play->IPUID, Play->LocalIP);
   thNet_DisConn(NetHandle);
+
   ThreadLockFree(&Play->Lock);
   pthread_cond_destroy(&Play->SyncCond);
   memset(Play, 0, sizeof(TPlayParam));
@@ -1338,7 +1339,7 @@ bool net_Connect_P2P(HANDLE NetHandle, bool IsCreateRecvThread)
   i32 tmpSID;
   i32 ret = false;
   TPlayParam *Play = (TPlayParam *) NetHandle;
-  PRINTF("================ before connect p2p,Play->IPUID:%s\n", Play->IPUID);
+
   if (NetHandle == 0) return false;
   if (Play->IsConnect) return true;
   Play->IsConnect = false;
@@ -1354,35 +1355,26 @@ bool net_Connect_P2P(HANDLE NetHandle, bool IsCreateRecvThread)
 sprintf(sLocalIP, GetLocalIP());
 strcpy(Play->LocalIP, sLocalIP);
 #endif
-  //#warning "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
 #if 1
   tmpSID = IOTC_Get_SessionID();
-  PRINTF("================ -1  connect p2p,tmpSID :%d,Play->IPUID:%s\n", tmpSID, Play->IPUID);
   Play->p2p_SessionID = IOTC_Connect_ByUID_Parallel(Play->IPUID, tmpSID);
-  PRINTF("================ -2  connect p2p,Play->p2p_SessionID :%d,Play->IPUID:%s\n", Play->p2p_SessionID, Play->IPUID);
   if (Play->p2p_SessionID < 0) goto exits;
 #else
   Play->p2p_SessionID = IOTC_Connect_ByUID(Play->IPUID);
-PRINTF("%s(%d) IOTC_Connect_ByUID:%d\n", __FUNCTION__, __LINE__, Play->p2p_SessionID);
-if (Play->p2p_SessionID < 0) goto exits;
+  if (Play->p2p_SessionID < 0) goto exits;
 #endif
 
   memset(&Sinfo, 0, sizeof(struct st_SInfo));
   IOTC_Session_Check(Play->p2p_SessionID, &Sinfo);
   Play->p2p_avIndex = avClientStart2(Play->p2p_SessionID, Play->UserName, Play->Password, Play->TimeOut, &nServType, 0,
                                      &nResend);
-  PRINTF("================ 0  connect p2p,nethandel is %lld\n", NetHandle);
-  if (Play->p2p_avIndex < 0) goto exits;
-  PRINTF("================ 1 connect p2p,nethandel is %lld\n", NetHandle);
-  avSendIOCtrl(Play->p2p_avIndex, IOTYPE_INNER_SND_DATA_DELAY, (char *) &val, sizeof(u16));
-#define AUDIO_SPEAKER_CHANNEL 5
-  //Play->p2p_talkIndex = avServStart(Play->p2p_SessionID, NULL, NULL, 60, 0, AUDIO_SPEAKER_CHANNEL);
-  Play->p2p_talkIndex = avServStart(Play->p2p_SessionID, NULL, NULL, Play->TimeOut, 0, AUDIO_SPEAKER_CHANNEL);
 
-  if (Play->p2p_talkIndex < 0) goto exits;
+  if (Play->p2p_avIndex < 0) goto exits;
+
+  //zzhhbb avSendIOCtrl(Play->p2p_avIndex, IOTYPE_INNER_SND_DATA_DELAY, (char *) &val, sizeof(u16));
 
   ret = net_GetAllCfg(NetHandle);
-  PRINTF("================ 2 connect p2p,nethandel is %lld\n", NetHandle);
   if (!ret) goto exits;
   ret = sscanf(Play->DevCfg.DevInfoPkt.SoftVersion, "V%d.%d.%d.%d", &v1, &v2, &v3, &v4);
   Play->p2pSoftVersion = 0;//old
@@ -1540,6 +1532,7 @@ bool thNet_DisConn(HANDLE NetHandle)
   }
   Play->IsConnect = false;
   Play->iConnectStatus = THNET_CONNSTATUS_NO;
+  
   if (Play->IsQueue)
   {
     if (Play->hTimerIDQueueDraw)
@@ -1788,6 +1781,14 @@ bool thNet_TalkOpen(HANDLE NetHandle)
   if (!Play->IsConnect) return false;
   if (!Play->IsInsideDecode) return false;
   PRINTF("%s(%s)(%s)\n", __FUNCTION__, Play->IPUID, Play->LocalIP);
+
+  if (Play->Isp2pConn && Play->p2p_talkIndex < 0)
+  {
+#define AUDIO_SPEAKER_CHANNEL 5
+    Play->p2p_talkIndex = avServStart(Play->p2p_SessionID, NULL, NULL, Play->TimeOut, 0, AUDIO_SPEAKER_CHANNEL);
+    if (Play->p2p_talkIndex < 0) return false;
+  }
+
   ThreadLock(&Play->Lock);
   Play->talkHandle = thAudioTalk_Init();
   if (Play->talkHandle)
@@ -1815,6 +1816,7 @@ bool thNet_TalkClose(HANDLE NetHandle)
     Play->talkHandle = NULL;
     ThreadUnlock(&Play->Lock);
   }
+
   return true;
 }
 //-----------------------------------------------------------------------------
@@ -2387,6 +2389,7 @@ bool thNet_ExtendDraw(HANDLE NetHandle)//android opengl render
   int ret = false;
   TPlayParam *Play = (TPlayParam *) NetHandle;
   if (NetHandle == 0) return false;
+  if (!Play->IsConnect) return false;
   if (Play->RenderHandle == 0) return false;
   if (Play->IsQueue)
   {
@@ -2396,10 +2399,11 @@ bool thNet_ExtendDraw(HANDLE NetHandle)//android opengl render
   {
     struct timeval tm;
     struct timespec tnow;
+    PRINTF("%s(%d) NetHandle:%d\n", __FUNCTION__, __LINE__, NetHandle);
     pthread_mutex_lock(&Play->Lock);
     //      pthread_cond_wait(&Play->SyncCond, &Play->Lock);
     gettimeofday(&tm, NULL);
-    tnow.tv_sec = tm.tv_sec + 2;
+    tnow.tv_sec = tm.tv_sec + 1;
     tnow.tv_nsec = tm.tv_usec * 1000;
     ret = pthread_cond_timedwait(&Play->SyncCond, &Play->Lock, &tnow);
     pthread_mutex_unlock(&Play->Lock);
