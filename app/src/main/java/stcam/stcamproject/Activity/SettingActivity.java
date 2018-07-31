@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -743,6 +742,8 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
                 DataManager.getInstance().deleteDev(model);
                 for (DevModel existModel : MainDevListFragment.mDevices){
                     if (model.SN.equals(existModel.SN)){
+                    	existModel.Disconn();
+                        existModel.NetHandle = 0;
                         MainDevListFragment.mDevices.remove(existModel);
                         break;
                     }
@@ -758,7 +759,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     };
 
     void back2TopActivity(){
-        Intent intent= new Intent(this, MainActivity.class);
+        Intent intent= new Intent(this, MainViewPagerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 

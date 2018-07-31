@@ -122,7 +122,7 @@ public class LoginActivity extends BaseAppCompatActivity  {
         visitor_button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(STApplication.getInstance(), MainActivity.class);
+                Intent intent = new Intent(STApplication.getInstance(), MainViewPagerActivity.class);
                 intent.putExtra("entry", MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor);
                 startActivity(intent);
             }
@@ -291,7 +291,7 @@ public class LoginActivity extends BaseAppCompatActivity  {
                 String email = mEmailView.getText().toString();
                 String password = mPasswordView.getText().toString();
                 AccountManager.getInstance().saveAccount(email,password,remeber);
-                Intent intent = new Intent(STApplication.getInstance(), MainActivity.class);
+                Intent intent = new Intent(STApplication.getInstance(), MainViewPagerActivity.class);
                 intent.putExtra("entry", MainDevListFragment.EnumMainEntry.EnumMainEntry_Login);
                 startActivity(intent);
                 LoginActivity.this.finish();

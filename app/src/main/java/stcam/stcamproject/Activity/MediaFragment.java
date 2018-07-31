@@ -55,8 +55,11 @@ public class MediaFragment extends Fragment implements BaseAdapter.OnItemClickLi
             }
 
         }
+        refreshUI();
         return view;
     }
+
+
 
     @Override
     public void onResume() {
