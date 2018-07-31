@@ -107,7 +107,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
                 loadDevList(false);
             }
         }
-        else {
+        else if (entryType == EnumMainEntry_Visitor){
             if (mDevices != null)
                 mDevices.clear();
             searchDevices();
@@ -129,6 +129,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     }
 
     public enum EnumMainEntry implements Serializable {
+        EnumMainEntry_Null,
         EnumMainEntry_Login,
         EnumMainEntry_Visitor
     }
@@ -210,7 +211,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
                 if (entryType == EnumMainEntry.EnumMainEntry_Login){
                     loadDevList(false);
                 }
-                else{
+                else if (entryType == EnumMainEntry_Visitor){
                     searchDevices();
                 }
             }

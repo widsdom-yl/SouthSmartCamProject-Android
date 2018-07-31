@@ -159,6 +159,7 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
     void back2TopActivity(){
             Intent intent= new Intent(this, MainViewPagerActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
 
     }
