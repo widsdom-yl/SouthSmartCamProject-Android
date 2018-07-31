@@ -251,6 +251,13 @@ public class DevModel implements Parcelable
     return lib.thNetGetAllCfg(NetHandle);
   }
 
+  public boolean Disconn2()
+  {
+    boolean ret = lib.thNetDisConn(NetHandle);
+    lib.thNetFree(NetHandle);
+    NetHandle = 0;
+    return ret;
+  }
   public boolean Disconn()
   {
 

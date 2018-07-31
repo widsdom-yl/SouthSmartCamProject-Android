@@ -742,7 +742,8 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
                 DataManager.getInstance().deleteDev(model);
                 for (DevModel existModel : MainDevListFragment.mDevices){
                     if (model.SN.equals(existModel.SN)){
-                    	existModel.Disconn();
+                    	existModel.Disconn2();
+                      //zhb existModel.Disconn();
                         existModel.NetHandle = 0;
                         MainDevListFragment.mDevices.remove(existModel);
                         break;
