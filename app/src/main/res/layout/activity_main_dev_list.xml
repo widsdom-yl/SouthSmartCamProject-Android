@@ -65,17 +65,26 @@
         android:textColor="@drawable/white_text_color"
         android:textSize="14sp" />
 
-    <com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout
+    <!--<com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout-->
 
-        android:id="@+id/swipeRefreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/navigation">
+        <!--android:id="@+id/swipeRefreshLayout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_below="@id/navigation">-->
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/swipeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/navigation">
+
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyler_device"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
           />
-    </com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
+    <!--</com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout>-->
 </RelativeLayout>

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 
-import com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout;
 import com.model.DevModel;
 import com.model.SearchDevModel;
 import com.thSDK.TMsg;
@@ -58,10 +58,11 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     Button search_button;
     public static  List<DevModel>mDevices = new ArrayList<>();//这个list中的model，判断了连接状态
     List<DevModel>mAccountDevices = new ArrayList<>();//没有连接状态
-    SuperSwipeRefreshLayout refreshLayout;
-
+   // SuperSwipeRefreshLayout refreshLayout;
+   SwipeRefreshLayout swipeContainer;
     EnumMainEntry entryType;
 
+    boolean hasReceivedNetWorkchange;//是否收到网络监听变化，这个变量在进入此fragement页面中，会收到网络回调，这个值会值1，但是考虑到网络请求，当有设备列表或者搜索设备返回时候，这个值为true
     private IntentFilter intentFilter;
     private NetworkChangeReceiver networkChangeReceiver;
 
@@ -157,7 +158,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
         if (bundle != null){
             entryType = (EnumMainEntry) bundle.getSerializable("entry");
         }
-
+        hasReceivedNetWorkchange = false;
 
 
 
@@ -207,7 +208,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
                  existModel.updateUserAndPwd();
             }
 
-            if (mDevices.size() > 0){
+            if (hasReceivedNetWorkchange){
                 if (entryType == EnumMainEntry.EnumMainEntry_Login){
                     loadDevList(false);
                 }
@@ -215,7 +216,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
                     searchDevices();
                 }
             }
-
+            
         }
 
 
@@ -321,7 +322,16 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
     }
     void initView(View view){
-        refreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+      //  refreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        swipeContainer =  view.findViewById(R.id.swipeContainer);
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+
+
         mRecyclerView = view.findViewById(R.id.recyler_device);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -329,49 +339,62 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
          mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         if (entryType == EnumMainEntry.EnumMainEntry_Login){
-            refreshLayout
-                    .setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
+//            refreshLayout
+//                    .setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
+//
+//                        @Override
+//                        public void onRefresh() {
+//                            //TODO 开始刷新
+//                            loadDevList(true);
+//                        }
+//
+//                        @Override
+//                        public void onPullDistance(int distance) {
+//                            //TODO 下拉距离
+//                        }
+//
+//                        @Override
+//                        public void onPullEnable(boolean enable) {
+//                            //TODO 下拉过程中，下拉的距离是否足够出发刷新
+//                        }
+//                    });
+//            refreshLayout
+//                    .setOnPushLoadMoreListener(new SuperSwipeRefreshLayout.OnPushLoadMoreListener() {
+//
+//                        @Override
+//                        public void onLoadMore() {
+//                            loadDevList(true);
+//                        }
+//
+//                        @Override
+//                        public void onPushEnable(boolean enable) {
+//                            //TODO 上拉过程中，上拉的距离是否足够出发刷新
+//                        }
+//
+//                        @Override
+//                        public void onPushDistance(int distance) {
+//                            // TODO 上拉距离
+//
+//                        }
+//
+//                    });
+//            refreshLayout.setFooterView(createFooterView());
 
-                        @Override
-                        public void onRefresh() {
-                            //TODO 开始刷新
-                            loadDevList(true);
-                        }
+            swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    // Your code to refresh the list here.
+                    // Make sure you call swipeContainer.setRefreshing(false)
+                    // once the network request has completed successfully.
+                    loadDevList(true);
+                }
+            });
 
-                        @Override
-                        public void onPullDistance(int distance) {
-                            //TODO 下拉距离
-                        }
 
-                        @Override
-                        public void onPullEnable(boolean enable) {
-                            //TODO 下拉过程中，下拉的距离是否足够出发刷新
-                        }
-                    });
-            refreshLayout
-                    .setOnPushLoadMoreListener(new SuperSwipeRefreshLayout.OnPushLoadMoreListener() {
 
-                        @Override
-                        public void onLoadMore() {
-                            loadDevList(true);
-                        }
-
-                        @Override
-                        public void onPushEnable(boolean enable) {
-                            //TODO 上拉过程中，上拉的距离是否足够出发刷新
-                        }
-
-                        @Override
-                        public void onPushDistance(int distance) {
-                            // TODO 上拉距离
-
-                        }
-
-                    });
-            refreshLayout.setFooterView(createFooterView());
         }
         else{
-            refreshLayout.setEnabled(false);
+            swipeContainer.setEnabled(false);
         }
 
 
@@ -424,15 +447,16 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
             public void onFailure(Call call, IOException e) {
                 Activity activity = MainDevListFragment.this.getActivity();
                 if (activity == null) {
+
                     return;
                 }
+                hasReceivedNetWorkchange = true;
                 MainDevListFragment.this.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         lod.dismiss();
-                        if (refreshLayout != null){
-                            refreshLayout.setRefreshing(false);
-                            refreshLayout.setLoadMore(false);
+                        if (swipeContainer != null){
+                            swipeContainer.setRefreshing(false);
                         }
                     }
                 });
@@ -444,15 +468,16 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
             public void onResponse(Call call, Response response) throws IOException {
                 Activity activity = MainDevListFragment.this.getActivity();
                 if (activity == null) {
+
                     return;
                 }
+                hasReceivedNetWorkchange = true;
                 MainDevListFragment.this.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         lod.dismiss();
-                        if (refreshLayout != null){
-                            refreshLayout.setRefreshing(false);
-                            refreshLayout.setLoadMore(false);
+                        if (swipeContainer != null){
+                            swipeContainer.setRefreshing(false);
                         }
                     }
                 });
@@ -542,8 +567,9 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
         @Override
         public void onCompleted() {
             lod.dismiss();
-            refreshLayout.setRefreshing(false);
-            refreshLayout.setLoadMore(false);
+            if (swipeContainer != null){
+                swipeContainer.setRefreshing(false);
+            }
 
            // refreshLayout.setLoading(false);
 
@@ -553,8 +579,9 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
         @Override
         public void onError(Throwable e) {
             lod.dismiss();
-            refreshLayout.setRefreshing(false);
-            refreshLayout.setLoadMore(false);
+            if (swipeContainer != null){
+                swipeContainer.setRefreshing(false);
+            }
             Log.e(tag,"---------------------1:"+e.getLocalizedMessage());
         }
 
@@ -788,6 +815,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
 
             super.handleMessage(msg);
+            hasReceivedNetWorkchange = true;
             switch (msg.what)
             {
                 case TMsg.Msg_SearchOver:
