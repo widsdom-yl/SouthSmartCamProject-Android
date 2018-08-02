@@ -100,7 +100,7 @@
     <string name="device_pwd">连接密码</string>
     <string name="action_device_pwd">密码管理</string>
     <string name="action_change_device_pwd">修改密码</string>
-    <string name="device_version">版本</string>
+    <string name="device_version">设备版本</string>
     <string name="action_delete_device">删除设备</string>
     <string name="action_led_control">灯光控制</string>
     <string name="action_led_model">亮灯模式</string>
@@ -151,7 +151,7 @@
     <string name="action_reset_origin">恢复出厂设置</string>
     <string name="action_manager_volume">视频储存管理</string>
     <string name="action_manager_alarm_level">图像侦测灵敏度</string>
-    <string name="action_version">版本</string>
+    <string name="action_version">设备版本</string>
     <string name="action_request_ssid">请填写wifi信息</string>
     <string name="SmartConfigOver">Configuration finish</string>
     <string name="SmartConfig">智能配置</string>

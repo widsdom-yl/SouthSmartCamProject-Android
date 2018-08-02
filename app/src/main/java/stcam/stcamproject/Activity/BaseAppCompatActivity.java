@@ -21,8 +21,9 @@ public class BaseAppCompatActivity extends AppCompatActivity {
 
         TextView textView = new TextView(this);
         textView.setText(title);
-        textView.setTextSize(22);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        //zhb textView.setTextSize(22);
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
+          LinearLayout.LayoutParams.WRAP_CONTENT));
         textView.setGravity(Gravity.CENTER);
 
 

@@ -472,8 +472,8 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetSearchDevice(JNIEnv* env, jcla
   gettimeofday(&tv1, NULL);
   while (1)
   {
-    usleep(1000* 10);
-    //thSearch_SearchDevice(SearchHandle);
+    usleep(1000 * 100);
+    thSearch_SearchDevice(SearchHandle);
     gettimeofday(&tv2, NULL);
     if (timeval_dec(&tv2, &tv1) >= TimeOut) break;
   }
