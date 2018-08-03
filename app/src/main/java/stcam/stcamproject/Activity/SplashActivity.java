@@ -38,8 +38,9 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
             PackageInfo packageInfo = this.getApplicationContext()
                     .getPackageManager()
                     .getPackageInfo(this.getPackageName(), 0);
-            int localVersion = packageInfo.versionCode;
-            tv.setText(""+localVersion);
+            //int localVersion = packageInfo.versionCode;
+            String localVersion = packageInfo.versionName;
+            tv.setText("Version:"+localVersion);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
