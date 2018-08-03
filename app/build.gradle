@@ -18,8 +18,8 @@ android {
         applicationId "stcam.stcamproject"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 39
-        versionName "1.1.4"
+        versionCode 40
+        versionName "1.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
