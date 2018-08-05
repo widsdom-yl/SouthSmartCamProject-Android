@@ -132,6 +132,7 @@
     <string name="action_system_setting">系统设置</string>
     <string name="action_alarm_sound">报警声音</string>
     <string name="action_app_version">App版本</string>
+    <string name="action_dev_version">设备</string>
     <string name="action_change_system_password">账号密码管理</string>
     <string name="action_share_manager">分享管理</string>
     <string name="action_share_account_manager">分享账号管理</string>
@@ -215,4 +216,7 @@
     <string name="string_no_record_permisson">当前没有回放权限</string>
     <string name="string_no_push_permisson">当前没有推送权限</string>
     <string name="action_exit_ask">确定退出登录?</string>
+    <string name="tip_version_new">当前固件版本为最新版本，无需升级</string>
+    <string name="tip_version_old">设备固件有更新，是否升级？</string>
+    <string name="action_updating_device">设备正在升级固件，请保待设备网络畅通</string>
 </resources>

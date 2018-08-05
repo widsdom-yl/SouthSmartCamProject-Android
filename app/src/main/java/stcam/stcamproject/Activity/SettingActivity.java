@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.model.DevModel;
 import com.model.PushSettingModel;
 import com.model.RetModel;
+import com.model.UpdateDevModel;
 import com.thSDK.lib;
 
 import org.json.JSONException;
@@ -106,8 +107,6 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
             getPushConfigTask pushConfigTask = new getPushConfigTask();
             pushConfigTask.execute();
         }
-
-
 
 
     }
@@ -350,10 +349,25 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
             startActivity(intent);
         }
 
-//        else if(4 == position){
-//            dialogChoice();
-//        }
+        else if(4 == position){
+            checkDevUpdate();
+        }
     }
+
+
+    void checkDevUpdate(){
+        if (lod == null) {
+            lod = new LoadingDialog(this);
+        }
+
+        lod.dialogShow();
+        ServerNetWork.getCommandApi()
+                .app_upgrade_dev_check(1)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer_check_dev_update);
+    }
+
 
     /*开关*/
     private void dialogChoice1() {
@@ -720,6 +734,59 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     };
 
 
+    Observer<UpdateDevModel> observer_check_dev_update = new Observer<UpdateDevModel>() {
+        @Override
+        public void onCompleted() {
+            lod.dismiss();
+            Log.e(tag,"---------------------2");
+        }
+        @Override
+        public void onError(Throwable e) {
+            lod.dismiss();
+            Log.e(tag,"---------------------1:"+e.getLocalizedMessage());
+
+
+        }
+
+        @Override
+        public void onNext(final UpdateDevModel m) {
+            lod.dismiss();
+            if (m != null){
+                Log.e(tag,"---------------------onNext:"+m.ver);
+                if (!m.ver.subSequence(0,10).equals(model.SoftVersion.subSequence(0,10))){
+                    //提示升级
+                    new AlertDialog.Builder(SettingActivity.this)
+                            .setTitle(SettingActivity.this.getString(R.string.tip_version_old))
+                            .setPositiveButton(getString(R.string.action_ok), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    updateDev(m);
+
+                                }
+                            })
+                            .setNegativeButton(getString(R.string.action_cancel), null)
+                            .show();
+                }
+                else{
+                    SouthUtil.showToast(SettingActivity.this,getString(R.string.tip_version_new));
+                }
+            }
+
+
+
+        }
+    };
+
+    void updateDev(UpdateDevModel updateModel){
+        //升级设备
+        if (lod == null){
+            lod = new LoadingDialog(this);
+        }
+        UpdateDevTask task = new UpdateDevTask();
+        task.execute(updateModel.ver,""+updateModel.crc,updateModel.url);
+    }
+
+
     Observer<RetModel> observer_delete = new Observer<RetModel>() {
         @Override
         public void onCompleted() {
@@ -828,6 +895,48 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
         protected void onPostExecute(String result) {
 
 
+            super.onPostExecute(result);
+        }
+    }
+
+    //升级设备固件版本
+    class UpdateDevTask extends AsyncTask<String, Void, String> {
+        // AsyncTask<Params, Progress, Result>
+        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
+        @Override
+        protected void onPreExecute() {
+            //第一个执行方法
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            //http://%s:%d/cfg1.cgi?User=admin&Psd=admin&MsgID=93&ver=V7.214.1719&crc=-25224078&url=/UpgradeDev/x8_V7.214.1719_s1030_18e200fs16M.upd
+            String url = "http://"+model.IPUID+":"+model.WebPort+"/cfg1.cgi?User="+model.usr+"&Psd="+model.pwd+"&MsgID=93&ver="+params[0]+"&crc="+params[1]+"&url="+params[2];
+            Log.e(tag,url+"" +
+                    ""+model.NetHandle);
+            String ret = lib.thNetHttpGet(model.NetHandle,url);
+            Log.e(tag,"ret :"+ret);
+            return ret;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
+            //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
+            //Log.e(tag,"get playback list :"+result);
+            lod.dismiss();
+
+            RetModel retModel = GsonUtil.parseJsonWithGson(result,RetModel.class);
+            if (retModel != null){
+                if (retModel.ret == 1){
+                    SouthUtil.showDialog(SettingActivity.this,getString(R.string.action_updating_device));
+                }
+                else{
+                    SouthUtil.showToast(SettingActivity.this,getString(R.string.action_Failed));
+                }
+            }
+            else{
+                SouthUtil.showToast(SettingActivity.this,getString(R.string.action_Failed));
+            }
             super.onPostExecute(result);
         }
     }
