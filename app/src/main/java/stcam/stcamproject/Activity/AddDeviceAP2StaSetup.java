@@ -229,6 +229,7 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
             startActivity(intent);
 
             Intent intent1= new Intent(this, AddDeviceWlanActivity.class);
+            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             STApplication.getInstance().startActivity(intent1);
 
         }
@@ -249,6 +250,7 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
                 if (devModel.SN.equals(existModel.SN)){
                     existModel.Disconn();
                     existModel.NetHandle = 0;
+                    MainDevListFragment.mDevices.remove(existModel);
                 }
             }
             back2TopActivity(true);
