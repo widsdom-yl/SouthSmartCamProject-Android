@@ -170,12 +170,14 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
     }
     void refreshView(){
-        List<String> files= FileUtil.getSNFilesFromPath(FileUtil.pathSnapShot(),model.SN);
+
+        List<String> files= FileUtil.getSNFilesFromPath(FileUtil.pathThumb(),model.SN);
         if (files.size()>0){
 
             Bitmap bitmap = BitmapFactory.decodeFile(files.get(0));
             imageview_thumb.setImageBitmap(bitmap);
         }
+        
         textview_uid.setText(model.UID);
         mAdapter.notifyDataSetChanged();
     }
