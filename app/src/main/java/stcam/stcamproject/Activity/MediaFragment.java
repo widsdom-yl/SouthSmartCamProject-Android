@@ -84,12 +84,26 @@ public class MediaFragment extends Fragment implements BaseAdapter.OnItemClickLi
             }
 
         }
+        else if (mDevices != null){
+            if (adapter == null){
+                adapter = new MediaDeviceAdapter(mDevices);
+                adapter.setOnItemClickListener(this);
+                if (rv != null){
+                    rv.setAdapter(adapter);
+                }
+            }
+            adapter.resetMList(mDevices);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
     public void onItemClick(View view, int position) {
 
 
+        if (mDevices.size() < position+1){
+            return;
+        }
         Intent intent = new Intent(this.getContext(), MediaPhotoListActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable("devModel",mDevices.get(position));

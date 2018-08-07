@@ -123,7 +123,7 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
                         SouthUtil.showDialog(AddDeviceWlanActivity.this,AddDeviceWlanActivity.this.getString(R.string.string_search_no_device));
                         return;
                     }
-                    Log.e(tag,SearchMsg);
+                    Log.e(tag,"search ret:"+SearchMsg);
                     //[{"SN":"80005556","DevModal":"401H","DevName":"IPCAM_80005556","DevMAC":"00:C1:A1:62:55:56",
                     // "DevIP":"192.168.0.199","SubMask":"255.255.255.0","Gateway":"192.168.0.1","DNS1":"192.168.0.1",
                     // "SoftVersion":"V7.113.1759.00","DataPort":7556,"HttpPort":8556,"rtspPort":554,
