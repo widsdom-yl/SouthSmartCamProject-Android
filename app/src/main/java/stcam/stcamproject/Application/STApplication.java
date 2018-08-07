@@ -108,7 +108,7 @@ public class STApplication extends Application {
 
         for (DevModel devModel : MainDevListFragment.mDevices){
             if (devModel.IsConnect()){
-                devModel.Disconn();
+                devModel.Disconn2();//zhb devModel.Disconn();
             }
         }
 
