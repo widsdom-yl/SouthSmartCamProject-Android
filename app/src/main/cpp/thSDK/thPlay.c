@@ -2404,7 +2404,7 @@ bool thNet_ExtendDraw(HANDLE NetHandle)//android opengl render
   {
     struct timeval tm;
     struct timespec tnow;
-    PRINTF("%s(%d) NetHandle:%d\n", __FUNCTION__, __LINE__, NetHandle);
+    //PRINTF("%s(%d) NetHandle:%d\n", __FUNCTION__, __LINE__, NetHandle);
     pthread_mutex_lock(&Play->Lock);
     //      pthread_cond_wait(&Play->SyncCond, &Play->Lock);
     gettimeofday(&tm, NULL);
