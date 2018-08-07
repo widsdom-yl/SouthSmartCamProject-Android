@@ -219,4 +219,13 @@
     <string name="tip_version_new">当前固件版本为最新版本，无需升级</string>
     <string name="tip_version_old">设备固件有更新，是否升级？</string>
     <string name="action_updating_device">设备正在升级固件，请保待设备网络畅通</string>
+    <string name="string_net_4G">正在使用2G/3G/4G网络</string>
+    <string name="string_net_Wifi">正在使用wifi上网</string>
+    <string name="string_net_None">当前无网络连接</string>
+    <string name="string_nodev">没有设备</string>
+    <string name="string_delsuccess">删除成功</string>
+    <string name="string_ChangePsdSuccess">修改密码成功</string>
+    <string name="string_ChangePsdFail">修改密码失败</string>
+    <string name="string_devAddSuccess">设备增加成功</string>
+    <string name="string_devAddFail">设备增加失败</string>
 </resources>

@@ -114,10 +114,10 @@ public class ChangeLoginPasswordActivity extends BaseAppCompatActivity implement
             lod.dismiss();
             Log.e(tag,"---------------------0:"+m.ret);
             if (1 == m.ret){
-                SouthUtil.showToast(ChangeLoginPasswordActivity.this,"change password success");
+                SouthUtil.showToast(ChangeLoginPasswordActivity.this,getString(R.string.string_ChangePsdSuccess));
             }
             else{
-                SouthUtil.showToast(ChangeLoginPasswordActivity.this,"change password failed");
+                SouthUtil.showToast(ChangeLoginPasswordActivity.this,getString(R.string.string_ChangePsdFail));
             }
 
         }

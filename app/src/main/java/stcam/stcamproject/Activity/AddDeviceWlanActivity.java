@@ -93,7 +93,7 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
             lod = new LoadingDialog(this);
         }
         lod.dialogShow();
-        SouthUtil.showToast(this,"search");
+        SouthUtil.showToast(this,getString(R.string.action_search));
         new Thread()
         {
             @Override
@@ -195,7 +195,7 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
                     public void onClick(DialogInterface dialog, int which) {
                         String content = editText.getText().toString();
                         if (content.length() < 4 ){
-                            SouthUtil.showToast(AddDeviceWlanActivity.this,"pwd too short");
+                            SouthUtil.showToast(AddDeviceWlanActivity.this,getString(R.string.error_invalid_password));
                         }
                         else{
                             if (dbModel == null){
@@ -295,11 +295,11 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
             lod.dismiss();
             Log.e(tag,"---------------------0:"+m.ret);
             if (1 == m.ret){
-                SouthUtil.showToast(AddDeviceWlanActivity.this,"device has added successfully");
+                SouthUtil.showToast(AddDeviceWlanActivity.this,getString(R.string.string_devAddSuccess));
                 back2TopActivity();
             }
             else{
-                SouthUtil.showToast(AddDeviceWlanActivity.this,"device  added failed");
+                SouthUtil.showToast(AddDeviceWlanActivity.this,getString(R.string.string_devAddFail));
             }
 
         }

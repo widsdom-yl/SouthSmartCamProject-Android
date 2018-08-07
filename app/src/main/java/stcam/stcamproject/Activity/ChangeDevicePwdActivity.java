@@ -322,10 +322,10 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
             lod.dismiss();
             Log.e(tag,"---------------------0:"+m.ret);
             if (1 == m.ret){
-                SouthUtil.showToast(ChangeDevicePwdActivity.this,"add success");
+                SouthUtil.showToast(ChangeDevicePwdActivity.this,getString(R.string.string_devAddSuccess));
             }
             else{
-                SouthUtil.showToast(ChangeDevicePwdActivity.this,"add failed");
+                SouthUtil.showToast(ChangeDevicePwdActivity.this,getString(R.string.string_devAddFail));
             }
 
         }

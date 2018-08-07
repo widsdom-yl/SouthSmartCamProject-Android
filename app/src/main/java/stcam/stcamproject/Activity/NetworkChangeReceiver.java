@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.thSDK.lib;
 
 import stcam.stcamproject.Application.STApplication;
+import stcam.stcamproject.R;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 import static android.net.ConnectivityManager.TYPE_MOBILE;
@@ -54,7 +55,8 @@ class NetworkChangeReceiver extends BroadcastReceiver {
             handler_reset.postDelayed(runnable_reset,1500);
             switch (networkInfo.getType()) {
                 case TYPE_MOBILE:
-                    Toast.makeText(context, "正在使用2G/3G/4G网络", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, "正在使用2G/3G/4G网络", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.string_net_4G), Toast.LENGTH_SHORT).show();
                     //
                     if (mNetWorkBreakListener != null){
                         mNetWorkBreakListener.OnNetWorkBreakListener();
@@ -76,14 +78,16 @@ class NetworkChangeReceiver extends BroadcastReceiver {
                     if (mNetWorkBreakListener != null){
                         mNetWorkBreakListener.OnNetWorkChangeListener(1);
                     }
-                    Toast.makeText(context, "正在使用wifi上网", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, "正在使用wifi上网", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.string_net_Wifi), Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     break;
             }
         } else {
             //断开所有连接
-            Toast.makeText(context, "当前无网络连接", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "当前无网络连接", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.string_net_None), Toast.LENGTH_SHORT).show();
             if (mNetWorkBreakListener != null){
                 mNetWorkBreakListener.OnNetWorkBreakListener();
             }

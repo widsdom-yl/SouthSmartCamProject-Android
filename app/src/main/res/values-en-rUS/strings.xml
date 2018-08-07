@@ -29,9 +29,9 @@
 </string>
     <string name="title_activity_register">Register</string>
 
-    <string name="action_reset_pwd_success">reset password successful</string>
-    <string name="action_reset_pwdr_failed0">reset password failure</string>
-    <string name="action_reset_pwd_failed1">reset password failure</string>
+    <string name="action_reset_pwd_success">Change password successful</string>
+    <string name="action_reset_pwdr_failed0">Change password failure</string>
+    <string name="action_reset_pwd_failed1">Change password failure</string>
     <string name="action_reset_pwd_failed2">check code error</string>
     <string name="action_reset_pwd_failed3">check code time-out</string>
 
@@ -52,7 +52,7 @@
     <string name="action_change_password">set password</string>
     <string name="action_device_password_manager">manage password</string>
     <string name="action_change">renewal</string>
-    <string name="action_add_device_search">add device under the same router (LAN search)</string>
+    <string name="action_add_device_search">Add device under the same router (LAN search)</string>
     <string name="action_device_share">share</string>
     <string name="action_device_play_record">playback</string>
     <string name="action_device_play_setting">set</string>
@@ -64,7 +64,7 @@
     <string name="action_share_control">control</string>
 
     <string name="action_generate_share">generate sharing</string>
-    <string name="action_add_share_device">add share device(scan QR code)</string>
+    <string name="action_add_share_device">Add share device(scan QR code)</string>
     <string name="action_net_not_connect">not connected to device</string>
     <string name="action_not_exist_sd">device not exist SD</string>
     <string name="action_alarm">Alarm</string>
@@ -79,15 +79,15 @@
     <string name="action_ok">confirm</string>
     <string name="action_send_verification_number">send identifying code</string>
     <string name="action_cancel">cancel</string>
-    <string name="action_add_one_key_setting">intelligent addition</string>
-    <string name="action_add_ap_sta">add AP to STA</string>
+    <string name="action_add_one_key_setting">Smart Addition</string>
+    <string name="action_add_ap_sta">Add AP to STA</string>
     <string name="action_add_ap">AP hot spot direct connection</string>
     <string name="action_media">Image</string>
     <string name="action_one_key_setting_desc0">heard\"wait to connect \" Or when the red light and the blue light are turned on at the same time, enter the password of the router and proceed to the next step</string>
     <string name="action_one_key_setting_desc1">heard\" configuration success \" or the red and blue light flicker, search equipment</string>
     <string name="string_tip">kindly reminder</string>
-    <string name="ssid">router SSID</string>
-    <string name="ssid_pwd">password</string>
+    <string name="ssid">Router SSID</string>
+    <string name="ssid_pwd">Password</string>
     <string name="next">next</string>
     <string name="OK">confirm</string>
     <string name="cancel">cancel</string>
@@ -95,12 +95,12 @@
     <string name="device_new_pwd">new password:</string>
     <string name="device_confirm_pwd">confirm password:</string>
     <string name="action_setting">set</string>
-    <string name="action_dev_setting">set device</string>
-    <string name="device_name">name</string>
+    <string name="action_dev_setting">Device settings</string>
+    <string name="device_name">Device Name</string>
     <string name="device_pwd">connect password</string>
-    <string name="action_device_pwd">manage password</string>
+    <string name="action_device_pwd">Manage password</string>
     <string name="action_change_device_pwd">change password</string>
-    <string name="device_version">Version</string>
+    <string name="device_version">Device Version</string>
     <string name="action_delete_device">delete device</string>
     <string name="action_led_control">LED control</string>
     <string name="action_led_model">light up mode</string>
@@ -132,11 +132,11 @@
     <string name="action_system_setting">system setting</string>
     <string name="action_alarm_sound">alarm sound</string>
     <string name="action_app_version">App version</string>
-    <string name="action_change_system_password">account and password management</string>
+    <string name="action_change_system_password">Change user password</string>
     <string name="action_share_manager">share management</string>
     <string name="action_share_account_manager">share account management</string>
     <string name="action_about">about</string>
-    <string name="action_change_login_password">reset password</string>
+    <string name="action_change_login_password">Change Password</string>
     <string name="device_logn_old_pwd">original password</string>
     <string name="device_reboot">device is restarting, please quit app to reconnect</string>
     <string name="action_send">sent</string>
@@ -144,14 +144,14 @@
     <string name="action_change_device_name">renewal device name</string>
     <string name="action_Success">set successful</string>
     <string name="action_Failed">set failure</string>
-    <string name="action_manager_push">manage push</string>
-    <string name="action_manager_senior">manage senior</string>
+    <string name="action_manager_push">Manage push</string>
+    <string name="action_manager_senior">Advanced settings</string>
     <string name="action_dev_sound">device prompting sound switch</string>
     <string name="action_alarm_time_span">alarm video time</string>
     <string name="action_reset_origin">reset origin</string>
     <string name="action_manager_volume">manage video volume</string>
     <string name="action_manager_alarm_level">Sensitivity of image detection</string>
-    <string name="action_version">Version</string>
+    <string name="action_version">Device Version</string>
     <string name="action_request_ssid">write wifi information</string>
     <string name="SmartConfigOver">Configuration finish</string>
     <string name="SmartConfig">intelligent configuration</string>
@@ -167,7 +167,7 @@
     <string name="action_volume_used">used</string>
     <string name="action_Success_Reboot">Set up successfully and restart the device to take effect</string>
     <string name="action_mine">Me</string>
-    <string name="action_push">push switch</string>
+    <string name="action_push">Push switch</string>
     <string name="action_push_interval">message push interval</string>
     <string name="action_pir_sensitivity">PIR sensitivity</string>
     <string name="action_open">open</string>
@@ -175,7 +175,7 @@
     <string name="string_second">second</string>
     <string name="string_miniute">miniute</string>
     <string name="action_dev_pwd_limit_lessthan_19">password cannot exceed 19 digits</string>
-    <string name="action_check_remeber_pwd">Remember</string>
+    <string name="action_check_remeber_pwd">Auto Login</string>
     <string name="string_smart_device">smart device</string>
     <string name="action_clear">delete all</string>
     <string name="action_visitor_mode_disable_excute">visitor mode，cannot operate</string>
@@ -215,4 +215,17 @@
     <string name="string_no_record_permisson">no playback permission</string>
     <string name="string_no_push_permisson">no push permission</string>
     <string name="action_exit_ask">confirm to exit?</string>
+    <string name="tip_version_new">The firmware version is the latest version.</string>
+    <string name="tip_version_old">The device firmware is updated. Is it upgraded?</string>
+    <string name="action_updating_device">Update firmware, please do not power off!</string>
+    <string name="string_net_4G">networks is 2G/3G/4G</string>
+    <string name="string_net_Wifi">network is WIFI</string>
+    <string name="string_net_None">no network</string>
+    <string name="string_nodev">no devices</string>
+    <string name="string_delsuccess">delete success!</string>
+    <string name="string_delfail">delete fail!</string>
+    <string name="string_ChangePsdSuccess">change password success!</string>
+    <string name="string_ChangePsdFail">change password fail!</string>
+    <string name="string_devAddSuccess">Add success!</string>
+    <string name="string_devAddFail">Add fail!</string>
 </resources>

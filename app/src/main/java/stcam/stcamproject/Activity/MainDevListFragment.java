@@ -508,7 +508,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
 
         if (mlist == null){
-            SouthUtil.showToast(STApplication.getInstance(),"No dev");
+            SouthUtil.showToast(STApplication.getInstance(),getString(R.string.string_nodev));
             return;
         }
         if (mlist.size() > 0)
@@ -559,7 +559,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
             }
 
             Log.e(tag,"---------------------1:no dev");
-            SouthUtil.showToast(STApplication.getInstance(),"No dev");
+            SouthUtil.showToast(STApplication.getInstance(),getString(R.string.string_nodev));
         }
     }
 
@@ -641,7 +641,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
                 //MyContext.getInstance()
                 mAdapter.setmDatas(mlist);
                 Log.e(tag,"---------------------1:no dev");
-                SouthUtil.showToast(STApplication.getInstance(),"No dev");
+                SouthUtil.showToast(STApplication.getInstance(),getString(R.string.string_nodev));
             }
 
         }
@@ -796,7 +796,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
             lod = new LoadingDialog(this.getActivity());
         }
         lod.dialogShow();
-        SouthUtil.showToast(this.getActivity(),"search");
+        SouthUtil.showToast(this.getActivity(), getString(R.string.action_search));
         new Thread()
         {
             @Override

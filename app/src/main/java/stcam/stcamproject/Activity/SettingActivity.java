@@ -943,7 +943,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     {
       lod.dismiss();
       Log.e(tag, "---------------------1:" + e.getLocalizedMessage());
-      SouthUtil.showToast(getApplicationContext(), "delete failed");
+      SouthUtil.showToast(getApplicationContext(), getString(R.string.string_delfail));
     }
 
     @Override
@@ -953,7 +953,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       Log.e(tag, "---------------------0:" + m.ret);
       if (1 == m.ret)
       {
-        SouthUtil.showToast(SettingActivity.this, "delete ok");
+        SouthUtil.showToast(SettingActivity.this, getString(R.string.string_delsuccess));
         DataManager.getInstance().deleteDev(model);
         for (DevModel existModel : MainDevListFragment.mDevices)
         {
@@ -971,7 +971,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       }
       else
       {
-        SouthUtil.showToast(SettingActivity.this, "delete failed");
+        SouthUtil.showToast(SettingActivity.this, getString(R.string.string_delfail));
       }
 
     }

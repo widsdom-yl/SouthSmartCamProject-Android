@@ -82,7 +82,7 @@ public class AddDeviceAP2StaActivity extends BaseAppCompatActivity implements Ba
         }
         lod.dialogShow();
 
-        SouthUtil.showToast(this,"search");
+        SouthUtil.showToast(this,getString(R.string.action_search));
         new Thread()
         {
             @Override
