@@ -184,6 +184,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     mAdapter.setOnItemClickListener(this);
     mRecyclerView.setAdapter(mAdapter);
 
+
   }
 
   void refreshView()
@@ -194,6 +195,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
       Bitmap bitmap = BitmapFactory.decodeFile(files.get(0));
       imageview_thumb.setImageBitmap(bitmap);
+
     }
     textview_uid.setText(model.UID);
     mAdapter.notifyDataSetChanged();
