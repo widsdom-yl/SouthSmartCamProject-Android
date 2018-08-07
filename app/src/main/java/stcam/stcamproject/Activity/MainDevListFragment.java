@@ -665,6 +665,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
                 model.ConnType = existModel.ConnType;
                 model.DevCfg = existModel.DevCfg;
                 model.ExistSD = existModel.ExistSD;
+                model.DevType = existModel.DevType;
                 model.Brightness = existModel.Brightness;
                 model.Contrast = existModel.Contrast;
                 model.Sharpness = existModel.Contrast;

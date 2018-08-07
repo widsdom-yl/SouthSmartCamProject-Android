@@ -185,7 +185,7 @@ void OnRecvDataNotify_Search(void *Sender, char *Buf, i32 BufLen)
   TSearchDevCallBack *SearchEvent;
   TudpParam *Info = (TudpParam *) Sender;
   if (!Info) return;
-
+PRINTF("****OnRecvDataNotify_Search*******BufLen:%d\n", BufLen);
   if (strstr(Buf, "M-SEARCH") != NULL) return;
   if (BufLen != sizeof(TNetCmdPkt)) return;
   PPkt = (TNetCmdPkt *) Buf;
@@ -225,14 +225,19 @@ HANDLE thSearch_Init(TSearchDevCallBack SearchEvent, void *UserCustom)
   WSADATA wsaData;
 WSAStartup(MAKEWORD(2, 2), &wsaData);
 #endif
-  PRINTF("%s(%d)\n", __FUNCTION__, __LINE__);
   Info = (TudpParam *) malloc(sizeof(TudpParam));
   memset(Info, 0, sizeof(TudpParam));
   Info->UserCustom = UserCustom;
-  Info->Port = Port_Ax_Search_Local;
+  Info->Port = Port_Ax_Search_Local;//RandomNum(Port_Ax_Search_Local);//
+
+
   Info->OnRecvEvent = OnRecvDataNotify_Search;
 
-  //Info->LocalIP = GetLocalIP();
+  Info->IsMulticast = true;
+  Info->TTL = 32;
+  Info->LocalIP = "0.0.0.0";//GetLocalIP();
+  Info->MultiIP = IP_Ax_Multicast;
+  PRINTF("%s(%d) LocalIP:%s\n", __FUNCTION__, __LINE__, Info->LocalIP);
   Info->Flag = (HANDLE) SearchEvent;
   ret = udp_Init(Info);
   if (!ret)

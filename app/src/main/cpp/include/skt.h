@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// Author      : Öìºì²¨
+// Author      : ï¿½ï¿½ì²¨
 // Date        : 2017.09.14
 // Version     : V 2.00
 // Description : www.southipcam.com
@@ -24,8 +24,11 @@ typedef struct TudpParam
   i32 Port;
   i32 IsExitUDP;
   char* LocalIP;
+  char* MultiIP;
+  int IsMulticast;
+  int TTL;
   struct sockaddr_in FromAddr;
-  H_THREAD tHandle; //SSktÏß³Ì¾ä±ú
+  H_THREAD tHandle; //SSktï¿½ß³Ì¾ï¿½ï¿½
   int SocketHandle;
   THandle Flag;
 

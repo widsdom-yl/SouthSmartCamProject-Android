@@ -47,16 +47,32 @@ public class DevModel implements Parcelable
   public JSONObject DevCfg = null;
 
   public int ExistSD = 0;
+  public int DevType = 0;
   public int Brightness;
   public int Contrast;
   public int Sharpness;
   public String SoftVersion = "";
-
-
   public int VideoChlMask = 0;
   public int AudioChlMask = 1;
   public int SubVideoChlMask = 1;
   public String UID;
+
+  public String SN;
+  public String DevName;
+  public String usr;
+  public String pwd;
+  public String ConnType;
+  public String IPUID;
+  public int WebPort;
+  public int DataPort;
+  public int IsVideo;
+  public int IsHistory;
+  public int IsPush;
+  public int IsSetup;
+  public int IsControl;
+  public int IsShare;
+  public int IsRec;
+  public int IsSnapshot;
 
   public boolean IsAudioMute = true;
   public boolean IsRecord = false;
@@ -93,6 +109,7 @@ public class DevModel implements Parcelable
     IsShare = in.readInt();
     IsRec = in.readInt();
     IsSnapshot = in.readInt();
+    DevType = in.readInt();
   }
 
   public static final Creator<DevModel> CREATOR = new Creator<DevModel>()
@@ -149,6 +166,7 @@ public class DevModel implements Parcelable
     parcel.writeInt(IsShare);
     parcel.writeInt(IsRec);
     parcel.writeInt(IsSnapshot);
+    parcel.writeInt(DevType);
   }
 
   /*==============================================*/
@@ -203,25 +221,6 @@ public class DevModel implements Parcelable
     }
   }
 
-
-  public String SN;
-  public String DevName;
-  public String usr;
-  public String pwd;
-  public String ConnType;
-  public String IPUID;
-  public int WebPort;
-  public int DataPort;
-  public int IsVideo;
-  public int IsHistory;
-  public int IsPush;
-  public int IsSetup;
-  public int IsControl;
-  public int IsShare;
-  public int IsRec;
-  public int IsSnapshot;
-
-
   public DevModel()
   {
     usr = "admin";
@@ -260,7 +259,6 @@ public class DevModel implements Parcelable
   }
   public boolean Disconn()
   {
-
     new Thread()
     {
       @Override
@@ -355,10 +353,11 @@ public class DevModel implements Parcelable
               ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_NetConnSucceed, DevNode.Index, 0, DevNode));
             }
             String tmpStr = DevNode.GetAllCfg();
-            Log.e("java", "tmpStr is :" + tmpStr);
+            //Log.e("java", "tmpStr is :" + tmpStr);
             JSONObject json = new JSONObject(tmpStr);
             DevNode.DevCfg = json;
             DevNode.ExistSD = json.getJSONObject("DevInfo").getInt("ExistSD");
+            DevNode.DevType= json.getJSONObject("DevInfo").getInt("DevType");
             DevNode.Brightness = json.getJSONObject("Video").getInt("Brightness");
             DevNode.Contrast = json.getJSONObject("Video").getInt("Contrast");
             DevNode.Sharpness = json.getJSONObject("Video").getInt("Sharpness");

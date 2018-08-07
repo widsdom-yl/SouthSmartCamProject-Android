@@ -167,7 +167,7 @@
     <string name="action_volume_left">剩余容量</string>
     <string name="action_volume_used">已用</string>
     <string name="action_Success_Reboot">设置成功,重启设备后生效</string>
-    <string name="action_mine">我的</string>
+    <string name="action_mine">我</string>
     <string name="action_push">推送开关</string>
     <string name="action_push_interval">消息推送间隔</string>
     <string name="action_pir_sensitivity">PIR灵敏度</string>
@@ -176,7 +176,7 @@
     <string name="string_second">秒</string>
     <string name="string_miniute">分钟</string>
     <string name="action_dev_pwd_limit_lessthan_19">密码不能超过19位数</string>
-    <string name="action_check_remeber_pwd">记住密码自动登录</string>
+    <string name="action_check_remeber_pwd">自动登录</string>
     <string name="string_smart_device">智能设备</string>
     <string name="action_clear">全部删除</string>
     <string name="action_visitor_mode_disable_excute">当前为游客模式，不能操作</string>

@@ -475,6 +475,7 @@ void Json_cgi_GetDevInfo(char* cgiBuf, TDevCfg* DevCfg)//Í¨¹ýÍøÒ³µ÷ÓÃ£¬È¡µÃÉè±¸Ð
 
   sprintf(Str, "\"DevModal\":\"%s\",", DevCfg->DevInfoPkt.DevModal); strcat(cgiBuf, Str);
   sprintf(Str, "\"DevName\":\"%s\",", DevCfg->DevInfoPkt.DevName); strcat(cgiBuf, Str);
+  sprintf(Str, "\"DevType\":\"%d\",", DevCfg->DevInfoPkt.DevType); strcat(cgiBuf, Str);
   sprintf(Str, "\"SN\":\"%0.8X\",", DevCfg->DevInfoPkt.SN); strcat(cgiBuf, Str);
   sprintf(Str, "\"SoftVersion\":\"%s\",", DevCfg->DevInfoPkt.SoftVersion); strcat(cgiBuf, Str);
   sprintf(Str, "\"FileVersion\":\"%s\",", DevCfg->DevInfoPkt.FileVersion); strcat(cgiBuf, Str);
