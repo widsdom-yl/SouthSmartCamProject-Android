@@ -1624,6 +1624,18 @@ i32 Base64Decode(unsigned char* inbuf, i32 insize, unsigned char* outbuf, i32 ou
   return outpos;
 }
 //-----------------------------------------------------------------------------
+bool IsSameSegmentIP(char* IP1, char* IP2)//两个IP是否在同一段
+{
+  struct sockaddr_in s1;
+  struct sockaddr_in s2;
+  inet_aton(IP1, &s1.sin_addr);
+  inet_aton(IP2, &s2.sin_addr);
+  int a, b;
+  memcpy(&a, &s1.sin_addr, 4);
+  memcpy(&b, &s2.sin_addr, 4);
+  return ((int)(a<<8) == (int)(b<<8));
+}
+//-----------------------------------------------------------------------------
 char* GetLocalIP()
 {
 #ifdef WIN32

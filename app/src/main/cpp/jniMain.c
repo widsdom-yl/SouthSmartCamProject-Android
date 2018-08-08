@@ -371,15 +371,14 @@ typedef struct TSearchInfo
   u32 Search_SNLst[Search_SNLst_COUNT];
   char tmpBuf[1000 * 10];
   int SearchCount;
-
+  char20 LocalIP;
   int IsJson;
 } TSearchInfo;
 
 static TSearchInfo Search;
 
 //-------------------------------------
-void
-callback_SearchDev(void *UserCustom, u32 SN, int DevType, char *DevModal, char *SoftVersion, int DataPort, int HttpPort,
+void callback_SearchDev(void *UserCustom, u32 SN, int DevType, char *DevModal, char *SoftVersion, int DataPort, int HttpPort,
                    int rtspPort, char *DevName, char *DevIP, char *DevMAC, char *SubMask, char *Gateway, char *DNS1,
                    char *DDNSServer, char *DDNSHost, char *UID)
 {
@@ -399,6 +398,8 @@ callback_SearchDev(void *UserCustom, u32 SN, int DevType, char *DevModal, char *
   }
   if (IsFind) return;
   Search.Search_SNLst[i] = SN;
+
+  if (!IsSameSegmentIP(Search.LocalIP, DevIP)) return;
 
   memset(uDevName, 0, sizeof(uDevName));
   UcnvConvert_GB2312toUTF8(uDevName, sizeof(uDevName), DevName, &pnErrC);
@@ -466,6 +467,9 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetSearchDevice(JNIEnv *env, jcla
   memset(Search.tmpBuf, 0, sizeof(Search.tmpBuf));
   memset(Search.Search_SNLst, 0, sizeof(u32) * Search_SNLst_COUNT);
   Search.IsJson = IsJson;
+
+  sprintf(Search.LocalIP, "%s", GetLocalIP());
+
   SearchHandle = thSearch_Init(callback_SearchDev, NULL);
   if (!SearchHandle) return jtmpBuf;
   if (Search.IsJson) strcat(Search.tmpBuf, "[");

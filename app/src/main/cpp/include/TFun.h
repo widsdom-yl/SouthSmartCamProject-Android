@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// Author      : Öìºì²¨
+// Author      : ï¿½ï¿½ì²¨
 // Date        : 2017.09.14
 // Version     : V 2.00
 // Description : www.southipcam.com
@@ -59,7 +59,7 @@ extern "C"
   EXPORT i32 UnicodeTxtLen(char* src);
   EXPORT i32 AnsiToUnicode(char* src, char* dst);
 
-  EXPORT char* ShareMemOpenFile(const char* FileName, HANDLE* FileHandle, HANDLE* MapHandle, u32 dwFileSize);//·µ»ØMAP BufµØÖ·
+  EXPORT char* ShareMemOpenFile(const char* FileName, HANDLE* FileHandle, HANDLE* MapHandle, u32 dwFileSize);//ï¿½ï¿½ï¿½ï¿½MAP Bufï¿½ï¿½Ö·
   EXPORT bool ShareMemCloseFile(HANDLE FileHandle, HANDLE MapHandle, void* FData);
 
 
@@ -81,7 +81,7 @@ extern "C"
 
   EXPORT bool DiskExists(char* Path);
   EXPORT bool GetDiskSpace(char* Path, u32* TotalSpace, u32* FreeSpace);// M
-  EXPORT char* FileExtName(char* FileName); //È¡µÃÎÄ¼þÀ©Õ¹Ãû//'.txt'
+  EXPORT char* FileExtName(char* FileName); //È¡ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½//'.txt'
   EXPORT char* ExtractFileName(char* FileName);
   EXPORT bool DirectoryExists(char* Directory);
   EXPORT bool FileExists(char* FileName);
@@ -95,25 +95,25 @@ extern "C"
   EXPORT bool FileRead(HANDLE f, void* Buf, i32 Len);
   EXPORT bool FileWrite(HANDLE f, void* Buf, i32 Len);
 
-  EXPORT bool InArray(i32 Value, i32 Count, ...);//ÊýÖµÊÇ·ñÔÚ...Ö®ÖÐ
+  EXPORT bool InArray(i32 Value, i32 Count, ...);//ï¿½ï¿½Öµï¿½Ç·ï¿½ï¿½ï¿½...Ö®ï¿½ï¿½
   EXPORT i32 RandomNum(i32 seed);
 
-  //Ê±¼äº¯Êý
+  //Ê±ï¿½äº¯ï¿½ï¿½
   EXPORT i32 timeval_dec(struct timeval* tv2, struct timeval* tv1);//ms
   EXPORT i32 GetTime();
-  EXPORT i64 getutime();//È¡µÃÎ¢Ãë¼¶Ê±¼ä tv.tv_sec*1000000 + tv.tv_usec
+  EXPORT i64 getutime();//È¡ï¿½ï¿½Î¢ï¿½ë¼¶Ê±ï¿½ï¿½ tv.tv_sec*1000000 + tv.tv_usec
 
   EXPORT void Time_tToSystemTime(i32 t, SYSTEMTIME* pst);
   EXPORT i32 SystemTimeToTime_t(SYSTEMTIME* pst);
 
   EXPORT void QuickSort(i32* Lst, i32 iLo, i32 iHi);
-  EXPORT i32 SearchByDichotomy(i32* Lst, i32 iL, i32 iH, i32 Key);//Á½·Ö·¨
+  EXPORT i32 SearchByDichotomy(i32* Lst, i32 iL, i32 iH, i32 Key);//ï¿½ï¿½ï¿½Ö·ï¿½
 
   EXPORT u32 crc32(char* buf, i32 buflen);
   EXPORT u32 crc32F(char* FileName);
   EXPORT u32 crc32F2(char* FileName, i32 FileSize);
 
-  EXPORT i32 CharCount(char c, const char* S);//×Ö·ûÊýÍ³¼Æ
+  EXPORT i32 CharCount(char c, const char* S);//ï¿½Ö·ï¿½ï¿½ï¿½Í³ï¿½ï¿½
   EXPORT char* LowerCase(char* s);
   EXPORT char* UpperCase(char* s);
 
@@ -134,10 +134,11 @@ extern "C"
   EXPORT i32 SHA1Encode(unsigned char* inbuf, i32 insize, unsigned char* outbuf, i32 outsize);
 //-----------------------------------------------------------------------------
   EXPORT char* GetLocalIP();
-  EXPORT bool IsConnectWLAN();//ÍâÍøÊÇ·ñÒÑÁ¬½Ó
-  EXPORT void printPI();//´òÓ¡Ô²ÖÜÂÊ
+  EXPORT bool IsSameSegmentIP(char* IP1, char* IP2);//ä¸¤ä¸ªIPæ˜¯å¦åœ¨åŒä¸€æ®µ
+  EXPORT bool IsConnectWLAN();//ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  EXPORT void printPI();//ï¿½ï¿½Ó¡Ô²ï¿½ï¿½ï¿½ï¿½
 
-  EXPORT bool RectIsIntersect(TRect* r1, TRect* r2);//ÇøÓòÊÇ·ñ°üº¬
+  EXPORT bool RectIsIntersect(TRect* r1, TRect* r2);//ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
 
   EXPORT int StrToHex(char* src, int srclen, char* dst);//'0' -> "30"
   EXPORT int HexToStr(char* src, int srclen, char* dst);//"30" -> '0'
