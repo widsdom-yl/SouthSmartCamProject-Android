@@ -49,144 +49,169 @@ import stcam.stcamproject.View.LoadingDialog;
 import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.EnumMainEntry_Login;
 import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor;
 
-public class MainDevListFragment extends Fragment implements DeviceListAdapter.OnItemClickListener, NetworkChangeReceiver.OnNetWorkBreakListener, View.OnClickListener {
+public class MainDevListFragment extends Fragment implements DeviceListAdapter.OnItemClickListener, NetworkChangeReceiver
+  .OnNetWorkBreakListener, View.OnClickListener
+{
 
-    RecyclerView mRecyclerView;
-    DeviceListAdapter mAdapter;
-    ImageButton add_button;
-    Button  add_text_button;
-    Button search_button;
-    public static  List<DevModel>mDevices = new ArrayList<>();//这个list中的model，判断了连接状态
-    List<DevModel>mAccountDevices = new ArrayList<>();//没有连接状态
-   // SuperSwipeRefreshLayout refreshLayout;
-   SwipeRefreshLayout swipeContainer;
-    EnumMainEntry entryType;
+  RecyclerView mRecyclerView;
+  DeviceListAdapter mAdapter;
+  ImageButton add_button;
+  Button add_text_button;
+  Button search_button;
+  public static List<DevModel> mDevices = new ArrayList<>();//这个list中的model，判断了连接状态
+  List<DevModel> mAccountDevices = new ArrayList<>();//没有连接状态
+  // SuperSwipeRefreshLayout refreshLayout;
+  SwipeRefreshLayout swipeContainer;
+  EnumMainEntry entryType;
 
-    boolean hasReceivedNetWorkchange;//是否收到网络监听变化，这个变量在进入此fragement页面中，会收到网络回调，这个值会值1，但是考虑到网络请求，当有设备列表或者搜索设备返回时候，这个值为true
-    private IntentFilter intentFilter;
-    private NetworkChangeReceiver networkChangeReceiver;
+  boolean hasReceivedNetWorkchange;//是否收到网络监听变化，这个变量在进入此fragement页面中，会收到网络回调，这个值会值1，但是考虑到网络请求，当有设备列表或者搜索设备返回时候，这个值为true
+  private IntentFilter intentFilter;
+  private NetworkChangeReceiver networkChangeReceiver;
 
 
-    Request getDevListRequest;//
-    OkHttpClient mHttpClient = new OkHttpClient();
+  Request getDevListRequest;//
+  OkHttpClient mHttpClient = new OkHttpClient();
 
-    @Override
-    public void OnNetWorkBreakListener() {
-        Log.e(tag,"OnNetWorkBreakListener ---------------0");
-        if (mDevices != null){
-            for (DevModel devModel : mDevices){
-                if (devModel.IsConnect()){
-                    devModel.Disconn();
-                }
-            }
-            if (mAdapter != null) {
-                mAdapter.notifyDataSetChanged();
-            }
+  @Override
+  public void OnNetWorkBreakListener()
+  {
+    Log.e(tag, "OnNetWorkBreakListener ---------------0");
+    if (mDevices != null)
+    {
+      for (DevModel devModel : mDevices)
+      {
+        if (devModel.IsConnect())
+        {
+          devModel.Disconn();
         }
-        Log.e(tag,"OnNetWorkBreakListener ---------------1");
-
+      }
+      if (mAdapter != null)
+      {
+        mAdapter.notifyDataSetChanged();
+      }
     }
+    Log.e(tag, "OnNetWorkBreakListener ---------------1");
 
-    @Override
-    public void OnNetWorkChangeListener(int type) {
-        Log.e(tag,"---------------------1 OnNetWorkChangeListener");
-        if (entryType == EnumMainEntry_Login){
-            if (0 == type){
-                if (mDevices != null)
-                    mDevices.clear();
-                loadDevList(false);
-            }
-            else if(1 == type){
+  }
+
+  @Override
+  public void OnNetWorkChangeListener(int type)
+  {
+    Log.e(tag, "---------------------1 OnNetWorkChangeListener");
+    if (entryType == EnumMainEntry_Login)
+    {
+      if (0 == type)
+      {
+        if (mDevices != null)
+        {
+          mDevices.clear();
+        }
+        loadDevList(false);
+      }
+      else if (1 == type)
+      {
 //            for (DevModel model : mDevices){
 //
 //                Log.e(tag,"---------------------1 dev0 name"+model.DevName);
 //                if (!model.IsConnect())
 //                    DevModel.threadConnect(ipc,model,false);
 //            }
-                if (mDevices != null)
-                    mDevices.clear();
-                loadDevList(false);
-            }
+        if (mDevices != null)
+        {
+          mDevices.clear();
         }
-        else if (entryType == EnumMainEntry_Visitor){
-            if (mDevices != null)
-                mDevices.clear();
-            searchDevices();
-        }
-
-
+        loadDevList(false);
+      }
     }
-
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.add_button || view.getId() == R.id.add_text_button){
-            Intent intent = new Intent(this.getActivity(), AddDeviceActivity.class);
-            startActivity(intent);
-        }
-        else if (view.getId() == R.id.search_button){
-            searchDevices();
-        }
-
-    }
-
-    public enum EnumMainEntry implements Serializable {
-        EnumMainEntry_Null,
-        EnumMainEntry_Login,
-        EnumMainEntry_Visitor
-    }
-
-    // TODO: Rename and change types and number of parameters
-    public static MainDevListFragment newInstance(EnumMainEntry param) {
-        MainDevListFragment fragment = new MainDevListFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("entry", param);
-        fragment.setArguments(args);
-        return fragment;
+    else if (entryType == EnumMainEntry_Visitor)
+    {
+      if (mDevices != null)
+      {
+        mDevices.clear();
+      }
+      searchDevices();
     }
 
 
+  }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //lib.P2PInit();
-        Log.e(tag, "PushRegisterID : "+JPushManager.getJPushRegisterID());
-        // setContentView(R.layout.activity_main_dev_list);
-        // android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        // actionBar.setTitle(R.string.title_main_dev_list);
-        Bundle bundle = this.getArguments();
-        if (bundle != null){
-            entryType = (EnumMainEntry) bundle.getSerializable("entry");
-        }
-        hasReceivedNetWorkchange = false;
-
-
-
-        intentFilter = new IntentFilter();
-        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        networkChangeReceiver = new NetworkChangeReceiver();
-        networkChangeReceiver.setNetWorkBreakListener(this);
-        getActivity().registerReceiver(networkChangeReceiver, intentFilter);
-
-
-       // mAdapter = new DeviceListAdapter(this,null);
+  @Override
+  public void onClick(View view)
+  {
+    if (view.getId() == R.id.add_button || view.getId() == R.id.add_text_button)
+    {
+      Intent intent = new Intent(this.getActivity(), AddDeviceActivity.class);
+      startActivity(intent);
+    }
+    else if (view.getId() == R.id.search_button)
+    {
+      searchDevices();
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.activity_main_dev_list, container, false);
-        initView(view);
+  }
 
-        return view;
+  public enum EnumMainEntry implements Serializable
+  {
+    EnumMainEntry_Null,
+    EnumMainEntry_Login,
+    EnumMainEntry_Visitor
+  }
+
+  // TODO: Rename and change types and number of parameters
+  public static MainDevListFragment newInstance(EnumMainEntry param)
+  {
+    MainDevListFragment fragment = new MainDevListFragment();
+    Bundle args = new Bundle();
+    args.putSerializable("entry", param);
+    fragment.setArguments(args);
+    return fragment;
+  }
+
+
+  @Override
+  public void onCreate(Bundle savedInstanceState)
+  {
+    super.onCreate(savedInstanceState);
+    //lib.P2PInit();
+    Log.e(tag, "PushRegisterID : " + JPushManager.getJPushRegisterID());
+    // setContentView(R.layout.activity_main_dev_list);
+    // android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+    // actionBar.setTitle(R.string.title_main_dev_list);
+    Bundle bundle = this.getArguments();
+    if (bundle != null)
+    {
+      entryType = (EnumMainEntry) bundle.getSerializable("entry");
     }
+    hasReceivedNetWorkchange = false;
 
 
-    public void onResume(){
-        super.onResume();
-        onMyResume();
-    }
+    intentFilter = new IntentFilter();
+    intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+    networkChangeReceiver = new NetworkChangeReceiver();
+    networkChangeReceiver.setNetWorkBreakListener(this);
+    getActivity().registerReceiver(networkChangeReceiver, intentFilter);
+
+
+    // mAdapter = new DeviceListAdapter(this,null);
+  }
+
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                           Bundle savedInstanceState)
+  {
+    // Inflate the layout for this fragment
+    View view = inflater.inflate(R.layout.activity_main_dev_list, container, false);
+    initView(view);
+
+    return view;
+  }
+
+
+  public void onResume()
+  {
+    super.onResume();
+    onMyResume();
+  }
 //    @Override
 //    public void setUserVisibleHint(boolean isVisibleToUser) {
 //        super.setUserVisibleHint(isVisibleToUser);
@@ -200,47 +225,56 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 //    }
 
 
+  private void onMyResume()
+  {
+    if (mDevices != null)
+    {
+      for (DevModel existModel : mDevices)
+      {
+        existModel.updateUserAndPwd();
+      }
 
-
-    private void onMyResume() {
-        if (mDevices != null) {
-            for (DevModel existModel : mDevices){
-                 existModel.updateUserAndPwd();
-            }
-
-            if (hasReceivedNetWorkchange){
-                if (entryType == EnumMainEntry.EnumMainEntry_Login){
-                    loadDevList(false);
-                }
-                else if (entryType == EnumMainEntry_Visitor){
-                    searchDevices();
-                }
-            }
-            
+      if (hasReceivedNetWorkchange)
+      {
+        if (entryType == EnumMainEntry.EnumMainEntry_Login)
+        {
+          loadDevList(false);
         }
-
-
-        if (mAdapter != null){
-            mAdapter.notifyDataSetChanged();
+        else if (entryType == EnumMainEntry_Visitor)
+        {
+          searchDevices();
         }
+      }
 
-    }
-  
-    public void onDestroy()  {
-        super.onDestroy();
-        if (mDevices != null && mDevices.size() > 0){
-            for (DevModel devModel : mDevices){
-                if (devModel.IsConnect()){
-                    devModel.Disconn();
-                }
-            }
-            mDevices.clear();
-        }
-        getActivity().unregisterReceiver(networkChangeReceiver);
     }
 
 
-//    @Override
+    if (mAdapter != null)
+    {
+      mAdapter.notifyDataSetChanged();
+    }
+
+  }
+
+  public void onDestroy()
+  {
+    super.onDestroy();
+    if (mDevices != null && mDevices.size() > 0)
+    {
+      for (DevModel devModel : mDevices)
+      {
+        if (devModel.IsConnect())
+        {
+          devModel.Disconn();
+        }
+      }
+      mDevices.clear();
+    }
+    getActivity().unregisterReceiver(networkChangeReceiver);
+  }
+
+
+  //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        if (entryType == EnumMainEntry.EnumMainEntry_Login){
 //            getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -251,10 +285,10 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 //
 //        return true;
 //    }
-    String SearchMsg;
-    boolean IsSearching;
+  String SearchMsg;
+  boolean IsSearching;
 
-//    @Override
+  //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item) {
 //
 //        if (item.getItemId() == R.id.action_add) {
@@ -304,41 +338,48 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 //        }
 //        return super.onKeyDown(keyCode, event);
 //    }
-    void disconnectDev(){
-        new Thread() {
-            @Override
-            public void run(){
-                Log.e(tag,"disconnectDev thread start");
-                for (DevModel model : mDevices){
-                    if (model.IsConnect()){
-                        Log.e(tag,"---------------------disconnect:"+model.SN);
-                        model.Disconn();
-                    }
-                }
-                mDevices.clear();
-                lib.P2PFree();
-            }
-        }.run();
+  void disconnectDev()
+  {
+    new Thread()
+    {
+      @Override
+      public void run()
+      {
+        Log.e(tag, "disconnectDev thread start");
+        for (DevModel model : mDevices)
+        {
+          if (model.IsConnect())
+          {
+            Log.e(tag, "---------------------disconnect:" + model.SN);
+            model.Disconn();
+          }
+        }
+        mDevices.clear();
+        lib.P2PFree();
+      }
+    }.run();
 
-    }
-    void initView(View view){
-      //  refreshLayout = view.findViewById(R.id.swipeRefreshLayout);
-        swipeContainer =  view.findViewById(R.id.swipeContainer);
+  }
 
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+  void initView(View view)
+  {
+    //  refreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+    swipeContainer = view.findViewById(R.id.swipeContainer);
+
+    swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+      android.R.color.holo_green_light,
+      android.R.color.holo_orange_light,
+      android.R.color.holo_red_light);
 
 
+    mRecyclerView = view.findViewById(R.id.recyler_device);
+    LinearLayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
+    layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+    mRecyclerView.setLayoutManager(layoutManager);
 
-        mRecyclerView = view.findViewById(R.id.recyler_device);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(layoutManager);
-
-         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        if (entryType == EnumMainEntry.EnumMainEntry_Login){
+    mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+    if (entryType == EnumMainEntry.EnumMainEntry_Login)
+    {
 //            refreshLayout
 //                    .setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
 //
@@ -380,119 +421,144 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 //                    });
 //            refreshLayout.setFooterView(createFooterView());
 
-            swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    // Your code to refresh the list here.
-                    // Make sure you call swipeContainer.setRefreshing(false)
-                    // once the network request has completed successfully.
-                    loadDevList(true);
-                }
-            });
-
-
-
+      swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+      {
+        @Override
+        public void onRefresh()
+        {
+          // Your code to refresh the list here.
+          // Make sure you call swipeContainer.setRefreshing(false)
+          // once the network request has completed successfully.
+          loadDevList(true);
         }
-        else{
-            swipeContainer.setEnabled(false);
-        }
-
-
-        add_button = view.findViewById(R.id.add_button);
-        add_button.setOnClickListener(this);
-        search_button = view.findViewById(R.id.search_button);
-
-        add_text_button = view.findViewById(R.id.add_text_button);
-        add_text_button.setOnClickListener(this);
-        add_text_button.setOnClickListener(this);
-        search_button.setOnClickListener(this);
-        if (entryType == EnumMainEntry_Visitor){
-            add_button.setVisibility(View.GONE);
-            search_button.setVisibility(View.VISIBLE);
-            add_text_button.setVisibility(View.GONE);
-        }
-        else{
-            add_text_button.setVisibility(View.VISIBLE);
-            add_button.setVisibility(View.VISIBLE);
-            search_button.setVisibility(View.GONE);
-        }
+      });
 
 
     }
-
-    View createFooterView(){
-        View view = LayoutInflater.from(this.getActivity()).inflate(R.layout.load_more, null);
-
-        return view;
+    else
+    {
+      swipeContainer.setEnabled(false);
     }
-    void loadDevList(boolean refresh){
-        if (lod == null){
-            lod = new LoadingDialog(this.getActivity());
+
+
+    add_button = view.findViewById(R.id.add_button);
+    add_button.setOnClickListener(this);
+    search_button = view.findViewById(R.id.search_button);
+
+    add_text_button = view.findViewById(R.id.add_text_button);
+    add_text_button.setOnClickListener(this);
+    add_text_button.setOnClickListener(this);
+    search_button.setOnClickListener(this);
+    if (entryType == EnumMainEntry_Visitor)
+    {
+      add_button.setVisibility(View.GONE);
+      search_button.setVisibility(View.VISIBLE);
+      add_text_button.setVisibility(View.GONE);
+    }
+    else
+    {
+      add_text_button.setVisibility(View.VISIBLE);
+      add_button.setVisibility(View.VISIBLE);
+      search_button.setVisibility(View.GONE);
+    }
+
+
+  }
+
+  View createFooterView()
+  {
+    View view = LayoutInflater.from(this.getActivity()).inflate(R.layout.load_more, null);
+
+    return view;
+  }
+
+  void loadDevList(boolean refresh)
+  {
+    if (lod == null)
+    {
+      lod = new LoadingDialog(this.getActivity());
+    }
+    if (!refresh)
+    {
+      lod.dialogShow();
+    }
+    if (getDevListRequest == null)
+    {
+      //http://xxx.xxx.xxx.xxx:800/app_user_get_devlst.asp??user=aa@bb.com&psd=12345678
+      String url = "http://" + Config.ServerIP + ":" + Config.ServerPort + "/app_user_get_devlst.asp?user=" + AccountManager.getInstance
+        ().getDefaultUsr() + "&psd=" +
+        AccountManager.getInstance().getDefaultPwd();
+      Log.e(tag, "request url :" + url);
+      getDevListRequest = new Request.Builder()
+        .url(url)
+        .build();
+    }
+
+
+    mHttpClient.newCall(getDevListRequest).enqueue(new Callback()
+    {
+      @Override
+      public void onFailure(Call call, IOException e)
+      {
+        Activity activity = MainDevListFragment.this.getActivity();
+        if (activity == null)
+        {
+
+          return;
         }
-        if (!refresh)
-            lod.dialogShow();
-        if (getDevListRequest == null){
-            //http://xxx.xxx.xxx.xxx:800/app_user_get_devlst.asp??user=aa@bb.com&psd=12345678
-            String url = "http://"+ Config.ServerIP+":"+Config.ServerPort+"/app_user_get_devlst.asp?user="+AccountManager.getInstance().getDefaultUsr()+"&psd="+
-                    AccountManager.getInstance().getDefaultPwd();
-            Log.e(tag,"request url :"+url);
-            getDevListRequest = new Request.Builder()
-                    .url(url)
-                    .build();
-        }
-
-
-        mHttpClient.newCall(getDevListRequest).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Activity activity = MainDevListFragment.this.getActivity();
-                if (activity == null) {
-
-                    return;
-                }
-                hasReceivedNetWorkchange = true;
-                MainDevListFragment.this.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        lod.dismiss();
-                        if (swipeContainer != null){
-                            swipeContainer.setRefreshing(false);
-                        }
-                    }
-                });
-
-
+        hasReceivedNetWorkchange = true;
+        MainDevListFragment.this.getActivity().runOnUiThread(new Runnable()
+        {
+          @Override
+          public void run()
+          {
+            lod.dismiss();
+            if (swipeContainer != null)
+            {
+              swipeContainer.setRefreshing(false);
             }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Activity activity = MainDevListFragment.this.getActivity();
-                if (activity == null) {
-
-                    return;
-                }
-                hasReceivedNetWorkchange = true;
-                MainDevListFragment.this.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        lod.dismiss();
-                        if (swipeContainer != null){
-                            swipeContainer.setRefreshing(false);
-                        }
-                    }
-                });
-                //String retStr = response.body().string();
-                final String gb2312Str = new String(response.body().bytes(), "GB2312");
-                MainDevListFragment.this.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        parseGetDevListResponse(gb2312Str);
-                    }
-                });
-
-
-            }
+          }
         });
+
+
+      }
+
+      @Override
+      public void onResponse(Call call, Response response) throws IOException
+      {
+        Activity activity = MainDevListFragment.this.getActivity();
+        if (activity == null)
+        {
+
+          return;
+        }
+        hasReceivedNetWorkchange = true;
+        MainDevListFragment.this.getActivity().runOnUiThread(new Runnable()
+        {
+          @Override
+          public void run()
+          {
+            lod.dismiss();
+            if (swipeContainer != null)
+            {
+              swipeContainer.setRefreshing(false);
+            }
+          }
+        });
+        //String retStr = response.body().string();
+        final String gb2312Str = new String(response.body().bytes(), "GB2312");
+        MainDevListFragment.this.getActivity().runOnUiThread(new Runnable()
+        {
+          @Override
+          public void run()
+          {
+            parseGetDevListResponse(gb2312Str);
+          }
+        });
+
+
+      }
+    });
 
 
 //        subscription = ServerNetWork.getCommandApi()
@@ -501,399 +567,461 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 //                .subscribeOn(Schedulers.io())
 //                .observeOn(AndroidSchedulers.mainThread())
 //                .subscribe(observer_get_devlst);
+  }
+
+  void parseGetDevListResponse(String response)
+  {
+    List<DevModel> mlist = GsonUtil.parseJsonArrayWithGson(response, DevModel[].class);
+
+
+    if (mlist == null)
+    {
+      SouthUtil.showToast(STApplication.getInstance(), getString(R.string.string_nodev));
+      return;
     }
-
-    void parseGetDevListResponse(String response){
-        List<DevModel> mlist = GsonUtil.parseJsonArrayWithGson(response,DevModel[].class);
-
-
-        if (mlist == null){
-            SouthUtil.showToast(STApplication.getInstance(),getString(R.string.string_nodev));
-            return;
-        }
-        if (mlist.size() > 0)
+    if (mlist.size() > 0)
+    {
+      mAccountDevices = mlist;
+      for (DevModel model : mlist)
+      {
+        boolean exist = false;
+        for (DevModel tmpNode : mDevices)
         {
-                mAccountDevices = mlist;
-                for (DevModel model : mlist){
-                    boolean exist = false;
-                    for (DevModel existModel : mDevices){
 
-                        if (model.SN.equals(existModel.SN)){
-                            exist = true;
-                            break;
-                        }
-                    }
-                    if (!exist){
-                        mDevices.add(model);
-                    }
-                }
-
-            for (DevModel model : mDevices){
-
-                Log.e(tag,"---------------------1 dev0 name"+model.DevName);
-                if (!model.IsConnect())
-                    Log.e(tag,"---------------------NetConn:sn"+model.SN);
-                    DevModel.threadConnect(ipc,model,false);
-            }
-
-            if (mAdapter == null){
-                mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(),mlist,entryType);
-                mAdapter.setOnItemClickListener(MainDevListFragment.this);
-                if (mRecyclerView != null)
-                mRecyclerView.setAdapter(mAdapter);
-            }
-            else{
-                mAdapter.setmDatas(mlist);
-            }
-
+          if (model.SN.equals(tmpNode.SN))
+          {
+            model.DevName = tmpNode.GetDevName();
+            exist = true;
+            break;
+          }
         }
-        else{
-            //MyContext.getInstance()
-            if (mAdapter == null){
-                mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(),mlist,entryType);
-                mAdapter.setOnItemClickListener(MainDevListFragment.this);
-                mRecyclerView.setAdapter(mAdapter);
-            }
-            else{
-                mAdapter.setmDatas(mlist);
-            }
-
-            Log.e(tag,"---------------------1:no dev");
-            SouthUtil.showToast(STApplication.getInstance(),getString(R.string.string_nodev));
+        if (!exist)
+        {
+          mDevices.add(model);
         }
+      }
+
+      for (DevModel model : mDevices)
+      {
+
+        Log.e(tag, "---------------------1 dev0 name" + model.DevName);
+        if (!model.IsConnect())
+        {
+          Log.e(tag, "---------------------NetConn:sn" + model.SN);
+        }
+        DevModel.threadConnect(ipc, model, false);
+      }
+
+      if (mAdapter == null)
+      {
+        mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(), mlist, entryType);
+        mAdapter.setOnItemClickListener(MainDevListFragment.this);
+        if (mRecyclerView != null)
+        {
+          mRecyclerView.setAdapter(mAdapter);
+        }
+      }
+      else
+      {
+        mAdapter.setmDatas(mlist);
+      }
+
     }
+    else
+    {
+      //MyContext.getInstance()
+      if (mAdapter == null)
+      {
+        mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(), mlist, entryType);
+        mAdapter.setOnItemClickListener(MainDevListFragment.this);
+        mRecyclerView.setAdapter(mAdapter);
+      }
+      else
+      {
+        mAdapter.setmDatas(mlist);
+      }
 
-    Observer<List<DevModel>> observer_get_devlst = new Observer<List<DevModel>>() {
-        @Override
-        public void onCompleted() {
-            lod.dismiss();
-            if (swipeContainer != null){
-                swipeContainer.setRefreshing(false);
-            }
+      Log.e(tag, "---------------------1:no dev");
+      SouthUtil.showToast(STApplication.getInstance(), getString(R.string.string_nodev));
+    }
+  }
 
-           // refreshLayout.setLoading(false);
+  Observer<List<DevModel>> observer_get_devlst = new Observer<List<DevModel>>()
+  {
+    @Override
+    public void onCompleted()
+    {
+      lod.dismiss();
+      if (swipeContainer != null)
+      {
+        swipeContainer.setRefreshing(false);
+      }
 
-            Log.e(tag,"---------------------2");
-            subscription.unsubscribe();
-        }
-        @Override
-        public void onError(Throwable e) {
-            lod.dismiss();
-            if (swipeContainer != null){
-                swipeContainer.setRefreshing(false);
-            }
-            Log.e(tag,"---------------------1:"+e.getLocalizedMessage());
-        }
+      // refreshLayout.setLoading(false);
 
-        @Override
-        public void onNext(List<DevModel> mlist) {
-            lod.dismiss();
-
-            mAccountDevices = mlist;
-
-            if (mlist.size() > 0)
-            {
-              //  mDevices = mlist;
-                //DevModel model =  mlist.get(0);
-                //SouthUtil.showToast(STApplication.getInstance(),"dev0 name"+model.DevName);
-
-                // if (mAccountDevices == null){
-                //     mAccountDevices = mlist;
-                // }
-                // else
-                {
-
-
-
-                    for (DevModel model : mlist){
-                        boolean exist = false;
-                        for (DevModel existModel : mDevices){
-
-                            if (model.SN.equals(existModel.SN)){
-                                exist = true;
-                                break;
-                            }
-                        }
-                        if (!exist){
-                            mDevices.add(model);
-                        }
-                    }
-                }
-
-                for (DevModel model : mDevices){
-
-                    Log.e(tag,"---------------------1 dev0 name"+model.DevName);
-                    if (!model.IsConnect())
-                    DevModel.threadConnect(ipc,model,false);
-                }
-
-                if (mAdapter == null){
-                    mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(),mlist,entryType);
-                    mAdapter.setOnItemClickListener(MainDevListFragment.this);
-                    mRecyclerView.setAdapter(mAdapter);
-                }
-                else{
-                    mAdapter.setmDatas(mlist);
-                }
-
-            }
-            else{
-                //MyContext.getInstance()
-                mAdapter.setmDatas(mlist);
-                Log.e(tag,"---------------------1:no dev");
-                SouthUtil.showToast(STApplication.getInstance(),getString(R.string.string_nodev));
-            }
-
-        }
-    };
-
-    protected Subscription subscription;
-
-    final String tag = "MainDevListFragment";
-    LoadingDialog lod;
+      Log.e(tag, "---------------------2");
+      subscription.unsubscribe();
+    }
 
     @Override
-    public void onItemClick(View view, int position,int tpe) {
+    public void onError(Throwable e)
+    {
+      lod.dismiss();
+      if (swipeContainer != null)
+      {
+        swipeContainer.setRefreshing(false);
+      }
+      Log.e(tag, "---------------------1:" + e.getLocalizedMessage());
+    }
 
-        DevModel currentModel = mAccountDevices.get(position);
-        DevModel model = null;
+    @Override
+    public void onNext(List<DevModel> mlist)
+    {
+      lod.dismiss();
 
-        for (DevModel existModel : mDevices){
-            if (currentModel.SN.equals(existModel.SN)){
-                model = currentModel;
-                model.NetHandle = existModel.NetHandle;
-                model.ConnType = existModel.ConnType;
-                model.DevCfg = existModel.DevCfg;
-                model.ExistSD = existModel.ExistSD;
-                model.DevType = existModel.DevType;
-                model.Brightness = existModel.Brightness;
-                model.Contrast = existModel.Contrast;
-                model.Sharpness = existModel.Contrast;
-                model.UID = existModel.UID;
-                model.DevName = existModel.DevName;
-                model.SoftVersion = existModel.SoftVersion;
+      mAccountDevices = mlist;
+
+      if (mlist.size() > 0)
+      {
+        //  mDevices = mlist;
+        //DevModel model =  mlist.get(0);
+        //SouthUtil.showToast(STApplication.getInstance(),"dev0 name"+model.DevName);
+
+        // if (mAccountDevices == null){
+        //     mAccountDevices = mlist;
+        // }
+        // else
+        {
+
+
+          for (DevModel model : mlist)
+          {
+            boolean exist = false;
+            for (DevModel existModel : mDevices)
+            {
+
+              if (model.SN.equals(existModel.SN))
+              {
+                model.DevName = existModel.GetDevName();
+                exist = true;
                 break;
-            }              
-        }
-        if (3 != tpe){
-            if (!model.IsConnect()){
-                Log.e(tag,"---------------------1:not connect ");
-                SouthUtil.showDialog(MainDevListFragment.this.getActivity(),getString(R.string.action_net_not_connect));
-                return;
+              }
             }
-        }
-
-        if (0 == tpe){
-
-
-            Intent intent = new Intent(STApplication.getInstance(), PlayLiveActivity.class);
-
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("devModel",model);
-            bundle.putSerializable("entry",entryType);
-            intent.putExtras(bundle);
-            Log.e(tag,"to vid devModel NetHandle:"+model.NetHandle);
-
-            startActivity(intent);
-        }
-        else  if (1 == tpe){
-
-
-            if (entryType == EnumMainEntry_Login){
-                if (model.IsShare == 0){
-                    SouthUtil.showDialog(this.getActivity(),getString(R.string.string_device_is_share));
-                    return;
-                }
-
-                Intent intent = new Intent(STApplication.getInstance(), DeviceShareActivity.class);
-
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("devModel",model);
-
-                intent.putExtras(bundle);
-                Log.e(tag,"to DeviceShareActivity NetHandle:"+model.NetHandle);
-
-                startActivity(intent);
+            if (!exist)
+            {
+              mDevices.add(model);
             }
-            else{
-                Intent intent = new Intent(STApplication.getInstance(), AddDeviceAP2StaSetup.class);
-
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("devModel",model);
-
-                intent.putExtras(bundle);
-                Log.e(tag,"to DeviceShareActivity NetHandle:"+model.NetHandle);
-
-                startActivity(intent);
-            }
-
+          }
         }
 
-        else  if (2 == tpe){
+        for (DevModel model : mDevices)
+        {
 
-            if(model.ExistSD == 0){
-                SouthUtil.showToast(STApplication.getInstance(),getString(R.string.action_not_exist_sd));
-                return;
-            }
-
-            if (model.IsRecord){
-                SouthUtil.showToast(STApplication.getInstance(),getString(R.string.string_no_record_permisson));
-                return;
-            }
-            Intent intent = new Intent(STApplication.getInstance(), PlayBackListActivity.class);
-
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("devModel",model);
-            bundle.putSerializable("entry",entryType);
-            intent.putExtras(bundle);
-            Log.e(tag,"to PlayBackListActivity NetHandle:"+model.NetHandle);
-
-            startActivity(intent);
+          Log.e(tag, "---------------------1 dev0 name" + model.DevName);
+          if (!model.IsConnect())
+          {
+            DevModel.threadConnect(ipc, model, false);
+          }
         }
-        else if(3 == tpe){
-            Intent intent = new Intent(STApplication.getInstance(), SettingActivity.class);
 
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("devModel",model);
-            bundle.putSerializable("entry",entryType);
-            intent.putExtras(bundle);
-            Log.e(tag,"to SettingActivity NetHandle:"+model.NetHandle);
-
-            startActivity(intent);
+        if (mAdapter == null)
+        {
+          mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(), mlist, entryType);
+          mAdapter.setOnItemClickListener(MainDevListFragment.this);
+          mRecyclerView.setAdapter(mAdapter);
         }
+        else
+        {
+          mAdapter.setmDatas(mlist);
+        }
+
+      }
+      else
+      {
+        //MyContext.getInstance()
+        mAdapter.setmDatas(mlist);
+        Log.e(tag, "---------------------1:no dev");
+        SouthUtil.showToast(STApplication.getInstance(), getString(R.string.string_nodev));
+      }
 
     }
-    public final Handler ipc = new Handler()
+  };
+
+  protected Subscription subscription;
+
+  final String tag = "MainDevListFragment";
+  LoadingDialog lod;
+
+  @Override
+  public void onItemClick(View view, int position, int tpe)
+  {
+
+    DevModel currentModel = mAccountDevices.get(position);
+    DevModel model = null;
+
+    for (DevModel existModel : mDevices)
     {
-        @Override
-        public void handleMessage(Message msg)
-        {
-
-
-            super.handleMessage(msg);
-            DevModel model;
-            switch (msg.what)
-            {
-                case TMsg.Msg_NetConnSucceed:
-                    model = (DevModel) msg.obj;
-                    Log.e(tag,"NetConnSucceed:"+model.SN+"DevNode.NetHandle:"+model.NetHandle);
-                    mAdapter.notifyDataSetChanged();
-                    break;
-                case TMsg.Msg_NetConnFail:
-                    model = (DevModel) msg.obj;
-                    mAdapter.notifyDataSetChanged();
-                    Log.e(tag,"NetConnFail:"+model.SN+"DevNode.NetHandle:"+model.NetHandle);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    };
-
-    void searchDevices(){
-        if (lod == null){
-            lod = new LoadingDialog(this.getActivity());
-        }
-        lod.dialogShow();
-        SouthUtil.showToast(this.getActivity(), getString(R.string.action_search));
-        new Thread()
-        {
-            @Override
-            public void run()
-            {
-                SearchMsg = lib.thNetSearchDevice(3000, 1);
-                ipc_search.sendMessage(Message.obtain(ipc_search, TMsg.Msg_SearchOver, 0, 0, null));
-                IsSearching = false;
-            }
-        }.start();
+      if (currentModel.SN.equals(existModel.SN))
+      {
+        model = currentModel;
+        model.NetHandle = existModel.NetHandle;
+        model.ConnType = existModel.ConnType;
+        model.DevCfg = existModel.DevCfg;
+        model.ExistSD = existModel.ExistSD;
+        model.DevType = existModel.DevType;
+        model.Brightness = existModel.Brightness;
+        model.Contrast = existModel.Contrast;
+        model.Sharpness = existModel.Contrast;
+        model.UID = existModel.UID;
+        model.SoftVersion = existModel.SoftVersion;
+        model.DevName = existModel.GetDevName();
+        break;
+      }
     }
-    public final Handler ipc_search = new Handler()
+    if (3 != tpe)
     {
-        @Override
-        public void handleMessage(Message msg)
+      if (!model.IsConnect())
+      {
+        Log.e(tag, "---------------------1:not connect ");
+        SouthUtil.showDialog(MainDevListFragment.this.getActivity(), getString(R.string.action_net_not_connect));
+        return;
+      }
+    }
+
+    if (0 == tpe)
+    {
+
+
+      Intent intent = new Intent(STApplication.getInstance(), PlayLiveActivity.class);
+
+      Bundle bundle = new Bundle();
+      bundle.putParcelable("devModel", model);
+      bundle.putSerializable("entry", entryType);
+      intent.putExtras(bundle);
+      Log.e(tag, "to vid devModel NetHandle:" + model.NetHandle);
+
+      startActivity(intent);
+    }
+    else if (1 == tpe)
+    {
+
+
+      if (entryType == EnumMainEntry_Login)
+      {
+        if (model.IsShare == 0)
         {
-
-
-            super.handleMessage(msg);
-            hasReceivedNetWorkchange = true;
-            switch (msg.what)
-            {
-                case TMsg.Msg_SearchOver:
-                    lod.dismiss();
-                    if (SearchMsg == null || SearchMsg.equals(""))
-                    {
-                        return;
-                    }
-                    Log.e(tag,SearchMsg);
-                    if (mAccountDevices != null){
-                        mAccountDevices.clear();
-                    }
-                    Log.e(tag,"search result is :"+SearchMsg);
-                    //[{"SN":"80005556","DevModal":"401H","DevName":"IPCAM_80005556","DevMAC":"00:C1:A1:62:55:56",
-                    // "DevIP":"192.168.0.199","SubMask":"255.255.255.0","Gateway":"192.168.0.1","DNS1":"192.168.0.1",
-                    // "SoftVersion":"V7.113.1759.00","DataPort":7556,"HttpPort":8556,"rtspPort":554,
-                    // "DDNSServer":"211.149.199.247","DDNSHost":"80005556.southtech.xyz","UID":"NULL"}]
-                    searchList = DeviceParseUtil.parseSearchMsg(SearchMsg);
-
-                    if (searchList == null){
-                        return;
-                    }
-                    if (searchList.size()>0){
-
-                        for (SearchDevModel model : searchList){
-                            DevModel devModel  = model.exportDevModelForm();
-                            mAccountDevices.add(devModel);
-                            boolean exist = false;
-                            for (DevModel existModel : mDevices){
-
-                                if (devModel.SN.equals(existModel.SN)){
-                                    exist = true;
-                                    break;
-                                }
-                            }
-                            if (!exist){
-                                mDevices.add(devModel);
-                            }
-                        }
-
-                        for (DevModel model : mDevices){
-
-                            Log.e(tag,"---------------------1 dev0 name"+model.DevName);
-                            if (!model.IsConnect())
-                                DevModel.threadConnect(ipc,model,false);
-                        }
-
-
-                        if (mAdapter == null){
-                            mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(),mAccountDevices,entryType);
-                            mAdapter.setOnItemClickListener(MainDevListFragment.this);
-                            mRecyclerView.setAdapter(mAdapter);
-                        }
-                        else{
-                            mAdapter.setmDatas(mAccountDevices);
-                        }
-
-                    }
-
-
-
-
-
-                    break;
-
-                default:
-                    break;
-            }
+          SouthUtil.showDialog(this.getActivity(), getString(R.string.string_device_is_share));
+          return;
         }
-    };
 
+        Intent intent = new Intent(STApplication.getInstance(), DeviceShareActivity.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("devModel", model);
+
+        intent.putExtras(bundle);
+        Log.e(tag, "to DeviceShareActivity NetHandle:" + model.NetHandle);
+
+        startActivity(intent);
+      }
+      else
+      {
+        Intent intent = new Intent(STApplication.getInstance(), AddDeviceAP2StaSetup.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("devModel", model);
+
+        intent.putExtras(bundle);
+        Log.e(tag, "to DeviceShareActivity NetHandle:" + model.NetHandle);
+
+        startActivity(intent);
+      }
+
+    }
+
+    else if (2 == tpe)
+    {
+
+      if (model.ExistSD == 0)
+      {
+        SouthUtil.showToast(STApplication.getInstance(), getString(R.string.action_not_exist_sd));
+        return;
+      }
+
+      if (model.IsRecord)
+      {
+        SouthUtil.showToast(STApplication.getInstance(), getString(R.string.string_no_record_permisson));
+        return;
+      }
+      Intent intent = new Intent(STApplication.getInstance(), PlayBackListActivity.class);
+
+      Bundle bundle = new Bundle();
+      bundle.putParcelable("devModel", model);
+      bundle.putSerializable("entry", entryType);
+      intent.putExtras(bundle);
+      Log.e(tag, "to PlayBackListActivity NetHandle:" + model.NetHandle);
+
+      startActivity(intent);
+    }
+    else if (3 == tpe)
+    {
+      Intent intent = new Intent(STApplication.getInstance(), SettingActivity.class);
+
+      Bundle bundle = new Bundle();
+      bundle.putParcelable("devModel", model);
+      bundle.putSerializable("entry", entryType);
+      intent.putExtras(bundle);
+      Log.e(tag, "to SettingActivity NetHandle:" + model.NetHandle);
+
+      startActivity(intent);
+    }
+
+  }
+
+  public final Handler ipc = new Handler()
+  {
     @Override
-    public void onLongClick(View view, int position) {
+    public void handleMessage(Message msg)
+    {
 
+
+      super.handleMessage(msg);
+      DevModel model;
+      switch (msg.what)
+      {
+        case TMsg.Msg_NetConnSucceed:
+          model = (DevModel) msg.obj;
+          Log.e(tag, "NetConnSucceed:" + model.SN + "DevNode.NetHandle:" + model.NetHandle);
+          mAdapter.notifyDataSetChanged();
+          break;
+        case TMsg.Msg_NetConnFail:
+          model = (DevModel) msg.obj;
+          mAdapter.notifyDataSetChanged();
+          Log.e(tag, "NetConnFail:" + model.SN + "DevNode.NetHandle:" + model.NetHandle);
+          break;
+
+        default:
+          break;
+      }
     }
+  };
 
-    List<SearchDevModel> searchList;
+  void searchDevices()
+  {
+    if (lod == null)
+    {
+      lod = new LoadingDialog(this.getActivity());
+    }
+    lod.dialogShow();
+    SouthUtil.showToast(this.getActivity(), getString(R.string.action_search));
+    new Thread()
+    {
+      @Override
+      public void run()
+      {
+        SearchMsg = lib.thNetSearchDevice(3000, 1);
+        ipc_search.sendMessage(Message.obtain(ipc_search, TMsg.Msg_SearchOver, 0, 0, null));
+        IsSearching = false;
+      }
+    }.start();
+  }
+
+  public final Handler ipc_search = new Handler()
+  {
+    @Override
+    public void handleMessage(Message msg)
+    {
+
+
+      super.handleMessage(msg);
+      hasReceivedNetWorkchange = true;
+      switch (msg.what)
+      {
+        case TMsg.Msg_SearchOver:
+          lod.dismiss();
+          if (SearchMsg == null || SearchMsg.equals(""))
+          {
+            return;
+          }
+          Log.e(tag, SearchMsg);
+          if (mAccountDevices != null)
+          {
+            mAccountDevices.clear();
+          }
+          Log.e(tag, "search result is :" + SearchMsg);
+          //[{"SN":"80005556","DevModal":"401H","DevName":"IPCAM_80005556","DevMAC":"00:C1:A1:62:55:56",
+          // "DevIP":"192.168.0.199","SubMask":"255.255.255.0","Gateway":"192.168.0.1","DNS1":"192.168.0.1",
+          // "SoftVersion":"V7.113.1759.00","DataPort":7556,"HttpPort":8556,"rtspPort":554,
+          // "DDNSServer":"211.149.199.247","DDNSHost":"80005556.southtech.xyz","UID":"NULL"}]
+          searchList = DeviceParseUtil.parseSearchMsg(SearchMsg);
+
+          if (searchList == null)
+          {
+            return;
+          }
+          if (searchList.size() > 0)
+          {
+
+            for (SearchDevModel model : searchList)
+            {
+              DevModel devModel = model.exportDevModelForm();
+              mAccountDevices.add(devModel);
+              boolean exist = false;
+              for (DevModel existModel : mDevices)
+              {
+                if (devModel.SN.equals(existModel.SN))
+                {
+                  devModel.DevName = existModel.GetDevName();
+                  exist = true;
+                  break;
+                }
+              }
+              if (!exist)
+              {
+                mDevices.add(devModel);
+              }
+            }
+
+            for (DevModel model : mDevices)
+            {
+
+              Log.e(tag, "---------------------1 dev0 name" + model.DevName);
+              if (!model.IsConnect())
+              {
+                DevModel.threadConnect(ipc, model, false);
+              }
+            }
+
+
+            if (mAdapter == null)
+            {
+              mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(), mAccountDevices, entryType);
+              mAdapter.setOnItemClickListener(MainDevListFragment.this);
+              mRecyclerView.setAdapter(mAdapter);
+            }
+            else
+            {
+              mAdapter.setmDatas(mAccountDevices);
+            }
+
+          }
+
+
+          break;
+
+        default:
+          break;
+      }
+    }
+  };
+
+  @Override
+  public void onLongClick(View view, int position)
+  {
+
+  }
+
+  List<SearchDevModel> searchList;
 
 
 }

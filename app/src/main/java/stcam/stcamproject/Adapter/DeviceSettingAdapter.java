@@ -40,7 +40,7 @@ public class DeviceSettingAdapter extends BaseAdapter<String>{
         holder.setText(R.id.title_text,title);
         if (devModel != null){
             if (0 == position){
-                holder.setText(R.id.detail_text,devModel.DevName);
+                holder.setText(R.id.detail_text,devModel.GetDevName());
             }
             else if(1 == position){
                 int length = devModel.pwd.length();

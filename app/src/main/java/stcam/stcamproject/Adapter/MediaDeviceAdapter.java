@@ -18,7 +18,7 @@ public class MediaDeviceAdapter extends BaseAdapter<DevModel>{
 
     protected void convert(BaseHolder holder, DevModel model,int position) {
         super.convert(holder,model,position);
-        holder.setText(R.id.media_device_text,model.DevName).setImageResource(R.id.media_device_image,R.drawable.imagethumb);
+        holder.setText(R.id.media_device_text,model.GetDevName()).setImageResource(R.id.media_device_image,R.drawable.imagethumb);
         ImageView imageView = holder.getView(R.id.media_device_image);
 
         List<String> files= FileUtil.getSNFilesFromPath(FileUtil.pathSnapShot(),model.SN);

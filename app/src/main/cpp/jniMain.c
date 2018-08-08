@@ -7,89 +7,57 @@
 
 
 //-----------------------------------------------------------------------------
+typedef void (*pvUcnvFunc)(const char *lpcstrDstEcd, const char *lpcstrSrcEcd, char *dst, unsigned long dstLen,
+                           const char *src, unsigned long nInLen, unsigned long *pnErrCode);
+
 void UcnvConvert_GB2312toUTF8(char *dst, unsigned long dstLen, const char *src, unsigned long *pnErrC)
 {
-  typedef void (*pvUcnvFunc)(const char *lpcstrDstEcd, const char *lpcstrSrcEcd, char *dst, unsigned long dstLen,
-                             const char *src, unsigned long nInLen, unsigned long *pnErrCode);
-  static pvUcnvFunc g_pvUcnvConvert = NULL;
-  static void *g_pvUcnvDll = NULL;
+  pvUcnvFunc g_pvUcnvConvert = NULL;
+  void *g_pvUcnvDll = NULL;
+  char sFuncName[256];
+  int i;
 
+  *pnErrC = 0;
   if (NULL == g_pvUcnvDll) g_pvUcnvDll = dlopen("/system/lib/libicuuc.so", RTLD_LAZY);
   if (NULL == g_pvUcnvDll) return;
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_44");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_46");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_47");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_48");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_49");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_50");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_51");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_53");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_54");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_52");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_55");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_56");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_57");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_58");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_59");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_60");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_61");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_62");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_63");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_64");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_65");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_66");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_67");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_68");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_69");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_70");
+
   if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_4_2");
   if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_3_8");
+  for (i=44; i<=70; i++)
+  {
+    if (g_pvUcnvConvert) break;
+    sprintf(sFuncName, "ucnv_convert_%d", i);
+    g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, sFuncName);
+  }
   if (NULL == g_pvUcnvConvert) return;
   g_pvUcnvConvert("utf8", "gb2312", dst, dstLen, src, strlen(src), pnErrC);
+  dlclose(g_pvUcnvDll);
 }
 //-----------------------------------------------------------------------------
 void UcnvConvert_UTF8toGB2312(char *dst, unsigned long dstLen, const char *src, unsigned long *pnErrC)
 {
-  typedef void (*pvUcnvFunc)(const char *lpcstrDstEcd, const char *lpcstrSrcEcd, char *dst, unsigned long dstLen,
-                             const char *src, unsigned long nInLen, unsigned long *pnErrCode);
-  static pvUcnvFunc g_pvUcnvConvert = NULL;
-  static void *g_pvUcnvDll = NULL;
-  *pnErrC = 0;
+  pvUcnvFunc g_pvUcnvConvert = NULL;
+  void *g_pvUcnvDll = NULL;
+  char sFuncName[256];
+  int i;
 
+  *pnErrC = 0;
   if (NULL == g_pvUcnvDll) g_pvUcnvDll = dlopen("/system/lib/libicuuc.so", RTLD_LAZY);
   if (NULL == g_pvUcnvDll) return;
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_44");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_46");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_47");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_48");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_49");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_50");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_51");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_53");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_54");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_52");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_55");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_56");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_57");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_58");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_59");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_60");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_61");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_62");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_63");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_64");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_65");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_66");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_67");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_68");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_69");
-  if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_70");
+
   if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_4_2");
   if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_3_8");
+  for (i=44; i<=70; i++)
+  {
+    if (g_pvUcnvConvert) break;
+    sprintf(sFuncName, "ucnv_convert_%d", i);
+    g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, sFuncName);
+  }
   if (NULL == g_pvUcnvConvert) return;
   g_pvUcnvConvert("gb2312", "utf8", dst, dstLen, src, strlen(src), pnErrC);
 //  PRINTF("********SRC:%s\n", src);
 //  PRINTF("********dst:%s\n", dst);
+  dlclose(g_pvUcnvDll);
 }
 
 
@@ -417,7 +385,7 @@ callback_SearchDev(void *UserCustom, u32 SN, int DevType, char *DevModal, char *
 {
   unsigned long pnErrC;
   char Str[1000];
-  char uDevName[100];
+  char uDevName[1024];
   int i;
   bool IsFind = false;
   for (i = 0; i < Search_SNLst_COUNT; i++)

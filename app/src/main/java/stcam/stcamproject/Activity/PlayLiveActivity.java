@@ -38,7 +38,6 @@ import stcam.stcamproject.View.VoiceImageButton;
 public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnClickListener, GestureDetector.OnGestureListener, View
   .OnTouchListener
 {
-
   GLSurfaceViewLive glView;
   DevModel devModel;
   VoiceImageButton button_snapshot;
@@ -76,8 +75,6 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
     @Override
     public void run()
     {
-      //
-
       if (isRecording)
       {
         recordTotalTime++;
@@ -121,7 +118,13 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
       actionBar.setDisplayHomeAsUpEnabled(true);
 
       //actionBar.setTitle(devModel.DevName);
-
+      for (DevModel tmpNode : MainDevListFragment.mDevices)
+      {
+        if (devModel.SN.equals(tmpNode.SN))
+        {
+          devModel.DevName = tmpNode.GetDevName();
+        }
+      }
       setCustomTitle(devModel.DevName, true);
 
     }
@@ -160,6 +163,16 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
   protected void onResume()
   {
     super.onResume();
+
+    for (DevModel tmpNode : MainDevListFragment.mDevices)
+    {
+      if (devModel.SN.equals(tmpNode.SN))
+      {
+        devModel.DevName = tmpNode.GetDevName();
+      }
+    }
+    setCustomTitle(devModel.DevName, true);
+
     handler_refresh.postDelayed(runnable_fresh, TIME);
     if (isPlayAudio)
     {

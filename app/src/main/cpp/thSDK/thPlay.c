@@ -185,7 +185,7 @@ void OnRecvDataNotify_Search(void *Sender, char *Buf, i32 BufLen)
   TSearchDevCallBack *SearchEvent;
   TudpParam *Info = (TudpParam *) Sender;
   if (!Info) return;
-PRINTF("****OnRecvDataNotify_Search*******BufLen:%d\n", BufLen);
+//PRINTF("****OnRecvDataNotify_Search*******BufLen:%d\n", BufLen);
   if (strstr(Buf, "M-SEARCH") != NULL) return;
   if (BufLen != sizeof(TNetCmdPkt)) return;
   PPkt = (TNetCmdPkt *) Buf;

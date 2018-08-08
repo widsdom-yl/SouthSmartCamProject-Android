@@ -59,6 +59,7 @@ public class DevModel implements Parcelable
 
   public String SN;
   public String DevName;
+  public String DevNameChange = "";
   public String usr;
   public String pwd;
   public String ConnType;
@@ -76,6 +77,18 @@ public class DevModel implements Parcelable
 
   public boolean IsAudioMute = true;
   public boolean IsRecord = false;
+
+  public String GetDevName()
+  {
+    if (!(DevNameChange == null || DevNameChange.equals("")))
+    {
+      return DevNameChange;
+    }
+    else
+    {
+      return DevName;
+    }
+  }
 
   protected DevModel(Parcel in)
   {

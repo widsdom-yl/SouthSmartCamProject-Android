@@ -70,7 +70,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
         }
 
         DevModel chooseModel = null;
-
+//1111111111111111111
         for (DevModel existModel : MainDevListFragment.mDevices){
             if (model.SN.equals(existModel.SN)){
                 chooseModel = model;
@@ -110,7 +110,9 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
             holder.online_status_img.setImageResource(R.drawable.shape_offline);
 
         }
-        holder.deviceNameView.setText(model.DevName);
+
+        //holder.deviceNameView.setText(model.DevName);
+        holder.deviceNameView.setText(model.GetDevName());//zhb
         if(mItemClickListener != null){
             holder.itemView.setOnClickListener(new View.OnClickListener() {
 

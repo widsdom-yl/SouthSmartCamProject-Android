@@ -51,8 +51,6 @@ import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.Enum
 
 public class SettingActivity extends BaseAppCompatActivity implements View.OnClickListener, BaseAdapter.OnItemClickListener
 {
-
-
   ImageView imageview_thumb;
   TextView textview_uid;
   Button button_ap_sta;
@@ -197,7 +195,8 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       imageview_thumb.setImageBitmap(bitmap);
 
     }
-    textview_uid.setText(model.UID);
+    //textview_uid.setText(model.UID);
+    textview_uid.setText("SN:"+model.SN);
     mAdapter.notifyDataSetChanged();
   }
 
@@ -206,6 +205,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
     final EditText inputServer = new EditText(this);
     inputServer.setFocusable(true);
+    inputServer.setText(model.DevName);//zhb
 
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setTitle(getString(R.string.action_change_device_name)).setView(inputServer)
@@ -551,6 +551,16 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
         if (retModel.ret == 1)
         {
           model.DevName = params[0];
+          model.DevNameChange = model.DevName;
+
+          for (DevModel tmpNode : MainDevListFragment.mDevices)
+          {
+            if (model.SN.equals(tmpNode.SN))
+            {
+              tmpNode.DevName = model.DevName;
+              tmpNode.DevNameChange = model.DevName;
+            }
+          }
         }
       }
       return ret;
