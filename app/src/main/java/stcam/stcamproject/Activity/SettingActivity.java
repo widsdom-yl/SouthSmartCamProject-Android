@@ -11,6 +11,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -223,8 +224,16 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
           }
           lod.dialogShow();
           String inputName = inputServer.getText().toString();
-          ChangeDeviceNameTask task = new ChangeDeviceNameTask();
-          task.execute(inputName);
+          if (TextUtils.isEmpty(inputName))//zhb
+          {
+            SouthUtil.showDialog(SettingActivity.this, getString(R.string.error_field_required));
+            lod.dismiss();//zhb
+          }
+          else
+          {
+            ChangeDeviceNameTask task = new ChangeDeviceNameTask();
+            task.execute(inputName);
+          }
         }
       });
     builder.show();
@@ -455,12 +464,13 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
   /*报警灵明度*/
   int chooseLevel = -1;
 
-  private void dialogChoice()
+  private void dialogChoice()//未用到 zhb
   {
     chooseLevel = -1;
     final String items[] = {
-      getString(R.string.action_level_low), getString(R.string.action_level_middle), getString(R.string
-      .action_level_high)
+      getString(R.string.action_level_low),
+      getString(R.string.action_level_middle),
+      getString(R.string.action_level_high)
     };
     AlertDialog.Builder builder = new AlertDialog.Builder(this, 3);
     builder.setTitle(getString(R.string.action_manager_alarm_level));
