@@ -29,12 +29,18 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import stcam.stcamproject.Adapter.BaseAdapter;
 import stcam.stcamproject.Adapter.PushSettingAdapter;
+import stcam.stcamproject.Manager.AccountManager;
+import stcam.stcamproject.Manager.DataManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
+import stcam.stcamproject.network.ServerNetWork;
 
 public class PushSettingActivity extends BaseAppCompatActivity implements BaseAdapter.OnItemClickListener, View.OnClickListener
 {
@@ -791,28 +797,98 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
         else
         {
           SouthUtil.showToast(PushSettingActivity.this, getString(R.string.action_Success));
-          back2TopActivity();
-          for (DevModel existModel : MainDevListFragment.mDevices)
-          {
-            if (model.SN.equals(existModel.SN))
-            {
-              existModel.Disconn();
-              existModel.NetHandle = 0;
-            }
-          }
+
+
+          finishResetConfig();
+
         }
-
-
         //需要断开连接，需要查看
       }
       else
       {
+
+
         SouthUtil.showToast(PushSettingActivity.this, getString(R.string.action_Success));
-        back2TopActivity();
+        finishResetConfig();
       }
       super.onPostExecute(result);
     }
   }
+/*结束回复出厂设置*/
+  void finishResetConfig(){
+//    DataManager.getInstance().deleteDev(model);
+//    for (DevModel existModel : MainDevListFragment.mDevices)
+//    {
+//      if (model.SN.equals(existModel.SN))
+//      {
+//        existModel.Disconn2();
+//        //zhb existModel.Disconn();
+//        existModel.NetHandle = 0;
+//        MainDevListFragment.mDevices.remove(existModel);
+//        break;
+//      }
+//    }
+
+    if (lod == null)
+    {
+      lod = new LoadingDialog(this);
+    }
+    lod.dialogShow();
+    ServerNetWork.getCommandApi()
+            .app_user_del_dev(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance().getDefaultPwd(),
+                    model.SN, 0)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(observer_delete);
+
+
+
+    back2TopActivity();
+  }
+
+  Observer<RetModel> observer_delete = new Observer<RetModel>()
+  {
+    @Override
+    public void onCompleted()
+    {
+      lod.dismiss();
+      Log.e(tag, "---------------------2");
+    }
+
+    @Override
+    public void onError(Throwable e)
+    {
+      lod.dismiss();
+      Log.e(tag, "---------------------1:" + e.getLocalizedMessage());
+      SouthUtil.showToast(getApplicationContext(), getString(R.string.string_delfail));
+    }
+
+    @Override
+    public void onNext(RetModel m)
+    {
+      lod.dismiss();
+      Log.e(tag, "---------------------0:" + m.ret);
+      if (1 == m.ret)
+      {
+
+        DataManager.getInstance().deleteDev(model);
+        for (DevModel existModel : MainDevListFragment.mDevices)
+        {
+          if (model.SN.equals(existModel.SN))
+          {
+            existModel.Disconn2();
+            //zhb existModel.Disconn();
+            existModel.NetHandle = 0;
+            MainDevListFragment.mDevices.remove(existModel);
+            break;
+          }
+        }
+
+        back2TopActivity();
+      }
+    }
+  };
+
 
 
   class getAudioPlayPromptSoundTask extends AsyncTask<String, Void, String>

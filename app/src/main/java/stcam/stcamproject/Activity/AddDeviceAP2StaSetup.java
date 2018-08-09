@@ -228,9 +228,15 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
 
-            Intent intent1= new Intent(this, AddDeviceWlanActivity.class);
-            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            STApplication.getInstance().startActivity(intent1);
+            try{
+                Intent intent1= new Intent(this, AddDeviceWlanActivity.class);
+                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                STApplication.getInstance().startActivity(intent1);
+            }
+            catch (Exception e){
+
+            }
+
 
         }
 
