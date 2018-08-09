@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
     <item
+        android:id="@+id/action_NULL"
+        android:orderInCategory="1"
+        android:title=""
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_delete"
         android:orderInCategory="1"
         android:title="@string/action_delete"

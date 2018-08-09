@@ -23,18 +23,18 @@
         />
 
     <Button
-    android:id="@+id/clear_button"
-    android:layout_alignParentRight="true"
-    android:layout_marginRight="10dp"
-    android:layout_width="70dp"
-    android:layout_height="24dp"
-    android:gravity="right|center"
-    android:layout_marginTop="10dp"
-    android:background="@color/transparent"
-    android:text="@string/action_clear"
-    android:clickable="true"
-    android:textColor="@drawable/white_text_color"
-    android:textSize="14sp" />
+        android:id="@+id/clear_button"
+        android:layout_width="100dp"
+        android:layout_height="24dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/transparent"
+        android:clickable="true"
+        android:gravity="right|center"
+        android:text="@string/action_clear"
+        android:textColor="@drawable/white_text_color"
+        android:textSize="14sp"/>
 
     <Button
         android:id="@+id/refresh_button"

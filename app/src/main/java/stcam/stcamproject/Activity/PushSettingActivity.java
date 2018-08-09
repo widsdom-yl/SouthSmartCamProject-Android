@@ -228,7 +228,9 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
   {
     chooseLevel = -1;
     final String items[] = {
-      getString(R.string.action_level_low), getString(R.string.action_level_middle), getString(R.string
+      getString(R.string.action_level_low),
+      getString(R.string.action_level_middle),
+      getString(R.string
       .action_level_high)
     };
     AlertDialog.Builder builder = new AlertDialog.Builder(this, 3);
@@ -236,7 +238,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     builder.setIcon(R.mipmap.ic_launcher);
     if (MD_Sensitive <= 100)
     {
-      chooseLevel = 0;
+      chooseLevel = 2;
     }
     else if (MD_Sensitive <= 150)
     {
@@ -244,7 +246,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     }
     else if (MD_Sensitive <= 200)
     {
-      chooseLevel = 2;
+      chooseLevel = 0;
     }
 
     builder.setSingleChoiceItems(items, chooseLevel,
@@ -703,7 +705,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
       // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
       //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
 
-      if (params[0] == 0)
+      if (params[0] == 2)
       {
         MD_Sensitive = 100;
       }
@@ -711,7 +713,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
       {
         MD_Sensitive = 150;
       }
-      else if (params[0] == 2)
+      else if (params[0] == 0)
       {
         MD_Sensitive = 200;
       }

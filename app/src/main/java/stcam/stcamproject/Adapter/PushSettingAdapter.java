@@ -42,13 +42,13 @@ public class PushSettingAdapter extends BaseAdapter<String>{
             else if (1 == position){
                 if( MD_Sensitive != -1){
                     if (MD_Sensitive <= 100){
-                        holder.setText(R.id.detail_text, STApplication.getInstance().getString(R.string.action_level_low));
+                        holder.setText(R.id.detail_text, STApplication.getInstance().getString(R.string.action_level_high));
                     }
                     else if(MD_Sensitive <= 150){
                         holder.setText(R.id.detail_text, STApplication.getInstance().getString(R.string.action_level_middle));
                     }
                     else if(MD_Sensitive <= 200){
-                        holder.setText(R.id.detail_text, STApplication.getInstance().getString(R.string.action_level_high));
+                        holder.setText(R.id.detail_text, STApplication.getInstance().getString(R.string.action_level_low));
                     }
                 }
             }
