@@ -1,8 +1,10 @@
 package stcam.stcamproject.Activity;
 
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -11,9 +13,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 
 import com.model.DevModel;
 import com.model.SDVideoModel;
+import com.thSDK.TMsg;
 import com.thSDK.lib;
 
 import stcam.stcamproject.Application.STApplication;
@@ -31,6 +35,7 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
     ImageButton imagebutton_back;
     VoiceImageButton button_snapshot,button_record;
     MainDevListFragment.EnumMainEntry entryType;
+    ProgressBar load_progress;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -65,6 +70,7 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
 
         }
         initView();
+        glView.setmHandler(gotFrameHandler);
         glView.Play();
     }
     @Override
@@ -130,6 +136,28 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
 //        glView.Stop();
 //        glView.Play();
     }
+
+    private Handler gotFrameHandler = new Handler()
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
+
+
+            super.handleMessage(msg);
+            switch (msg.what)
+            {
+                case TMsg.Msg_GotFirstFrame:
+                    load_progress.setVisibility(View.GONE);
+                    glView.setBackgroundColor(Color.TRANSPARENT);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    };
+
     void initView(){
         glView = findViewById(R.id.glPlayBack);
         glView.setModel(devModel,model);
@@ -137,6 +165,7 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
         button_snapshot = findViewById(R.id.button_snapshot);
         imagebutton_back = findViewById(R.id.imagebutton_back);
         button_record = findViewById(R.id.button_record);
+        load_progress = findViewById(R.id.load_progress);
         button_record.setEnumSoundWav(PlayVoice.EnumSoundWav.CLICK);
         button_snapshot.setEnumSoundWav(PlayVoice.EnumSoundWav.SNAP);
         button_snapshot.setOnClickListener(this);

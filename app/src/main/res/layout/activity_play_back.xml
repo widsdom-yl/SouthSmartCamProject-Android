@@ -44,6 +44,20 @@
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <ProgressBar
+        android:id="@+id/load_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintBottom_toBottomOf="@id/glPlayBack"
+        app:layout_constraintTop_toTopOf="@id/glPlayBack"
+        app:layout_constraintLeft_toLeftOf="@id/glPlayBack"
+        app:layout_constraintStart_toStartOf= "@id/glPlayBack"
+        app:layout_constraintRight_toRightOf="@id/glPlayBack"
+        app:layout_constraintEnd_toEndOf="@id/glPlayBack" />
+
+
     <ImageButton
         android:id="@+id/imagebutton_back"
 
