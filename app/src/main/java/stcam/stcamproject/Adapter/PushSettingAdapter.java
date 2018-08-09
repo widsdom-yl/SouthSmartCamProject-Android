@@ -65,6 +65,7 @@ public class PushSettingAdapter extends BaseAdapter<String>{
             }
             else if(4 == position){
                 if (mRecConfigModel != null){
+                    if (mRecConfigModel.getRec_AlmTimeLen() != 0)
                     holder.setText(R.id.detail_text,mRecConfigModel.getRec_AlmTimeLen()+STApplication.getInstance().getString(R.string.string_second));
                 }
             }
