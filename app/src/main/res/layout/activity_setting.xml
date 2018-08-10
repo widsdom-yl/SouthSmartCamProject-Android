@@ -45,6 +45,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageview_thumb" />
 
     <Button
+        android:textAllCaps="false"
         android:id="@+id/button_delete_device"
         android:layout_width="0dp"
         android:layout_height="40dp"
@@ -62,6 +63,7 @@
         app:layout_constraintTop_toBottomOf="@+id/button_ap_sta" />
 
     <Button
+        android:textAllCaps="false"
         android:id="@+id/button_ap_sta"
         android:layout_width="0dp"
         android:layout_height="40dp"

@@ -132,6 +132,7 @@
     </TableLayout>
 
     <Button
+        android:textAllCaps="false"
         android:id="@+id/btn_generate_share"
         android:layout_width="0dp"
         android:layout_height="40dp"

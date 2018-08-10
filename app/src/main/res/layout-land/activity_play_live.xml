@@ -138,6 +138,7 @@
                 android:scaleType="fitCenter"
                 />
             <Button
+                android:textAllCaps="false"
                 android:id="@+id/button_ptz"
                 android:layout_centerVertical="true"
                 android:layout_width="0dp"

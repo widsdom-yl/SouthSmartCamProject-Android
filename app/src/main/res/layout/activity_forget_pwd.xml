@@ -89,6 +89,7 @@
         app:layout_constraintTop_toBottomOf="@+id/editText_confirm_pwd" />
 
     <Button
+        android:textAllCaps="false"
         android:id="@+id/button_next"
         android:layout_width="0dp"
         android:layout_height="40dp"
@@ -136,6 +137,7 @@
         app:layout_constraintTop_toTopOf="@+id/editText_confirm_pwd" />
 
     <Button
+        android:textAllCaps="false"
         android:id="@+id/sender_check_button"
         android:layout_width="wrap_content"
         android:layout_height="40dp"

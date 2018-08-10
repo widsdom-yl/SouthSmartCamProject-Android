@@ -125,6 +125,7 @@
                 />
 
             <Button
+                android:textAllCaps="false"
                 android:id="@+id/forget_button"
                 android:layout_below="@id/passwordTextInputLayout"
                 android:layout_alignParentRight="true"
@@ -137,6 +138,7 @@
 
 
             <Button
+                android:textAllCaps="false"
                 android:id="@+id/email_login_in_button"
                 android:layout_below="@id/checkbox"
                 style="?android:textAppearanceSmall"
@@ -148,6 +150,7 @@
                 android:textColor="#ffffff" />
 
             <Button
+                android:textAllCaps="false"
                 android:id="@+id/register_button"
                 android:layout_below="@id/email_login_in_button"
                 style="?android:textAppearanceSmall"
@@ -159,6 +162,7 @@
                 android:textColor="#666666"/>
 
             <Button
+                android:textAllCaps="false"
                 android:id="@+id/visitor_button"
                 android:layout_below="@id/register_button"
                 android:textColor="@drawable/button_green_text_color"

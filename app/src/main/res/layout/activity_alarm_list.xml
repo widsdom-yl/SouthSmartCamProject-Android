@@ -23,6 +23,7 @@
         />
 
     <Button
+        android:textAllCaps="false"
         android:id="@+id/clear_button"
         android:layout_width="100dp"
         android:layout_height="24dp"
@@ -37,6 +38,7 @@
         android:textSize="14sp"/>
 
     <Button
+        android:textAllCaps="false"
         android:id="@+id/refresh_button"
         android:layout_alignParentLeft="true"
 

@@ -55,6 +55,7 @@
 
 
     <Button
+        android:textAllCaps="false"
         android:id="@+id/button_cancel"
         android:layout_marginBottom="100dp"
         android:layout_width="0dp"
