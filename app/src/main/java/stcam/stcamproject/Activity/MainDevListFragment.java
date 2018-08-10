@@ -78,11 +78,13 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     Log.e(tag, "OnNetWorkBreakListener ---------------0");
     if (mDevices != null)
     {
-      for (DevModel devModel : mDevices)
+      for (DevModel tmpNode : mDevices)
       {
-        if (devModel.IsConnect())
+        if (tmpNode.IsConnect())
         {
-          devModel.Disconn();
+          //tmpNode.Disconn();
+          lib.thNetThreadDisConnFree(tmpNode.NetHandle);
+          tmpNode.NetHandle = 0;
         }
       }
       if (mAdapter != null)
@@ -110,12 +112,6 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
       }
       else if (1 == type)
       {
-//            for (DevModel model : mDevices){
-//
-//                Log.e(tag,"---------------------1 dev0 name"+model.DevName);
-//                if (!model.IsConnect())
-//                    DevModel.threadConnect(ipc,model,false);
-//            }
         if (mDevices != null)
         {
           mDevices.clear();
@@ -172,7 +168,6 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
   public void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
-    //lib.P2PInit();
     Log.e(tag, "PushRegisterID : " + JPushManager.getJPushRegisterID());
     // setContentView(R.layout.activity_main_dev_list);
     // android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -261,11 +256,13 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     super.onDestroy();
     if (mDevices != null && mDevices.size() > 0)
     {
-      for (DevModel devModel : mDevices)
+      for (DevModel tmpNode : mDevices)
       {
-        if (devModel.IsConnect())
+        if (tmpNode.IsConnect())
         {
-          devModel.Disconn();
+          //tmpNode.Disconn();
+          lib.thNetThreadDisConnFree(tmpNode.NetHandle);
+          tmpNode.NetHandle = 0;
         }
       }
       mDevices.clear();
@@ -273,93 +270,8 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     getActivity().unregisterReceiver(networkChangeReceiver);
   }
 
-
-  //    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        if (entryType == EnumMainEntry.EnumMainEntry_Login){
-//            getMenuInflater().inflate(R.menu.menu_main, menu);
-//        }
-//        else{
-//            getMenuInflater().inflate(R.menu.menu_search, menu);
-//        }
-//
-//        return true;
-//    }
   String SearchMsg;
   boolean IsSearching;
-
-  //    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        if (item.getItemId() == R.id.action_add) {
-//            Intent intent = new Intent(this.getActivity(), AddDeviceActivity.class);
-//            startActivity(intent);
-//            return true;
-//        }
-//        if (item.getItemId() == R.id.action_alarm) {
-//            Intent intent = new Intent(this.getActivity(), AlarmListActivity.class);
-//            startActivity(intent);
-//            return true;
-//        }
-//        if (item.getItemId() == R.id.action_media) {
-//            Intent intent = new Intent(this.getActivity(), MediaActivity.class);
-//            Bundle bundle = new Bundle();
-//            //bundle.putSerializable("devModel",model);
-//            ArrayList<DevModel> devices = (ArrayList<DevModel>) mDevices;
-//            bundle.putParcelableArrayList("devices",devices);
-//            intent.putExtras(bundle);
-//
-//            startActivity(intent);
-//            return true;
-//        }
-//        if (item.getItemId() == R.id.action_search){
-//            searchDevices();
-//        }
-//        if (item.getItemId() == R.id.action_setting){
-//            Intent intent = new Intent(this, SystemSettingActivity.class);
-//            startActivity(intent);
-//        }
-//        if (item.getItemId() == android.R.id.home){
-//            Log.e(tag,"---------------------back to home");
-//            disconnectDev();
-//            this.finish(); // back button
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-//
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if(keyCode == KeyEvent.KEYCODE_BACK){
-//            Log.e(tag,"---------------------onKeyDown");
-//            disconnectDev();
-//
-//            this.finish(); // back button
-//            return true;
-//        }
-//        return super.onKeyDown(keyCode, event);
-//    }
-  void disconnectDev()
-  {
-    new Thread()
-    {
-      @Override
-      public void run()
-      {
-        Log.e(tag, "disconnectDev thread start");
-        for (DevModel model : mDevices)
-        {
-          if (model.IsConnect())
-          {
-            Log.e(tag, "---------------------disconnect:" + model.SN);
-            model.Disconn();
-          }
-        }
-        mDevices.clear();
-        lib.P2PFree();
-      }
-    }.run();
-
-  }
 
   void initView(View view)
   {
@@ -560,19 +472,11 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
       }
     });
 
-
-//        subscription = ServerNetWork.getCommandApi()
-////                .app_user_get_devlst("4719373@qq.com","admin111")
-//                .app_user_get_devlst(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance().getDefaultPwd())
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(observer_get_devlst);
   }
 
-  void parseGetDevListResponse(String response)
+  void parseGetDevListResponse(String response)//zhb from server app_user_get_devlst.asp
   {
     List<DevModel> mlist = GsonUtil.parseJsonArrayWithGson(response, DevModel[].class);
-
 
     if (mlist == null)
     {
@@ -582,34 +486,38 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     if (mlist.size() > 0)
     {
       mAccountDevices = mlist;
-      for (DevModel model : mlist)
+      for (DevModel serverNode : mlist)
       {
-        boolean exist = false;
+        boolean IsExist = false;
         for (DevModel tmpNode : mDevices)
         {
-
-          if (model.SN.equals(tmpNode.SN))
+          if (serverNode.SN.equals(tmpNode.SN))
           {
-            model.DevName = tmpNode.GetDevName();
-            exist = true;
+            serverNode.DevName = tmpNode.GetDevName();
+            //tmpNode.DevName = serverNode.DevName;
+            tmpNode.ConnType = serverNode.ConnType;//zhb
+            tmpNode.IPUID = serverNode.IPUID;//zhb
+            tmpNode.WebPort = serverNode.WebPort;//zhb
+            tmpNode.DataPort = serverNode.DataPort;//zhb
+            IsExist = true;
             break;
           }
         }
-        if (!exist)
+        if (!IsExist)
         {
-          mDevices.add(model);
+          mDevices.add(serverNode);
         }
       }
 
-      for (DevModel model : mDevices)
+      for (DevModel tmpNode : mDevices)
       {
 
-        Log.e(tag, "---------------------1 dev0 name" + model.DevName);
-        if (!model.IsConnect())
+        Log.e(tag, "---------------------1 dev0 name" + tmpNode.DevName);
+        if (!tmpNode.IsConnect())
         {
-          Log.e(tag, "---------------------NetConn:sn" + model.SN);
+          Log.e(tag, "---------------------NetConn:sn" + tmpNode.SN);
         }
-        DevModel.threadConnect(ipc, model, false);
+        DevModel.threadConnect(ipc, tmpNode);
       }
 
       if (mAdapter == null)
@@ -683,44 +591,29 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
       if (mlist.size() > 0)
       {
-        //  mDevices = mlist;
-        //DevModel model =  mlist.get(0);
-        //SouthUtil.showToast(STApplication.getInstance(),"dev0 name"+model.DevName);
-
-        // if (mAccountDevices == null){
-        //     mAccountDevices = mlist;
-        // }
-        // else
+        for (DevModel model : mlist)
         {
-
-
-          for (DevModel model : mlist)
+          boolean exist = false;
+          for (DevModel tmpNode : mDevices)
           {
-            boolean exist = false;
-            for (DevModel existModel : mDevices)
+            if (model.SN.equals(tmpNode.SN))
             {
-
-              if (model.SN.equals(existModel.SN))
-              {
-                model.DevName = existModel.GetDevName();
-                exist = true;
-                break;
-              }
+              model.DevName = tmpNode.GetDevName();
+              exist = true;
+              break;
             }
-            if (!exist)
-            {
-              mDevices.add(model);
-            }
+          }
+          if (!exist)
+          {
+            mDevices.add(model);
           }
         }
 
-        for (DevModel model : mDevices)
+        for (DevModel tmpNode : mDevices)
         {
-
-          Log.e(tag, "---------------------1 dev0 name" + model.DevName);
-          if (!model.IsConnect())
+          if (!tmpNode.IsConnect())
           {
-            DevModel.threadConnect(ipc, model, false);
+            DevModel.threadConnect(ipc, tmpNode);
           }
         }
 
@@ -757,30 +650,30 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
   {
 
     DevModel currentModel = mAccountDevices.get(position);
-    DevModel model = null;
+    DevModel tmpNode = null;
 
     for (DevModel existModel : mDevices)
     {
       if (currentModel.SN.equals(existModel.SN))
       {
-        model = currentModel;
-        model.NetHandle = existModel.NetHandle;
-        model.ConnType = existModel.ConnType;
-        model.DevCfg = existModel.DevCfg;
-        model.ExistSD = existModel.ExistSD;
-        model.DevType = existModel.DevType;
-        model.Brightness = existModel.Brightness;
-        model.Contrast = existModel.Contrast;
-        model.Sharpness = existModel.Contrast;
-        model.UID = existModel.UID;
-        model.SoftVersion = existModel.SoftVersion;
-        model.DevName = existModel.GetDevName();
+        tmpNode = currentModel;
+        tmpNode.NetHandle = existModel.NetHandle;
+        tmpNode.ConnType = existModel.ConnType;
+        tmpNode.DevCfg = existModel.DevCfg;
+        tmpNode.ExistSD = existModel.ExistSD;
+        tmpNode.DevType = existModel.DevType;
+        tmpNode.Brightness = existModel.Brightness;
+        tmpNode.Contrast = existModel.Contrast;
+        tmpNode.Sharpness = existModel.Contrast;
+        tmpNode.UID = existModel.UID;
+        tmpNode.SoftVersion = existModel.SoftVersion;
+        tmpNode.DevName = existModel.GetDevName();
         break;
       }
     }
     if (3 != tpe)
     {
-      if (!model.IsConnect())
+      if (!tmpNode.IsConnect())
       {
         Log.e(tag, "---------------------1:not connect ");
         SouthUtil.showDialog(MainDevListFragment.this.getActivity(), getString(R.string.action_net_not_connect));
@@ -795,10 +688,10 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
       Intent intent = new Intent(STApplication.getInstance(), PlayLiveActivity.class);
 
       Bundle bundle = new Bundle();
-      bundle.putParcelable("devModel", model);
+      bundle.putParcelable("devModel", tmpNode);
       bundle.putSerializable("entry", entryType);
       intent.putExtras(bundle);
-      Log.e(tag, "to vid devModel NetHandle:" + model.NetHandle);
+      Log.e(tag, "to vid devModel NetHandle:" + tmpNode.NetHandle);
 
       startActivity(intent);
     }
@@ -808,7 +701,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
       if (entryType == EnumMainEntry_Login)
       {
-        if (model.IsShare == 0)
+        if (tmpNode.IsShare == 0)
         {
           SouthUtil.showDialog(this.getActivity(), getString(R.string.string_device_is_share));
           return;
@@ -817,10 +710,10 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
         Intent intent = new Intent(STApplication.getInstance(), DeviceShareActivity.class);
 
         Bundle bundle = new Bundle();
-        bundle.putParcelable("devModel", model);
+        bundle.putParcelable("devModel", tmpNode);
 
         intent.putExtras(bundle);
-        Log.e(tag, "to DeviceShareActivity NetHandle:" + model.NetHandle);
+        Log.e(tag, "to DeviceShareActivity NetHandle:" + tmpNode.NetHandle);
 
         startActivity(intent);
       }
@@ -829,10 +722,10 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
         Intent intent = new Intent(STApplication.getInstance(), AddDeviceAP2StaSetup.class);
 
         Bundle bundle = new Bundle();
-        bundle.putParcelable("devModel", model);
+        bundle.putParcelable("devModel", tmpNode);
 
         intent.putExtras(bundle);
-        Log.e(tag, "to DeviceShareActivity NetHandle:" + model.NetHandle);
+        Log.e(tag, "to DeviceShareActivity NetHandle:" + tmpNode.NetHandle);
 
         startActivity(intent);
       }
@@ -842,13 +735,13 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     else if (2 == tpe)
     {
 
-      if (model.ExistSD == 0)
+      if (tmpNode.ExistSD == 0)
       {
         SouthUtil.showToast(STApplication.getInstance(), getString(R.string.action_not_exist_sd));
         return;
       }
 
-      if (model.IsRecord)
+      if (tmpNode.IsRecord)
       {
         SouthUtil.showToast(STApplication.getInstance(), getString(R.string.string_no_record_permisson));
         return;
@@ -856,10 +749,10 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
       Intent intent = new Intent(STApplication.getInstance(), PlayBackListActivity.class);
 
       Bundle bundle = new Bundle();
-      bundle.putParcelable("devModel", model);
+      bundle.putParcelable("devModel", tmpNode);
       bundle.putSerializable("entry", entryType);
       intent.putExtras(bundle);
-      Log.e(tag, "to PlayBackListActivity NetHandle:" + model.NetHandle);
+      Log.e(tag, "to PlayBackListActivity NetHandle:" + tmpNode.NetHandle);
 
       startActivity(intent);
     }
@@ -868,10 +761,10 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
       Intent intent = new Intent(STApplication.getInstance(), SettingActivity.class);
 
       Bundle bundle = new Bundle();
-      bundle.putParcelable("devModel", model);
+      bundle.putParcelable("devModel", tmpNode);
       bundle.putSerializable("entry", entryType);
       intent.putExtras(bundle);
-      Log.e(tag, "to SettingActivity NetHandle:" + model.NetHandle);
+      Log.e(tag, "to SettingActivity NetHandle:" + tmpNode.NetHandle);
 
       startActivity(intent);
     }
@@ -883,8 +776,6 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     @Override
     public void handleMessage(Message msg)
     {
-
-
       super.handleMessage(msg);
       DevModel model;
       switch (msg.what)
@@ -982,13 +873,13 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
               }
             }
 
-            for (DevModel model : mDevices)
+            for (DevModel tmpNode : mDevices)
             {
 
-              Log.e(tag, "---------------------1 dev0 name" + model.DevName);
-              if (!model.IsConnect())
+              Log.e(tag, "---------------------1 dev0 name" + tmpNode.DevName);
+              if (!tmpNode.IsConnect())
               {
-                DevModel.threadConnect(ipc, model, false);
+                DevModel.threadConnect(ipc, tmpNode);
               }
             }
 

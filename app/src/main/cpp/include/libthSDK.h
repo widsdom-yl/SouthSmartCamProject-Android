@@ -12,12 +12,12 @@
 #ifdef __cplusplus
 extern "C"
 {
-#endif 
+#endif
 
 #pragma pack(4)//n=1,2,4,8,16
   //*****************************************************************************
   //-----------------------------------------------------------------------------
-  EXPORT HANDLE thNet_Init(bool IsInsideDecode, bool IsQueue, bool IsAdjustTime, bool IsAutoReConn);
+  EXPORT HANDLE thNet_Init(bool IsInsideDecode, bool IsQueue, bool IsAdjustTime, bool IsAutoReConn, u32 SN);
   /*-----------------------------------------------------------------------------
   函数描述：初始化网络播放
   参数说明：
@@ -217,7 +217,7 @@ extern "C"
   LocalIP:传入的本地IP，缺省为NULL
   返 回 值：成功返回true，失败返回false
   ------------------------------------------------------------------------------*/
-  EXPORT bool thSearch_Free(HANDLE SearchHandle); 
+  EXPORT bool thSearch_Free(HANDLE SearchHandle);
   /*-----------------------------------------------------------------------------
   函数描述：释放查询设备
   返 回 值：成功返回true，失败返回false
@@ -320,11 +320,16 @@ extern "C"
   EXPORT bool DTMFBufToText(char* Buf, int BufLen, int iSample/*=8000*/, int iBits/*=16*/, char* txt);
 
 #if defined(ANDROID)
-EXPORT bool thNet_ExtendDraw(HANDLE NetHandle);
+  EXPORT bool thNet_ExtendDraw(HANDLE NetHandle);
 #endif
+  EXPORT bool thManage_AddDevice(u32 SN, HANDLE NetHandle);
+  EXPORT bool thManage_DelDevice(u32 SN);
+  EXPORT bool thManage_DisconnFreeAll();
+  EXPORT bool thManage_NetworkSwitch(int NetWorkType);//TYPE_NONE=-1 TYPE_MOBILE=0 TYPE_WIFI=1
+  EXPORT bool thManage_ForeBackgroundSwitch(int IsForeground);//Background=0 Foreground=1
 
 #ifdef __cplusplus
 }
-#endif 
+#endif
 
 #endif 

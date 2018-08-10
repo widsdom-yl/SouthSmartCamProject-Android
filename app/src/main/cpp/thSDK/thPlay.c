@@ -35,6 +35,7 @@
 
 typedef struct TPlayParam
 {
+  u32 SN;
   //ÄÚ²¿
   bool IsExit;
   bool IsAutoReConn;
@@ -142,9 +143,21 @@ typedef struct TPlayParam
   i32 p2p_talkIndex;
 
 } TPlayParam;
+//---------------------------------------------------------
+typedef struct TPlayManggeParam {
+  int Isp2pInit;
+#define MAX_MANAGE_PLAY_COUNT  256
+  int IsForeground;//Background=0 Foreground=1
+  int NetWorkType;//TYPE_NONE=-1 TYPE_MOBILE=0 TYPE_WIFI=1
+  int iPlayCount;
+  int iP2PCount;
+  struct {
+    HANDLE NetHandle;
+    u32 SN;
+  }Lst[MAX_MANAGE_PLAY_COUNT];
 
-static bool Isp2pInit = false;
-
+}TPlayManggeParam;
+TPlayManggeParam PlayLst;
 //*****************************************************************************
 void callback_AudioTalk(void *UserCustom, char *Buf, i32 Len);
 
@@ -323,15 +336,15 @@ bool thSearch_Free(HANDLE SearchHandle)
   return ret;
 }
 //-----------------------------------------------------------------------------
-HANDLE thNet_Init(bool IsInsideDecode, bool IsQueue, bool IsAdjustTime, bool IsAutoReConn)
+HANDLE thNet_Init(bool IsInsideDecode, bool IsQueue, bool IsAdjustTime, bool IsAutoReConn, u32 SN)
 {
 #ifdef WIN32
   WSADATA wsaData;
 #endif
   TPlayParam *Play = (TPlayParam *) malloc(sizeof(TPlayParam));
   if (!Play) return NULL;
-  PRINTF("%s(%d) IsInsideDecode:%d IsQueue:%d IsAdjustTime:%d IsAutoReConn:%d\n", __FUNCTION__, __LINE__,
-         IsInsideDecode, IsQueue, IsAdjustTime, IsAutoReConn);
+  PRINTF("%s(%d) IsInsideDecode:%d IsQueue:%d IsAdjustTime:%d IsAutoReConn:%d SN:%X\n", __FUNCTION__, __LINE__,
+         IsInsideDecode, IsQueue, IsAdjustTime, IsAutoReConn, SN);
 #ifdef WIN32
   WSAStartup(MAKEWORD(2, 2), &wsaData);
 #endif
@@ -354,6 +367,12 @@ HANDLE thNet_Init(bool IsInsideDecode, bool IsQueue, bool IsAdjustTime, bool IsA
   Play->DecodeStyle = Decode_All;
 
   Play->iConnectStatus = THNET_CONNSTATUS_NO;
+
+  if (SN > 0)
+  {
+    Play->SN = SN;
+    thManage_AddDevice(SN, (HANDLE)Play);
+  }
   return (HANDLE) Play;
 }
 //-----------------------------------------------------------------------------
@@ -373,7 +392,9 @@ bool thNet_SetCallBack(HANDLE NetHandle, TvideoCallBack videoEvent, TaudioCallBa
 bool thNet_Free(HANDLE NetHandle)
 {
   TPlayParam *Play = (TPlayParam *) NetHandle;
+  u32 SN;
   if (NetHandle == 0) return false;
+  SN = Play->SN;
   PRINTF("%s(%s)(%s)\n", __FUNCTION__, Play->IPUID, Play->LocalIP);
   thNet_DisConn(NetHandle);
 
@@ -384,6 +405,7 @@ bool thNet_Free(HANDLE NetHandle)
 #ifdef WIN32
   //  WSACleanup();
 #endif
+  thManage_DelDevice(SN);
   return true;
 }
 //-----------------------------------------------------------------------------
@@ -1352,10 +1374,10 @@ bool net_Connect_P2P(HANDLE NetHandle, bool IsCreateRecvThread)
   Play->IsTaskRec = false;
   Play->Isp2pConn = true;
 #ifdef WIN32
-  if (!Isp2pInit)
+  if (!PlayLst.Isp2pInit)
 {
   P2P_Init();
-  Isp2pInit = true;
+  PlayLst.Isp2pInit = true;
 }
 sprintf(sLocalIP, GetLocalIP());
 strcpy(Play->LocalIP, sLocalIP);
@@ -2430,21 +2452,107 @@ bool thNet_ExtendDraw(HANDLE NetHandle)//android opengl render
 bool P2P_Init()
 {
   int ret;
-  ret = IOTC_Initialize2(0);
-  if (ret != IOTC_ER_NoERROR) return false;
-  ret = avInitialize(32);
-  Isp2pInit = true;
-  PRINTF("%s(%d)\n", __FUNCTION__, __LINE__);
+  if (!PlayLst.Isp2pInit)
+  {
+    PRINTF("%s(%d)\n", __FUNCTION__, __LINE__);
+    ret = IOTC_Initialize2(0);
+    if (ret != IOTC_ER_NoERROR) return false;
+    ret = avInitialize(32);
+    PlayLst.Isp2pInit = true;
+  }
   return true;
 }
 //-----------------------------------------------------------------------------
 bool P2P_Free()
 {
   int ret;
-  PRINTF("%s(%d)\n", __FUNCTION__, __LINE__);
-  ret = avDeInitialize();
-  ret = IOTC_DeInitialize();
-  Isp2pInit = false;
+  if (PlayLst.Isp2pInit)
+  {
+    PRINTF("%s(%d)\n", __FUNCTION__, __LINE__);
+    ret = avDeInitialize();
+    ret = IOTC_DeInitialize();
+    PlayLst.Isp2pInit = false;
+  }
   return true;
+}
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+bool thManage_AddDevice(u32 SN, HANDLE NetHandle)
+{
+  int i, ret;
+
+  if (NetHandle == 0) return false;
+
+  ret = false;
+  for (i = 0; i < MAX_MANAGE_PLAY_COUNT; i++)
+  {
+    if (PlayLst.Lst[i].SN == 0)
+    {
+      PlayLst.Lst[i].SN = SN;
+      PlayLst.Lst[i].NetHandle = NetHandle;
+      PlayLst.iPlayCount = PlayLst.iPlayCount + 1;
+      ret = true;
+      break;
+    }
+  }
+
+  return ret;
+}
+//-----------------------------------------------------------------------------
+bool thManage_DelDevice(u32 SN)
+{
+  int i, ret;
+
+  ret = false;
+  for (i = 0; i < MAX_MANAGE_PLAY_COUNT; i++)
+  {
+    if (PlayLst.Lst[i].SN == SN)
+    {
+      PlayLst.Lst[i].SN = 0;
+      PlayLst.Lst[i].NetHandle = 0;
+      PlayLst.iPlayCount = PlayLst.iPlayCount - 1;
+      if (PlayLst.iPlayCount < 0) PlayLst.iPlayCount = 0;
+
+      ret = true;
+      break;
+    }
+  }
+
+  return ret;
+}
+//-----------------------------------------------------------------------------
+bool thManage_DisconnFreeAll()
+{
+  int i, ret;
+
+  for (i = 0; i < MAX_MANAGE_PLAY_COUNT; i++)
+  {
+    if (PlayLst.Lst[i].NetHandle)
+    {
+      ret = thNet_Free(PlayLst.Lst[i].NetHandle);
+      PlayLst.Lst[i].NetHandle = 0;
+      PlayLst.Lst[i].SN = 0;
+    }
+  }
+
+  P2P_Free();
+  return true;
+}
+//-----------------------------------------------------------------------------
+bool thManage_NetworkSwitch(int NetWorkType)//TYPE_NONE=-1 TYPE_MOBILE=0 TYPE_WIFI=1
+{
+  if (PlayLst.NetWorkType != NetWorkType)
+  {
+    PlayLst.NetWorkType = NetWorkType;
+  }
+}
+//-----------------------------------------------------------------------------
+bool thManage_ForeBackgroundSwitch(int IsForeground)//Background=0 Foreground=1
+{
+  if (PlayLst.IsForeground != IsForeground)
+  {
+    PlayLst.IsForeground = IsForeground;
+  }
 }
 //-----------------------------------------------------------------------------

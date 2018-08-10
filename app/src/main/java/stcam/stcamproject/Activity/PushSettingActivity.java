@@ -231,7 +231,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
       getString(R.string.action_level_low),
       getString(R.string.action_level_middle),
       getString(R.string
-      .action_level_high)
+        .action_level_high)
     };
     AlertDialog.Builder builder = new AlertDialog.Builder(this, 3);
     builder.setTitle(getString(R.string.action_manager_alarm_level));
@@ -816,17 +816,19 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
       super.onPostExecute(result);
     }
   }
-/*结束回复出厂设置*/
-  void finishResetConfig(){
+
+  /*结束回复出厂设置*/
+  void finishResetConfig()
+  {
 //    DataManager.getInstance().deleteDev(model);
-//    for (DevModel existModel : MainDevListFragment.mDevices)
+//    for (DevModel tmpNode : MainDevListFragment.mDevices)
 //    {
-//      if (model.SN.equals(existModel.SN))
+//      if (model.SN.equals(tmpNode.SN))
 //      {
-//        existModel.Disconn2();
-//        //zhb existModel.Disconn();
-//        existModel.NetHandle = 0;
-//        MainDevListFragment.mDevices.remove(existModel);
+//        tmpNode.Disconn2();
+//        //zhb tmpNode.Disconn();
+//        tmpNode.NetHandle = 0;
+//        MainDevListFragment.mDevices.remove(tmpNode);
 //        break;
 //      }
 //    }
@@ -837,12 +839,11 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     }
     lod.dialogShow();
     ServerNetWork.getCommandApi()
-            .app_user_del_dev(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance().getDefaultPwd(),
-                    model.SN, 0)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(observer_delete);
-
+      .app_user_del_dev(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance().getDefaultPwd(),
+        model.SN, 0)
+      .subscribeOn(Schedulers.io())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(observer_delete);
 
 
     back2TopActivity();
@@ -874,14 +875,14 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
       {
 
         DataManager.getInstance().deleteDev(model);
-        for (DevModel existModel : MainDevListFragment.mDevices)
+        for (DevModel tmpNode : MainDevListFragment.mDevices)
         {
-          if (model.SN.equals(existModel.SN))
+          if (model.SN.equals(tmpNode.SN))
           {
-            existModel.Disconn2();
-            //zhb existModel.Disconn();
-            existModel.NetHandle = 0;
-            MainDevListFragment.mDevices.remove(existModel);
+            //zhb tmpNode.Disconn();
+            lib.thNetThreadDisConnFree(tmpNode.NetHandle);
+            tmpNode.NetHandle = 0;
+            MainDevListFragment.mDevices.remove(tmpNode);
             break;
           }
         }
@@ -890,7 +891,6 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
       }
     }
   };
-
 
 
   class getAudioPlayPromptSoundTask extends AsyncTask<String, Void, String>

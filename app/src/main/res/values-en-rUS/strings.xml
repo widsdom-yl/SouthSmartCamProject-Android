@@ -79,8 +79,8 @@
     <string name="action_add_ap_sta">Add AP to STA</string>
     <string name="action_add_ap">AP hot spot direct connection</string>
     <string name="action_media">Image</string>
-    <string name="action_one_key_setting_desc0">heard\"wait to connect \" Or when the red light and the blue light are turned on at the same time, enter the password of the router and proceed to the next step</string>
-    <string name="action_one_key_setting_desc1">heard\" configuration success \" or the red and blue light flicker, search equipment</string>
+    <string name="action_one_key_setting_desc0">Heard \"wait to connect \" or when the Red and Blue light flicker, enter the password of the router and proceed to the next step.</string>
+    <string name="action_one_key_setting_desc1">Heard \" configuration success\" or when the Red and Blue light are turned on at the same time, search equipment.</string>
     <string name="string_tip">Kindly reminder</string>
     <string name="ssid">Router SSID</string>
     <string name="ssid_pwd">Password</string>
@@ -223,4 +223,6 @@
     <string name="string_ChangePsdFail">Change password fail!</string>
     <string name="string_devAddSuccess">Add success!</string>
     <string name="string_devAddFail">Add fail!</string>
+    <string name="string_decodeQRFail">Decode QR code fail!</string>
+    <string name="string_openPermission">Please open permission</string>
 </resources>

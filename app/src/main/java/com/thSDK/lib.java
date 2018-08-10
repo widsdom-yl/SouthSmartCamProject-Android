@@ -29,7 +29,7 @@ public class lib extends Activity
 
   public static native String GetLocalIP();
 
-  public static native long thNetInit(boolean IsInsideDecode, boolean IsQueue, boolean IsAdjustTime, boolean IsAutoReConn);
+  public static native long thNetInit(boolean IsInsideDecode, boolean IsQueue, boolean IsAdjustTime, boolean IsAutoReConn, String SN);
 
   public static native boolean thNetSetDecodeStyle(long NetHandle, int DecodeStyle);
 
@@ -38,6 +38,8 @@ public class lib extends Activity
   public static native boolean thNetConnect(long NetHandle, String jUserName, String jPassword, String jIPUID, int DataPort, int TimeOut);
 
   public static native boolean thNetDisConn(long NetHandle);
+
+  public static native boolean thNetThreadDisConnFree(long NetHandle);
 
   public static native boolean thNetIsConnect(long NetHandle);
 
@@ -199,4 +201,11 @@ public class lib extends Activity
   public final static int Msg_GetRecStartTime = 91;
   public final static int Msg_FormattfCard = 92;
   public final static int Msg_______ = 93;
+
+  public static native boolean thManageAddDevice(String SN, long NetHandle);
+  public static native boolean thManageDelDevice(String SN);
+  public static native boolean thManageDisconnFreeAll();
+  public static native boolean thManageNetworkSwitch(int NetWorkType);//TYPE_NONE=-1 TYPE_MOBILE=0 TYPE_WIFI=1
+  public static native boolean thManageForeBackgroundSwitch(int IsForeground);//Background=0 Foreground=1
 }
+//  Foreground Background

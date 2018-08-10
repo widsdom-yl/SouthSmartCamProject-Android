@@ -60,7 +60,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
   RecyclerView mRecyclerView;
   DeviceSettingAdapter mAdapter;
-  DevModel model;
+  DevModel devNode;
   PushSettingModel mPushSettingModel;
   int MD_Sensitive = -1;
 
@@ -91,13 +91,13 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     Bundle bundle = this.getIntent().getExtras();
     if (bundle != null)
     {
-      model = bundle.getParcelable("devModel");
+      devNode = bundle.getParcelable("devModel");
       entryType = (MainDevListFragment.EnumMainEntry) bundle.getSerializable("entry");
     }
     initView();
     initValue();
 
-    if (model.IsConnect())
+    if (devNode.IsConnect())
     {
       if (lod == null)
       {
@@ -119,7 +119,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
   protected void onResume()
   {
     super.onResume();
-    model.updateUserAndPwd();
+    devNode.updateUserAndPwd();
     refreshView();
   }
 
@@ -179,7 +179,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     items.add(getString(R.string.action_version));
 
     mAdapter = new DeviceSettingAdapter(items);
-    mAdapter.setDevModel(model);
+    mAdapter.setDevModel(devNode);
     mAdapter.setOnItemClickListener(this);
     mRecyclerView.setAdapter(mAdapter);
 
@@ -188,7 +188,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
   void refreshView()
   {
-    List<String> files = FileUtil.getSNFilesFromPath(FileUtil.pathThumb(), model.SN);
+    List<String> files = FileUtil.getSNFilesFromPath(FileUtil.pathThumb(), devNode.SN);
     if (files.size() > 0)
     {
 
@@ -197,7 +197,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
     }
     //textview_uid.setText(model.UID);
-    textview_uid.setText("SN:"+model.SN);
+    textview_uid.setText("SN:"+devNode.SN);
     mAdapter.notifyDataSetChanged();
   }
 
@@ -206,7 +206,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
     final EditText inputServer = new EditText(this);
     inputServer.setFocusable(true);
-    inputServer.setText(model.DevName);//zhb
+    inputServer.setText(devNode.DevName);//zhb
 
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setTitle(getString(R.string.action_change_device_name)).setView(inputServer)
@@ -261,7 +261,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
               lod.dialogShow();
               ServerNetWork.getCommandApi()
                 .app_user_del_dev(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance().getDefaultPwd(),
-                  model.SN, 0)
+                  devNode.SN, 0)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer_delete);
@@ -281,10 +281,10 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
           Intent intent1 = new Intent(STApplication.getInstance(), AddDeviceAP2StaSetup.class);
 
           Bundle bundle1 = new Bundle();
-          bundle1.putParcelable("devModel", model);
+          bundle1.putParcelable("devModel", devNode);
 
           intent1.putExtras(bundle1);
-          Log.e(tag, "to DeviceShareActivity NetHandle:" + model.NetHandle);
+          Log.e(tag, "to DeviceShareActivity NetHandle:" + devNode.NetHandle);
 
           startActivity(intent1);
         }
@@ -292,8 +292,8 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
         {
           //设置sta转ap
 
-          if (model.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_LAN || model.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_DDNS
-            || model.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_P2P)
+          if (devNode.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_LAN || devNode.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_DDNS
+            || devNode.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_P2P)
           {
             if (lod == null)
             {
@@ -342,7 +342,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     }
 
 
-    if (!model.IsConnect())
+    if (!devNode.IsConnect())
     {
       SouthUtil.showDialog(SettingActivity.this, getString(R.string.action_net_not_connect));
       return;
@@ -351,7 +351,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     if (0 == position)
     {
 
-      if (model.IsShare == 0)
+      if (devNode.IsShare == 0)
       {
         SouthUtil.showDialog(this, getString(R.string.string_device_is_share));
         return;
@@ -363,7 +363,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     else if (1 == position)
     {
 
-      if (model.IsShare == 0)
+      if (devNode.IsShare == 0)
       {
         SouthUtil.showDialog(this, getString(R.string.string_device_is_share));
         return;
@@ -371,7 +371,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
       Intent intent = new Intent(this, ChangeDevicePwdActivity.class);
       Bundle bundle = new Bundle();
-      bundle.putParcelable("model", model);
+      bundle.putParcelable("model", devNode);
       bundle.putSerializable("type", ChangeDevicePwdActivity.EnumChangeDevicePwd.DEVICE_SETTING);
 
       intent.putExtras(bundle);
@@ -380,7 +380,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     else if (2 == position)
     {
 
-      if (model.IsPush == 0)
+      if (devNode.IsPush == 0)
       {
         SouthUtil.showDialog(this, getString(R.string.string_no_push_permisson));
         return;
@@ -390,7 +390,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     }
     else if (3 == position)
     {
-      if (model.IsShare == 0)
+      if (devNode.IsShare == 0)
       {
         SouthUtil.showDialog(this, getString(R.string.string_device_is_share));
         return;
@@ -398,7 +398,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
       Intent intent = new Intent(this, PushSettingActivity.class);
       Bundle bundle = new Bundle();
-      bundle.putParcelable("devModel", model);
+      bundle.putParcelable("devModel", devNode);
       intent.putExtras(bundle);
       startActivity(intent);
     }
@@ -419,7 +419,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
     lod.dialogShow();
     ServerNetWork.getCommandApi()
-      .app_upgrade_dev_check(model.DevType)
+      .app_upgrade_dev_check(devNode.DevType)
       .subscribeOn(Schedulers.io())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(observer_check_dev_update);
@@ -551,24 +551,24 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
 
       //String devName = new String(params[0].getBytes("UTF-8"), "GB2312");
-      String url = model.getHttpCfg1UsrPwd() + "&MsgID=31&DevName=" + params[0];
-      Log.e(tag, url + ",NetHandle is " + model.NetHandle);
-      String ret = lib.thNetHttpGet(model.NetHandle, url);
+      String url = devNode.getHttpCfg1UsrPwd() + "&MsgID=31&DevName=" + params[0];
+      Log.e(tag, url + ",NetHandle is " + devNode.NetHandle);
+      String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       Log.e(tag, "ret :" + ret);
       RetModel retModel = GsonUtil.parseJsonWithGson(ret, RetModel.class);
       if (retModel != null)
       {
         if (retModel.ret == 1)
         {
-          model.DevName = params[0];
-          model.DevNameChange = model.DevName;
+          devNode.DevName = params[0];
+          devNode.DevNameChange = devNode.DevName;
 
-          for (DevModel tmpNode : MainDevListFragment.mDevices)
+          for (DevModel tmpNode1 : MainDevListFragment.mDevices)
           {
-            if (model.SN.equals(tmpNode.SN))
+            if (tmpNode1.SN.equals(devNode.SN))
             {
-              tmpNode.DevName = model.DevName;
-              tmpNode.DevNameChange = model.DevName;
+              tmpNode1.DevName = devNode.DevName;
+              tmpNode1.DevNameChange = devNode.DevName;
             }
           }
         }
@@ -620,9 +620,9 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       //第二个执行方法,onPreExecute()执行完后执行
       // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
       //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-      String url = model.getHttpCfg1UsrPwd() + "&MsgID=38&wifi_Active=1&wifi_IsAPMode=1&s=0";
-      Log.e(tag, url + ",NetHandle is " + model.NetHandle);
-      String ret = lib.thNetHttpGet(model.NetHandle, url);
+      String url = devNode.getHttpCfg1UsrPwd() + "&MsgID=38&wifi_Active=1&wifi_IsAPMode=1&s=0";
+      Log.e(tag, url + ",NetHandle is " + devNode.NetHandle);
+      String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       Log.e(tag, "ret :" + ret);
       return ret;
     }
@@ -641,13 +641,14 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
         if (retModel.ret == 1)
         {
           SouthUtil.showDialog(SettingActivity.this, getString(R.string.action_STA_T_AP_Success));
-          model.NetHandle = 0;
-          for (DevModel existModel : MainDevListFragment.mDevices)
+          devNode.NetHandle = 0;
+          for (DevModel tmpNode : MainDevListFragment.mDevices)
           {
-            if (model.SN.equals(existModel.SN))
+            if (tmpNode.SN.equals(tmpNode.SN))
             {
-              existModel.Disconn();
-              existModel.NetHandle = 0;
+              //tmpNode.Disconn();
+              lib.thNetThreadDisConnFree(tmpNode.NetHandle);
+              tmpNode.NetHandle = 0;
             }
           }
         }
@@ -685,9 +686,9 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
 
 
-      String url = model.getHttpCfg1UsrPwd() + "&MsgID==18";
+      String url = devNode.getHttpCfg1UsrPwd() + "&MsgID==18";
 
-      String ret = lib.thNetHttpGet(model.NetHandle, url);
+      String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       Log.e(tag, "ret :" + ret);
 
       return ret;
@@ -707,13 +708,14 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
         if (retModel.ret == 1)
         {
           SouthUtil.showDialog(SettingActivity.this, getString(R.string.action_STA_T_AP_Success));
-          model.NetHandle = 0;
-          for (DevModel existModel : MainDevListFragment.mDevices)
+          devNode.NetHandle = 0;
+          for (DevModel tmpNode : MainDevListFragment.mDevices)
           {
-            if (model.SN.equals(existModel.SN))
+            if (tmpNode.SN.equals(tmpNode.SN))
             {
-              existModel.Disconn();
-              existModel.NetHandle = 0;
+              //tmpNode.Disconn();
+              lib.thNetThreadDisConnFree(tmpNode.NetHandle);
+              tmpNode.NetHandle = 0;
             }
           }
         }
@@ -744,10 +746,10 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       //第二个执行方法,onPreExecute()执行完后执行
       // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
       //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd + "&MsgID=45";
+      String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User=" + devNode.usr + "&Psd=" + devNode.pwd + "&MsgID=45";
       Log.e(tag, url + "" +
-        "" + model.NetHandle);
-      String ret = lib.thNetHttpGet(model.NetHandle, url);
+        "" + devNode.NetHandle);
+      String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       Log.e(tag, "ret :" + ret);
       return ret;
     }
@@ -812,10 +814,10 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
         MD_Sensitive = 200;
       }
 
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd +
+      String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User=" + devNode.usr + "&Psd=" + devNode.pwd +
         "&MsgID=46&MD_Sensitive=" + MD_Sensitive + "&MD_Active=1";
-      Log.e(tag, url + ",MD_Sensitive,NetHandle is " + model.NetHandle);
-      String ret = lib.thNetHttpGet(model.NetHandle, url);
+      Log.e(tag, url + ",MD_Sensitive,NetHandle is " + devNode.NetHandle);
+      String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       Log.e(tag, "ret :" + ret);
       return ret;
     }
@@ -907,7 +909,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       {
         Log.e(tag, "---------------------onNext:" + m.ver);
         String VerNew = m.ver.substring(0, 11);
-        String VerOld = model.SoftVersion.substring(0, 11);
+        String VerOld = devNode.SoftVersion.substring(0, 11);
         int ret = VerNew.compareTo(VerOld);
         if (ret > 0)
         //if (!m.ver.subSequence(0, 10).equals(model.SoftVersion.subSequence(0, 10)))
@@ -974,13 +976,12 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       if (1 == m.ret)
       {
         SouthUtil.showToast(SettingActivity.this, getString(R.string.string_delsuccess));
-        DataManager.getInstance().deleteDev(model);
+        DataManager.getInstance().deleteDev(devNode);
         for (DevModel existModel : MainDevListFragment.mDevices)
         {
-          if (model.SN.equals(existModel.SN))
+          if (devNode.SN.equals(existModel.SN))
           {
-            existModel.Disconn2();
-            //zhb existModel.Disconn();
+            lib.thNetThreadDisConnFree(existModel.NetHandle);
             existModel.NetHandle = 0;
             MainDevListFragment.mDevices.remove(existModel);
             break;
@@ -1023,10 +1024,10 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       //第二个执行方法,onPreExecute()执行完后执行
       // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
       //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd + "&MsgID=98";
+      String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User=" + devNode.usr + "&Psd=" + devNode.pwd + "&MsgID=98";
       Log.e(tag, url + "" +
-        "" + model.NetHandle);
-      String ret = lib.thNetHttpGet(model.NetHandle, url);
+        "" + devNode.NetHandle);
+      String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       Log.e(tag, "ret :" + ret);
       return ret;
     }
@@ -1066,13 +1067,13 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       //第二个执行方法,onPreExecute()执行完后执行
       // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
       //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd +
+      String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User=" + devNode.usr + "&Psd=" + devNode.pwd +
         "&MsgID=99&PushActive=" +
         mPushSettingModel.getPushActive() + "&PushInterval=" + mPushSettingModel.getPushInterval() + "&PIRSensitive=" + mPushSettingModel
         .getPIRSensitive();
       Log.e(tag, url + "," +
-        "" + model.NetHandle);
-      String ret = lib.thNetHttpGet(model.NetHandle, url);
+        "" + devNode.NetHandle);
+      String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       Log.e(tag, "MsgID=99：ret :" + ret);
       return ret;
     }
@@ -1103,12 +1104,12 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     {
       //http://%s:%d/cfg1.cgi?User=admin&Psd=admin&MsgID=93&ver=V7.214.1719&crc=-25224078&url=/UpgradeDev
       // /x8_V7.214.1719_s1030_18e200fs16M.upd
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User="
-        + model.usr + "&Psd=" + model.pwd + "&MsgID=93&ver="
+      String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User="
+        + devNode.usr + "&Psd=" + devNode.pwd + "&MsgID=93&ver="
         + params[0] + "&crc=" + params[1] + "&url=" + params[2];
       Log.e(tag, url + "" +
-        "" + model.NetHandle);
-      String ret = lib.thNetHttpGet(model.NetHandle, url);
+        "" + devNode.NetHandle);
+      String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       Log.e(tag, "ret :" + ret);
       return ret;
     }

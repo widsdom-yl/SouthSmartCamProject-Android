@@ -107,7 +107,7 @@ class NetworkChangeReceiver extends BroadcastReceiver
       {
         mNetWorkBreakListener.OnNetWorkBreakListener();
       }
-      lib.P2PFree();//zhb add
+//      lib.P2PFree();//zhb add
     }
   }
 

@@ -41,7 +41,6 @@
         android:textAllCaps="false"
         android:id="@+id/refresh_button"
         android:layout_alignParentLeft="true"
-
         android:layout_width="wrap_content"
         android:layout_height="24dp"
         android:gravity="left|center"

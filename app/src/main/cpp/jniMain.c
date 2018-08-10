@@ -23,7 +23,7 @@ void UcnvConvert_GB2312toUTF8(char *dst, unsigned long dstLen, const char *src, 
 
   if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_4_2");
   if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_3_8");
-  for (i=44; i<=70; i++)
+  for (i = 44; i <= 70; i++)
   {
     if (g_pvUcnvConvert) break;
     sprintf(sFuncName, "ucnv_convert_%d", i);
@@ -33,6 +33,7 @@ void UcnvConvert_GB2312toUTF8(char *dst, unsigned long dstLen, const char *src, 
   g_pvUcnvConvert("utf8", "gb2312", dst, dstLen, src, strlen(src), pnErrC);
   dlclose(g_pvUcnvDll);
 }
+
 //-----------------------------------------------------------------------------
 void UcnvConvert_UTF8toGB2312(char *dst, unsigned long dstLen, const char *src, unsigned long *pnErrC)
 {
@@ -47,7 +48,7 @@ void UcnvConvert_UTF8toGB2312(char *dst, unsigned long dstLen, const char *src, 
 
   if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_4_2");
   if (NULL == g_pvUcnvConvert) g_pvUcnvConvert = (pvUcnvFunc) dlsym(g_pvUcnvDll, "ucnv_convert_3_8");
-  for (i=44; i<=70; i++)
+  for (i = 44; i <= 70; i++)
   {
     if (g_pvUcnvConvert) break;
     sprintf(sFuncName, "ucnv_convert_%d", i);
@@ -96,9 +97,21 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_GetLocalIP(JNIEnv *env, jclass obj)
 //-----------------------------------------------------------------------------
 JNIEXPORT u64 JNICALL
 Java_com_thSDK_lib_thNetInit(JNIEnv *env, jclass obj, bool IsInsideDecode, bool IsQueue, bool IsAdjustTime,
-                             bool IsAutoReConn)
+                             bool IsAutoReConn, jstring jSN)
 {
-  return (u64) thNet_Init(IsInsideDecode, IsQueue, IsAdjustTime, IsAutoReConn);
+  u64 NetHandle = 0;
+  u32 iSN = 0;
+  int ret;
+  char *sSN = (char *) (*env)->GetStringUTFChars(env, jSN, NULL);
+  if (strlen(sSN) == 0) sSN = NULL;
+  ret = sscanf(sSN, "%x", &iSN);
+  if (ret != 1) goto exits;
+
+  NetHandle = thNet_Init(IsInsideDecode, IsQueue, IsAdjustTime, IsAutoReConn, iSN);
+
+  exits:
+  (*env)->ReleaseStringUTFChars(env, jSN, sSN);
+  return NetHandle;
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSetDecodeStyle(JNIEnv *env, jclass obj, u64 NetHandle, int DecodeStyle)
@@ -129,6 +142,23 @@ Java_com_thSDK_lib_thNetConnect(JNIEnv *env, jclass obj, u64 NetHandle, jstring 
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetDisConn(JNIEnv *env, jclass obj, u64 NetHandle)
 {
   return thNet_DisConn((HANDLE) NetHandle);
+}
+
+//-----------------------------------------------------------------------------
+void thread_thNetDisConnFree(HANDLE NetHandle)
+{
+  int ret;
+  ret = thNet_DisConn((HANDLE) NetHandle);
+  if (ret)
+  {
+    thNet_Free(NetHandle);
+  }
+}
+//-----------------------------------------------------------------------------
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetThreadDisConnFree(JNIEnv *env, jclass obj, u64 NetHandle)
+{
+  ThreadCreate((void *) thread_thNetDisConnFree, (void *) NetHandle, true);
+  return true;
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetIsConnect(JNIEnv *env, jclass obj, u64 NetHandle)
@@ -293,7 +323,7 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetHttpGet(JNIEnv *env, jclass ob
   UcnvConvert_UTF8toGB2312(conv, sizeof(conv), url, &pnErrC);
 
   PRINTF("%s(%d) url:%s,\n convreverse:%s\n", __FUNCTION__, __LINE__, url, conv);
-  ret = thNet_HttpGet((HANDLE)NetHandle, conv, Buf, &BufLen);
+  ret = thNet_HttpGet((HANDLE) NetHandle, conv, Buf, &BufLen);
   if (ret)
   {
     conv[0] = 0x00;
@@ -378,7 +408,8 @@ typedef struct TSearchInfo
 static TSearchInfo Search;
 
 //-------------------------------------
-void callback_SearchDev(void *UserCustom, u32 SN, int DevType, char *DevModal, char *SoftVersion, int DataPort, int HttpPort,
+void
+callback_SearchDev(void *UserCustom, u32 SN, int DevType, char *DevModal, char *SoftVersion, int DataPort, int HttpPort,
                    int rtspPort, char *DevName, char *DevIP, char *DevMAC, char *SubMask, char *Gateway, char *DNS1,
                    char *DDNSServer, char *DDNSHost, char *UID)
 {
@@ -494,5 +525,67 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetSearchDevice(JNIEnv *env, jcla
 
   jtmpBuf = (*env)->NewStringUTF(env, Search.tmpBuf);
   return jtmpBuf;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thManageAddDevice(JNIEnv *env, jclass obj, jstring jSN, u64 NetHandle)
+{
+  int i, ret;
+  u32 iSN = 0;
+
+  char *sSN = (char *) (*env)->GetStringUTFChars(env, jSN, NULL);
+  if (strlen(sSN) == 0) sSN = NULL;
+  ret = sscanf(sSN, "%x", &iSN);
+  if (ret != 1)
+  {
+    ret = false;
+    goto exits;
+  }
+
+  ret = thManage_AddDevice(iSN, NetHandle);
+
+  exits:
+  (*env)->ReleaseStringUTFChars(env, jSN, sSN);
+  return ret;
+}
+//-----------------------------------------------------------------------------
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thManageDelDevice(JNIEnv *env, jclass obj, jstring jSN)
+{
+  int i, ret;
+  u32 iSN = 0;
+  char *sSN = (char *) (*env)->GetStringUTFChars(env, jSN, NULL);
+  if (strlen(sSN) == 0) sSN = NULL;
+  ret = sscanf(sSN, "%x", &iSN);
+  if (ret != 1)
+  {
+    ret = false;
+    goto exits;
+  }
+
+  ret = thManage_DelDevice(iSN);
+
+  exits:
+  (*env)->ReleaseStringUTFChars(env, jSN, sSN);
+  return ret;
+}
+//-----------------------------------------------------------------------------
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thManageDisconnFreeAll(JNIEnv *env, jclass obj)
+{
+  return thManage_DisconnFreeAll();
+}
+//-----------------------------------------------------------------------------
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thManageNetworkSwitch(JNIEnv *env, jclass obj,
+                                                                int NetWorkType)//TYPE_NONE=-1 TYPE_MOBILE=0 TYPE_WIFI=1
+{
+  return thManage_NetworkSwitch(NetWorkType);
+}
+//-----------------------------------------------------------------------------
+JNIEXPORT bool JNICALL
+Java_com_thSDK_lib_thManageForeBackgroundSwitch(JNIEnv *env, jclass obj, int IsForeground)//Background=0 Foreground=1
+{
+  return thManage_ForeBackgroundSwitch(IsForeground);
 }
 //-----------------------------------------------------------------------------

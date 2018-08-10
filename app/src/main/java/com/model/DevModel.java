@@ -251,25 +251,11 @@ public class DevModel implements Parcelable
     }
   }
 
-  public boolean Init()
-  {
-    NetHandle = lib.thNetInit(true, false, false, false);
-    //获取用户名和密码
-    return true;
-  }
-
   public String GetAllCfg()
   {
     return lib.thNetGetAllCfg(NetHandle);
   }
 
-  public boolean Disconn2()
-  {
-    boolean ret = lib.thNetDisConn(NetHandle);
-    lib.thNetFree(NetHandle);
-    NetHandle = 0;
-    return ret;
-  }
   public boolean Disconn()
   {
     new Thread()
@@ -327,15 +313,15 @@ public class DevModel implements Parcelable
     return ret;
   }
 
-  public static void threadConnect(final Handler ipc, final DevModel DevNode, final boolean IsDisconnReConnect)
+  public static void threadConnect(final Handler ipc, final DevModel tmpNode)
   {
-    DevModel dbModel = DataManager.getInstance().getSNDev(DevNode.SN);
+    DevModel dbModel = DataManager.getInstance().getSNDev(tmpNode.SN);
     if (dbModel != null)
     {
 
-      DevNode.usr = dbModel.usr;
-      DevNode.pwd = dbModel.pwd;
-      Log.e(tag, "SN:" + DevNode.SN + ",pwd:" + DevNode.pwd);
+      tmpNode.usr = dbModel.usr;
+      tmpNode.pwd = dbModel.pwd;
+      Log.e(tag, "SN:" + tmpNode.SN + ",pwd:" + tmpNode.pwd);
     }
 
     new Thread()
@@ -345,45 +331,51 @@ public class DevModel implements Parcelable
       {
         try
         {
-          if (DevNode.NetHandle == 0)
+          if (tmpNode.NetHandle == 0)
           {
-            DevNode.Init();
-          }
-          if (IsDisconnReConnect)
-          {
-            DevNode.Disconn();
+            tmpNode.NetHandle = lib.thNetInit(
+              true,
+              false,
+              false,
+              false,
+              tmpNode.SN
+            );
+            if (tmpNode.NetHandle > 0)
+            {
+              lib.thManageAddDevice(tmpNode.SN, tmpNode.NetHandle);
+            }
           }
 
-          if (!DevNode.IsConnect())
+          if (!tmpNode.IsConnect())
           {
-            DevNode.Connect();
+            tmpNode.Connect();
           }
 
-          if (DevNode.IsConnect())
+          if (tmpNode.IsConnect())
           {
             if (ipc != null)
             {
-              ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_NetConnSucceed, DevNode.Index, 0, DevNode));
+              ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_NetConnSucceed, tmpNode.Index, 0, tmpNode));
             }
-            String tmpStr = DevNode.GetAllCfg();
+            String tmpStr = tmpNode.GetAllCfg();
             //Log.e("java", "tmpStr is :" + tmpStr);
             JSONObject json = new JSONObject(tmpStr);
-            DevNode.DevCfg = json;
-            DevNode.ExistSD = json.getJSONObject("DevInfo").getInt("ExistSD");
-            DevNode.DevType= json.getJSONObject("DevInfo").getInt("DevType");
-            DevNode.Brightness = json.getJSONObject("Video").getInt("Brightness");
-            DevNode.Contrast = json.getJSONObject("Video").getInt("Contrast");
-            DevNode.Sharpness = json.getJSONObject("Video").getInt("Sharpness");
-            DevNode.UID = json.getJSONObject("P2P").getString("P2P_UID");
-            DevNode.DevName = json.getJSONObject("DevInfo").getString("DevName");
-            DevNode.SoftVersion = json.getJSONObject("DevInfo").getString("SoftVersion");
-            Log.e("java", "SoftVersion is :" + DevNode.SoftVersion + ",uid is " + DevNode.UID);
+            tmpNode.DevCfg = json;
+            tmpNode.ExistSD = json.getJSONObject("DevInfo").getInt("ExistSD");
+            tmpNode.DevType= json.getJSONObject("DevInfo").getInt("DevType");
+            tmpNode.Brightness = json.getJSONObject("Video").getInt("Brightness");
+            tmpNode.Contrast = json.getJSONObject("Video").getInt("Contrast");
+            tmpNode.Sharpness = json.getJSONObject("Video").getInt("Sharpness");
+            tmpNode.UID = json.getJSONObject("P2P").getString("P2P_UID");
+            tmpNode.DevName = json.getJSONObject("DevInfo").getString("DevName");
+            tmpNode.SoftVersion = json.getJSONObject("DevInfo").getString("SoftVersion");
+            Log.e("java", "SoftVersion is :" + tmpNode.SoftVersion + ",uid is " + tmpNode.UID);
           }
           else
           {
             if (ipc != null)
             {
-              ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_NetConnFail, DevNode.Index, 0, DevNode));
+              ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_NetConnFail, tmpNode.Index, 0, tmpNode));
             }
             return;
           }
