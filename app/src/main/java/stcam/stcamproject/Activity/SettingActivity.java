@@ -197,7 +197,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
     }
     //textview_uid.setText(model.UID);
-    textview_uid.setText("SN:"+devNode.SN);
+    textview_uid.setText("SN:" + devNode.SN);
     mAdapter.notifyDataSetChanged();
   }
 
@@ -292,7 +292,8 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
         {
           //设置sta转ap
 
-          if (devNode.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_LAN || devNode.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_DDNS
+          if (devNode.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_LAN || devNode.getConnectType() == DevModel.CONNECT_TYPE
+            .IS_CONN_DDNS
             || devNode.getConnectType() == DevModel.CONNECT_TYPE.IS_CONN_P2P)
           {
             if (lod == null)
@@ -538,20 +539,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected String doInBackground(String... params)
     {
-      //第二个执行方法,onPreExecute()执行完后执行
-      // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
-      //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-
-
-//                Encoding targetEncoding = Xml.Encoding.GetEncoding(1252);
-//                byte[] utf8Bytes = targetEncoding.GetBytes(text);
-//                byte[] ansiBytes = Encoding.Convert(Encoding.UTF8,
-//                        targetEncoding,
-//                        utf8Bytes);
-
-
-      //String devName = new String(params[0].getBytes("UTF-8"), "GB2312");
-      String url = devNode.getHttpCfg1UsrPwd() + "&MsgID=31&DevName=" + params[0];
+      String url = devNode.getHttpCfg1UsrPwd() + "&MsgID=" + lib.Msg_SetDevInfo + "&DevName=" + params[0];
       Log.e(tag, url + ",NetHandle is " + devNode.NetHandle);
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       Log.e(tag, "ret :" + ret);
@@ -617,10 +605,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected String doInBackground(String... params)
     {
-      //第二个执行方法,onPreExecute()执行完后执行
-      // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
-      //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-      String url = devNode.getHttpCfg1UsrPwd() + "&MsgID=38&wifi_Active=1&wifi_IsAPMode=1&s=0";
+      String url = devNode.getHttpCfg1UsrPwd() + "&MsgID=" + lib.Msg_SetWiFiCfg + "&wifi_Active=1&wifi_IsAPMode=1&s=0";
       Log.e(tag, url + ",NetHandle is " + devNode.NetHandle);
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       Log.e(tag, "ret :" + ret);
@@ -681,16 +666,8 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected String doInBackground(String... params)
     {
-      //第二个执行方法,onPreExecute()执行完后执行
-      // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
-      //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-
-
-      String url = devNode.getHttpCfg1UsrPwd() + "&MsgID==18";
-
+      String url = devNode.getHttpCfg1UsrPwd() + "&MsgID="+lib.Msg_SetDevReboot;
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
-      Log.e(tag, "ret :" + ret);
-
       return ret;
     }
 
@@ -743,12 +720,8 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected String doInBackground(String... params)
     {
-      //第二个执行方法,onPreExecute()执行完后执行
-      // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
-      //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-      String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User=" + devNode.usr + "&Psd=" + devNode.pwd + "&MsgID=45";
-      Log.e(tag, url + "" +
-        "" + devNode.NetHandle);
+      String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User=" + devNode.usr + "&Psd=" + devNode.pwd +
+        "&MsgID=" + lib.Msg_GetMDCfg;
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       Log.e(tag, "ret :" + ret);
       return ret;
@@ -797,10 +770,6 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected String doInBackground(Integer... params)
     {
-      //第二个执行方法,onPreExecute()执行完后执行
-      // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
-      //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-
       if (params[0] == 0)
       {
         MD_Sensitive = 100;
@@ -815,7 +784,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       }
 
       String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User=" + devNode.usr + "&Psd=" + devNode.pwd +
-        "&MsgID=46&MD_Sensitive=" + MD_Sensitive + "&MD_Active=1";
+        "&MsgID="+lib.Msg_SetMDCfg+"&MD_Sensitive=" + MD_Sensitive + "&MD_Active=1";
       Log.e(tag, url + ",MD_Sensitive,NetHandle is " + devNode.NetHandle);
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       Log.e(tag, "ret :" + ret);
@@ -1021,12 +990,8 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected String doInBackground(String... params)
     {
-      //第二个执行方法,onPreExecute()执行完后执行
-      // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
-      //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-      String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User=" + devNode.usr + "&Psd=" + devNode.pwd + "&MsgID=98";
-      Log.e(tag, url + "" +
-        "" + devNode.NetHandle);
+      String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User=" + devNode.usr + "&Psd=" + devNode.pwd +
+        "&MsgID="+lib.Msg_GetPushCfg;
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       Log.e(tag, "ret :" + ret);
       return ret;
@@ -1035,9 +1000,6 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected void onPostExecute(String result)
     {
-      //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
-      //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
-      //Log.e(tag,"get playback list :"+result);
       lod.dismiss();
 
       PushSettingModel pushSettingModel = GsonUtil.parseJsonWithGson(result, PushSettingModel.class);
@@ -1064,17 +1026,11 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected String doInBackground(String... params)
     {
-      //第二个执行方法,onPreExecute()执行完后执行
-      // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
-      //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
       String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User=" + devNode.usr + "&Psd=" + devNode.pwd +
-        "&MsgID=99&PushActive=" +
+        "&MsgID="+lib.Msg_SetPushCfg+"&PushActive=" +
         mPushSettingModel.getPushActive() + "&PushInterval=" + mPushSettingModel.getPushInterval() + "&PIRSensitive=" + mPushSettingModel
         .getPIRSensitive();
-      Log.e(tag, url + "," +
-        "" + devNode.NetHandle);
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
-      Log.e(tag, "MsgID=99：ret :" + ret);
       return ret;
     }
 
@@ -1102,15 +1058,10 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected String doInBackground(String... params)
     {
-      //http://%s:%d/cfg1.cgi?User=admin&Psd=admin&MsgID=93&ver=V7.214.1719&crc=-25224078&url=/UpgradeDev
-      // /x8_V7.214.1719_s1030_18e200fs16M.upd
       String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User="
-        + devNode.usr + "&Psd=" + devNode.pwd + "&MsgID=93&ver="
+        + devNode.usr + "&Psd=" + devNode.pwd + "&MsgID="+lib.Msg_CheckUpgradeBin+"&ver="
         + params[0] + "&crc=" + params[1] + "&url=" + params[2];
-      Log.e(tag, url + "" +
-        "" + devNode.NetHandle);
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
-      Log.e(tag, "ret :" + ret);
       return ret;
     }
 

@@ -64,23 +64,20 @@ class NetworkChangeReceiver extends BroadcastReceiver
       switch (networkInfo.getType())
       {
         case TYPE_MOBILE:
-          //Toast.makeText(context, "正在使用2G/3G/4G网络", Toast.LENGTH_SHORT).show();
-          Toast.makeText(context, context.getString(R.string.string_net_4G), Toast.LENGTH_SHORT).show();
-          //
           if (mNetWorkBreakListener != null)
           {
             mNetWorkBreakListener.OnNetWorkBreakListener();
           }
-          Log.e(tag, "TYPE_MOBILE");
           lib.P2PFree();
           lib.P2PInit();
           if (mNetWorkBreakListener != null)
           {
             mNetWorkBreakListener.OnNetWorkChangeListener(0);
           }
+          Toast.makeText(context, context.getString(R.string.string_net_4G), Toast.LENGTH_SHORT).show();
           break;
+
         case TYPE_WIFI:
-          Log.e(tag, "TYPE_WIFI");
           if (mNetWorkBreakListener != null)
           {
             mNetWorkBreakListener.OnNetWorkBreakListener();
@@ -91,7 +88,6 @@ class NetworkChangeReceiver extends BroadcastReceiver
           {
             mNetWorkBreakListener.OnNetWorkChangeListener(1);
           }
-          //Toast.makeText(context, "正在使用wifi上网", Toast.LENGTH_SHORT).show();
           Toast.makeText(context, context.getString(R.string.string_net_Wifi), Toast.LENGTH_SHORT).show();
           break;
         default:
@@ -101,13 +97,11 @@ class NetworkChangeReceiver extends BroadcastReceiver
     else
     {
       //断开所有连接
-      //Toast.makeText(context, "当前无网络连接", Toast.LENGTH_SHORT).show();
       Toast.makeText(context, context.getString(R.string.string_net_None), Toast.LENGTH_SHORT).show();
       if (mNetWorkBreakListener != null)
       {
         mNetWorkBreakListener.OnNetWorkBreakListener();
       }
-//      lib.P2PFree();//zhb add
     }
   }
 

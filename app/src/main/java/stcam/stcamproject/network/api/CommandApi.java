@@ -331,11 +331,6 @@ public interface CommandApi {
                                             @Query("s") int s
     );
 
-
-
-
-    //http://192.168.0.169/cfg1.cgi?User=admin&Psd=admin&MsgID=31&INFO_DevName=Hello,Ketty
-
     /**
      * �����豸����
      * @param User

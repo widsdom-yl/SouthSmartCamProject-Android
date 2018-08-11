@@ -738,7 +738,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
     protected String doInBackground(Integer... params)
     {
       //第二个执行方法,onPreExecute()执行完后执行
-      String url = devModel.getHttpCfg1UsrPwd() + "&MsgID=13&cmd=" + params[0] + "&sleep=500&s=23231";
+      String url = devModel.getHttpCfg1UsrPwd() + "&MsgID="+lib.Msg_PTZControl+"&cmd=" + params[0] + "&sleep=500&s=23231";
 
       String ret = lib.thNetHttpGet(devModel.NetHandle, url);
       Log.e(tag, "PtzControlTask ret :" + ret);

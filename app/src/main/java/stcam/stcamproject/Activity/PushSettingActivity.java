@@ -479,14 +479,9 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(String... params)
     {
-      //第二个执行方法,onPreExecute()执行完后执行
-      // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
-      //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd + "&MsgID=98";
-      Log.e(tag, url + "" +
-        "" + model.NetHandle);
+      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd + "&MsgID=" + lib
+        .Msg_GetPushCfg;
       String ret = lib.thNetHttpGet(model.NetHandle, url);
-      Log.e(tag, "ret :" + ret);
       return ret;
     }
 
@@ -524,17 +519,11 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(String... params)
     {
-      //第二个执行方法,onPreExecute()执行完后执行
-      // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
-      //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
       String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd +
-        "&MsgID=99&PushActive=" +
+        "&MsgID=" + lib.Msg_SetPushCfg + "&PushActive=" +
         mPushSettingModel.getPushActive() + "&PushInterval=" + mPushSettingModel.getPushInterval() + "&PIRSensitive=" + mPushSettingModel
         .getPIRSensitive();
-      Log.e(tag, url + "," +
-        "" + model.NetHandle);
       String ret = lib.thNetHttpGet(model.NetHandle, url);
-      Log.e(tag, "MsgID=99：ret :" + ret);
       return ret;
     }
 
@@ -561,14 +550,9 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(String... params)
     {
-      //第二个执行方法,onPreExecute()执行完后执行
-      // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
-      //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd + "&MsgID=45";
-      Log.e(tag, url + "" +
-        "" + model.NetHandle);
+      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd + "&MsgID=" + lib
+        .Msg_GetMDCfg;
       String ret = lib.thNetHttpGet(model.NetHandle, url);
-      Log.e(tag, "ret :" + ret);
       return ret;
     }
 
@@ -615,14 +599,9 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(String... params)
     {
-      //第二个执行方法,onPreExecute()执行完后执行
-      // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
-      //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd + "&MsgID=55";
-      Log.e(tag, url + "" +
-        "" + model.NetHandle);
+      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd + "&MsgID=" + lib
+        .Msg_GetRecCfg;
       String ret = lib.thNetHttpGet(model.NetHandle, url);
-      Log.e(tag, "ret :" + ret);
       return ret;
     }
 
@@ -663,15 +642,9 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(String... params)
     {
-      //第二个执行方法,onPreExecute()执行完后执行
-      // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
-      //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
       String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd +
-        "&MsgID=56&Rec_AlmTimeLen=" + mRecConfigModel.getRec_AlmTimeLen();
-      Log.e(tag, url + "" +
-        "" + model.NetHandle);
+        "&MsgID=" + lib.Msg_SetRecCfg + "&Rec_AlmTimeLen=" + mRecConfigModel.getRec_AlmTimeLen();
       String ret = lib.thNetHttpGet(model.NetHandle, url);
-      Log.e(tag, "ret :" + ret);
       return ret;
     }
 
@@ -701,10 +674,6 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(Integer... params)
     {
-      //第二个执行方法,onPreExecute()执行完后执行
-      // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
-      //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-
       if (params[0] == 2)
       {
         MD_Sensitive = 100;
@@ -719,10 +688,8 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
       }
 
       String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd +
-        "&MsgID=46&MD_Sensitive=" + MD_Sensitive + "&MD_Active=1";
-      Log.e(tag, url + ",MD_Sensitive,NetHandle is " + model.NetHandle);
+        "&MsgID=" + lib.Msg_SetMDCfg + "&MD_Sensitive=" + MD_Sensitive + "&MD_Active=1";
       String ret = lib.thNetHttpGet(model.NetHandle, url);
-      Log.e(tag, "ret :" + ret);
       return ret;
     }
 
@@ -767,15 +734,9 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(Integer... params)
     {
-      //第二个执行方法,onPreExecute()执行完后执行
-      // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
-      //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-
-
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd + "&MsgID=19";
-      Log.e(tag, url + ",MD_Sensitive,NetHandle is " + model.NetHandle);
+      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd + "&MsgID=" + lib
+        .Msg_SetDevLoadDefault;
       String ret = lib.thNetHttpGet(model.NetHandle, url);
-      Log.e(tag, "ret :" + ret);
       return ret;
     }
 
@@ -907,14 +868,9 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(String... params)
     {
-      //第二个执行方法,onPreExecute()执行完后执行
-      // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
-      //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd + "&MsgID=41";
-      Log.e(tag, url + "" +
-        "" + model.NetHandle);
+      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd + "&MsgID=" + lib
+        .Msg_GetAudioCfg;
       String ret = lib.thNetHttpGet(model.NetHandle, url);
-      Log.e(tag, "ret :" + ret);
       return ret;
     }
 
@@ -961,16 +917,9 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(Integer... params)
     {
-      //第二个执行方法,onPreExecute()执行完后执行
-      // http://IP:Port/cfg1.cgi?User=admin&Psd=admin&MsgID=38&wifi_Active=1&wifi_IsAPMode=0&wif
-      //i_SSID_STA=xxxxxxxx&wifi_Password_STA=xxxxxxxx
-
-
       String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd +
-        "&MsgID=42&AUDIO_IsPlayPromptSound=" + params[0];
-      Log.e(tag, url + ",MD_Sensitive,NetHandle is " + model.NetHandle);
+        "&MsgID=" + lib.Msg_SetAudioCfg + "&AUDIO_IsPlayPromptSound=" + params[0];
       String ret = lib.thNetHttpGet(model.NetHandle, url);
-      Log.e(tag, "ret :" + ret);
       return ret;
     }
 
