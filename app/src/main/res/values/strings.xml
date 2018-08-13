@@ -230,4 +230,8 @@
     <string name="string_devAddFail">设备增加失败</string>
     <string name="string_decodeQRFail">解析二维码失败</string>
     <string name="string_openPermission">请开启权限</string>
+    <string name="string_loadmore">正在努力加载中...</string>
+    <string name="old_password_wrong">原密码错误</string>
+    <string name="password_length_limit">密码长度不得小于4位数</string>
+    <string name="confirm_password_same">两次密码输入不一致</string>
 </resources>

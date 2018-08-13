@@ -225,4 +225,8 @@
     <string name="string_devAddFail">Add fail!</string>
     <string name="string_decodeQRFail">Decode QR code fail!</string>
     <string name="string_openPermission">Please open permission</string>
+    <string name="string_loadmore">loading more...</string>
+    <string name="old_password_wrong">old password is wrong</string>
+    <string name="password_length_limit">Password length should not less than 4!</string>
+    <string name="confirm_password_same">Confirm password is not the same as new password</string>
 </resources>

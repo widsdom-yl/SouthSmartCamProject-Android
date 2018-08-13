@@ -67,16 +67,16 @@ public class ChangeLoginPasswordActivity extends BaseAppCompatActivity implement
     public void onClick(View view) {
         if (!editText_old_pwd.getText().toString().equals(AccountManager.getInstance().getDefaultPwd())){
             //原密码不正确
-            SouthUtil.showDialog(ChangeLoginPasswordActivity.this,"old password is wrong");
+            SouthUtil.showDialog(ChangeLoginPasswordActivity.this,getString(R.string.old_password_wrong));
             return;
         }
         else if(editText_new_pwd.getText().length() < 4){
             //密码小于4位
-            SouthUtil.showDialog(ChangeLoginPasswordActivity.this,"Password length should not less than 4!");
+            SouthUtil.showDialog(ChangeLoginPasswordActivity.this,getString(R.string.password_length_limit));
             return;
         }
         else if(!editText_new_pwd.getText().toString().equals(editText_confirm_pwd.getText().toString())){
-            SouthUtil.showDialog(ChangeLoginPasswordActivity.this,"Confirm password is not the same as new password");
+            SouthUtil.showDialog(ChangeLoginPasswordActivity.this,getString(R.string.confirm_password_same));
             //两次密码不一致
             return;
         }
