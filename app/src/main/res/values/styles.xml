@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/appGreenColor</item>
         <item name="colorPrimaryDark">@color/appGreenColor</item>
         <item name="colorAccent">@color/appGreenColor</item>
+        <item name="android:textAllCaps">false</item>
     </style>
     <style name="Theme.MyAppTheme" parent="AppTheme">
         <item name="android:windowNoTitle">true</item>
