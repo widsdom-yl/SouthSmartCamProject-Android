@@ -87,9 +87,9 @@
     <string name="next">Next</string>
     <string name="OK">Confirm</string>
     <string name="cancel">Cancel</string>
-    <string name="device_old_pwd">Old</string>
-    <string name="device_new_pwd">New</string>
-    <string name="device_confirm_pwd">Confirm</string>
+    <string name="device_old_pwd">Old Password</string>
+    <string name="device_new_pwd">New Password</string>
+    <string name="device_confirm_pwd">Confirm Password</string>
     <string name="action_setting">SeSt</string>
     <string name="action_dev_setting">Device settings</string>
     <string name="device_name">Device Name</string>
