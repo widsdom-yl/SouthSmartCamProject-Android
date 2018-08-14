@@ -697,8 +697,6 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     }
     else if (1 == tpe)
     {
-
-
       if (entryType == EnumMainEntry_Login)
       {
         if (tmpNode.IsShare == 0)
@@ -734,7 +732,11 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
     else if (2 == tpe)
     {
-
+      if (tmpNode.IsShare == 0)
+      {
+        SouthUtil.showDialog(this.getActivity(), getString(R.string.string_device_is_share));
+        return;
+      }
       if (tmpNode.ExistSD == 0)
       {
         SouthUtil.showToast(STApplication.getInstance(), getString(R.string.action_not_exist_sd));

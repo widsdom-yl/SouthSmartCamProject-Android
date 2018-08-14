@@ -48,7 +48,7 @@
             android:layout_margin="20dp"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
-            android:gravity="center"
+            android:gravity="left"
             android:text="@string/action_one_key_setting_desc0" />
     </RelativeLayout>
 

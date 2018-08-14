@@ -83,7 +83,7 @@
     <string name="action_add_ap_sta">AP转STA增加</string>
     <string name="action_add_ap">AP热点单机直连</string>
     <string name="action_media">图像</string>
-    <string name="action_one_key_setting_desc0">听到\"等待连接\"或指示灯红蓝指示灯闪烁后，输入路由器密码，进行下一步</string>
+    <string name="action_one_key_setting_desc0">按住RESET键5秒，\n听到\"等待连接\"或指示灯红蓝指示灯闪烁后，\n输入路由器密码，\n进行下一步</string>
     <string name="action_one_key_setting_desc1">听到\"配置成功\"或指示灯红灯、蓝灯同时长亮后，搜索设备</string>
     <string name="string_tip">温馨提示</string>
     <string name="ssid">路由器SSID</string>
@@ -121,7 +121,7 @@
     <string name="status_offline">离线</string>
     <string name="action_delete">删除</string>
     <string name="action_select_all">全选</string>
-    <string name="action_undelete_all">取消取选</string>
+    <string name="action_undelete_all">取消全选</string>
     <string name="action_AP_T_STA">AP转STA</string>
     <string name="action_STA_T_AP">STA转AP</string>
     <string name="action_AP_T_STA_Success">设置成功,请手动重启设备</string>

@@ -9,7 +9,7 @@
     <string name="action_visitor">Visitor</string>
     <string name="action_Register">Register</string>
     <string name="action_exit">Exit</string>
-    <string name="action_Forgetpwd">Forget</string>
+    <string name="action_Forgetpwd">Forget Password</string>
     <string name="action_get_checknum">VerifyCode</string>
     <string name="action_get_checknum_sent">VerifyCode send to mailbox</string>
     <string name="action_get_checknum_sent_failed">Failure to transmission Verification code</string>
@@ -79,7 +79,7 @@
     <string name="action_add_ap_sta">Add AP to STA</string>
     <string name="action_add_ap">AP hot spot direct connection</string>
     <string name="action_media">Image</string>
-    <string name="action_one_key_setting_desc0">Heard \"wait to connect \" or when the Red and Blue light flicker, enter the password of the router and proceed to the next step.</string>
+    <string name="action_one_key_setting_desc0">Press and hold the RESET button for 5 seconds, \nHeard \"wait to connect \" or when the Red and Blue light flicker,\nenter the password of the router and proceed to the next step.</string>
     <string name="action_one_key_setting_desc1">Heard \" configuration success\" or when the Red and Blue light are turned on at the same time, search equipment.</string>
     <string name="string_tip">Kindly reminder</string>
     <string name="ssid">Router SSID</string>
