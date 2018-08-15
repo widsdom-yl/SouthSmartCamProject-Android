@@ -32,13 +32,13 @@ import stcam.stcamproject.Util.ConstraintUtil;
 import stcam.stcamproject.Util.FileUtil;
 import stcam.stcamproject.Util.PlayVoice;
 import stcam.stcamproject.Util.SouthUtil;
-import stcam.stcamproject.View.GLSurfaceViewLive;
+import stcam.stcamproject.View.VideoSurfaceView;
 import stcam.stcamproject.View.VoiceImageButton;
 
 public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnClickListener, GestureDetector.OnGestureListener, View
   .OnTouchListener
 {
-  GLSurfaceViewLive glView;
+  VideoSurfaceView glView;
   DevModel devModel;
   VoiceImageButton button_snapshot;
   ImageButton button_speech, button_setting;

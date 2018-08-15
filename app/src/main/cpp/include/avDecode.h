@@ -7,6 +7,7 @@
 #ifndef avDecode_h
 #define avDecode_h
 
+#include <ffmpeg/libavcodec/avcodec.h>
 #include "cm_types.h"
 
 #ifdef WIN32
@@ -86,6 +87,18 @@ extern "C"
     unsigned char* data[8];
     int linesize[8];
   } TavPicture;
+
+
+
+typedef struct TdecInfoPkt {
+    //H_THREADLOCK Lock;
+    //video
+    TMediaType VideoType;
+    AVCodecContext* pCodecCtxV;
+    AVFrame* FrameV;
+    //audio
+
+}TdecInfoPkt;
 
   //-----------------------------------------------------------------------------
   EXPORT int g711_decode(char* dstBuf, const unsigned char* srcBuf, int srcBufLen);

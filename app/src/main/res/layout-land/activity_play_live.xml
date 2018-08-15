@@ -8,12 +8,13 @@
 
     tools:context=".Activity.PlayLiveActivity">
 
-    <stcam.stcamproject.View.GLSurfaceViewLive
+    <stcam.stcamproject.View.VideoSurfaceView
         android:id="@+id/glPlayLive"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clickable="true"
-        android:background="#000000"
+        android:background="@color/transparent"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

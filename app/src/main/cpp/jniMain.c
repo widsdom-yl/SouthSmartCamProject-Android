@@ -1,9 +1,12 @@
 #include <mtk_SmartConfig.h>
+#include <android/native_window.h>
+#include <android/native_window_jni.h>
 #include "../include/libthSDK.h"
 #include "../include/TFun.h"
 #include "jni.h"
 #include "avDecode/thffmpeg.h"
 #include "avDecode/thOpenGL_SLES.h"
+#include "avDecode/thEGL.h"
 
 
 //-----------------------------------------------------------------------------
@@ -392,6 +395,25 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSaveToJpg(JNIEnv *env, jclass obj
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_OpenGLRender(JNIEnv *env, jclass obj, u64 NetHandle)
 {
 }
+
+//-----------------------------------------------------------------------------
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_requestInitEGL(JNIEnv *env, jclass obj, jobject surface)
+{
+  ANativeWindow * mWindow  = ANativeWindow_fromSurface(env, surface);
+    nativeRequestInitEGL(mWindow);
+  //需要初始化
+}
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_requestEGLChange(JNIEnv *env, jclass obj, jobject surface)
+{
+  ANativeWindow * mWindow = ANativeWindow_fromSurface(env, surface);
+    nativeRequestSurfaceChangeEGL(mWindow);
+  //需要调用SurfaceChanged
+}
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_requestEGLDestory(JNIEnv *env, jclass obj)
+{
+    nativeRequestDestoryEGL();
+}
+
 
 //-----------------------------------------------------------------------------
 typedef struct TSearchInfo

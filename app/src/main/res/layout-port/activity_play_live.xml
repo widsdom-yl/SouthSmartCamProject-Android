@@ -7,11 +7,12 @@
     android:layout_height="match_parent"
     tools:context=".Activity.PlayLiveActivity">
 
-    <stcam.stcamproject.View.GLSurfaceViewLive
+    <stcam.stcamproject.View.VideoSurfaceView
         android:id="@+id/glPlayLive"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clickable="true"
+        android:background="@color/transparent"
         android:layout_marginBottom="200dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

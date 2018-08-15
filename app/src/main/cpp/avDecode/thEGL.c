@@ -1,10 +1,12 @@
+#include <cm_types.h>
 #include "thEGL.h"
 #include "shaderUtils.h"
 
 
 
 
-
+ANativeWindow * mWindow;
+int initEGL;
 
 pthread_mutex_t th_mutex_lock;
 
@@ -19,7 +21,16 @@ static EGLDisplay eglDisp;
 
 int left,top,viewWidth,viewHeight;
 
+enum RenderEvent {
+    RE_NONE,
+    RE_SURFACE_CREATED,
+    RE_SURFACE_CHANGED,
+    RE_DRAW_FRAME,
+    RE_EXIT
+};
 
+
+enum RenderEvent mEnumRenderEvent;
 
 #define GET_STR(x) #x
 const char *vertexShaderString = GET_STR(
@@ -54,13 +65,43 @@ const char *fragmentShaderString = GET_STR(
 
 //-------------------------------------------------------------------------
 
-int requestEGLRender(AVFrame* Frame422)
+int requestEGLRenderFrame(AVFrame* Frame422,int videoWidth,int videoHeight)
 {
-    
 
 
-    pthread_mutex_lock(&th_mutex_lock);
-    
+    LOGE("requestEGLRenderFrame,wid is %d,height is %d,%s(%d)\n",videoWidth,videoHeight, __FUNCTION__, __LINE__);
+    //pthread_mutex_lock(&th_mutex_lock);
+
+    switch (mEnumRenderEvent){
+        case  RE_SURFACE_CREATED:
+            LOGE("RE_SURFACE_CREATED,%s(%d)\n", __FUNCTION__, __LINE__);
+            requestInitEGL(mWindow,videoWidth,videoHeight);
+            initEGL = 1;
+            mEnumRenderEvent = RE_NONE;
+            break;
+        case  RE_SURFACE_CHANGED:
+
+            LOGE("RE_SURFACE_CHANGED,%s(%d)\n", __FUNCTION__, __LINE__);
+            eglSurfaceDestory();
+            requestEGLSurfaceChanged(mWindow,videoWidth,videoHeight);
+            initEGL = 1;
+            mEnumRenderEvent = RE_NONE;
+            break;
+        case RE_EXIT:
+            mEnumRenderEvent = RE_NONE;
+            eglSurfaceDestory();
+            //pthread_mutex_unlock(&th_mutex_lock);
+            return 0;
+        default:
+            break;
+
+    }
+
+
+    if (initEGL == 0){
+        return 0;
+    }
+    LOGE("requestEGLRenderFrame,wid is %d,height is %d,%s(%d)\n",videoWidth,videoHeight, __FUNCTION__, __LINE__);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, yTextureId);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Frame422->linesize[0], Frame422->height,0, GL_LUMINANCE, GL_UNSIGNED_BYTE, Frame422->data[0]);
@@ -85,7 +126,7 @@ int requestEGLRender(AVFrame* Frame422)
     
   //  av_free(&yuvFrame);
     
-   pthread_mutex_unlock(&th_mutex_lock);
+  // pthread_mutex_unlock(&th_mutex_lock);
     
    
 
@@ -98,7 +139,7 @@ int requestInitEGL(ANativeWindow * nativeWindow,int videoWidth,int videoHeight){
      *初始化egl
      **/
     
-    pthread_mutex_lock(&th_mutex_lock);
+    //pthread_mutex_lock(&th_mutex_lock);
 
 
 
@@ -176,10 +217,10 @@ int requestInitEGL(ANativeWindow * nativeWindow,int videoWidth,int videoHeight){
     };
 
 
-    ShaderUtils *shaderUtils = new ShaderUtils();
+//    ShaderUtils *shaderUtils = new ShaderUtils();
 
-    GLuint programId = shaderUtils->createProgram(vertexShaderString,fragmentShaderString );
-    delete shaderUtils;
+    GLuint programId = createProgram(vertexShaderString,fragmentShaderString );
+//    delete shaderUtils;
 
     GLuint aPositionHandle = (GLuint) glGetAttribLocation(programId, "aPosition");
     GLuint aTextureCoordHandle = (GLuint) glGetAttribLocation(programId, "aTexCoord");
@@ -250,12 +291,12 @@ int requestInitEGL(ANativeWindow * nativeWindow,int videoWidth,int videoHeight){
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
     glUniform1i(textureSamplerHandleV,2);
-pthread_mutex_unlock(&th_mutex_lock);
+//pthread_mutex_unlock(&th_mutex_lock);
     return 1;
 }
 int requestEGLSurfaceChanged(ANativeWindow * nativeWindow,int videoWidth,int videoHeight){
     
-    pthread_mutex_lock(&th_mutex_lock);
+   // pthread_mutex_lock(&th_mutex_lock);
 
 
     eglSurfaceDestory();
@@ -331,10 +372,10 @@ int requestEGLSurfaceChanged(ANativeWindow * nativeWindow,int videoWidth,int vid
             1.0f, 1.0f,//右上
             0.0f, 1.0f//左上
     };
-    ShaderUtils *shaderUtils = new ShaderUtils();
+//    ShaderUtils *shaderUtils = new ShaderUtils();
     
-    GLuint programId = shaderUtils->createProgram(vertexShaderString,fragmentShaderString );
-    delete shaderUtils;
+    GLuint programId = createProgram(vertexShaderString,fragmentShaderString );
+//    delete shaderUtils;
     GLuint aPositionHandle = (GLuint) glGetAttribLocation(programId, "aPosition");
     GLuint aTextureCoordHandle = (GLuint) glGetAttribLocation(programId, "aTexCoord");
     
@@ -405,7 +446,7 @@ int requestEGLSurfaceChanged(ANativeWindow * nativeWindow,int videoWidth,int vid
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
     glUniform1i(textureSamplerHandleV,2);
-    pthread_mutex_unlock(&th_mutex_lock);
+   // pthread_mutex_unlock(&th_mutex_lock);
 }
 
 void eglSurfaceDestory(){
@@ -417,5 +458,26 @@ void eglSurfaceDestory(){
     eglWindow = EGL_NO_SURFACE;
     eglCtx = EGL_NO_CONTEXT;
 }
+
+void nativeRequestInitEGL(ANativeWindow * nativeWindow){
+    pthread_mutex_init(&th_mutex_lock, NULL);
+   // pthread_mutex_lock(&th_mutex_lock);
+    mWindow = nativeWindow;
+    initEGL = 0;
+    mEnumRenderEvent = RE_SURFACE_CREATED;
+  //  pthread_mutex_unlock(&th_mutex_lock);
+}
+void nativeRequestSurfaceChangeEGL(ANativeWindow * nativeWindow){
+   // pthread_mutex_unlock(&th_mutex_lock);
+    mWindow = nativeWindow;
+    initEGL = 0;
+    mEnumRenderEvent = RE_SURFACE_CHANGED;
+   // pthread_mutex_unlock(&th_mutex_lock);
+}
+void nativeRequestDestoryEGL(){
+    pthread_mutex_destroy(&th_mutex_lock);
+    mEnumRenderEvent = RE_EXIT;
+}
+
 
 

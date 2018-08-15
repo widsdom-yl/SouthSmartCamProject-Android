@@ -26,6 +26,7 @@
 #include "../include/tutk/AVAPIs.h"
 #include "../include/tutk/AVFRAMEINFO.h"
 #include "../include/tutk/AVIOCTRLDEFs.h"
+#include "../avDecode/thEGL.h"
 
 #ifdef WIN32
 #pragma comment (lib, "lib.win32/tutk/AVAPIs.lib")
@@ -888,10 +889,11 @@ void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo *PInfo, char *Buf, int
 
         if (Play->ImgWidth > 0 && Play->ImgHeight > 0)
         {
-#if (defined(ANDROID) && defined(IS_VIDEOPLAY_OPENGL))//android
-          ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth,
-                                 Play->ImgHeight);//ddraw yuv420->rgb32
-          pthread_cond_signal(&Play->SyncCond);
+#if (defined(ANDROID))//android
+            TdecInfoPkt* Info = (TdecInfoPkt*)Play->decHandle;
+         // ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth, Play->ImgHeight);//ddraw yuv420->rgb32
+          ret = requestEGLRenderFrame(Info->FrameV,Play->ImgWidth, Play->ImgHeight);
+         // pthread_cond_signal(&Play->SyncCond);
 #else//WIN32 ios
           ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth, Play->ImgHeight);//ddraw yuv420->rgb32
 for (i=0; i<MAX_DSPINFO_COUNT; i++)

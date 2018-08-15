@@ -7,10 +7,9 @@
 #define shaderUtils_hpp
 #include <GLES2/gl2.h>
 
-class ShaderUtils {
-public:
+
     GLuint createProgram(const char *vertexSource, const char *fragmentSource);
     
     GLuint loadShader(GLenum shaderType, const char *source);
-};
+
 #endif /* shaderUtils_hpp */

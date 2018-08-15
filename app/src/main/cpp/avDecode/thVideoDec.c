@@ -9,15 +9,7 @@
 #include "libjpeg/myJpeg.h"
 
 //-----------------------------------------------------------------------------
-typedef struct TdecInfoPkt {
-  //H_THREADLOCK Lock;
-  //video
-  TMediaType VideoType;
-  AVCodecContext* pCodecCtxV;
-  AVFrame* FrameV;
-  //audio
 
-}TdecInfoPkt;
 //-----------------------------------------------------------------------------
 HANDLE thDecodeVideoInit(int VideoType)
 {

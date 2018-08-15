@@ -1,6 +1,7 @@
 package com.thSDK;
 
 import android.app.Activity;
+import android.view.Surface;
 
 public class lib extends Activity
 {
@@ -86,6 +87,11 @@ public class lib extends Activity
   public static native boolean thNetSaveToJpg(long NetHandle, String jJpgFileName);
 
   public static native String thNetSearchDevice(int TimeOut, int IsJson);
+
+  public static native boolean requestInitEGL( Surface surface);
+  public static native boolean requestEGLChange( Surface surface);
+  public static native boolean requestEGLDestory( );
+
 
   //---------------------------------------------------------------------------
   public final static int Msg_None                   =  0;
