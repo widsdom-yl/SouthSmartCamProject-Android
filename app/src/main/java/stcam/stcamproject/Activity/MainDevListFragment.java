@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.model.DevModel;
+import com.model.RetModel;
 import com.model.SearchDevModel;
 import com.thSDK.TMsg;
 import com.thSDK.lib;
@@ -45,6 +46,7 @@ import stcam.stcamproject.Util.DeviceParseUtil;
 import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
+import stcam.stcamproject.network.ServerNetWork;
 
 import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.EnumMainEntry_Login;
 import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor;
@@ -399,7 +401,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
       //http://xxx.xxx.xxx.xxx:800/app_user_get_devlst.asp??user=aa@bb.com&psd=12345678
       String url = "http://" + Config.ServerIP + ":" + Config.ServerPort + "/app_user_get_devlst.asp?user=" + AccountManager.getInstance
         ().getDefaultUsr() + "&psd=" +
-        AccountManager.getInstance().getDefaultPwd();
+        AccountManager.getInstance().getDefaultPwd() + "&tokenid=" + JPushManager.getJPushRegisterID();
       Log.e(tag, "request url :" + url);
       getDevListRequest = new Request.Builder()
         .url(url)
@@ -476,6 +478,18 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
   void parseGetDevListResponse(String response)//zhb from server app_user_get_devlst.asp
   {
+      RetModel m = GsonUtil.parseJsonWithGson(response, RetModel.class);//zhb
+      if (m != null)
+      {
+        if (ServerNetWork.RESULT_USER_LOGOUT == m.ret)
+        {
+          SouthUtil.showDialog(STApplication.getInstance(), getString(R.string.string_user_logined));
+          //到了这一步，为何没显示对话框？
+          return;
+          //todo
+        }
+      }
+
     List<DevModel> mlist = GsonUtil.parseJsonArrayWithGson(response, DevModel[].class);
 
     if (mlist == null)

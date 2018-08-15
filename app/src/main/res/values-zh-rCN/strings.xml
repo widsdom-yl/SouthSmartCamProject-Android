@@ -234,4 +234,5 @@
     <string name="old_password_wrong">原密码错误</string>
     <string name="password_length_limit">密码长度不得小于4位数</string>
     <string name="confirm_password_same">两次密码输入不一致</string>
+    <string name="string_user_logined">该用户已在其它手机登录，其它手机被迫下线</string>
 </resources>

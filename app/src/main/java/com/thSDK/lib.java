@@ -17,6 +17,9 @@ public class lib extends Activity
       System.out.println("library," + e.getMessage());
     }
   }
+  public static final int RESULT_FAIL=0;//失败
+  public static final int RESULT_SUCCESS=1;//成功
+  public static final int RESULT_SUCCESS_REBOOT=2;//成功，需要重启
 
   public static native long thNetInit(boolean IsInsideDecode, boolean IsQueue, boolean IsAdjustTime, boolean IsAutoReConn, String SN);
 

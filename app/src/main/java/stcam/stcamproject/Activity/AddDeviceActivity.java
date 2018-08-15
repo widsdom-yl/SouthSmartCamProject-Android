@@ -28,12 +28,14 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 import stcam.stcamproject.Application.STApplication;
+import stcam.stcamproject.Config.Config;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.Manager.DataManager;
 import stcam.stcamproject.Manager.JPushManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.DeviceParseUtil;
 import stcam.stcamproject.Util.GsonUtil;
+import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
@@ -228,23 +230,6 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
     if (model != null)
     {
       Log.e(tag, "model.uid:" + model.UID);
-//            if (lod == null){
-//                lod = new LoadingDialog(this);
-//            }
-//            lod.dialogShow();
-//            ServerNetWork.getCommandApi().app_share_add_dev(AccountManager.getInstance().getDefaultUsr(),AccountManager.getInstance()
-// .getDefaultPwd(),
-//                    model.From,JPushManager.getJPushRegisterID(),1,0,0,model.SN,model.Video,model.History,model.Push,
-//                    model.Setup,model.Control).subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(observer_add_dev);
-
-      //ChangeDevicePwdActivity
-//            Intent intent = new Intent(this,ChangeDevicePwdActivity.class);
-//            intent.putExtra("type",ChangeDevicePwdActivity.EnumChangeDevicePwd.SHARE);
-//            intent.putExtra("model",model);
-//            startActivity(intent);
-
       DevModel devModel = new DevModel();
       devModel.SN = model.SN;
       devModel.usr = "admin";//默认填写admin
@@ -260,7 +245,9 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
           .getDefaultPwd(),
         model.From,
         JPushManager.getJPushRegisterID(),
-        1, 0, 0,
+        Config.mbtype,
+        Config.apptype,
+        Config.pushtype,
         model.SN,
         model.Video,
         model.History,
@@ -284,7 +271,11 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
       observables.add(ServerNetWork.getCommandApi().app_user_add_dev(AccountManager.getInstance().getDefaultUsr(), AccountManager
           .getInstance().getDefaultPwd(),
         JPushManager.getJPushRegisterID(),
-        1, 0, 0, device.getSN(), 0));
+        Config.mbtype,
+        Config.apptype,
+        Config.pushtype,
+        device.getSN(),
+        0));
     }
     Observable.combineLatest(observables, new FuncN<RetModel>()
     {
@@ -297,8 +288,6 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
         for (Object i : args)
         {
           RetModel retModel = (RetModel) i;
-          Log.e(tag, "---------------------app_user_add_dev ret :" + retModel.ret);
-
           model.ret &= retModel.ret;
 
         }
@@ -329,10 +318,14 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
     public void onNext(RetModel m)
     {
       lod.dismiss();
-      Log.e(tag, "---------------------0:" + m.ret);
-      if (1 == m.ret)
+      if (ServerNetWork.RESULT_SUCCESS == m.ret)
       {
         back2TopActivity();
+      }
+      else if (ServerNetWork.RESULT_USER_LOGOUT == m.ret)
+      {
+        SouthUtil.showToast(AddDeviceActivity.this, getString(R.string.string_user_logined));
+//todo
       }
       else
       {

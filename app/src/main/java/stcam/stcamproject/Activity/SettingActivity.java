@@ -41,6 +41,7 @@ import stcam.stcamproject.Adapter.DeviceSettingAdapter;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.Manager.DataManager;
+import stcam.stcamproject.Manager.JPushManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
 import stcam.stcamproject.Util.GsonUtil;
@@ -260,8 +261,12 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
               }
               lod.dialogShow();
               ServerNetWork.getCommandApi()
-                .app_user_del_dev(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance().getDefaultPwd(),
-                  devNode.SN, 0)
+                .app_user_del_dev(
+                  AccountManager.getInstance().getDefaultUsr(),
+                  AccountManager.getInstance().getDefaultPwd(),
+                  JPushManager.getJPushRegisterID(),
+                  devNode.SN,
+                  0)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer_delete);
@@ -838,14 +843,13 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     public void onNext(RetModel m)
     {
       lod.dismiss();
-      Log.e(tag, "---------------------0:" + m.ret);
-      if (1 == m.ret)
+      if (lib.RESULT_FAIL == m.ret)
       {
-        SouthUtil.showDialog(SettingActivity.this, getString(R.string.action_STA_T_AP_Success));
+        SouthUtil.showDialog(SettingActivity.this, getString(R.string.action_STA_T_AP_Failed));
       }
       else
       {
-        SouthUtil.showDialog(SettingActivity.this, getString(R.string.action_STA_T_AP_Failed));
+        SouthUtil.showDialog(SettingActivity.this, getString(R.string.action_STA_T_AP_Success));
       }
 
     }
@@ -941,8 +945,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     public void onNext(RetModel m)
     {
       lod.dismiss();
-      Log.e(tag, "---------------------0:" + m.ret);
-      if (1 == m.ret)
+      if (ServerNetWork.RESULT_SUCCESS == m.ret)
       {
         SouthUtil.showToast(SettingActivity.this, getString(R.string.string_delsuccess));
         DataManager.getInstance().deleteDev(devNode);
@@ -958,6 +961,10 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
         }
 
         back2TopActivity();
+      }
+      else if (ServerNetWork.RESULT_USER_LOGOUT == m.ret)
+      {
+        SouthUtil.showToast(SettingActivity.this, getString(R.string.string_user_logined));
       }
       else
       {

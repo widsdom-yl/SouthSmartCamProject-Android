@@ -305,8 +305,7 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
     public void onNext(RetModel m)
     {
       lod.dismiss();
-      Log.e(tag, "---------------------0:" + m.ret);
-      if (1 == m.ret)
+      if (lib.RESULT_SUCCESS == m.ret)
       {
         SouthUtil.showToast(AddDeviceAP2StaSetup.this, getString(R.string.action_AP_T_STA_Success));
         for (DevModel tmpNode : MainDevListFragment.mDevices)
@@ -320,7 +319,7 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
         }
         back2TopActivity(true);
       }
-      else if (2 == m.ret)
+      else if (lib.RESULT_SUCCESS_REBOOT == m.ret)
       {
         SouthUtil.showToast(AddDeviceAP2StaSetup.this, getString(R.string.action_AP_T_STA_Success));
         for (DevModel tmpNode : MainDevListFragment.mDevices)

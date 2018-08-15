@@ -9,7 +9,7 @@
     <string name="action_visitor">Visitor</string>
     <string name="action_Register">Register</string>
     <string name="action_exit">Exit</string>
-    <string name="action_Forgetpwd">Forget Password</string>
+    <string name="action_Forgetpwd">Forget Password?</string>
     <string name="action_get_checknum">VerifyCode</string>
     <string name="action_get_checknum_sent">VerifyCode send to mailbox</string>
     <string name="action_get_checknum_sent_failed">Failure to transmission Verification code</string>
@@ -229,4 +229,5 @@
     <string name="old_password_wrong">old password is wrong</string>
     <string name="password_length_limit">Password length should not less than 4!</string>
     <string name="confirm_password_same">Confirm password is not the same as new password</string>
+    <string name="string_user_logined">The user has logined in on other phones, Forced offline.</string>
 </resources>

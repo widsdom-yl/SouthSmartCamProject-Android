@@ -36,6 +36,7 @@ import stcam.stcamproject.Adapter.BaseAdapter;
 import stcam.stcamproject.Adapter.PushSettingAdapter;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.Manager.DataManager;
+import stcam.stcamproject.Manager.JPushManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.Util.SouthUtil;
@@ -800,7 +801,10 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     }
     lod.dialogShow();
     ServerNetWork.getCommandApi()
-      .app_user_del_dev(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance().getDefaultPwd(),
+      .app_user_del_dev(
+        AccountManager.getInstance().getDefaultUsr(),
+        AccountManager.getInstance().getDefaultPwd(),
+        JPushManager.getJPushRegisterID(),
         model.SN, 0)
       .subscribeOn(Schedulers.io())
       .observeOn(AndroidSchedulers.mainThread())
@@ -831,8 +835,13 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     public void onNext(RetModel m)
     {
       lod.dismiss();
-      Log.e(tag, "---------------------0:" + m.ret);
-      if (1 == m.ret)
+      if (ServerNetWork.RESULT_USER_LOGOUT == m.ret)
+      {
+        SouthUtil.showDialog(getApplicationContext(), getString(R.string.string_user_logined));
+        //todo
+      }
+
+      if (ServerNetWork.RESULT_SUCCESS == m.ret)
       {
 
         DataManager.getInstance().deleteDev(model);

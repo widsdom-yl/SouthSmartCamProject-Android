@@ -5,12 +5,15 @@
 
 #ifndef shaderUtils_hpp
 #define shaderUtils_hpp
+
 #include <GLES2/gl2.h>
 
-class ShaderUtils {
+class ShaderUtils
+{
 public:
-    GLuint createProgram(const char *vertexSource, const char *fragmentSource);
-    
-    GLuint loadShader(GLenum shaderType, const char *source);
+  GLuint createProgram(const char *vertexSource, const char *fragmentSource);
+
+  GLuint loadShader(GLenum shaderType, const char *source);
 };
+
 #endif /* shaderUtils_hpp */

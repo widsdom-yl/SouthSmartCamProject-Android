@@ -31,6 +31,7 @@ import stcam.stcamproject.Adapter.AlarmListAdapter;
 import stcam.stcamproject.Adapter.BaseAdapter;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Manager.AccountManager;
+import stcam.stcamproject.Manager.JPushManager;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
@@ -124,11 +125,18 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
     String dateNowStr = sdf.format(d);
 
     ServerNetWork.getCommandApi()
-      .app_user_getalmfilelst(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance().getDefaultPwd(), dateNowStr,
-        100, 0)
+      .app_user_getalmfilelst(
+        AccountManager.getInstance().getDefaultUsr(),
+        AccountManager.getInstance().getDefaultPwd(),
+        JPushManager.getJPushRegisterID(),
+        dateNowStr,
+        100,
+        0)
       .subscribeOn(Schedulers.io())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(observer_get_alarmlst);
+      .subscribe(observer_get_alarmlst)
+    ;
+
   }
 
   void deleAlarmList(String ids)
@@ -137,8 +145,10 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
     Date d = new Date();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
     final String dateNowStr = sdf.format(d);
-    ServerNetWork.getCommandApi().app_user_delalmfile(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance()
-        .getDefaultPwd(),
+    ServerNetWork.getCommandApi().app_user_delalmfile(
+      AccountManager.getInstance().getDefaultUsr(),
+      AccountManager.getInstance().getDefaultPwd(),
+      JPushManager.getJPushRegisterID(),
       ids)
       .flatMap(new Func1<RetModel, Observable<List<AlarmImageModel>>>()
       {
@@ -146,8 +156,13 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
         public Observable<List<AlarmImageModel>> call(RetModel model)
         {
           // 返回 Observable<Messages>，在订阅时请求消息列表，并在响应后发送请求到的消息列表
-          return ServerNetWork.getCommandApi().app_user_getalmfilelst(AccountManager.getInstance().getDefaultUsr(), AccountManager
-            .getInstance().getDefaultPwd(), dateNowStr, 100, 0);
+          return ServerNetWork.getCommandApi().app_user_getalmfilelst(
+            AccountManager.getInstance().getDefaultUsr(),
+            AccountManager.getInstance().getDefaultPwd(),
+            JPushManager.getJPushRegisterID(),
+            dateNowStr,
+            100,
+            0);
         }
       })
       .subscribeOn(Schedulers.io())
@@ -254,7 +269,7 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
     public void onNext(RetModel retModel)
     {
       lod.dismiss();
-      if (retModel.ret == 1)
+      if (retModel.ret == ServerNetWork.RESULT_SUCCESS)
       {
         if (alarmImageArray != null)
         {

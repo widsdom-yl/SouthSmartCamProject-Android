@@ -30,6 +30,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import stcam.stcamproject.Application.STApplication;
+import stcam.stcamproject.Config.Config;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.Manager.JPushManager;
 import stcam.stcamproject.R;
@@ -287,7 +288,12 @@ public class LoginActivity extends BaseAppCompatActivity
       }
       lod.dialogShow();
       ServerNetWork.getCommandApi()
-        .app_user_login(email, password)
+        .app_user_login(email,
+          password,
+          JPushManager.getJPushRegisterID(),
+          Config.mbtype,
+          Config.apptype,
+          Config.pushtype)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(observer_login);
@@ -330,9 +336,22 @@ public class LoginActivity extends BaseAppCompatActivity
     public void onNext(RetModel m)
     {
       lod.dismiss();
-      Log.e(tag, "---------------------0:" + m.ret);
-      if (1 == m.ret)
+
+      if (ServerNetWork.RESULT_SUCCESS == m.ret)
       {
+        String email = mEmailView.getText().toString();
+        String password = mPasswordView.getText().toString();
+        AccountManager.getInstance().saveAccount(email, password, remeber);
+        Intent intent = new Intent(STApplication.getInstance(), MainViewPagerActivity.class);
+        intent.putExtra("entry", MainDevListFragment.EnumMainEntry.EnumMainEntry_Login);
+        startActivity(intent);
+        LoginActivity.this.finish();
+      }
+      else if (ServerNetWork.RESULT_USER_LOGINED == m.ret)
+      {
+        //todo 已有用户登录
+        SouthUtil.showDialog(LoginActivity.this, getString(R.string.string_user_logined));
+
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
         AccountManager.getInstance().saveAccount(email, password, remeber);

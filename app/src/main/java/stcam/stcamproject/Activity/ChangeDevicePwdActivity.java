@@ -21,6 +21,7 @@ import java.io.Serializable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import stcam.stcamproject.Config.Config;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.Manager.DataManager;
 import stcam.stcamproject.Manager.JPushManager;
@@ -201,7 +202,11 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
           ServerNetWork.getCommandApi().app_user_add_dev(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance()
               .getDefaultPwd(),
             JPushManager.getJPushRegisterID(),
-            1, 0, 0, model.getSN(), 0)
+            Config.mbtype,
+            Config.apptype,
+            Config.pushtype,
+            model.getSN(),
+            0)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(observer_add_dev);
         }
@@ -219,11 +224,21 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
             lod = new LoadingDialog(this);
           }
           lod.dialogShow();
-          ServerNetWork.getCommandApi().app_share_add_dev(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance()
-              .getDefaultPwd(),
-            shareModel.From, JPushManager.getJPushRegisterID(), 1, 0, 0, shareModel.SN, shareModel.Video, shareModel.History, shareModel
-              .Push,
-            shareModel.Setup, shareModel.Control).subscribeOn(Schedulers.io())
+          ServerNetWork.getCommandApi().app_share_add_dev(
+            AccountManager.getInstance().getDefaultUsr(),
+            AccountManager.getInstance().getDefaultPwd(),
+            shareModel.From,
+            JPushManager.getJPushRegisterID(),
+            Config.mbtype,
+            Config.apptype,
+            Config.pushtype,
+            shareModel.SN,
+            shareModel.Video,
+            shareModel.History,
+            shareModel.Push,
+            shareModel.Setup,
+            shareModel.Control
+          ).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(observer_add_dev);
         }
@@ -366,8 +381,7 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
     public void onNext(RetModel m)
     {
       lod.dismiss();
-      Log.e(tag, "---------------------0:" + m.ret);
-      if (1 == m.ret)
+      if (lib.RESULT_SUCCESS == m.ret)
       {
         SouthUtil.showToast(ChangeDevicePwdActivity.this, getString(R.string.string_devAddSuccess));
       }

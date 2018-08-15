@@ -1,5 +1,6 @@
 #ifndef thEGL_h
 #define thEGL_h
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -11,8 +12,8 @@
 #include <fcntl.h>
 #include <dlfcn.h>
 #include <pthread.h>
-extern "C"{
 
+extern "C" {
 
 #include <ffmpeg/libavutil/frame.h>
 #include <GLES2/gl2.h>
@@ -20,8 +21,12 @@ extern "C"{
 #include <android/native_window_jni.h>
 }
 
-int requestInitEGL(ANativeWindow * nativeWindow,int videoWidth,int videoHeight);
-int requestEGLSurfaceChanged(ANativeWindow * nativeWindow,int videoWidth,int videoHeight);
-int requestEGLRender(AVFrame* Frame422);
+int requestInitEGL(ANativeWindow *nativeWindow, int videoWidth, int videoHeight);
+
+int requestEGLSurfaceChanged(ANativeWindow *nativeWindow, int videoWidth, int videoHeight);
+
+int requestEGLRender(AVFrame *Frame422);
+
 void eglSurfaceDestory();
+
 #endif /* thEGL_h */
