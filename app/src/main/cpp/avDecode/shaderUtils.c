@@ -8,7 +8,7 @@
 #include <malloc.h>
 #include "shaderUtils.h"
 
-GLuint ShaderUtils::createProgram(const char *vertexSource, const char *fragmentSource)
+GLuint createProgram(const char *vertexSource, const char *fragmentSource)
 {
   GLuint vertexShader = loadShader(GL_VERTEX_SHADER, vertexSource);
   if (!vertexShader)
@@ -46,7 +46,7 @@ GLuint ShaderUtils::createProgram(const char *vertexSource, const char *fragment
   return program;
 }
 
-GLuint ShaderUtils::loadShader(GLenum shaderType, const char *source)
+GLuint loadShader(GLenum shaderType, const char *source)
 {
   GLuint shader = glCreateShader(shaderType);
   if (shader != 0)

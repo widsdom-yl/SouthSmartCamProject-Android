@@ -86,7 +86,7 @@ int requestEGLRender(AVFrame *Frame422)
   //  av_free(&yuvFrame);
 
   pthread_mutex_unlock(&th_mutex_lock);
-
+  return 0;//zhb
 }
 
 
@@ -163,10 +163,11 @@ int requestInitEGL(ANativeWindow *nativeWindow, int videoWidth, int videoHeight)
   };
 
 
-  ShaderUtils *shaderUtils = new ShaderUtils();
+//  ShaderUtils * shaderUtils = new
+//  ShaderUtils();
 
-  GLuint programId = shaderUtils->createProgram(vertexShaderString, fragmentShaderString);
-  delete shaderUtils;
+  GLuint programId = createProgram(vertexShaderString, fragmentShaderString);
+//  delete shaderUtils;
 
   GLuint aPositionHandle = (GLuint) glGetAttribLocation(programId, "aPosition");
   GLuint aTextureCoordHandle = (GLuint) glGetAttribLocation(programId, "aTexCoord");
@@ -308,10 +309,8 @@ int requestEGLSurfaceChanged(ANativeWindow *nativeWindow, int videoWidth, int vi
                                 1.0f, 1.0f,//右上
                                 0.0f, 1.0f//左上
   };
-  ShaderUtils *shaderUtils = new ShaderUtils();
+  GLuint programId = createProgram(vertexShaderString, fragmentShaderString);
 
-  GLuint programId = shaderUtils->createProgram(vertexShaderString, fragmentShaderString);
-  delete shaderUtils;
   GLuint aPositionHandle = (GLuint) glGetAttribLocation(programId, "aPosition");
   GLuint aTextureCoordHandle = (GLuint) glGetAttribLocation(programId, "aTexCoord");
 

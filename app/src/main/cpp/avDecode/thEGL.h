@@ -13,13 +13,13 @@
 #include <dlfcn.h>
 #include <pthread.h>
 
-extern "C" {
+//extern "C" {
 
 #include <ffmpeg/libavutil/frame.h>
 #include <GLES2/gl2.h>
 #include <EGL/egl.h>
 #include <android/native_window_jni.h>
-}
+//}
 
 int requestInitEGL(ANativeWindow *nativeWindow, int videoWidth, int videoHeight);
 
