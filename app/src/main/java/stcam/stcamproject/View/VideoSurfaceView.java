@@ -1,6 +1,7 @@
 package stcam.stcamproject.View;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
@@ -47,6 +48,7 @@ public class VideoSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
         hasGotFirstFrame = false;
+        this.setBackgroundColor(Color.TRANSPARENT);
     }
 
     public void Play() {
@@ -72,7 +74,7 @@ public class VideoSurfaceView extends SurfaceView implements SurfaceHolder.Callb
        if (!isSurfaceExist){
            isSurfaceExist = true;
            //初始化surface
-           requestInitEGL(holder.getSurface());
+           requestInitEGL(holder.getSurface(),model.NetHandle);
        }
        else{
            //调用jni surface change 接口

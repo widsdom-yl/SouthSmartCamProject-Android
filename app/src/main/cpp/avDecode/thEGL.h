@@ -19,9 +19,11 @@
 #include <EGL/egl.h>
 #include <android/native_window_jni.h>
 
+extern pthread_mutex_t th_mutex_lock;
 
 
-void nativeRequestInitEGL(ANativeWindow * nativeWindow);
+void nativeRequestInitEGL(ANativeWindow * nativeWindow,u64 NetHandle);
+void onRenderThreadRun(HANDLE NetHandle);
 void nativeRequestSurfaceChangeEGL(ANativeWindow * nativeWindow);
 void nativeRequestDestoryEGL();
 int requestInitEGL(ANativeWindow * nativeWindow,int videoWidth,int videoHeight);

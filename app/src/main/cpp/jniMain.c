@@ -397,10 +397,10 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_OpenGLRender(JNIEnv *env, jclass obj, 
 }
 
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_requestInitEGL(JNIEnv *env, jclass obj, jobject surface)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_requestInitEGL(JNIEnv *env, jclass obj, jobject surface,u64 NetHandle)
 {
   ANativeWindow * mWindow  = ANativeWindow_fromSurface(env, surface);
-    nativeRequestInitEGL(mWindow);
+    nativeRequestInitEGL(mWindow,NetHandle);
   //需要初始化
 }
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_requestEGLChange(JNIEnv *env, jclass obj, jobject surface)

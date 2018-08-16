@@ -1,4 +1,6 @@
 #include <cm_types.h>
+#include <TFun.h>
+#include <avDecode.h>
 #include "thEGL.h"
 #include "shaderUtils.h"
 
@@ -70,38 +72,40 @@ int requestEGLRenderFrame(AVFrame* Frame422,int videoWidth,int videoHeight)
 
 
     LOGE("requestEGLRenderFrame,wid is %d,height is %d,%s(%d)\n",videoWidth,videoHeight, __FUNCTION__, __LINE__);
-    //pthread_mutex_lock(&th_mutex_lock);
+    pthread_mutex_lock(&th_mutex_lock);
 
-    switch (mEnumRenderEvent){
-        case  RE_SURFACE_CREATED:
-            LOGE("RE_SURFACE_CREATED,%s(%d)\n", __FUNCTION__, __LINE__);
-            requestInitEGL(mWindow,videoWidth,videoHeight);
-            initEGL = 1;
-            mEnumRenderEvent = RE_NONE;
-            break;
-        case  RE_SURFACE_CHANGED:
-
-            LOGE("RE_SURFACE_CHANGED,%s(%d)\n", __FUNCTION__, __LINE__);
-            eglSurfaceDestory();
-            requestEGLSurfaceChanged(mWindow,videoWidth,videoHeight);
-            initEGL = 1;
-            mEnumRenderEvent = RE_NONE;
-            break;
-        case RE_EXIT:
-            mEnumRenderEvent = RE_NONE;
-            eglSurfaceDestory();
-            //pthread_mutex_unlock(&th_mutex_lock);
-            return 0;
-        default:
-            break;
-
-    }
+//    switch (mEnumRenderEvent){
+//        case  RE_SURFACE_CREATED:
+//            LOGE("RE_SURFACE_CREATED,%s(%d)\n", __FUNCTION__, __LINE__);
+//            requestInitEGL(mWindow,videoWidth,videoHeight);
+//            initEGL = 1;
+//            mEnumRenderEvent = RE_NONE;
+//            break;
+//        case  RE_SURFACE_CHANGED:
+//
+//            LOGE("RE_SURFACE_CHANGED,%s(%d)\n", __FUNCTION__, __LINE__);
+//            eglSurfaceDestory();
+//            requestEGLSurfaceChanged(mWindow,videoWidth,videoHeight);
+//            initEGL = 1;
+//            mEnumRenderEvent = RE_NONE;
+//            break;
+//        case RE_EXIT:
+//            mEnumRenderEvent = RE_NONE;
+//            eglSurfaceDestory();
+//            //pthread_mutex_unlock(&th_mutex_lock);
+//            return 0;
+//        default:
+//            break;
+//
+//    }
 
 
     if (initEGL == 0){
         return 0;
     }
-    LOGE("requestEGLRenderFrame,wid is %d,height is %d,%s(%d)\n",videoWidth,videoHeight, __FUNCTION__, __LINE__);
+    //glViewport(left, top, viewWidth, viewHeight);
+
+    LOGE("requestEGLRenderFrame,wid is %d,height is %d,Frame height is %d,%s(%d)\n",videoWidth,videoHeight,Frame422->height, __FUNCTION__, __LINE__);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, yTextureId);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Frame422->linesize[0], Frame422->height,0, GL_LUMINANCE, GL_UNSIGNED_BYTE, Frame422->data[0]);
@@ -126,7 +130,7 @@ int requestEGLRenderFrame(AVFrame* Frame422,int videoWidth,int videoHeight)
     
   //  av_free(&yuvFrame);
     
-  // pthread_mutex_unlock(&th_mutex_lock);
+   pthread_mutex_unlock(&th_mutex_lock);
     
    
 
@@ -138,8 +142,8 @@ int requestInitEGL(ANativeWindow * nativeWindow,int videoWidth,int videoHeight){
     /**
      *初始化egl
      **/
-    
-    //pthread_mutex_lock(&th_mutex_lock);
+    LOGE("requestInitEGL,videoWidth %d, videoHeight %d,%s(%d)\n", videoWidth,videoHeight,__FUNCTION__, __LINE__);
+    pthread_mutex_lock(&th_mutex_lock);
 
 
 
@@ -248,7 +252,7 @@ int requestInitEGL(ANativeWindow * nativeWindow,int videoWidth,int videoHeight){
         viewWidth = (int)(videoWidth*1.0f/videoHeight*viewHeight);
         left = (windowWidth - viewWidth)/2;
     }
-//     LOGE("left is %d, top is %d ,viewWidth is %d,viewheight is %d,%s(%d) \n",left,top,viewWidth,viewHeight, __FUNCTION__, __LINE__);
+    LOGE("left is %d, top is %d ,viewWidth is %d,viewheight is %d,%s(%d) \n",left,top,viewWidth,viewHeight, __FUNCTION__, __LINE__);
     glViewport(left, top, viewWidth, viewHeight);
     //glViewport(0, 0, windowWidth, windowHeight);
     
@@ -291,7 +295,7 @@ int requestInitEGL(ANativeWindow * nativeWindow,int videoWidth,int videoHeight){
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
     glUniform1i(textureSamplerHandleV,2);
-//pthread_mutex_unlock(&th_mutex_lock);
+    pthread_mutex_unlock(&th_mutex_lock);
     return 1;
 }
 int requestEGLSurfaceChanged(ANativeWindow * nativeWindow,int videoWidth,int videoHeight){
@@ -299,10 +303,10 @@ int requestEGLSurfaceChanged(ANativeWindow * nativeWindow,int videoWidth,int vid
    // pthread_mutex_lock(&th_mutex_lock);
 
 
-    eglSurfaceDestory();
-    
+   // eglSurfaceDestory();
 
-//    LOGE("jopenglInit begin");
+
+    LOGE("requestEGLSurfaceChanged,videoWidth %d, videoHeight %d,%s(%d)\n", videoWidth,videoHeight,__FUNCTION__, __LINE__);
     
 
     EGLint configSpec[] =
@@ -387,7 +391,7 @@ int requestEGLSurfaceChanged(ANativeWindow * nativeWindow,int videoWidth,int vid
     int windowHeight;
     eglQuerySurface(eglDisp,eglWindow,EGL_WIDTH,&windowWidth);
     eglQuerySurface(eglDisp,eglWindow,EGL_HEIGHT,&windowHeight);
-//    LOGE("window width is %d, height is %d ,%s(%d) \n",windowWidth,windowHeight, __FUNCTION__, __LINE__);
+    LOGE("window width is %d, height is %d ,%s(%d) \n",windowWidth,windowHeight, __FUNCTION__, __LINE__);
     
     //因为没有用矩阵所以就手动自适应
 
@@ -403,7 +407,7 @@ int requestEGLSurfaceChanged(ANativeWindow * nativeWindow,int videoWidth,int vid
         viewWidth = (int)(videoWidth*1.0f/videoHeight*viewHeight);
         left = (windowWidth - viewWidth)/2;
     }
-//    LOGE("left is %d, top is %d ,viewWidth is %d,viewheight is %d,%s(%d) \n",left,top,viewWidth,viewHeight, __FUNCTION__, __LINE__);
+    LOGE("left is %d, top is %d ,viewWidth is %d,viewheight is %d,%s(%d) \n",left,top,viewWidth,viewHeight, __FUNCTION__, __LINE__);
     glViewport(left, top, viewWidth, viewHeight);
     //glViewport(0, 0, windowWidth, windowHeight);
     
@@ -459,13 +463,104 @@ void eglSurfaceDestory(){
     eglCtx = EGL_NO_CONTEXT;
 }
 
-void nativeRequestInitEGL(ANativeWindow * nativeWindow){
+void nativeRequestInitEGL(ANativeWindow * nativeWindow,u64 NetHandle){
     pthread_mutex_init(&th_mutex_lock, NULL);
    // pthread_mutex_lock(&th_mutex_lock);
     mWindow = nativeWindow;
     initEGL = 0;
     mEnumRenderEvent = RE_SURFACE_CREATED;
+
+    //创建线程
+
+   // Play->thRecv =
+    ThreadCreate((void *) onRenderThreadRun, (void *) NetHandle, false);
+
+
+
   //  pthread_mutex_unlock(&th_mutex_lock);
+}
+void onRenderThreadRun(HANDLE NetHandle){
+    TPlayParam *Play = (TPlayParam *) NetHandle;
+    while (1){
+        switch (mEnumRenderEvent){
+            case  RE_SURFACE_CREATED:
+                LOGE("RE_SURFACE_CREATED,%s(%d)\n", __FUNCTION__, __LINE__);
+
+                struct timeval tm;
+                struct timespec tnow;
+                //PRINTF("%s(%d) NetHandle:%d\n", __FUNCTION__, __LINE__, NetHandle);
+                pthread_mutex_lock(&Play->Lock);
+                //      pthread_cond_wait(&Play->SyncCond, &Play->Lock);
+                gettimeofday(&tm, NULL);
+                tnow.tv_sec = tm.tv_sec + 1;
+                tnow.tv_nsec = tm.tv_usec * 1000;
+                int ret = false;
+                ret = pthread_cond_timedwait(&Play->SyncCond, &Play->Lock, &tnow);
+                pthread_mutex_unlock(&Play->Lock);
+                if (Play->ImgWidth > 0 && Play->ImgHeight > 0){
+                    requestInitEGL(mWindow,Play->ImgWidth,Play->ImgHeight);
+                    initEGL = 1;
+                    mEnumRenderEvent = RE_NONE;
+                    TdecInfoPkt* Info = (TdecInfoPkt*)Play->decHandle;
+                    ret = requestEGLRenderFrame(Info->FrameV,Play->ImgWidth, Play->ImgHeight);
+                    continue;
+                }
+                else{
+                    continue;
+                }
+
+
+                break;
+            case  RE_SURFACE_CHANGED:
+
+                LOGE("RE_SURFACE_CHANGED,%s(%d)\n", __FUNCTION__, __LINE__);
+                eglSurfaceDestory();
+                if (Play->ImgWidth > 0 && Play->ImgHeight > 0){
+                    requestEGLSurfaceChanged(mWindow,Play->ImgWidth,Play->ImgHeight);
+                    initEGL = 1;
+                    mEnumRenderEvent = RE_NONE;
+                }
+                else{
+                    continue;
+                }
+
+                break;
+            case RE_EXIT:
+                mEnumRenderEvent = RE_NONE;
+                eglSurfaceDestory();
+                //pthread_mutex_unlock(&th_mutex_lock);
+                break;
+            default:
+                break;
+
+        }
+
+
+        if (initEGL == 0){
+            continue;
+        }
+
+        //等待解码数据
+        struct timeval tm;
+        struct timespec tnow;
+        //PRINTF("%s(%d) NetHandle:%d\n", __FUNCTION__, __LINE__, NetHandle);
+        pthread_mutex_lock(&Play->Lock);
+        //      pthread_cond_wait(&Play->SyncCond, &Play->Lock);
+        gettimeofday(&tm, NULL);
+        tnow.tv_sec = tm.tv_sec + 1;
+        tnow.tv_nsec = tm.tv_usec * 1000;
+        int ret = false;
+        ret = pthread_cond_timedwait(&Play->SyncCond, &Play->Lock, &tnow);
+        pthread_mutex_unlock(&Play->Lock);
+        //有解码数据
+
+        TdecInfoPkt* Info = (TdecInfoPkt*)Play->decHandle;
+        ret = requestEGLRenderFrame(Info->FrameV,Play->ImgWidth, Play->ImgHeight);
+
+
+
+
+    }
 }
 void nativeRequestSurfaceChangeEGL(ANativeWindow * nativeWindow){
    // pthread_mutex_unlock(&th_mutex_lock);

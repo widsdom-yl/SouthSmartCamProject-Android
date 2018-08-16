@@ -34,116 +34,7 @@
 #endif
 #endif
 
-typedef struct TPlayParam
-{
-  u32 SN;
-  //内部
-  bool IsExit;
-  bool IsAutoReConn;
-  H_THREADLOCK Lock;
-  pthread_cond_t SyncCond;
 
-  char20 LocalIP;
-
-  H_THREAD thRecv;//收取线程句柄
-
-  HANDLE RecHandle;//录像句柄
-
-  char1024 RecPath;//录像路径
-  char1024 JpgPath;//拍照路径
-  bool IsSnapShot;
-  char1024 FileName_Jpg;
-
-  bool IsTaskRec;//因还没有IFrame，没有没有写头，任务
-
-  HANDLE decHandle;//解码句柄
-  HANDLE RenderHandle;//显示句柄
-  HANDLE audioHandle;//音频播放句柄
-
-#define AUDIO_COLLECT_SIZE      2048
-  HANDLE talkHandle;//音频对讲句柄
-
-  TMediaType VideoMediaType;//视频类型
-
-#define MAX_DSPINFO_COUNT  10
-  TDspInfo DspInfoLst[MAX_DSPINFO_COUNT];//显示区域
-
-  bool IsInsideDecode;//0=外部解码 1=内部解码
-  bool IsQueue;//是否队列解码显示
-  bool IsAdjustTime;//是否校准设备时间
-
-#define MAX_QUEUE_COUNT    120
-  HANDLE hQueueDraw;//上屏队列句柄
-  HANDLE hTimerIDQueueDraw;//上屏事件句柄
-  u32 iSleepTime;//
-  int iFrameTime;//
-
-  HANDLE hQueueVideo;//视频解码队列句柄
-  H_THREAD thQueueVideo;//视频解码线程句柄
-  HANDLE hQueueAudio;//音频解码队列句柄
-  H_THREAD thQueueAudio;//音频解码线程句柄
-  HANDLE hQueueRec;//录像队列句柄
-  H_THREAD thQueueRec;//录像线程句柄
-
-  //外部传入参数
-  TDevCfg DevCfg;
-#define MAX_BUF_SIZE 1024*1024
-  char RecvBuffer[MAX_BUF_SIZE];//收取缓存
-  i32 RecvLen;//收取缓存长度
-  char RecvDownloadBuf[MAX_BUF_SIZE];//http p2pnew
-  i32 RecvDownloadLen;//http p2pnew
-
-  TavPicture FrameV420;
-
-  TvideoCallBack *videoEvent;
-  TaudioCallBack *audioEvent;
-  TalarmCallBack *AlmEvent;
-  void *UserCustom;
-
-  int DecodeStyle;
-  int DisplayStreamTypeOld, DisplayStreamType;
-
-  u32 VideoChlMask;
-  u32 AudioChlMask;
-  u32 SubVideoChlMask;
-  TGroupType GroupType;
-
-  bool IsAudioMute;//是否静音
-  //内部标志
-  bool IsIFrameFlag;//视频流是否出现了I帧标志，初始=false, 遇到I帧 = true
-  bool IsVideoDecodeSuccessFlag;//是否正确地解码了视频
-
-  bool IsStopHttpGet;
-  //sem_t semHttpDownload;
-
-  i32 LastSenseTime;//断线重连用
-
-  bool IsConnect;
-  i32 iConnectStatus;
-  i32 StreamType;//0主码流 1次码流
-  i32 ImgWidth;
-  i32 ImgHeight;
-  i32 FrameRate;
-
-  //IP
-  char40 UserName;
-  char40 Password;
-  char256 IPUID;
-  i32 DataPort;
-  u32 TimeOut;
-
-  u32 Session;
-  SOCKET hSocket;
-
-  //P2P
-  i32 p2pSoftVersion;//0=old 1=qiu/new 2=now...
-  i32 Isp2pConn;
-
-  i32 p2p_SessionID;
-  i32 p2p_avIndex;
-  i32 p2p_talkIndex;
-
-} TPlayParam;
 //---------------------------------------------------------
 typedef struct TPlayManggeParam {
   int Isp2pInit;
@@ -877,8 +768,11 @@ void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo *PInfo, char *Buf, int
       //3
       if (Play->IsInsideDecode)
       {
+          pthread_mutex_lock(&th_mutex_lock);
         ret = thDecodeVideoFrame(Play->decHandle, Buf, BufLen, &Play->ImgWidth, &Play->ImgHeight,
                                  &Play->FrameV420);//yuv420
+
+          pthread_mutex_unlock(&th_mutex_lock);
         if (!ret) return;
         Play->IsVideoDecodeSuccessFlag = true;
         if (Play->IsSnapShot)
@@ -890,10 +784,11 @@ void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo *PInfo, char *Buf, int
         if (Play->ImgWidth > 0 && Play->ImgHeight > 0)
         {
 #if (defined(ANDROID))//android
-            TdecInfoPkt* Info = (TdecInfoPkt*)Play->decHandle;
-         // ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth, Play->ImgHeight);//ddraw yuv420->rgb32
-          ret = requestEGLRenderFrame(Info->FrameV,Play->ImgWidth, Play->ImgHeight);
-         // pthread_cond_signal(&Play->SyncCond);
+            LOGE("decodeframe ,wid is %d,height is %d,%s(%d)\n",Play->ImgWidth,Play->ImgHeight, __FUNCTION__, __LINE__);
+         //   TdecInfoPkt* Info = (TdecInfoPkt*)Play->decHandle;
+          //ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth, Play->ImgHeight);//ddraw yuv420->rgb32
+          //ret = requestEGLRenderFrame(Info->FrameV,Play->ImgWidth, Play->ImgHeight);
+          pthread_cond_signal(&Play->SyncCond);
 #else//WIN32 ios
           ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth, Play->ImgHeight);//ddraw yuv420->rgb32
 for (i=0; i<MAX_DSPINFO_COUNT; i++)

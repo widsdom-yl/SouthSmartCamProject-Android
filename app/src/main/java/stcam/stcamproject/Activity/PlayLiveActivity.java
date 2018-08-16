@@ -323,16 +323,16 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
     button_pix.setOnClickListener(this);
     button_setting.setOnClickListener(this);
     load_progress = findViewById(R.id.load_progress);
-    if (hasGotFirstFrame)
-    {
-      glView.setBackgroundColor(Color.TRANSPARENT);
-      load_progress.setVisibility(View.GONE);
-    }
-    else
-    {
-      glView.setBackgroundColor(Color.rgb(0,0,0));
-      load_progress.setVisibility(View.VISIBLE);
-    }
+//    if (hasGotFirstFrame)
+//    {
+//      glView.setBackgroundColor(Color.TRANSPARENT);
+//      load_progress.setVisibility(View.GONE);
+//    }
+//    else
+//    {
+//      glView.setBackgroundColor(Color.rgb(0,0,0));
+//      load_progress.setVisibility(View.VISIBLE);
+//    }
     ptz_layout = findViewById(R.id.ptz_control_layout);
 //        button_ptz = findViewById(R.id.button_ptz);
 //        button_ptz.setOnClickListener(this);
