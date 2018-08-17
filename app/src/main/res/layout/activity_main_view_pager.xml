@@ -77,7 +77,7 @@
                     android:layout_marginTop="5dp"
                     android:scaleType="fitCenter"
                     android:background="@color/transparent"
-                    android:src="@drawable/tab_alarm"
+                    android:src="@drawable/tab_media"
                     android:clickable="true"
                     android:textSize="12sp" />
 
@@ -85,13 +85,13 @@
                     android:id="@+id/tx_2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
                     android:layout_below="@id/image_2"
-                    android:text="@string/action_alarm"
                     android:layout_marginTop="-1dp"
-                    android:textColor="#666666"
                     android:clickable="true"
-                    android:textSize="10sp" />
+                    android:gravity="center"
+                    android:text="@string/action_media"
+                    android:textColor="#666666"
+                    android:textSize="10sp"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -108,7 +108,7 @@
                     android:layout_marginTop="5dp"
                     android:scaleType="fitCenter"
                     android:background="@color/transparent"
-                    android:src="@drawable/tab_media"
+                    android:src="@drawable/tab_alarm"
                     android:clickable="true"
                     android:textSize="12sp" />
 
@@ -118,7 +118,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:layout_below="@id/image_3"
-                    android:text="@string/action_media"
+                    android:text="@string/action_alarm"
                     android:layout_marginTop="-1dp"
                     android:textColor="#666666"
                     android:clickable="true"

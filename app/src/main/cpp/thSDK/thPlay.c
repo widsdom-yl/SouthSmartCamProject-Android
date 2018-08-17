@@ -92,6 +92,10 @@ typedef struct TPlayParam
   char RecvDownloadBuf[MAX_BUF_SIZE];//http p2pnew
   i32 RecvDownloadLen;//http p2pnew
 
+  TRecFileHead HistoryHead;
+  i32 TimestampHistoryPosition;//回放pos时间戳
+  i32 TimestampHistoryDuration;//回放文件时长
+
   TavPicture FrameV420;
 
   TvideoCallBack *videoEvent;
@@ -1075,6 +1079,15 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
         char *Buf = &RecvBuffer[sizeof(TDataFrameInfo)];
         i32 BufLen = PHead->PktSize - 16;
 
+        if (Play->GroupType == pt_PlayHistory)
+        {
+          ThreadLock(&Play->Lock);
+          i64 iFrameTimeStart = Play->HistoryHead.StartTime * 1000000;
+          Play->TimestampHistoryPosition = (PInfo->Frame.FrameTime - iFrameTimeStart) / 1000;
+          Play->TimestampHistoryDuration = (Play->HistoryHead.EndTime - Play->HistoryHead.StartTime) * 1000;
+          ThreadUnlock(&Play->Lock);
+        }
+
         if (PHead->VerifyCode == Head_VideoPkt)
         {
           if (Play->GroupType != pt_PlayHistory)
@@ -1124,6 +1137,10 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
             Play->AlmEvent(PPkt->CmdPkt.AlmSendPkt.AlmType, PPkt->CmdPkt.AlmSendPkt.AlmTime,
                            PPkt->CmdPkt.AlmSendPkt.AlmPort, Play->UserCustom);
           }
+        }
+        else if (PPkt->CmdPkt.MsgID == Msg_GetDevRecFileHead)
+        {
+          Play->HistoryHead = PPkt->CmdPkt.FileHead;
         }
       }
         break;
@@ -1982,6 +1999,25 @@ bool thNet_RemoteFilePlayControl(HANDLE NetHandle, i32 PlayCtrl, i32 Speed, i32 
   }
 
   return false;
+}
+//-----------------------------------------------------------------------------
+int thNet_RemoteFileGetPosition(HANDLE NetHandle)
+{
+  TPlayParam *Play = (TPlayParam *) NetHandle;
+  if (NetHandle == 0) return false;
+  return Play->TimestampHistoryPosition;
+}
+//-----------------------------------------------------------------------------
+int thNet_RemoteFileGetDuration(HANDLE NetHandle)
+{
+  TPlayParam *Play = (TPlayParam *) NetHandle;
+  if (NetHandle == 0) return false;
+  return Play->TimestampHistoryDuration;
+}
+//-----------------------------------------------------------------------------
+bool thNet_RemoteFileSetPosition(HANDLE NetHandle, int Pos)
+{
+  return thNet_RemoteFilePlayControl(NetHandle, PS_DragPos, 0, Pos);
 }
 //-----------------------------------------------------------------------------
 bool thNet_HttpGetStop(HANDLE NetHandle)

@@ -26,7 +26,7 @@ public class ServerNetWork
   private static OkHttpClient okHttpClient = new OkHttpClient.Builder()
 //            .readTimeout(READ_TIMEOUT,TimeUnit.SECONDS)//
 //            .writeTimeout(WRITE_TIMEOUT,TimeUnit.SECONDS)//
-    .connectTimeout(5, TimeUnit.SECONDS)//
+    .connectTimeout(10, TimeUnit.SECONDS)//zhb 5->10
     .build();
   ;
 

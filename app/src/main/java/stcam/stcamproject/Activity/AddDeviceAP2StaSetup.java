@@ -220,7 +220,7 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
       List data_list = new ArrayList<String>();
       for (SSIDModel model : ssidModels)
       {
-        data_list.add(model.SSID + "(" + model.Siganl + ")");
+        data_list.add(model.SSID + "(" + model.Siganl + "%)");
       }
 
       //适配器

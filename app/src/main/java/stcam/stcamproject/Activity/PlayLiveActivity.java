@@ -32,6 +32,7 @@ import stcam.stcamproject.Util.ConstraintUtil;
 import stcam.stcamproject.Util.FileUtil;
 import stcam.stcamproject.Util.PlayVoice;
 import stcam.stcamproject.Util.SouthUtil;
+import stcam.stcamproject.Util.TFun;
 import stcam.stcamproject.View.GLSurfaceViewLive;
 import stcam.stcamproject.View.VoiceImageButton;
 
@@ -46,6 +47,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
   ImageButton button_slient;
   RelativeLayout ptz_layout;
   ImageButton button_led, button_pix;
+  ImageButton button_led_layer, button_speech_layer, button_slient_layer;
   boolean pix_low = true;
   ImageButton button_ptz_left, button_ptz_right, button_ptz_up, button_ptz_down;
   ImageButton button_back;
@@ -323,6 +325,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
     button_pix.setOnClickListener(this);
     button_setting.setOnClickListener(this);
     load_progress = findViewById(R.id.load_progress);
+
     if (hasGotFirstFrame)
     {
       glView.setBackgroundColor(Color.TRANSPARENT);
@@ -330,7 +333,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
     }
     else
     {
-      glView.setBackgroundColor(Color.rgb(0,0,0));
+      glView.setBackgroundColor(Color.rgb(0, 0, 0));
       load_progress.setVisibility(View.VISIBLE);
     }
     ptz_layout = findViewById(R.id.ptz_control_layout);
@@ -358,11 +361,38 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
 
     //configurationChanged();
 
+    TFun.printf(
+      "********devModel.IsVideo"+devModel.IsVideo+
+        "devModel.IsHistory"+devModel.IsHistory+
+        "devModel.IsPush"+devModel.IsPush+
+    "devModel.IsControl"+devModel.IsControl);
+//devModel.IsVideo 0 devModel.IsHistory 0 devModel.IsPush 0 devModel.IsControl0
     if (devModel.IsVideo == 0 && entryType != MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor)
     {
       //音频
       button_speech.setVisibility(View.INVISIBLE);
       button_slient.setVisibility(View.INVISIBLE);
+      button_led_layer = findViewById(R.id.button_led_layer);//zhb
+      button_speech_layer = findViewById(R.id.button_speech_layer);//zhb
+      if (button_speech_layer != null)
+      {
+        button_speech_layer.setVisibility(View.INVISIBLE);//zhb
+      }
+      button_slient_layer = findViewById(R.id.button_slient_layer);//zhb
+      if (button_slient_layer != null)
+      {
+        button_slient_layer.setVisibility(View.INVISIBLE);//zhb
+      }
+    }
+
+    if (devModel.IsControl == 0 && entryType != MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor)
+    {
+      button_led.setVisibility(View.INVISIBLE);//zhb
+      button_led_layer = findViewById(R.id.button_led_layer);//zhb
+      if (button_led_layer != null)
+      {
+        button_led_layer.setVisibility(View.INVISIBLE);//zhb
+      }
     }
 
     if (!isRecording)
@@ -738,7 +768,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
     protected String doInBackground(Integer... params)
     {
       //第二个执行方法,onPreExecute()执行完后执行
-      String url = devModel.getHttpCfg1UsrPwd() + "&MsgID="+lib.Msg_PTZControl+"&cmd=" + params[0] + "&sleep=500&s=23231";
+      String url = devModel.getHttpCfg1UsrPwd() + "&MsgID=" + lib.Msg_PTZControl + "&cmd=" + params[0] + "&sleep=500&s=23231";
 
       String ret = lib.thNetHttpGet(devModel.NetHandle, url);
       Log.e(tag, "PtzControlTask ret :" + ret);

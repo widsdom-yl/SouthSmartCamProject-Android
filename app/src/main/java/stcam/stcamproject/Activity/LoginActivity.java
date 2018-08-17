@@ -351,6 +351,7 @@ public class LoginActivity extends BaseAppCompatActivity
       {
         //todo 已有用户登录
         SouthUtil.showDialog(LoginActivity.this, getString(R.string.string_user_logined));
+        //这里要改为“确定” “取消”提示框
 
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();

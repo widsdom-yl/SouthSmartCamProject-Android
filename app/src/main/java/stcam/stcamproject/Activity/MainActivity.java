@@ -217,25 +217,27 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     switch (view.getId())
     {
       case R.id.tx_1:
-      case R.id.image_1:
+      case R.id.image_1://设备列表
         changeHomePage();
         break;
+
       case R.id.tx_2:
-      case R.id.image_2:
+      case R.id.image_2://警报
         if (isLoginMode())
         {
           changeAlarmPage();
         }
         break;
       case R.id.tx_3:
-      case R.id.image_3:
+      case R.id.image_3://图像
         if (isLoginMode())
         {
           changeMediaPage();
         }
         break;
+
       case R.id.tx_4:
-      case R.id.image_4:
+      case R.id.image_4://我
         if (isLoginMode())
         {
           changeMinePage();

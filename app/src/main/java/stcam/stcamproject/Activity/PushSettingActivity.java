@@ -837,7 +837,10 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
       lod.dismiss();
       if (ServerNetWork.RESULT_USER_LOGOUT == m.ret)
       {
-        SouthUtil.showDialog(getApplicationContext(), getString(R.string.string_user_logined));
+        //RESULT_USER_LOGOUT 为收不到推送的情况下，访问服务器时的返回值，收到
+        //返回登录界面，取消保存的AutoLogin
+        SouthUtil.showDialog(getApplicationContext(), getString(R.string.string_user_logout));
+        //需要同时处理推送消息，内容为 "USER_LOGOUT"，
         //todo
       }
 

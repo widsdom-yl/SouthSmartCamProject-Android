@@ -66,14 +66,15 @@ public class DevModel implements Parcelable
   public String IPUID;
   public int WebPort;
   public int DataPort;
-  public int IsVideo;
-  public int IsHistory;
-  public int IsPush;
-  public int IsSetup;
-  public int IsControl;
-  public int IsShare;
-  public int IsRec;
-  public int IsSnapshot;
+
+  public int IsVideo;//权限    有
+  public int IsHistory;//权限  有
+  public int IsPush;//权限     有
+  public int IsControl;//权限  有
+  public int IsSetup;//权限    未用到
+  public int IsShare;//权限    未用到
+  public int IsRec;//权限      未用到
+  public int IsSnapshot;//权限 未用到
 
   public boolean IsAudioMute = true;
   public boolean IsRecord = false;

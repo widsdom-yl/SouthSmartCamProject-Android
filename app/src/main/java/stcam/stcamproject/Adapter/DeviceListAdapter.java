@@ -23,6 +23,7 @@ import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
 
 import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.EnumMainEntry_Login;
+import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor;
 
 public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.MyHolder>
 {
@@ -87,10 +88,13 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
     {
       holder.playBackBtn.setVisibility(View.INVISIBLE);
     }
-
+    if (mEntryType == EnumMainEntry_Visitor)
+    {
+      holder.playBackBtn.setVisibility(View.VISIBLE);
+    }
 
     DevModel chooseModel = null;
-//1111111111111111111
+
     for (DevModel tmpNode : MainDevListFragment.mDevices)
     {
       if (model.SN.equals(tmpNode.SN))

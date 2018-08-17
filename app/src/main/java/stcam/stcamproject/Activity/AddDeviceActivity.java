@@ -131,22 +131,6 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
     switch (view.getId())
     {
       case R.id.btn_add_device_search:
-//                if (lod == null){
-//                    lod = new LoadingDialog(this);
-//                }
-//                lod.dialogShow();
-//
-//                SouthUtil.showToast(this,"search");
-//                new Thread()
-//                {
-//                    @Override
-//                    public void run()
-//                    {
-//                        SearchMsg = lib.thNetSearchDevice(3000, 1);
-//                        ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_SearchOver, 0, 0, null));
-//                        IsSearching = false;
-//                    }
-//                }.start();
         Intent intent4 = new Intent(STApplication.getInstance(), AddDeviceWlanActivity.class);
         startActivity(intent4);
         break;
@@ -241,19 +225,20 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
         lod = new LoadingDialog(this);
       }
       lod.dialogShow();
-      ServerNetWork.getCommandApi().app_share_add_dev(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance()
-          .getDefaultPwd(),
+      ServerNetWork.getCommandApi().app_share_add_dev(
+        AccountManager.getInstance().getDefaultUsr(),
+        AccountManager.getInstance().getDefaultPwd(),
         model.From,
         JPushManager.getJPushRegisterID(),
         Config.mbtype,
         Config.apptype,
         Config.pushtype,
         model.SN,
-        model.Video,
-        model.History,
-        model.Push,
-        model.Setup,
-        model.Control).subscribeOn(Schedulers.io())
+        model.IsVideo,
+        model.IsHistory,
+        model.IsPush,
+        model.IsSetup,
+        model.IsControl).subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(observer_add_dev);
     }
@@ -324,7 +309,10 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
       }
       else if (ServerNetWork.RESULT_USER_LOGOUT == m.ret)
       {
-        SouthUtil.showToast(AddDeviceActivity.this, getString(R.string.string_user_logined));
+        //RESULT_USER_LOGOUT 为收不到推送的情况下，访问服务器时的返回值，收到
+        //返回登录界面，取消保存的AutoLogin
+        SouthUtil.showToast(AddDeviceActivity.this, getString(R.string.string_user_logout));
+        //需要同时处理推送消息，内容为 "USER_LOGOUT"
 //todo
       }
       else

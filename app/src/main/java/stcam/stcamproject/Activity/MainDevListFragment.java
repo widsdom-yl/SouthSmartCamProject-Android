@@ -478,17 +478,20 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
   void parseGetDevListResponse(String response)//zhb from server app_user_get_devlst.asp
   {
-      RetModel m = GsonUtil.parseJsonWithGson(response, RetModel.class);//zhb
-      if (m != null)
+    RetModel m = GsonUtil.parseJsonWithGson(response, RetModel.class);//zhb
+    if (m != null)
+    {
+      if (ServerNetWork.RESULT_USER_LOGOUT == m.ret)
       {
-        if (ServerNetWork.RESULT_USER_LOGOUT == m.ret)
-        {
-          SouthUtil.showDialog(STApplication.getInstance(), getString(R.string.string_user_logined));
-          //到了这一步，为何没显示对话框？
-          return;
-          //todo
-        }
+        //RESULT_USER_LOGOUT 为收不到推送的情况下，访问服务器时的返回值，收到
+        //返回登录界面，取消保存的AutoLogin
+        SouthUtil.showDialog(STApplication.getInstance(), getString(R.string.string_user_logout));
+        //到了这一步，为何没显示对话框？
+        //需要同时处理推送消息，内容为 "USER_LOGOUT"
+        return;
+        //todo
       }
+    }
 
     List<DevModel> mlist = GsonUtil.parseJsonArrayWithGson(response, DevModel[].class);
 
@@ -695,10 +698,8 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
       }
     }
 
-    if (0 == tpe)
+    if (0 == tpe)//Item按下视频
     {
-
-
       Intent intent = new Intent(STApplication.getInstance(), PlayLiveActivity.class);
 
       Bundle bundle = new Bundle();
@@ -709,7 +710,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
       startActivity(intent);
     }
-    else if (1 == tpe)
+    else if (1 == tpe)//Item按下分享
     {
       if (entryType == EnumMainEntry_Login)
       {
@@ -744,13 +745,22 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
     }
 
-    else if (2 == tpe)
+    else if (2 == tpe)//Item按下回放
     {
-      if (tmpNode.IsShare == 0)
+      if (entryType == EnumMainEntry_Login)
       {
-        SouthUtil.showDialog(this.getActivity(), getString(R.string.string_device_is_share));
-        return;
+        if (tmpNode.IsShare == 0)
+        {
+          SouthUtil.showDialog(this.getActivity(), getString(R.string.string_device_is_share));
+          return;
+        }
+        if (tmpNode.IsHistory == 0)
+        {
+          SouthUtil.showToast(STApplication.getInstance(), getString(R.string.string_no_record_permisson));
+          return;
+        }
       }
+
       if (tmpNode.ExistSD == 0)
       {
         SouthUtil.showToast(STApplication.getInstance(), getString(R.string.action_not_exist_sd));
@@ -772,7 +782,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
       startActivity(intent);
     }
-    else if (3 == tpe)
+    else if (3 == tpe)//Item按下设置
     {
       Intent intent = new Intent(STApplication.getInstance(), SettingActivity.class);
 

@@ -4,15 +4,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class ShareModel implements Parcelable {
+//"IsVideo":%d,"IsHistory":%d,"IsPush":%d,"IsSetup":%d,"IsControl":%d,"IsShare":%d,"IsRec":%d,"IsSnapshot":%d
     public String From;
     public String UID;
     public String SN;
     public String Pwd;
-    public int Video;
-    public int History;
-    public int Push;
-    public int Setup;
-    public int Control;
+    public int IsVideo;
+    public int IsHistory;
+    public int IsPush;
+    public int IsSetup;
+    public int IsControl;
     public ShareModel(){
 
     }
@@ -21,11 +22,11 @@ public class ShareModel implements Parcelable {
         UID = in.readString();
         SN = in.readString();
         Pwd = in.readString();
-        Video = in.readInt();
-        History = in.readInt();
-        Push = in.readInt();
-        Setup = in.readInt();
-        Control = in.readInt();
+        IsVideo = in.readInt();
+        IsHistory = in.readInt();
+        IsPush = in.readInt();
+        IsSetup = in.readInt();
+        IsControl = in.readInt();
     }
 
     public static final Creator<ShareModel> CREATOR = new Creator<ShareModel>() {
@@ -51,10 +52,10 @@ public class ShareModel implements Parcelable {
         parcel.writeString(UID);
         parcel.writeString(SN);
         parcel.writeString(Pwd);
-        parcel.writeInt(Video);
-        parcel.writeInt(History);
-        parcel.writeInt(Push);
-        parcel.writeInt(Setup);
-        parcel.writeInt(Control);
+        parcel.writeInt(IsVideo);
+        parcel.writeInt(IsHistory);
+        parcel.writeInt(IsPush);
+        parcel.writeInt(IsSetup);
+        parcel.writeInt(IsControl);
     }
 }

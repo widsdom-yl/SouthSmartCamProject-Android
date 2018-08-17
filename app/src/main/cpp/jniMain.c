@@ -268,6 +268,24 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFileStop(JNIEnv *env, jclas
   return thNet_RemoteFileStop((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
+JNIEXPORT int JNICALL Java_com_thSDK_lib_thNetRemoteFileGetPosition(JNIEnv *env, jclass obj, u64 NetHandle)
+{
+  //时间戳，单位ms
+  return thNet_RemoteFileGetPosition((HANDLE) NetHandle);
+}
+//-----------------------------------------------------------------------------
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFileSetPosition(JNIEnv *env, jclass obj, u64 NetHandle, int Pos)
+{
+  //时间戳，单位ms
+  return thNet_RemoteFileSetPosition((HANDLE) NetHandle, Pos);
+}
+//-----------------------------------------------------------------------------
+JNIEXPORT int JNICALL Java_com_thSDK_lib_thNetRemoteFileGetDuration(JNIEnv *env, jclass obj, u64 NetHandle)
+{
+  //文件长度，单位ms
+  return thNet_RemoteFileGetDuration((HANDLE) NetHandle);
+}
+//-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL
 Java_com_thSDK_lib_thNetRemoteFilePlayControl(JNIEnv *env, jclass obj, u64 NetHandle, int PlayCtrl, int Speed, int Pos)
 {
