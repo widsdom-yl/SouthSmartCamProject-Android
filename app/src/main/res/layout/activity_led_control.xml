@@ -101,17 +101,16 @@
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginLeft="24dp"
                 android:text="@string/action_led_open_time"/>
 
             <TextView
                 android:id="@+id/light_time_span"
-                android:layout_width="44dp"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
+                android:layout_below="@id/textView4"
+                android:layout_marginTop="8dp"
                 android:background="@color/transparent"
                 android:text="1"
                 />
@@ -120,12 +119,12 @@
                 android:id="@+id/seekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginEnd="45dp"
-                android:layout_marginLeft="14dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginRight="45dp"
-                android:layout_marginStart="14dp"
-                android:layout_toRightOf="@id/textView4"
+                android:layout_marginStart="10dp"
+                android:layout_below="@id/textView4"
+                android:layout_marginTop="8dp"
                 android:max="600"/>
 
         </RelativeLayout>
@@ -188,6 +187,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layout_time">
@@ -196,7 +196,6 @@
                 android:id="@+id/textView10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginLeft="24dp"
                 android:text="@string/action_led_brightness"/>
 
@@ -205,7 +204,8 @@
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
+                android:layout_below="@id/textView10"
+                android:layout_marginTop="8dp"
                 android:background="@color/transparent"
                 android:text="1"/>
 
@@ -213,12 +213,12 @@
                 android:id="@+id/seekBar_brintness"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginEnd="45dp"
-                android:layout_marginLeft="14dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginRight="45dp"
-                android:layout_marginStart="14dp"
-                android:layout_toRightOf="@id/textView10"
+                android:layout_marginStart="10dp"
+                android:layout_below="@id/textView10"
+                android:layout_marginTop="8dp"
                 android:max="90"/>
 
 
