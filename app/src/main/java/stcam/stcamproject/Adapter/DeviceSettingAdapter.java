@@ -1,5 +1,8 @@
 package stcam.stcamproject.Adapter;
 
+import android.view.View;
+import android.widget.TextView;
+
 import com.model.DevModel;
 import com.model.PushSettingModel;
 
@@ -38,6 +41,8 @@ public class DeviceSettingAdapter extends BaseAdapter<String>{
     protected void convert(BaseHolder holder, String title, int position) {
         super.convert(holder,title,position);
         holder.setText(R.id.title_text,title);
+        TextView detailArrow =  holder.getView(R.id.detail_arror);
+        detailArrow.setVisibility(View.INVISIBLE);
         if (devModel != null){
             if (0 == position){
                 holder.setText(R.id.detail_text,devModel.GetDevName());
@@ -68,6 +73,9 @@ public class DeviceSettingAdapter extends BaseAdapter<String>{
 //                    holder.setText(R.id.detail_text, STApplication.getInstance().getString(R.string.action_level_high));
 //                }
 //            }
+            else if(3 == position){
+                detailArrow.setVisibility(View.VISIBLE);
+            }
             else if (4 == position){
                 holder.setText(R.id.detail_text,devModel.SoftVersion);
             }

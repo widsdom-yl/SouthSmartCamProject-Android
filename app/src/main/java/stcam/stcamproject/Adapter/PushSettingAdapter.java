@@ -1,5 +1,8 @@
 package stcam.stcamproject.Adapter;
 
+import android.view.View;
+import android.widget.TextView;
+
 import com.model.PushSettingModel;
 import com.model.RecConfigModel;
 
@@ -35,6 +38,8 @@ public class PushSettingAdapter extends BaseAdapter<String>{
     protected void convert(BaseHolder holder, String title, int position) {
         super.convert(holder,title,position);
         holder.setText(R.id.title_text,title);
+        TextView detailArrow =  holder.getView(R.id.detail_arror);
+        detailArrow.setVisibility(View.INVISIBLE);
         if (mPushSettingModel != null){
             if(0 == position){
                 holder.setText(R.id.detail_text,mPushSettingModel.getPushIntervalDesc());
@@ -68,6 +73,9 @@ public class PushSettingAdapter extends BaseAdapter<String>{
                     if (mRecConfigModel.getRec_AlmTimeLen() != 0)
                     holder.setText(R.id.detail_text,mRecConfigModel.getRec_AlmTimeLen()+STApplication.getInstance().getString(R.string.string_second));
                 }
+            }
+            else if(5 == position){
+                detailArrow.setVisibility(View.VISIBLE);
             }
 
         }
