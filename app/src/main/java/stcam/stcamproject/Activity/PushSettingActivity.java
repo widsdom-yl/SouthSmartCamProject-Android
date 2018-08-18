@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -29,6 +30,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.jpush.android.api.JPushInterface;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -839,9 +841,11 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
       {
         //RESULT_USER_LOGOUT 为收不到推送的情况下，访问服务器时的返回值，收到
         //返回登录界面，取消保存的AutoLogin
-        SouthUtil.showDialog(getApplicationContext(), getString(R.string.string_user_logout));
+        //SouthUtil.showDialog(getApplicationContext(), getString(R.string.string_user_logout));
         //需要同时处理推送消息，内容为 "USER_LOGOUT"，
         //todo
+        SouthUtil.broadcastLogoutInfo();
+
       }
 
       if (ServerNetWork.RESULT_SUCCESS == m.ret)

@@ -358,7 +358,7 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
       {
         //RESULT_USER_LOGOUT 为收不到推送的情况下，访问服务器时的返回值，收到
         //返回登录界面，取消保存的AutoLogin
-        SouthUtil.showDialog(AddDeviceWlanActivity.this, getString(R.string.string_user_logout));
+        SouthUtil.broadcastLogoutInfo();
         //需要同时处理推送消息，内容为 "USER_LOGOUT"
         //todo
       }

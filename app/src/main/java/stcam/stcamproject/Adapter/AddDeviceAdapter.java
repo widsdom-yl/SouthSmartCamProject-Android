@@ -10,7 +10,6 @@ import java.util.List;
 
 import stcam.stcamproject.Activity.MainDevListFragment;
 import stcam.stcamproject.Application.STApplication;
-import stcam.stcamproject.Manager.DataManager;
 import stcam.stcamproject.R;
 
 public class AddDeviceAdapter extends BaseAdapter<SearchDevModel>
@@ -25,10 +24,11 @@ public class AddDeviceAdapter extends BaseAdapter<SearchDevModel>
   {
     String Str;
     super.convert(holder, model, position);
-    final DevModel dbModel = DataManager.getInstance().getSNDev(model.getSN());
+
     TextView device_name_view = holder.getView(R.id.device_name_view);
     TextView device_sn_view = holder.getView(R.id.device_sn_view);
     boolean exist = false;
+
     for (DevModel devModel : MainDevListFragment.mDevices)
     {
       if (devModel.SN.equals(model.getSN()))
@@ -54,7 +54,5 @@ public class AddDeviceAdapter extends BaseAdapter<SearchDevModel>
       device_name_view.setTextColor(Color.rgb(0, 0, 0));
       device_sn_view.setTextColor(Color.rgb(0, 0, 0));
     }
-
-
   }
 }

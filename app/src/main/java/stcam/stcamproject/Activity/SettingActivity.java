@@ -966,8 +966,9 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       {
         //RESULT_USER_LOGOUT 为收不到推送的情况下，访问服务器时的返回值，收到
         //返回登录界面，取消保存的AutoLogin
-        SouthUtil.showToast(SettingActivity.this, getString(R.string.string_user_logout));
+        //SouthUtil.showToast(SettingActivity.this, getString(R.string.string_user_logout));
         //需要同时处理推送消息，内容为 "USER_LOGOUT"
+        SouthUtil.broadcastLogoutInfo();
       }
       else
       {

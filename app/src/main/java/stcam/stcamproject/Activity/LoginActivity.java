@@ -74,6 +74,21 @@ public class LoginActivity extends BaseAppCompatActivity
       setCustomTitle(getString(R.string.action_sign_in), false);
     }
 
+    Bundle bundle = this.getIntent().getExtras();
+    if (bundle != null)
+    {
+      try {
+        // intent.putExtra("extra","logout");
+        String  info = bundle.getString("extra");
+        if (info.equals("logout")){
+            SouthUtil.showDialog(this, getString(R.string.string_user_logout));
+        }
+      }
+      catch (Exception e){
+
+      }
+    }
+
     requestPermisson();
 
     Log.e(tag, "onCreate: " + JPushManager.getJPushRegisterID());
@@ -158,6 +173,15 @@ public class LoginActivity extends BaseAppCompatActivity
       }
     });
   }
+
+  protected void onDestroy() {
+    super.onDestroy();
+    if (lod != null) {
+      lod.dismiss();
+    }
+  }
+
+
 
   private String[] denied;
 

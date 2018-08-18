@@ -2,7 +2,6 @@ package stcam.stcamproject.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,7 +19,7 @@ import stcam.stcamproject.Adapter.MediaPhotoGridAdapter;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
 
-public class MediaPhotoListActivity extends AppCompatActivity implements BaseAdapter.OnItemClickListener, MediaPhotoGridAdapter.OnImageCheckListner {
+public class MediaPhotoListActivity extends BaseAppCompatActivity implements BaseAdapter.OnItemClickListener, MediaPhotoGridAdapter.OnImageCheckListner {
     final static String tag = "MediaPhotoListActivity";
     DevModel model;
     RecyclerView rv;

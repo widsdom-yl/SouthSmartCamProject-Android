@@ -485,13 +485,11 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
       {
         //RESULT_USER_LOGOUT 为收不到推送的情况下，访问服务器时的返回值，收到
         //返回登录界面，取消保存的AutoLogin
-        SouthUtil.showDialog(MainDevListFragment.this.getActivity(), getString(R.string.string_user_logout));
-        //到了这一步，为何没显示对话框？
-        //需要同时处理推送消息，内容为 "USER_LOGOUT"
-        return;
+        SouthUtil.broadcastLogoutInfo();
         //todo
       }
     }
+
 
     List<DevModel> mlist = GsonUtil.parseJsonArrayWithGson(response, DevModel[].class);
 

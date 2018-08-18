@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
@@ -17,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
+import stcam.stcamproject.Activity.MainViewPagerActivity;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
 
@@ -164,6 +167,25 @@ public class SouthUtil
     if (s.trim().length() == 0)
       return true;
     return false;
+  }
+
+  public static void broadcastLogoutInfo(){
+    String message ="USER_LOGOUT";
+    //String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
+    Intent msgIntent = new Intent(MainViewPagerActivity.MESSAGE_RECEIVED_ACTION);
+    msgIntent.putExtra(MainViewPagerActivity.KEY_MESSAGE, message);
+//			if (!SouthUtil.isEmpty(message)) {
+//				try {
+//					JSONObject extraJson = new JSONObject(extras);
+//					if (extraJson.length() > 0) {
+//						msgIntent.putExtra(MainViewPagerActivity.KEY_EXTRAS, extras);
+//					}
+//				} catch (JSONException e) {
+//
+//				}
+//
+//			}
+    LocalBroadcastManager.getInstance(STApplication.getInstance()).sendBroadcast(msgIntent);
   }
 
 
