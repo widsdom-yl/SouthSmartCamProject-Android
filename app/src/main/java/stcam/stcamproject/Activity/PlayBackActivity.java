@@ -14,6 +14,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.model.DevModel;
 import com.model.SDVideoModel;
@@ -23,19 +25,30 @@ import com.thSDK.lib;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
-import stcam.stcamproject.Util.PlayVoice;
 import stcam.stcamproject.View.GLSurfaceViewPlayBack;
-import stcam.stcamproject.View.VoiceImageButton;
 
-public class PlayBackActivity extends BaseAppCompatActivity implements View.OnClickListener {
+import static com.thSDK.lib.PS_Pause;
+import static com.thSDK.lib.PS_Play;
+import static com.thSDK.lib.thNetRemoteFileGetDuration;
+import static com.thSDK.lib.thNetRemoteFileGetPosition;
+import static com.thSDK.lib.thNetRemoteFilePlayControl;
+import static com.thSDK.lib.thNetRemoteFileSetPosition;
+
+public class PlayBackActivity extends BaseAppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
     static final String tag = "PlayBackActivity";
     SDVideoModel model;
     DevModel devModel;
     GLSurfaceViewPlayBack glView;
     ImageButton imagebutton_back;
-    VoiceImageButton button_snapshot,button_record;
+
     MainDevListFragment.EnumMainEntry entryType;
     ProgressBar load_progress;
+
+    SeekBar seekBar_time;
+    TextView text_time;
+    ImageButton   imagebutton_play;
+    int remoteFileDuration = 0;//毫秒
+    boolean isPlay = true;//默认进入页面播放
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -72,14 +85,14 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
         initView();
         glView.setmHandler(gotFrameHandler);
         glView.Play();
+        isPlay = true;
     }
     @Override
     protected void onStop() {
         super.onStop();
 
+        handler_refresh.removeCallbacks(runnable_refresh);
         handler_enterbackground.postDelayed(runnable_enterbackground,500);
-
-
     }
     Handler handler_enterbackground = new Handler();
     Runnable runnable_enterbackground = new Runnable() {
@@ -95,6 +108,23 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
 
 
 
+        }
+    };
+
+    Handler handler_refresh = new Handler();
+    Runnable runnable_refresh = new Runnable() {
+        @Override
+        public void run() {
+            //获取播放的时常，并调节seekbar
+            //如果播放的时间和seekbar的时间绝对值
+
+            int currentDuration =  thNetRemoteFileGetPosition(devModel.NetHandle);
+            if (remoteFileDuration > 0){
+                float Position = (float)currentDuration/remoteFileDuration*100;
+                seekBar_time.setProgress((int)Position);
+                Log.e(tag,"get current position is "+Position+",currentDuration is "+currentDuration);
+            }
+            handler_refresh.postDelayed(runnable_refresh, 1000);
         }
     };
     @Override
@@ -150,6 +180,10 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
                 case TMsg.Msg_GotFirstFrame:
                     load_progress.setVisibility(View.GONE);
                     glView.setBackgroundColor(Color.TRANSPARENT);
+                    //thNetRemoteFileGetDuration
+                    remoteFileDuration = thNetRemoteFileGetDuration(devModel.NetHandle);
+                    handler_refresh.postDelayed(runnable_refresh,1000);
+                    Log.e(tag,"remoteFileDuration : "+remoteFileDuration+"ms");
                     break;
 
                 default:
@@ -162,20 +196,26 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
         glView = findViewById(R.id.glPlayBack);
         glView.setModel(devModel,model);
 
-        button_snapshot = findViewById(R.id.button_snapshot);
+
         imagebutton_back = findViewById(R.id.imagebutton_back);
-        button_record = findViewById(R.id.button_record);
         load_progress = findViewById(R.id.load_progress);
-        button_record.setEnumSoundWav(PlayVoice.EnumSoundWav.CLICK);
-        button_snapshot.setEnumSoundWav(PlayVoice.EnumSoundWav.SNAP);
-        button_snapshot.setOnClickListener(this);
-        button_record.setOnClickListener(this);
+
         imagebutton_back.setOnClickListener(this);
 //        if (entryType == MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor){
 //            button_record.setVisibility(View.INVISIBLE);
 //
 //            button_snapshot.setVisibility(View.INVISIBLE);
 //        }
+
+        seekBar_time = findViewById(R.id.seekBar_time);
+        text_time = findViewById(R.id.text_time);
+
+        seekBar_time.setOnSeekBarChangeListener(this);
+
+        imagebutton_play = findViewById(R.id.imagebutton_play);
+        imagebutton_play.setOnClickListener(this);
+        imagebutton_play.setImageResource(R.drawable.pause0);
+
     }
     String recordfileName;
 
@@ -193,27 +233,41 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
                 glView.Stop();
                 this.finish(); // back button
                 break;
-            case R.id.button_record:
-                if (lib.thNetIsRec(devModel.NetHandle)){
-                    lib.thNetStopRec(devModel.NetHandle);
-                    if (FileUtil.isFileEmpty(recordfileName)){
-                        FileUtil.delFiles(recordfileName);
-                    }
-                    button_record.setImageResource(R.drawable.btnrecorddefault);
-
+            case R.id.imagebutton_play:
+                isPlay = !isPlay;
+                if (isPlay){
+                    thNetRemoteFilePlayControl(devModel.NetHandle, PS_Play , 0, 0);
+                    imagebutton_play.setImageResource(R.drawable.pause0);
                 }
                 else{
-                    recordfileName = FileUtil.generatePathRecordFileName(devModel.SN);
-                    lib.thNetStartRec(devModel.NetHandle,recordfileName);
-                    button_record.setImageResource(R.drawable.btnrecorddown);
+                    thNetRemoteFilePlayControl(devModel.NetHandle, PS_Pause,  0, 0);
+                    imagebutton_play.setImageResource(R.drawable.play0);
                 }
+
+
                 break;
-            case R.id.button_snapshot:
-                String fileName = FileUtil.generatePathSnapShotFileName(devModel.SN);
-                if (fileName != null){
-                    lib.thNetSaveToJpg(devModel.NetHandle,fileName);
-                }
-                break;
+          default:
+              break;
         }
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
+        int valueCalcute = remoteFileDuration/100*value/1000;
+        Log.e(tag,"value is "+value+",onProgressChanged to : "+valueCalcute+"s");
+        text_time.setText(valueCalcute + "ms");
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        Log.e(tag,"value is "+seekBar.getProgress());
+        int targetDurtation = seekBar.getProgress()*remoteFileDuration/100;
+        thNetRemoteFileSetPosition(devModel.NetHandle,targetDurtation);
+
     }
 }

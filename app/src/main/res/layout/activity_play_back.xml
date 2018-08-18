@@ -14,36 +14,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <stcam.stcamproject.View.VoiceImageButton
-        android:id="@+id/button_snapshot"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="120dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
-        android:visibility="gone"
-        android:background="@android:color/transparent"
-        android:scaleType="fitCenter"
-        android:src="@drawable/btnsnapshot"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <stcam.stcamproject.View.VoiceImageButton
-        android:id="@+id/button_record"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginTop="120dp"
-        android:visibility="gone"
-        android:background="@android:color/transparent"
-        android:scaleType="fitCenter"
-        android:src="@drawable/btnrecorddefault"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
 
     <ProgressBar
         android:id="@+id/load_progress"
@@ -71,6 +41,54 @@
         app:layout_constraintTop_toTopOf="parent"
 
         app:srcCompat="@drawable/back" />
+
+    <ImageButton
+        android:id="@+id/imagebutton_play"
+
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:scaleType="fitXY"
+        android:layout_marginBottom="50dp"
+        android:background="@color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/play0" />
+
+    <RelativeLayout
+        android:id="@+id/layout_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imagebutton_play">
+
+        <SeekBar
+            android:id="@+id/seekBar_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="75dp"
+            android:layout_marginLeft="75dp"
+            android:layout_marginRight="75dp"
+            android:layout_marginStart="75dp"/>
+
+        <TextView
+            android:id="@+id/text_time"
+            android:layout_width="65dp"
+            android:gravity="end"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:textColor="@color/appGreenColor"/>
+
+
+    </RelativeLayout>
+
+
+
+
+
+
 
 
 </android.support.constraint.ConstraintLayout>
