@@ -98,7 +98,7 @@
     <string name="device_confirm_pwd">确认密码:</string>
     <string name="action_setting">设置</string>
     <string name="action_dev_setting">设备设置</string>
-    <string name="device_name">名称</string>
+    <string name="device_name">设备名称</string>
     <string name="device_pwd">连接密码</string>
     <string name="action_device_pwd">密码管理</string>
     <string name="action_change_device_pwd">修改密码</string>

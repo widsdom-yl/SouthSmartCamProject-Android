@@ -671,7 +671,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected String doInBackground(String... params)
     {
-      String url = devNode.getHttpCfg1UsrPwd() + "&MsgID="+lib.Msg_SetDevReboot;
+      String url = devNode.getHttpCfg1UsrPwd() + "&MsgID=" + lib.Msg_SetDevReboot;
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       return ret;
     }
@@ -789,7 +789,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       }
 
       String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User=" + devNode.usr + "&Psd=" + devNode.pwd +
-        "&MsgID="+lib.Msg_SetMDCfg+"&MD_Sensitive=" + MD_Sensitive + "&MD_Active=1";
+        "&MsgID=" + lib.Msg_SetMDCfg + "&MD_Sensitive=" + MD_Sensitive + "&MD_Active=1";
       Log.e(tag, url + ",MD_Sensitive,NetHandle is " + devNode.NetHandle);
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       Log.e(tag, "ret :" + ret);
@@ -1001,7 +1001,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     protected String doInBackground(String... params)
     {
       String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User=" + devNode.usr + "&Psd=" + devNode.pwd +
-        "&MsgID="+lib.Msg_GetPushCfg;
+        "&MsgID=" + lib.Msg_GetPushCfg;
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       Log.e(tag, "ret :" + ret);
       return ret;
@@ -1037,7 +1037,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     protected String doInBackground(String... params)
     {
       String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User=" + devNode.usr + "&Psd=" + devNode.pwd +
-        "&MsgID="+lib.Msg_SetPushCfg+"&PushActive=" +
+        "&MsgID=" + lib.Msg_SetPushCfg + "&PushActive=" +
         mPushSettingModel.getPushActive() + "&PushInterval=" + mPushSettingModel.getPushInterval() + "&PIRSensitive=" + mPushSettingModel
         .getPIRSensitive();
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
@@ -1069,7 +1069,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     protected String doInBackground(String... params)
     {
       String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User="
-        + devNode.usr + "&Psd=" + devNode.pwd + "&MsgID="+lib.Msg_CheckUpgradeBin+"&ver="
+        + devNode.usr + "&Psd=" + devNode.pwd + "&MsgID=" + lib.Msg_CheckUpgradeBin + "&ver="
         + params[0] + "&crc=" + params[1] + "&url=" + params[2];
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       return ret;
