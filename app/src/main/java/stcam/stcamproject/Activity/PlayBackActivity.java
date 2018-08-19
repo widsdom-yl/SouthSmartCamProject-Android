@@ -25,14 +25,14 @@ import com.thSDK.lib;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
-import stcam.stcamproject.View.GLSurfaceViewPlayBack;
+import stcam.stcamproject.View.PlayBackVideoSurfaceView;
 
 public class PlayBackActivity extends BaseAppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener
 {
   static final String tag = "PlayBackActivity";
   SDVideoModel model;
   DevModel devModel;
-  GLSurfaceViewPlayBack glView;
+  PlayBackVideoSurfaceView glView;
   ImageButton imagebutton_back;
 
   MainDevListFragment.EnumMainEntry entryType;

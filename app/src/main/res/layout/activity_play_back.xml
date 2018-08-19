@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activity.PlayBackActivity">
-    <stcam.stcamproject.View.GLSurfaceViewPlayBack
+    <stcam.stcamproject.View.PlayBackVideoSurfaceView
         android:id="@+id/glPlayBack"
         android:layout_width="0dp"
         android:layout_height="0dp"
