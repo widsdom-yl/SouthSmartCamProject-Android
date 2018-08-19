@@ -18,6 +18,7 @@
 #include <GLES2/gl2.h>
 #include <EGL/egl.h>
 #include <android/native_window_jni.h>
+#include <cm_types.h>
 
 extern pthread_mutex_t th_mutex_lock;
 

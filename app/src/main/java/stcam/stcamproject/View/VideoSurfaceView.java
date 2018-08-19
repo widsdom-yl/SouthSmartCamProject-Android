@@ -1,7 +1,6 @@
 package stcam.stcamproject.View;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
@@ -9,9 +8,9 @@ import android.view.SurfaceView;
 
 import com.model.DevModel;
 
-import static com.thSDK.lib.requestEGLChange;
-import static com.thSDK.lib.requestEGLDestory;
-import static com.thSDK.lib.requestInitEGL;
+import stcam.stcamproject.Util.FileUtil;
+
+import static com.thSDK.lib.videoPlay;
 
 /**
  * Created by gyl
@@ -24,6 +23,7 @@ public class VideoSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     boolean hasCapture;
     boolean hasGotFirstFrame;
     private Handler mHandler;
+    String videoPath = FileUtil.getSDRootPath()+"/video/111.mp4";
     public VideoSurfaceView(Context context) {
         super(context);
         init();
@@ -48,7 +48,7 @@ public class VideoSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
         hasGotFirstFrame = false;
-        this.setBackgroundColor(Color.TRANSPARENT);
+      //  this.setBackgroundColor(Color.TRANSPARENT);
     }
 
     public void Play() {
@@ -67,19 +67,28 @@ public class VideoSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     public void surfaceDestroyed(SurfaceHolder holder) {
 
         isSurfaceExist = false;
-        requestEGLDestory();
+        //requestEGLDestory();
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-       if (!isSurfaceExist){
-           isSurfaceExist = true;
-           //初始化surface
-           requestInitEGL(holder.getSurface(),model.NetHandle);
-       }
-       else{
-           //调用jni surface change 接口
-           requestEGLChange(holder.getSurface());
-       }
+//       if (!isSurfaceExist){
+//           isSurfaceExist = true;
+//           //初始化surface
+//           requestInitEGL(surfaceHolder.getSurface(),model.NetHandle);
+//       }
+//       else{
+//           //调用jni surface change 接口
+//           requestEGLChange(surfaceHolder.getSurface());
+//       }
+
+        Thread thread = new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                videoPlay(videoPath,surfaceHolder.getSurface());
+            }
+        };
+        thread.start();
 
 
     }

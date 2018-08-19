@@ -7,6 +7,7 @@
 #include "avDecode/thffmpeg.h"
 #include "avDecode/thOpenGL_SLES.h"
 #include "avDecode/thEGL.h"
+#include "avDecode/thEGLTest.h"
 
 
 //-----------------------------------------------------------------------------
@@ -395,6 +396,13 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSaveToJpg(JNIEnv *env, jclass obj
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_OpenGLRender(JNIEnv *env, jclass obj, u64 NetHandle)
 {
 }
+
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_videoPlay(JNIEnv *env, jobject instance, jstring path_,
+                                                    jobject surface)
+{
+  videoPlay(env, instance, path_,surface);
+}
+
 
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_requestInitEGL(JNIEnv *env, jclass obj, jobject surface,u64 NetHandle)

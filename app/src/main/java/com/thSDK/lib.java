@@ -35,6 +35,8 @@ public class lib extends Activity
 
   public static native boolean thNetSendSensePkt(long NetHandle);
 
+  public static native void videoPlay(String path, Surface surface);
+
   public final static int THNET_CONNSTATUS_NO = 0;
   public final static int THNET_CONNSTATUS_CONNING = 1;
   public final static int THNET_CONNSTATUS_SUCCESS = 2;
