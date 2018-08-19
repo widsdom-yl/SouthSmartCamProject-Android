@@ -680,7 +680,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
         tmpNode.Brightness = existModel.Brightness;
         tmpNode.Contrast = existModel.Contrast;
         tmpNode.Sharpness = existModel.Contrast;
-        tmpNode.UID = existModel.UID;
+        //tmpNode.UID = existModel.UID;
         tmpNode.SoftVersion = existModel.SoftVersion;
         tmpNode.DevName = existModel.GetDevName();
         break;

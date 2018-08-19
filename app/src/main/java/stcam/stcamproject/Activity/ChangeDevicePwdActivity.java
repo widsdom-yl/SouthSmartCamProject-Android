@@ -236,7 +236,7 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
             shareModel.IsVideo,
             shareModel.IsHistory,
             shareModel.IsPush,
-            shareModel.IsSetup,
+            1,//shareModel.IsSetup,
             shareModel.IsControl
           ).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

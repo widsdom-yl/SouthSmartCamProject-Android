@@ -26,7 +26,7 @@ public class SearchDevModel implements Parcelable {
     private int rtspPort;
     private String DDNSServer;
     private String DDNSHost;
-    private String UID;
+    //private String UID;
 
     protected SearchDevModel(Parcel in) {
         SN = in.readString();
@@ -43,7 +43,7 @@ public class SearchDevModel implements Parcelable {
         rtspPort = in.readInt();
         DDNSServer = in.readString();
         DDNSHost = in.readString();
-        UID = in.readString();
+        //UID = in.readString();
     }
 
     public static final Creator<SearchDevModel> CREATOR = new Creator<SearchDevModel>() {
@@ -156,12 +156,12 @@ public class SearchDevModel implements Parcelable {
         return DDNSHost;
     }
 
-    public void setUID(String UID) {
-        this.UID = UID;
-    }
-    public String getUID() {
-        return UID;
-    }
+    //public void setUID(String UID) {
+    //    this.UID = UID;
+   // }
+    ////public String getUID() {
+    //    return UID;
+    //}
 
     @Override
     public int describeContents() {
@@ -184,7 +184,7 @@ public class SearchDevModel implements Parcelable {
         parcel.writeInt(rtspPort);
         parcel.writeString(DDNSServer);
         parcel.writeString(DDNSHost);
-        parcel.writeString(UID);
+        //parcel.writeString(UID);
     }
 /*
 * 根据searchmodel 构造DevModel
@@ -197,10 +197,10 @@ public class SearchDevModel implements Parcelable {
 
 
         devModel.SN = this.getSN();
-        devModel.UID = this.getUID();
-        if (devModel.UID.equals("NULL") || devModel.UID == null){
-            devModel.UID = DevName;
-        }
+        //devModel.UID = this.getUID();
+       // if (devModel.UID.equals("NULL") || devModel.UID == null){
+       //     devModel.UID = DevName;
+       // }
         devModel.IPUID = this.getDevIP();
         devModel.DataPort = this.getDataPort();
         devModel.WebPort = this.getHttpPort();

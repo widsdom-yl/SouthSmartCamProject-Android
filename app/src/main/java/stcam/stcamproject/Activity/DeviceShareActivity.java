@@ -56,7 +56,7 @@ public class DeviceShareActivity extends BaseAppCompatActivity implements View.O
     shareModel = new ShareModel();
     shareModel.SN = devModel.SN;
     shareModel.From = AccountManager.getInstance().getDefaultUsr();
-    shareModel.UID = devModel.UID;
+    //shareModel.UID = devModel.UID;
     shareModel.Pwd = devModel.pwd;
     initView();
 

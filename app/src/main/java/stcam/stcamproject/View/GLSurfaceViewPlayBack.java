@@ -1,29 +1,24 @@
 package stcam.stcamproject.View;
-
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-
 import com.model.DevModel;
 import com.model.SDVideoModel;
 import com.thSDK.TMsg;
 import com.thSDK.lib;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-
 import stcam.stcamproject.Util.TFun;
-
 
 public class GLSurfaceViewPlayBack extends GLSurfaceView
 {
-  //public actPlayLive Activity;
   DevModel mDevModel;
   SDVideoModel mSDVideoModel;
   private Handler mHandler;
   boolean hasGotFirstFrame;
+
   public GLSurfaceViewPlayBack(Context context, AttributeSet attrs)
   {
     super(context, attrs);
@@ -33,7 +28,8 @@ public class GLSurfaceViewPlayBack extends GLSurfaceView
     hasGotFirstFrame = false;
   }
 
-  public void  setmHandler(Handler mHandler){
+  public void setmHandler(Handler mHandler)
+  {
     this.mHandler = mHandler;
   }
 
@@ -51,7 +47,6 @@ public class GLSurfaceViewPlayBack extends GLSurfaceView
 
   public void Stop()
   {
-    //线程操作
     new Thread()
     {
       @Override
@@ -61,8 +56,6 @@ public class GLSurfaceViewPlayBack extends GLSurfaceView
         lib.thNetAudioPlayClose(mDevModel.NetHandle);
       }
     }.start();
-
-
   }
 
   class MyRenderer implements GLSurfaceView.Renderer
@@ -77,32 +70,27 @@ public class GLSurfaceViewPlayBack extends GLSurfaceView
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height)
     {
-      TFun.printf("====onSurfaceChanged");
       lib.thNetOpenGLUpdateArea(mDevModel.NetHandle, 0, 0, width, height);
     }
 
     @Override
     public void onDrawFrame(GL10 gl)//约60fps/s
     {
-
-
       if (lib.thNetOpenGLRender(mDevModel.NetHandle))
       {
-
-        if (!hasGotFirstFrame){
+        if (!hasGotFirstFrame)
+        {
           hasGotFirstFrame = true;
           if (mHandler != null)
+          {
             mHandler.sendMessage(Message.obtain(mHandler, TMsg.Msg_GotFirstFrame, null));
+          }
         }
 
         if (IsGetNodeIcon == false)
         {
-
         }
       }
     }
-
   }
-
-
 }

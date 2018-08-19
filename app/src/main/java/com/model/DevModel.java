@@ -55,7 +55,7 @@ public class DevModel implements Parcelable
   public int VideoChlMask = 0;
   public int AudioChlMask = 1;
   public int SubVideoChlMask = 1;
-  public String UID;
+  //public String UID;
 
   public String SN;
   public String DevName;
@@ -104,7 +104,7 @@ public class DevModel implements Parcelable
     VideoChlMask = in.readInt();
     AudioChlMask = in.readInt();
     SubVideoChlMask = in.readInt();
-    UID = in.readString();
+    //UID = in.readString();
     IsAudioMute = in.readByte() != 0;
     IsRecord = in.readByte() != 0;
     SN = in.readString();
@@ -161,7 +161,7 @@ public class DevModel implements Parcelable
     parcel.writeInt(VideoChlMask);
     parcel.writeInt(AudioChlMask);
     parcel.writeInt(SubVideoChlMask);
-    parcel.writeString(UID);
+    //parcel.writeString(UID);
     parcel.writeByte((byte) (IsAudioMute ? 1 : 0));
     parcel.writeByte((byte) (IsRecord ? 1 : 0));
     parcel.writeString(SN);
@@ -367,10 +367,10 @@ public class DevModel implements Parcelable
             tmpNode.Brightness = json.getJSONObject("Video").getInt("Brightness");
             tmpNode.Contrast = json.getJSONObject("Video").getInt("Contrast");
             tmpNode.Sharpness = json.getJSONObject("Video").getInt("Sharpness");
-            tmpNode.UID = json.getJSONObject("P2P").getString("P2P_UID");
+            //tmpNode.UID = json.getJSONObject("P2P").getString("P2P_UID");
             tmpNode.DevName = json.getJSONObject("DevInfo").getString("DevName");
             tmpNode.SoftVersion = json.getJSONObject("DevInfo").getString("SoftVersion");
-            Log.e("java", "SoftVersion is :" + tmpNode.SoftVersion + ",uid is " + tmpNode.UID);
+            //Log.e("java", "SoftVersion is :" + tmpNode.SoftVersion + ",uid is " + tmpNode.UID);
           }
           else
           {

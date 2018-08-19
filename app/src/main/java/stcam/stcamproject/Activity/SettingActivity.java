@@ -197,7 +197,6 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       imageview_thumb.setImageBitmap(bitmap);
 
     }
-    //textview_uid.setText(model.UID);
     textview_uid.setText("SN:" + devNode.SN);
     mAdapter.notifyDataSetChanged();
   }

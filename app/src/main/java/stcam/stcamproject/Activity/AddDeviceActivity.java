@@ -213,7 +213,7 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
     ShareModel model = GsonUtil.parseJsonWithGson(json, ShareModel.class);
     if (model != null)
     {
-      Log.e(tag, "model.uid:" + model.UID);
+      //Log.e(tag, "model.uid:" + model.UID);
       DevModel devModel = new DevModel();
       devModel.SN = model.SN;
       devModel.usr = "admin";//默认填写admin
@@ -237,7 +237,7 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
         model.IsVideo,
         model.IsHistory,
         model.IsPush,
-        model.IsSetup,
+        1,//model.IsSetup,
         model.IsControl).subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(observer_add_dev);
