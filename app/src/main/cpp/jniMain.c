@@ -5,6 +5,10 @@
 #include "avDecode/thffmpeg.h"
 #include "avDecode/thOpenGL_SLES.h"
 
+#include "avDecode/thEGL.h"
+#include "avDecode/thEGLTest.h"
+
+
 
 //-----------------------------------------------------------------------------
 typedef void (*pvUcnvFunc)(const char *lpcstrDstEcd, const char *lpcstrSrcEcd, char *dst, unsigned long dstLen,
@@ -109,7 +113,7 @@ Java_com_thSDK_lib_thNetInit(JNIEnv *env, jclass obj, bool IsInsideDecode, bool 
 
   NetHandle = thNet_Init(IsInsideDecode, IsQueue, IsAdjustTime, IsAutoReConn, iSN);
 
-  exits:
+    exits:
   (*env)->ReleaseStringUTFChars(env, jSN, sSN);
   return NetHandle;
 }
@@ -270,19 +274,19 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFileStop(JNIEnv *env, jclas
 //-----------------------------------------------------------------------------
 JNIEXPORT int JNICALL Java_com_thSDK_lib_thNetRemoteFileGetPosition(JNIEnv *env, jclass obj, u64 NetHandle)
 {
-  //æ—¶é—´æˆ³ï¼Œå•ä½ms
+  //?¶é?´æ?³ï???ä½?ms
   return thNet_RemoteFileGetPosition((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFileSetPosition(JNIEnv *env, jclass obj, u64 NetHandle, int Pos)
 {
-  //æ—¶é—´æˆ³ï¼Œå•ä½ms
+  //?¶é?´æ?³ï???ä½?ms
   return thNet_RemoteFileSetPosition((HANDLE) NetHandle, Pos);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT int JNICALL Java_com_thSDK_lib_thNetRemoteFileGetDuration(JNIEnv *env, jclass obj, u64 NetHandle)
 {
-  //æ–‡ä»¶é•¿åº¦ï¼Œå•ä½ms
+  //??ä»¶é?¿åº¦ï¼???ä½?ms
   return thNet_RemoteFileGetDuration((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
@@ -411,16 +415,44 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_OpenGLRender(JNIEnv *env, jclass obj, 
 {
 }
 
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_videoPlay(JNIEnv *env, jobject instance, jstring path_,
+                                                    jobject surface)
+{
+  videoPlay(env, instance, path_,surface);
+}
+
+
 //-----------------------------------------------------------------------------
+
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_requestInitEGL(JNIEnv *env, jclass obj, jobject surface,u64 NetHandle)
+{
+  ANativeWindow * mWindow  = ANativeWindow_fromSurface(env, surface);
+  nativeRequestInitEGL(mWindow,NetHandle);
+  //ÐèÒª³õÊ¼»¯
+}
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_requestEGLChange(JNIEnv *env, jclass obj, jobject surface)
+{
+  ANativeWindow * mWindow = ANativeWindow_fromSurface(env, surface);
+  nativeRequestSurfaceChangeEGL(mWindow);
+  //ÐèÒªµ÷ÓÃSurfaceChanged
+}
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_requestEGLDestory(JNIEnv *env, jclass obj)
+{
+  nativeRequestDestoryEGL();
+}
+
+
+//-----------------------------------------------------------------------------
+
 typedef struct TSearchInfo
 {
 #define Search_SNLst_COUNT   256
 
-  u32 Search_SNLst[Search_SNLst_COUNT];
-  char tmpBuf[1000 * 10];
-  int SearchCount;
-  char20 LocalIP;
-  int IsJson;
+    u32 Search_SNLst[Search_SNLst_COUNT];
+    char tmpBuf[1000 * 10];
+    int SearchCount;
+    char20 LocalIP;
+    int IsJson;
 } TSearchInfo;
 
 static TSearchInfo Search;
@@ -565,7 +597,7 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thManageAddDevice(JNIEnv *env, jclass 
 
   ret = thManage_AddDevice(iSN, NetHandle);
 
-  exits:
+    exits:
   (*env)->ReleaseStringUTFChars(env, jSN, sSN);
   return ret;
 }
@@ -585,7 +617,7 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thManageDelDevice(JNIEnv *env, jclass 
 
   ret = thManage_DelDevice(iSN);
 
-  exits:
+    exits:
   (*env)->ReleaseStringUTFChars(env, jSN, sSN);
   return ret;
 }

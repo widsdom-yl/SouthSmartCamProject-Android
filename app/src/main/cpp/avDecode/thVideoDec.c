@@ -9,15 +9,7 @@
 #include "libjpeg/myJpeg.h"
 
 //-----------------------------------------------------------------------------
-typedef struct TdecInfoPkt {
-  //H_THREADLOCK Lock;
-  //video
-  TMediaType VideoType;
-  AVCodecContext* pCodecCtxV;
-  AVFrame* FrameV;
-  //audio
 
-}TdecInfoPkt;
 //-----------------------------------------------------------------------------
 HANDLE thDecodeVideoInit(int VideoType)
 {
@@ -40,6 +32,7 @@ HANDLE thDecodeVideoInit(int VideoType)
   Info->pCodecCtxV->codec_type = AVMEDIA_TYPE_VIDEO;
   Info->pCodecCtxV->codec_id = Info->VideoType;
 
+  Info->pCodecCtxV->pix_fmt = AV_PIX_FMT_YUV420P;//i_video_stream->codec->pix_fmt;
   if (avcodec_open2(Info->pCodecCtxV, CodecV, NULL) < 0) goto exits;
 
   Info->FrameV = av_frame_alloc();

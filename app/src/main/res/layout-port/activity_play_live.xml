@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".Activity.PlayLiveActivity">
 
-    <stcam.stcamproject.View.GLSurfaceViewLive
+    <stcam.stcamproject.View.VideoSurfaceView
         android:id="@+id/glPlayLive"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -26,6 +26,7 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/glPlayLive"
         app:layout_constraintTop_toTopOf="@id/glPlayLive"
         app:layout_constraintLeft_toLeftOf="@id/glPlayLive"

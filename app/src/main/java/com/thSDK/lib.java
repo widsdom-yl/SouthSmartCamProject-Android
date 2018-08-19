@@ -1,6 +1,7 @@
 package com.thSDK;
 
 import android.app.Activity;
+import android.view.Surface;
 
 public class lib extends Activity
 {
@@ -37,6 +38,8 @@ public class lib extends Activity
   public static native boolean thNetIsConnect(long NetHandle);
 
   public static native boolean thNetSendSensePkt(long NetHandle);
+
+  public static native void videoPlay(String path, Surface surface);
 
   public final static int THNET_CONNSTATUS_NO = 0;
   public final static int THNET_CONNSTATUS_CONNING = 1;
@@ -117,6 +120,12 @@ public class lib extends Activity
   public static native boolean thNetSaveToJpg(long NetHandle, String jJpgFileName);
 
   public static native String thNetSearchDevice(int TimeOut, int IsJson);
+
+
+  public static native boolean requestInitEGL(Surface surface, long NetHandle);
+  public static native boolean requestEGLChange( Surface surface);
+  public static native boolean requestEGLDestory( );
+
 
   //---------------------------------------------------------------------------
   public final static int Msg_None = 0;

@@ -15,51 +15,42 @@ extern "C"
 #endif
 
 #pragma pack(4)//n=1,2,4,8,16
-//*****************************************************************************
-//-----------------------------------------------------------------------------
-EXPORT HANDLE thNet_Init(bool IsInsideDecode, bool IsQueue, bool IsAdjustTime, bool IsAutoReConn, u32 SN);
-/*-----------------------------------------------------------------------------
-函数描述：初始化网络播放
-参数说明：
-IsInsideDecode:是否SDK内部解码显示
-IsQueue:是否缓存队列
-IsAdjustTime:是否校准设备时间为客户端时间
-返 回 值：NetHandle:返回网络句柄
-------------------------------------------------------------------------------*/
-#ifndef th_protocol_H
-typedef enum TAlmType
-{
-  Alm_None = 0,//空
-  Alm_MotionDetection = 1,//位移报警Motion Detection
-  Alm_DigitalInput = 2,//DI报警
-  Alm_SoundTrigger = 3,////声音触发报警
-  Net_Disconn = 4,//网络断线
-  Net_ReConn = 5,//网络重连
-  Alm_HddFill = 6,//磁满
-  Alm_VideoBlind = 7,//视频遮挡
-  Alm_VideoLost = 8,//视频丢失
-  Alm_Other3 = 9,//其它报警3
-  Alm_Other4 = 10,//其它报警4
-  Alm_RF = 11, Alm_OtherMax = 12,
-} TAlmType;
-#endif
 
-//-----------------------------------------------------------------------------
-typedef void(TvideoCallBack)(void *UserCustom,         //用户自定义数据
-                             i32 Chl, char *Buf,                //音视频解码前帧数据
-                             i32 Len,                  //数据长度
-                             int IsIFrame);
+  //*****************************************************************************
+  //-----------------------------------------------------------------------------
+  EXPORT HANDLE thNet_Init(bool IsInsideDecode, bool IsQueue, bool IsAdjustTime, bool IsAutoReConn, u32 SN);
+  /*-----------------------------------------------------------------------------
+  函数描述：初始化网络播放
+  参数说明：
+  IsInsideDecode:是否SDK内部解码显示
+  IsQueue:是否缓存队列
+  IsAdjustTime:是否校准设备时间为客户端时间
+  返 回 值：NetHandle:返回网络句柄
+  ------------------------------------------------------------------------------*/
 
-typedef void(TaudioCallBack)(void *UserCustom,         //用户自定义数据
-                             i32 Chl, char *Buf,                //音视频解码前帧数据
-                             i32 Len                   //数据长度
-);
+  //-----------------------------------------------------------------------------
+  typedef void(TvideoCallBack)(
+    void* UserCustom,         //用户自定义数据
+    i32 Chl,
+    char* Buf,                //音视频解码前帧数据
+    i32 Len,                  //数据长度
+    int IsIFrame
+    );
 
-typedef void(TalarmCallBack)(i32 AlmType,             //警报类型，参见TAlmType
-                             i32 AlmTime,             //警报时间time_t
-                             i32 AlmChl,              //警报通道
-                             void *UserCustom         //用户自定义数据
-);
+  typedef void(TaudioCallBack)(
+    void* UserCustom,         //用户自定义数据
+    i32 Chl,
+    char* Buf,                //音视频解码前帧数据
+    i32 Len                   //数据长度
+    );
+
+  typedef void(TalarmCallBack)(
+    i32 AlmType,             //警报类型，参见TAlmType
+    i32 AlmTime,             //警报时间time_t
+    i32 AlmChl,              //警报通道
+    void* UserCustom         //用户自定义数据
+    );
+
 
 #define Decode_None   0
 #define Decode_IFrame 1

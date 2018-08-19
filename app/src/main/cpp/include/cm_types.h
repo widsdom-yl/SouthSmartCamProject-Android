@@ -254,5 +254,21 @@ typedef struct TRect {                        //sizeof 16 u8
   i32 bottom;                                  //下
 }TRect;
 
+typedef enum TAlmType {
+    Alm_None             =0,//空
+    Alm_MotionDetection  =1,//位移报警Motion Detection
+    Alm_DigitalInput     =2,//DI报警
+    Alm_SoundTrigger       =3,////声音触发报警
+    Net_Disconn          =4,//网络断线
+    Net_ReConn           =5,//网络重连
+    Alm_HddFill          =6,//磁满
+    Alm_VideoBlind       =7,//视频遮挡
+    Alm_VideoLost        =8,//视频丢失
+    Alm_Other3           =9,//其它报警3
+    Alm_Other4           =10,//其它报警4
+    Alm_RF               =11,
+    Alm_OtherMax         =12,
+}TAlmType;
+
 #endif
 

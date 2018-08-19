@@ -33,13 +33,13 @@ import stcam.stcamproject.Util.FileUtil;
 import stcam.stcamproject.Util.PlayVoice;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.Util.TFun;
-import stcam.stcamproject.View.GLSurfaceViewLive;
+import stcam.stcamproject.View.VideoSurfaceView;
 import stcam.stcamproject.View.VoiceImageButton;
 
 public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnClickListener, GestureDetector.OnGestureListener, View
   .OnTouchListener
 {
-  GLSurfaceViewLive glView;
+  VideoSurfaceView glView;
   DevModel devModel;
   VoiceImageButton button_snapshot;
   ImageButton button_speech, button_setting;
@@ -326,16 +326,18 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
     button_setting.setOnClickListener(this);
     load_progress = findViewById(R.id.load_progress);
 
+
     if (hasGotFirstFrame)
     {
-      glView.setBackgroundColor(Color.TRANSPARENT);
+     // glView.setBackgroundColor(Color.TRANSPARENT);
       load_progress.setVisibility(View.GONE);
     }
     else
     {
-      glView.setBackgroundColor(Color.rgb(0, 0, 0));
+     // glView.setBackgroundColor(Color.rgb(0, 0, 0));
       load_progress.setVisibility(View.VISIBLE);
     }
+
     ptz_layout = findViewById(R.id.ptz_control_layout);
 //        button_ptz = findViewById(R.id.button_ptz);
 //        button_ptz.setOnClickListener(this);
