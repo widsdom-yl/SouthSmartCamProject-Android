@@ -25,14 +25,20 @@ import com.thSDK.lib;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
-import stcam.stcamproject.View.PlayBackVideoSurfaceView;
+import stcam.stcamproject.View.SurfaceViewPlayBack1;
+import stcam.stcamproject.View.SurfaceViewPlayBack2;
 
 public class PlayBackActivity extends BaseAppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener
 {
   static final String tag = "PlayBackActivity";
+
+  //SurfaceViewPlayBack1 glView;
+  //int IActivityPlayBack = R.layout.activity_play_back1;
+  SurfaceViewPlayBack2 glView;
+  int IActivityPlayBack = R.layout.activity_play_back2;
+
   SDVideoModel model;
   DevModel devModel;
-  PlayBackVideoSurfaceView glView;
   ImageButton imagebutton_back;
 
   MainDevListFragment.EnumMainEntry entryType;
@@ -61,7 +67,8 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
     Window window = getWindow();
     window.setFlags(flag, flag);
 
-    setContentView(R.layout.activity_play_back);
+    setContentView(this.IActivityPlayBack);
+
     Bundle bundle = this.getIntent().getExtras();
     if (bundle != null)
     {

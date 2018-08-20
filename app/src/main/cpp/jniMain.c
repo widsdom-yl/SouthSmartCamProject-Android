@@ -6,9 +6,7 @@
 #include "avDecode/thOpenGL_SLES.h"
 
 #include "avDecode/thEGL.h"
-#include "avDecode/thEGLTest.h"
-
-
+#include <android/native_window_jni.h>
 
 //-----------------------------------------------------------------------------
 typedef void (*pvUcnvFunc)(const char *lpcstrDstEcd, const char *lpcstrSrcEcd, char *dst, unsigned long dstLen,
@@ -111,9 +109,9 @@ Java_com_thSDK_lib_thNetInit(JNIEnv *env, jclass obj, bool IsInsideDecode, bool 
   ret = sscanf(sSN, "%x", &iSN);
   if (ret != 1) goto exits;
 
-  NetHandle = thNet_Init(IsInsideDecode, IsQueue, IsAdjustTime, IsAutoReConn, iSN);
+  NetHandle = (u64) thNet_Init(IsInsideDecode, IsQueue, IsAdjustTime, IsAutoReConn, iSN);
 
-    exits:
+  exits:
   (*env)->ReleaseStringUTFChars(env, jSN, sSN);
   return NetHandle;
 }
@@ -311,25 +309,6 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSetAudioIsMute(JNIEnv *env, jclas
   return thNet_SetAudioIsMute((HANDLE) NetHandle, IsAudioMute);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL
-Java_com_thSDK_lib_thNetOpenGLUpdateArea(JNIEnv *env, jclass obj, u64 NetHandle, int Left, int Top, int Right,
-                                         int Bottom)
-{
-  TDspInfo DspInfo;
-  DspInfo.DspHandle = 12345;
-  DspInfo.Channel = 0;
-  DspInfo.DspRect.left = Left;
-  DspInfo.DspRect.top = Top;
-  DspInfo.DspRect.right = Right;
-  DspInfo.DspRect.bottom = Bottom;
-  return thNet_AddDspInfo((HANDLE) NetHandle, &DspInfo);
-}
-//-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetOpenGLRender(JNIEnv *env, jclass obj, u64 NetHandle)
-{
-  return thNet_ExtendDraw((HANDLE) NetHandle);
-}
-//-----------------------------------------------------------------------------
 JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetHttpGet(JNIEnv *env, jclass obj, u64 NetHandle, jstring jurl)
 {
   unsigned long pnErrC;
@@ -410,49 +389,17 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSaveToJpg(JNIEnv *env, jclass obj
   (*env)->ReleaseStringUTFChars(env, jJpgFileName, JpgFileName);
   return ret;
 }
-//-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_OpenGLRender(JNIEnv *env, jclass obj, u64 NetHandle)
-{
-}
-
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_videoPlay(JNIEnv *env, jobject instance, jstring path_,
-                                                    jobject surface)
-{
-  videoPlay(env, instance, path_,surface);
-}
-
 
 //-----------------------------------------------------------------------------
-
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_requestInitEGL(JNIEnv *env, jclass obj, jobject surface,u64 NetHandle)
-{
-  ANativeWindow * mWindow  = ANativeWindow_fromSurface(env, surface);
-  nativeRequestInitEGL(mWindow,NetHandle);
-  //需要初始化
-}
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_requestEGLChange(JNIEnv *env, jclass obj, jobject surface)
-{
-  ANativeWindow * mWindow = ANativeWindow_fromSurface(env, surface);
-  nativeRequestSurfaceChangeEGL(mWindow);
-  //需要调用SurfaceChanged
-}
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_requestEGLDestory(JNIEnv *env, jclass obj)
-{
-  nativeRequestDestoryEGL();
-}
-
-
-//-----------------------------------------------------------------------------
-
 typedef struct TSearchInfo
 {
 #define Search_SNLst_COUNT   256
 
-    u32 Search_SNLst[Search_SNLst_COUNT];
-    char tmpBuf[1000 * 10];
-    int SearchCount;
-    char20 LocalIP;
-    int IsJson;
+  u32 Search_SNLst[Search_SNLst_COUNT];
+  char tmpBuf[1000 * 10];
+  int SearchCount;
+  char20 LocalIP;
+  int IsJson;
 } TSearchInfo;
 
 static TSearchInfo Search;
@@ -597,7 +544,7 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thManageAddDevice(JNIEnv *env, jclass 
 
   ret = thManage_AddDevice(iSN, NetHandle);
 
-    exits:
+  exits:
   (*env)->ReleaseStringUTFChars(env, jSN, sSN);
   return ret;
 }
@@ -617,7 +564,7 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thManageDelDevice(JNIEnv *env, jclass 
 
   ret = thManage_DelDevice(iSN);
 
-    exits:
+  exits:
   (*env)->ReleaseStringUTFChars(env, jSN, sSN);
   return ret;
 }
@@ -639,3 +586,32 @@ Java_com_thSDK_lib_thManageForeBackgroundSwitch(JNIEnv *env, jclass obj, int IsF
   return thManage_ForeBackgroundSwitch(IsForeground);
 }
 //-----------------------------------------------------------------------------
+JNIEXPORT bool JNICALL
+Java_com_thSDK_lib_thNetOpenGLUpdateArea(JNIEnv *env, jclass obj, u64 NetHandle, int Left, int Top, int Right,
+                                         int Bottom)
+{
+  TDspInfo DspInfo;
+  DspInfo.DspHandle = (HWND) 12345;
+  DspInfo.Channel = 0;
+  DspInfo.DspRect.left = Left;
+  DspInfo.DspRect.top = Top;
+  DspInfo.DspRect.right = Right;
+  DspInfo.DspRect.bottom = Bottom;
+  return thNet_AddDspInfo((HANDLE) NetHandle, &DspInfo);
+}
+//-----------------------------------------------------------------------------
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetOpenGLRender(JNIEnv *env, jclass obj, u64 NetHandle)
+{
+  return thNet_ExtendDraw((HANDLE) NetHandle);
+}
+//-----------------------------------------------------------------------------
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetEGLCreate(JNIEnv *env, jclass obj, u64 NetHandle, jobject surface)
+{
+  ANativeWindow* Window = ANativeWindow_fromSurface(env, surface);
+  return thNet_EGLCreate((HANDLE)NetHandle, Window);
+}
+//-----------------------------------------------------------------------------
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetEGLFree(JNIEnv *env, jclass obj, u64 NetHandle)
+{
+  return thNet_EGLFree((HANDLE)NetHandle);
+}

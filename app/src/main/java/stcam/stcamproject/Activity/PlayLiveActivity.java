@@ -33,13 +33,18 @@ import stcam.stcamproject.Util.FileUtil;
 import stcam.stcamproject.Util.PlayVoice;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.Util.TFun;
-import stcam.stcamproject.View.VideoSurfaceView;
+import stcam.stcamproject.View.SurfaceViewLive1;
+import stcam.stcamproject.View.SurfaceViewLive2;
 import stcam.stcamproject.View.VoiceImageButton;
 
 public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnClickListener, GestureDetector.OnGestureListener, View
   .OnTouchListener
 {
-  VideoSurfaceView glView;
+  //SurfaceViewLive1 glView;
+  //int iActivityPlayLive = R.layout.activity_play_live1;
+  SurfaceViewLive2 glView;
+  int iActivityPlayLive = R.layout.activity_play_live2;
+
   DevModel devModel;
   VoiceImageButton button_snapshot;
   ImageButton button_speech, button_setting;
@@ -53,14 +58,10 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
   ImageButton button_back;
   ProgressBar load_progress;
   boolean hasGotFirstFrame = false;//是否收到了第一帧
-//    ImageButton button_ptz;
-
   boolean isPlayAudio;
-
   TextView tx_record;
   int recordTotalTime = 0;
   boolean isRecording;
-
   ImageButton imagebutton_to_lanscape;
 
   private GestureDetector mygesture;
@@ -68,7 +69,6 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
 
   //定时刷新列表
   public int TIME = 1000;
-
   boolean isTalk = false;
 
   Handler handler_refresh = new Handler();
@@ -259,32 +259,19 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
   {
     if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
     {
-
       getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
       getSupportActionBar().show();
-
-
-      setContentView(R.layout.activity_play_live);
+      setContentView(this.iActivityPlayLive);
       initView(true);
-
-
-      //设置当前窗体为全屏显示
-
-
     }
     else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
     {
-
-
-//            imagebutton_to_portrait.setVisibility(View.VISIBLE);
-//            imagebutton_to_lanscape.setVisibility(View.INVISIBLE);
       getSupportActionBar().hide();
       int flag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
       //设置当前窗体为全屏显示
       Window window = getWindow();
       window.setFlags(flag, flag);
-
-      setContentView(R.layout.activity_play_live);
+      setContentView(this.iActivityPlayLive);
       initView(false);
 
     }
@@ -329,12 +316,12 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
 
     if (hasGotFirstFrame)
     {
-     // glView.setBackgroundColor(Color.TRANSPARENT);
+      // glView.setBackgroundColor(Color.TRANSPARENT);
       load_progress.setVisibility(View.GONE);
     }
     else
     {
-     // glView.setBackgroundColor(Color.rgb(0, 0, 0));
+      // glView.setBackgroundColor(Color.rgb(0, 0, 0));
       load_progress.setVisibility(View.VISIBLE);
     }
 
@@ -364,10 +351,10 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
     //configurationChanged();
 
     TFun.printf(
-      "********devModel.IsVideo"+devModel.IsVideo+
-        "devModel.IsHistory"+devModel.IsHistory+
-        "devModel.IsPush"+devModel.IsPush+
-    "devModel.IsControl"+devModel.IsControl);
+      "********devModel.IsVideo" + devModel.IsVideo +
+        "devModel.IsHistory" + devModel.IsHistory +
+        "devModel.IsPush" + devModel.IsPush +
+        "devModel.IsControl" + devModel.IsControl);
 //devModel.IsVideo 0 devModel.IsHistory 0 devModel.IsPush 0 devModel.IsControl0
     if (devModel.IsVideo == 0 && entryType != MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor)
     {

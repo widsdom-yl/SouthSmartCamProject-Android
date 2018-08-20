@@ -26,7 +26,6 @@
 #include "../include/tutk/AVAPIs.h"
 #include "../include/tutk/AVFRAMEINFO.h"
 #include "../include/tutk/AVIOCTRLDEFs.h"
-#include "../avDecode/thEGL.h"
 
 #ifdef WIN32
 #pragma comment (lib, "lib.win32/tutk/AVAPIs.lib")
@@ -35,22 +34,24 @@
 #endif
 
 
-
 //---------------------------------------------------------
-typedef struct TPlayManggeParam {
+typedef struct TPlayManggeParam
+{
   int Isp2pInit;
 #define MAX_MANAGE_PLAY_COUNT  256
   int IsForeground;//Background=0 Foreground=1
   int NetWorkType;//TYPE_NONE=-1 TYPE_MOBILE=0 TYPE_WIFI=1
   int iPlayCount;
   int iP2PCount;
-  struct {
+  struct
+  {
     HANDLE NetHandle;
     u32 SN;
-  }Lst[MAX_MANAGE_PLAY_COUNT];
+  } Lst[MAX_MANAGE_PLAY_COUNT];
 
-}TPlayManggeParam;
+} TPlayManggeParam;
 TPlayManggeParam PlayLst;
+
 //*****************************************************************************
 void callback_AudioTalk(void *UserCustom, char *Buf, i32 Len);
 
@@ -264,7 +265,7 @@ HANDLE thNet_Init(bool IsInsideDecode, bool IsQueue, bool IsAdjustTime, bool IsA
   if (SN > 0)
   {
     Play->SN = SN;
-    thManage_AddDevice(SN, (HANDLE)Play);
+    thManage_AddDevice(SN, (HANDLE) Play);
   }
   return (HANDLE) Play;
 }
@@ -404,7 +405,7 @@ void STDCALL Time_QueueDraw(HANDLE mmHandle, u32 uMsg, void *dwUser, u32 dw1, u3
   TPlayParam *Play = (TPlayParam *) dwUser;
   if (!Play) return;
 
-#if !(defined(ANDROID) && defined(IS_VIDEOPLAY_OPENGL))
+#ifdef WIN32
   if (mmHandle != Play->hTimerIDQueueDraw) return;//WIN32 ios
 #endif
   if (Play->IsExit) return;
@@ -579,6 +580,7 @@ void thread_QueueVideo(HANDLE NetHandle)
     }
 
 #if (defined(ANDROID) && defined(IS_VIDEOPLAY_OPENGL))
+
 #define TEXTURE_WIDTH 1024//android
 #define TEXTURE_HEIGHT 512
     iYUVSize = Play->ImgWidth * Play->ImgHeight * 2;//AV_PIX_FMT_RGB565
@@ -589,38 +591,31 @@ void thread_QueueVideo(HANDLE NetHandle)
       &newFrameV, AV_PIX_FMT_RGB565, TEXTURE_WIDTH,//Play->ImgWidth,
       TEXTURE_HEIGHT,//Play->ImgHeight,
       &Play->FrameV420, AV_PIX_FMT_YUV420P, Play->ImgWidth, Play->ImgHeight, 0);
-#else
+#endif
+
+#ifdef WIN32
     iYUVSize = Play->ImgWidth * Play->ImgHeight * 2;//AV_PIX_FMT_YUV420P //WIN32 ios
-newBuf = (char*)malloc(iYUVSize);
-if (!newBuf) goto labReadEnd;
-thImgConvertFill(&newFrameV, newBuf, AV_PIX_FMT_YUV420P, Play->ImgWidth, Play->ImgHeight);
-thImgConvertScale1(//only copy ?
-  &newFrameV,
-  AV_PIX_FMT_YUV420P,
-  Play->ImgWidth,
-  Play->ImgHeight,
-  &Play->FrameV420,
-  AV_PIX_FMT_YUV420P,
-  Play->ImgWidth,
-  Play->ImgHeight,
-  0);
+    newBuf = (char *) malloc(iYUVSize);
+    if (!newBuf) goto labReadEnd;
+    thImgConvertFill(&newFrameV, newBuf, AV_PIX_FMT_YUV420P, Play->ImgWidth, Play->ImgHeight);
+    thImgConvertScale1(//only copy ?
+      &newFrameV, AV_PIX_FMT_YUV420P, Play->ImgWidth, Play->ImgHeight, &Play->FrameV420, AV_PIX_FMT_YUV420P,
+      Play->ImgWidth, Play->ImgHeight, 0);
 #endif
 
     if (Play->FrameRate == 0) Play->FrameRate = 30;
     Play->iFrameTime = 1000 / Play->FrameRate;
 
-#if !(defined(ANDROID) && defined(IS_VIDEOPLAY_OPENGL))//WIN32 ios
+#ifdef WIN32
     if (Play->iSleepTime != Play->iFrameTime)
 {
   Play->iSleepTime = Play->iFrameTime;
-  //zhb ThreadLock(&Play->Lock);
   if (Play->hTimerIDQueueDraw > 0)
   {
     mmTimeKillEvent(Play->hTimerIDQueueDraw);
     Play->hTimerIDQueueDraw = NULL;
   }
   Play->hTimerIDQueueDraw = mmTimeSetEvent(Play->iSleepTime, Time_QueueDraw, (void*)Play);
-  //zhb ThreadUnlock(&Play->Lock);
 }
 #endif
 
@@ -769,11 +764,11 @@ void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo *PInfo, char *Buf, int
       //3
       if (Play->IsInsideDecode)
       {
-          pthread_mutex_lock(&th_mutex_lock);
+//          pthread_mutex_lock(&th_mutex_lock);
         ret = thDecodeVideoFrame(Play->decHandle, Buf, BufLen, &Play->ImgWidth, &Play->ImgHeight,
                                  &Play->FrameV420);//yuv420
 
-          pthread_mutex_unlock(&th_mutex_lock);
+//          pthread_mutex_unlock(&th_mutex_lock);
         if (!ret) return;
         Play->IsVideoDecodeSuccessFlag = true;
         if (Play->IsSnapShot)
@@ -784,22 +779,21 @@ void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo *PInfo, char *Buf, int
 
         if (Play->ImgWidth > 0 && Play->ImgHeight > 0)
         {
-
 #if (defined(ANDROID))//android
-            LOGE("decodeframe ,wid is %d,height is %d,%s(%d)\n",Play->ImgWidth,Play->ImgHeight, __FUNCTION__, __LINE__);
-         //   TdecInfoPkt* Info = (TdecInfoPkt*)Play->decHandle;
-          //ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth, Play->ImgHeight);//ddraw yuv420->rgb32
-          //ret = requestEGLRenderFrame(Info->FrameV,Play->ImgWidth, Play->ImgHeight);
-
+          ThreadLock(&Play->Lock);
+          ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth,
+                                 Play->ImgHeight);//ddraw yuv420->rgb32
+          ThreadUnlock(&Play->Lock);
           pthread_cond_signal(&Play->SyncCond);
 #else//WIN32 ios
-          ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth, Play->ImgHeight);//ddraw yuv420->rgb32
-for (i=0; i<MAX_DSPINFO_COUNT; i++)
-{
-  TDspInfo* PDspInfo = &Play->DspInfoLst[i];
-  if (PDspInfo->DspHandle == NULL) continue;
-  ret = thRender_Display(Play->RenderHandle, PDspInfo->DspHandle, PDspInfo->DspRect);
-}
+          ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth,
+                                 Play->ImgHeight);//ddraw yuv420->rgb32
+          for (i = 0; i < MAX_DSPINFO_COUNT; i++)
+          {
+            TDspInfo *PDspInfo = &Play->DspInfoLst[i];
+            if (PDspInfo->DspHandle == NULL) continue;
+            ret = thRender_Display(Play->RenderHandle, PDspInfo->DspHandle, PDspInfo->DspRect);
+          }
 #endif
         }
       }
@@ -1033,8 +1027,7 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//·Ç×èÈû·½Ê½
             Play->AlmEvent(PPkt->CmdPkt.AlmSendPkt.AlmType, PPkt->CmdPkt.AlmSendPkt.AlmTime,
                            PPkt->CmdPkt.AlmSendPkt.AlmPort, Play->UserCustom);
           }
-        }
-        else if (PPkt->CmdPkt.MsgID == Msg_GetDevRecFileHead)
+        } else if (PPkt->CmdPkt.MsgID == Msg_GetDevRecFileHead)
         {
           Play->HistoryHead = PPkt->CmdPkt.FileHead;
         }
@@ -1472,7 +1465,7 @@ bool thNet_DisConn(HANDLE NetHandle)
   }
   Play->IsConnect = false;
   Play->iConnectStatus = THNET_CONNSTATUS_NO;
-  
+
   if (Play->IsQueue)
   {
     if (Play->hTimerIDQueueDraw)
@@ -1896,6 +1889,7 @@ bool thNet_RemoteFilePlayControl(HANDLE NetHandle, i32 PlayCtrl, i32 Speed, i32 
 
   return false;
 }
+
 //-----------------------------------------------------------------------------
 int thNet_RemoteFileGetPosition(HANDLE NetHandle)
 {
@@ -1903,6 +1897,7 @@ int thNet_RemoteFileGetPosition(HANDLE NetHandle)
   if (NetHandle == 0) return false;
   return Play->TimestampHistoryPosition;
 }
+
 //-----------------------------------------------------------------------------
 int thNet_RemoteFileGetDuration(HANDLE NetHandle)
 {
@@ -2488,3 +2483,172 @@ bool thManage_ForeBackgroundSwitch(int IsForeground)//Background=0 Foreground=1
   }
 }
 //-----------------------------------------------------------------------------
+#include <EGL/egl.h>
+#include <android/native_window_jni.h>
+#include <GLES2/gl2.h>
+#include "../avDecode/thEGL.h"
+
+void thread_eglRender(HANDLE NetHandle)
+{
+  int ret;
+  EGLConfig eglConf;
+  EGLSurface eglWindow;
+  EGLContext eglCtx;
+  EGLDisplay eglDisp;
+  GLuint yTextureId;
+  GLuint uTextureId;
+  GLuint vTextureId;
+
+  TPlayParam *Play = (TPlayParam *) NetHandle;
+  if (NetHandle == 0) return;
+
+  while (1)
+  {
+    if (Play->ImgWidth > 0 && Play->ImgHeight > 0) break;
+    usleep(1000 * 10);
+  }
+  //eglCreate
+  EGLint configSpec[] = {EGL_RED_SIZE, 8, EGL_GREEN_SIZE, 8, EGL_BLUE_SIZE, 8, EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+                         EGL_NONE};
+
+  int windowWidth, windowHeight;
+  eglDisp = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+  EGLint eglMajVers, eglMinVers;
+  EGLint numConfigs;
+  eglInitialize(eglDisp, &eglMajVers, &eglMinVers);
+  eglChooseConfig(eglDisp, configSpec, &eglConf, 1, &numConfigs);
+  eglWindow = eglCreateWindowSurface(eglDisp, eglConf, Play->Window, NULL);
+  eglQuerySurface(eglDisp, eglWindow, EGL_WIDTH, &windowWidth);
+  eglQuerySurface(eglDisp, eglWindow, EGL_HEIGHT, &windowHeight);
+  const EGLint ctxAttr[] = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE};
+  eglCtx = eglCreateContext(eglDisp, eglConf, EGL_NO_CONTEXT, ctxAttr);
+  eglMakeCurrent(eglDisp, eglWindow, eglWindow, eglCtx);
+
+  GLuint programId = createProgram();
+  GLuint aPositionHandle = (GLuint) glGetAttribLocation(programId, "aPosition");
+  GLuint aTextureCoordHandle = (GLuint) glGetAttribLocation(programId, "aTexCoord");
+  GLuint textureSamplerHandleY = (GLuint) glGetUniformLocation(programId, "yTexture");
+  GLuint textureSamplerHandleU = (GLuint) glGetUniformLocation(programId, "uTexture");
+  GLuint textureSamplerHandleV = (GLuint) glGetUniformLocation(programId, "vTexture");
+
+  glUseProgram(programId);
+  glEnableVertexAttribArray(aPositionHandle);
+  float vertexData[12] = {1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f};
+  glVertexAttribPointer(aPositionHandle, 3, GL_FLOAT, GL_FALSE, 12, vertexData);
+  glEnableVertexAttribArray(aTextureCoordHandle);
+  float textureVertexData[8] = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f};
+  glVertexAttribPointer(aTextureCoordHandle, 2, GL_FLOAT, GL_FALSE, 8, textureVertexData);
+
+  glGenTextures(1, &yTextureId);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, yTextureId);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glUniform1i(textureSamplerHandleY, 0);
+
+  glGenTextures(1, &uTextureId);
+  glActiveTexture(GL_TEXTURE1);
+  glBindTexture(GL_TEXTURE_2D, uTextureId);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glUniform1i(textureSamplerHandleU, 1);
+
+  glGenTextures(1, &vTextureId);
+  glActiveTexture(GL_TEXTURE2);
+  glBindTexture(GL_TEXTURE_2D, vTextureId);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glUniform1i(textureSamplerHandleV, 2);
+
+  struct timeval tm;
+  struct timespec tnow;
+  while (1)
+  {
+    if (Play->IsExit) break;
+    if (Play->IsExitRender) break;
+
+    ThreadLock(&Play->Lock);
+    //      pthread_cond_wait(&Play->SyncCond, &Play->Lock);
+    gettimeofday(&tm, NULL);
+    tnow.tv_sec = tm.tv_sec + 1;
+    tnow.tv_nsec = tm.tv_usec * 1000;
+    ret = pthread_cond_timedwait(&Play->SyncCond, &Play->Lock, &tnow);
+    ThreadUnlock(&Play->Lock);
+    if (ret != 0)
+    {
+      usleep(1000 * 10);
+      continue;
+    }
+
+    ThreadLock(&Play->Lock);
+    int ScreenWidth = Play->DspInfoLst[0].DspRect.right - Play->DspInfoLst[0].DspRect.left;
+    int ScreenHeight = Play->DspInfoLst[0].DspRect.bottom - Play->DspInfoLst[0].DspRect.top;
+    int left, top, viewWidth, viewHeight;
+    if (ScreenHeight > ScreenWidth)
+    {
+      left = 0;
+      viewWidth = ScreenWidth;
+      viewHeight = (int) (Play->ImgHeight * 1.0f / Play->ImgWidth * viewWidth);
+      top = (ScreenHeight - viewHeight) / 2;
+    } else
+    {
+      top = 0;
+      left = 0;
+      viewHeight = ScreenHeight;
+      viewWidth = ScreenWidth;
+    }
+    glViewport(left, top, viewWidth, viewHeight);
+
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    //eglRender
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, yTextureId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Play->FrameV420.linesize[0], Play->ImgHeight, 0, GL_LUMINANCE,
+                 GL_UNSIGNED_BYTE, Play->FrameV420.data[0]);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, uTextureId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Play->FrameV420.linesize[1], Play->ImgHeight / 2, 0, GL_LUMINANCE,
+                 GL_UNSIGNED_BYTE, Play->FrameV420.data[1]);
+
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, vTextureId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Play->FrameV420.linesize[2], Play->ImgHeight / 2, 0, GL_LUMINANCE,
+                 GL_UNSIGNED_BYTE, Play->FrameV420.data[2]);
+
+    //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    eglSwapBuffers(eglDisp, eglWindow);
+    ThreadUnlock(&Play->Lock);
+  }
+  //eglFree
+  eglMakeCurrent(eglDisp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+  eglDestroyContext(eglDisp, eglCtx);
+  eglDestroySurface(eglDisp, eglWindow);
+  eglTerminate(eglDisp);
+  eglDisp = EGL_NO_DISPLAY;
+  eglWindow = EGL_NO_SURFACE;
+  eglCtx = EGL_NO_CONTEXT;
+}
+//-----------------------------------------------------------------------------
+bool thNet_EGLCreate(HANDLE NetHandle, void *Window)
+{
+  TPlayParam *Play = (TPlayParam *) NetHandle;
+  if (NetHandle == 0) return false;
+
+  Play->Window = (ANativeWindow *) Window;
+  Play->IsExitRender = false;
+  Play->thRenderEGL = ThreadCreate((void *) thread_eglRender, (HANDLE) NetHandle, false);
+  return true;
+}
+//-----------------------------------------------------------------------------
+bool thNet_EGLFree(HANDLE NetHandle)
+{
+  TPlayParam *Play = (TPlayParam *) NetHandle;
+  if (NetHandle == 0) return false;
+  ThreadLock(&Play->Lock);
+  Play->IsExitRender = true;
+  ThreadUnlock(&Play->Lock);
+  ThreadExit(Play->thRenderEGL, 0);//1000;
+  return true;
+}

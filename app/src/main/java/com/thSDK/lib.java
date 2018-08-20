@@ -39,8 +39,6 @@ public class lib extends Activity
 
   public static native boolean thNetSendSensePkt(long NetHandle);
 
-  public static native void videoPlay(String path, Surface surface);
-
   public final static int THNET_CONNSTATUS_NO = 0;
   public final static int THNET_CONNSTATUS_CONNING = 1;
   public final static int THNET_CONNSTATUS_SUCCESS = 2;
@@ -93,17 +91,13 @@ public class lib extends Activity
 
   public static native int thNetRemoteFileGetDuration(long NetHandle);//文件长度，单位ms
 
-  public static native boolean thNetRemoteFileSetPosition(long NetHandle,int Pos);//时间戳，单位ms
+  public static native boolean thNetRemoteFileSetPosition(long NetHandle, int Pos);//时间戳，单位ms
 
   public static native boolean thNetAudioPlayOpen(long NetHandle);
 
   public static native boolean thNetAudioPlayClose(long NetHandle);
 
   public static native boolean thNetSetAudioIsMute(long NetHandle, boolean IsAudioMute);
-
-  public static native boolean thNetOpenGLUpdateArea(long NetHandle, int Left, int Top, int Right, int Bottom);
-
-  public static native boolean thNetOpenGLRender(long NetHandle);
 
   public static native String thNetHttpGet(long NetHandle, String url);
 
@@ -120,12 +114,6 @@ public class lib extends Activity
   public static native boolean thNetSaveToJpg(long NetHandle, String jJpgFileName);
 
   public static native String thNetSearchDevice(int TimeOut, int IsJson);
-
-
-  public static native boolean requestInitEGL(Surface surface, long NetHandle);
-  public static native boolean requestEGLChange( Surface surface);
-  public static native boolean requestEGLDestory( );
-
 
   //---------------------------------------------------------------------------
   public final static int Msg_None = 0;
@@ -257,6 +245,15 @@ public class lib extends Activity
   public static native boolean IsConnectWLAN();
 
   public static native String GetLocalIP();
+
+  public static native boolean thNetOpenGLUpdateArea(long NetHandle, int Left, int Top, int Right, int Bottom);
+
+  public static native boolean thNetOpenGLRender(long NetHandle);
+
+  public static native boolean thNetEGLCreate(long NetHandle, Surface surface);
+
+  public static native boolean thNetEGLFree(long NetHandle);
+
 
 
 }

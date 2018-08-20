@@ -57,9 +57,7 @@ add_library( # Sets the name of the library.
 
              # Provides a relative path to your source file(s).
              ${SOURCE_DIR}/jniMain.c
-             ${SOURCE_DIR}/avDecode/shaderUtils.c
              ${SOURCE_DIR}/avDecode/thEGL.c
-             ${SOURCE_DIR}/avDecode/thEGLTest.c
              ${SOURCE_DIR}/thSDK/thPlay.c ${SOURCE_DIR}/thSDK/axdllEx.c
              ${SOURCE_DIR}/common/av_Queue.c ${SOURCE_DIR}/common/List.c ${SOURCE_DIR}/common/skt.c ${SOURCE_DIR}/common/TFun.c ${SOURCE_DIR}/cJSON/cJSON.c
              ${SOURCE_DIR}/avDecode/audio_g711.c

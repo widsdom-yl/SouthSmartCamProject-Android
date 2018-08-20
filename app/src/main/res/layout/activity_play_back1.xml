@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Activity.PlayBackActivity">
-    <stcam.stcamproject.View.PlayBackVideoSurfaceView
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent"
+                                             tools:context=".Activity.PlayBackActivity">
+
+    <stcam.stcamproject.View.SurfaceViewPlayBack1
         android:id="@+id/glPlayBack"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -21,11 +22,11 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         app:layout_constraintBottom_toBottomOf="@id/glPlayBack"
-        app:layout_constraintTop_toTopOf="@id/glPlayBack"
+        app:layout_constraintEnd_toEndOf="@id/glPlayBack"
         app:layout_constraintLeft_toLeftOf="@id/glPlayBack"
-        app:layout_constraintStart_toStartOf= "@id/glPlayBack"
         app:layout_constraintRight_toRightOf="@id/glPlayBack"
-        app:layout_constraintEnd_toEndOf="@id/glPlayBack" />
+        app:layout_constraintStart_toStartOf="@id/glPlayBack"
+        app:layout_constraintTop_toTopOf="@id/glPlayBack"/>
 
 
     <ImageButton
@@ -40,20 +41,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
 
-        app:srcCompat="@drawable/back" />
+        app:srcCompat="@drawable/back"/>
 
     <ImageButton
         android:id="@+id/imagebutton_play"
 
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:scaleType="fitXY"
         android:layout_marginBottom="50dp"
         android:background="@color/transparent"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/play0" />
+        app:srcCompat="@drawable/play0"/>
 
     <RelativeLayout
         android:id="@+id/layout_time"
@@ -76,19 +77,13 @@
         <TextView
             android:id="@+id/text_time"
             android:layout_width="65dp"
-            android:gravity="end"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:gravity="end"
             android:textColor="@color/appGreenColor"/>
 
 
     </RelativeLayout>
-
-
-
-
-
-
 
 
 </android.support.constraint.ConstraintLayout>

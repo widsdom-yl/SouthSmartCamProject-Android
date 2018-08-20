@@ -23,7 +23,9 @@
 #endif
 
 #ifdef ANDROID
+#include <android/native_window_jni.h>
 #define IS_VIDEOPLAY_OPENGL
+//#define IS_VIDEOPLAY_EGL
 #define IS_AUDIOPLAY_SLES
 #define IS_AUDIOTALK_SLES
 //#define IS_VIDEOPLAY_SDL
@@ -217,6 +219,11 @@ typedef struct TPlayParam
     i32 p2p_avIndex;
     i32 p2p_talkIndex;
 
+#ifdef ANDROID
+  bool IsExitRender;
+  H_THREAD thRenderEGL;//视频解码线程句柄
+  ANativeWindow * Window;
+#endif
 } TPlayParam;
 
 

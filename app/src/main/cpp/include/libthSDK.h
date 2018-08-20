@@ -327,7 +327,9 @@ EXPORT bool DTMFBufToText(char *Buf, int BufLen, int iSample/*=8000*/, int iBits
 
 #if defined(ANDROID)
 EXPORT bool thNet_ExtendDraw(HANDLE NetHandle);
-
+EXPORT bool thNet_EGLCreate(HANDLE NetHandle, void* Window);
+EXPORT bool thNet_EGLUpdate(HANDLE NetHandle, int ScreenWidth, int ScreenHeight);
+EXPORT bool thNet_EGLFree(HANDLE NetHandle);
 #endif
 EXPORT bool thManage_AddDevice(u32 SN, HANDLE NetHandle);
 
