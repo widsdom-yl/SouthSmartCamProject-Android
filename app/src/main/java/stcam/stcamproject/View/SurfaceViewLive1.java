@@ -67,17 +67,14 @@ public class SurfaceViewLive1 extends GLSurfaceView
     public void onSurfaceChanged(GL10 gl, int width, int height)
     {
       TFun.printf("====onSurfaceChanged");
-      lib.thNetOpenGLUpdateArea(model.NetHandle, 0, 0, width, height);
+      lib.thOpenGLSurfaceChanged(model.NetHandle, width, height);
     }
 
     @Override
     public void onDrawFrame(GL10 gl)//约60fps/s
     {
-
-
-      if (lib.thNetOpenGLRender(model.NetHandle))
+      if (lib.thOpenGLRenderRGB565(model.NetHandle))
       {
-
         if (!hasGotFirstFrame)
         {
           hasGotFirstFrame = true;

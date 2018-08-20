@@ -2337,45 +2337,6 @@ char *thNet_GetAllCfg(HANDLE NetHandle)
   return DevCfg_to_Json(&Play->DevCfg);
 }
 //-----------------------------------------------------------------------------
-bool thNet_ExtendDraw(HANDLE NetHandle)//android opengl render
-{
-  int i;
-  int ret = false;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
-  if (NetHandle == 0) return false;
-  if (!Play->IsConnect) return false;
-  if (Play->RenderHandle == 0) return false;
-  if (Play->IsQueue)
-  {
-    Time_QueueDraw(0, 0, (void *) NetHandle, 0, 0);
-    return true;
-  } else
-  {
-    struct timeval tm;
-    struct timespec tnow;
-    //PRINTF("%s(%d) NetHandle:%d\n", __FUNCTION__, __LINE__, NetHandle);
-    pthread_mutex_lock(&Play->Lock);
-    //      pthread_cond_wait(&Play->SyncCond, &Play->Lock);
-    gettimeofday(&tm, NULL);
-    tnow.tv_sec = tm.tv_sec + 1;
-    tnow.tv_nsec = tm.tv_usec * 1000;
-    ret = pthread_cond_timedwait(&Play->SyncCond, &Play->Lock, &tnow);
-    pthread_mutex_unlock(&Play->Lock);
-    if (ret != 0) return false;
-
-    for (i = 0; i < MAX_DSPINFO_COUNT; i++)
-    {
-      TDspInfo *PDspInfo = &Play->DspInfoLst[i];
-      if (PDspInfo->DspHandle == NULL) continue;
-      if (PDspInfo->DspRect.right - PDspInfo->DspRect.left > 0 && PDspInfo->DspRect.bottom - PDspInfo->DspRect.top > 0)
-      {
-        ret = thRender_Display(Play->RenderHandle, PDspInfo->DspHandle, PDspInfo->DspRect);
-      }
-    }
-  }
-  return ret;
-}
-//-----------------------------------------------------------------------------
 bool P2P_Init()
 {
   int ret;
@@ -2481,6 +2442,45 @@ bool thManage_ForeBackgroundSwitch(int IsForeground)//Background=0 Foreground=1
   {
     PlayLst.IsForeground = IsForeground;
   }
+}
+//-----------------------------------------------------------------------------
+bool th_OpenGLRenderRGB565(HANDLE NetHandle)//android opengl render
+{
+  int i;
+  int ret = false;
+  TPlayParam *Play = (TPlayParam *) NetHandle;
+  if (NetHandle == 0) return false;
+  if (!Play->IsConnect) return false;
+  if (Play->RenderHandle == 0) return false;
+  if (Play->IsQueue)
+  {
+    Time_QueueDraw(0, 0, (void *) NetHandle, 0, 0);
+    return true;
+  } else
+  {
+    struct timeval tm;
+    struct timespec tnow;
+    //PRINTF("%s(%d) NetHandle:%d\n", __FUNCTION__, __LINE__, NetHandle);
+    pthread_mutex_lock(&Play->Lock);
+    //      pthread_cond_wait(&Play->SyncCond, &Play->Lock);
+    gettimeofday(&tm, NULL);
+    tnow.tv_sec = tm.tv_sec + 1;
+    tnow.tv_nsec = tm.tv_usec * 1000;
+    ret = pthread_cond_timedwait(&Play->SyncCond, &Play->Lock, &tnow);
+    pthread_mutex_unlock(&Play->Lock);
+    if (ret != 0) return false;
+
+    for (i = 0; i < MAX_DSPINFO_COUNT; i++)
+    {
+      TDspInfo *PDspInfo = &Play->DspInfoLst[i];
+      if (PDspInfo->DspHandle == NULL) continue;
+      if (PDspInfo->DspRect.right - PDspInfo->DspRect.left > 0 && PDspInfo->DspRect.bottom - PDspInfo->DspRect.top > 0)
+      {
+        ret = thRender_Display(Play->RenderHandle, PDspInfo->DspHandle, PDspInfo->DspRect);
+      }
+    }
+  }
+  return ret;
 }
 //-----------------------------------------------------------------------------
 #include <EGL/egl.h>
@@ -2631,7 +2631,7 @@ void thread_eglRender(HANDLE NetHandle)
   eglCtx = EGL_NO_CONTEXT;
 }
 //-----------------------------------------------------------------------------
-bool thNet_EGLCreate(HANDLE NetHandle, void *Window)
+bool th_OpenGLCreateEGL(HANDLE NetHandle, void *Window)
 {
   TPlayParam *Play = (TPlayParam *) NetHandle;
   if (NetHandle == 0) return false;
@@ -2642,7 +2642,7 @@ bool thNet_EGLCreate(HANDLE NetHandle, void *Window)
   return true;
 }
 //-----------------------------------------------------------------------------
-bool thNet_EGLFree(HANDLE NetHandle)
+bool th_OpenGLFreeEGL(HANDLE NetHandle)
 {
   TPlayParam *Play = (TPlayParam *) NetHandle;
   if (NetHandle == 0) return false;

@@ -587,31 +587,30 @@ Java_com_thSDK_lib_thManageForeBackgroundSwitch(JNIEnv *env, jclass obj, int IsF
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL
-Java_com_thSDK_lib_thNetOpenGLUpdateArea(JNIEnv *env, jclass obj, u64 NetHandle, int Left, int Top, int Right,
-                                         int Bottom)
+Java_com_thSDK_lib_thOpenGLSurfaceChanged(JNIEnv *env, jclass obj, u64 NetHandle, int Width, int Height)
 {
   TDspInfo DspInfo;
   DspInfo.DspHandle = (HWND) 12345;
   DspInfo.Channel = 0;
-  DspInfo.DspRect.left = Left;
-  DspInfo.DspRect.top = Top;
-  DspInfo.DspRect.right = Right;
-  DspInfo.DspRect.bottom = Bottom;
+  DspInfo.DspRect.left = 0;
+  DspInfo.DspRect.top = 0;
+  DspInfo.DspRect.right = Width;
+  DspInfo.DspRect.bottom = Height;
   return thNet_AddDspInfo((HANDLE) NetHandle, &DspInfo);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetOpenGLRender(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thOpenGLRenderRGB565(JNIEnv *env, jclass obj, u64 NetHandle)
 {
-  return thNet_ExtendDraw((HANDLE) NetHandle);
+  return th_OpenGLRenderRGB565((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetEGLCreate(JNIEnv *env, jclass obj, u64 NetHandle, jobject surface)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thOpenGLCreateEGL(JNIEnv *env, jclass obj, u64 NetHandle, jobject surface)
 {
-  ANativeWindow* Window = ANativeWindow_fromSurface(env, surface);
-  return thNet_EGLCreate((HANDLE)NetHandle, Window);
+  ANativeWindow *Window = ANativeWindow_fromSurface(env, surface);
+  return th_OpenGLCreateEGL((HANDLE) NetHandle, Window);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetEGLFree(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thOpenGLFreeEGL(JNIEnv *env, jclass obj, u64 NetHandle)
 {
-  return thNet_EGLFree((HANDLE)NetHandle);
+  return th_OpenGLFreeEGL((HANDLE) NetHandle);
 }

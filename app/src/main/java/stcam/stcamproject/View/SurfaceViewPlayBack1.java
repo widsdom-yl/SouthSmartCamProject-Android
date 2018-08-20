@@ -70,13 +70,13 @@ public class SurfaceViewPlayBack1 extends GLSurfaceView
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height)
     {
-      lib.thNetOpenGLUpdateArea(mDevModel.NetHandle, 0, 0, width, height);
+      lib.thOpenGLSurfaceChanged(mDevModel.NetHandle, width, height);
     }
 
     @Override
     public void onDrawFrame(GL10 gl)//约60fps/s
     {
-      if (lib.thNetOpenGLRender(mDevModel.NetHandle))
+      if (lib.thOpenGLRenderRGB565(mDevModel.NetHandle))
       {
         if (!hasGotFirstFrame)
         {

@@ -16,40 +16,34 @@ extern "C"
 
 #pragma pack(4)//n=1,2,4,8,16
 
-  //*****************************************************************************
-  //-----------------------------------------------------------------------------
-  EXPORT HANDLE thNet_Init(bool IsInsideDecode, bool IsQueue, bool IsAdjustTime, bool IsAutoReConn, u32 SN);
-  /*-----------------------------------------------------------------------------
-  函数描述：初始化网络播放
-  参数说明：
-  IsInsideDecode:是否SDK内部解码显示
-  IsQueue:是否缓存队列
-  IsAdjustTime:是否校准设备时间为客户端时间
-  返 回 值：NetHandle:返回网络句柄
-  ------------------------------------------------------------------------------*/
+//*****************************************************************************
+//-----------------------------------------------------------------------------
+EXPORT HANDLE thNet_Init(bool IsInsideDecode, bool IsQueue, bool IsAdjustTime, bool IsAutoReConn, u32 SN);
+/*-----------------------------------------------------------------------------
+函数描述：初始化网络播放
+参数说明：
+IsInsideDecode:是否SDK内部解码显示
+IsQueue:是否缓存队列
+IsAdjustTime:是否校准设备时间为客户端时间
+返 回 值：NetHandle:返回网络句柄
+------------------------------------------------------------------------------*/
 
-  //-----------------------------------------------------------------------------
-  typedef void(TvideoCallBack)(
-    void* UserCustom,         //用户自定义数据
-    i32 Chl,
-    char* Buf,                //音视频解码前帧数据
-    i32 Len,                  //数据长度
-    int IsIFrame
-    );
+//-----------------------------------------------------------------------------
+typedef void(TvideoCallBack)(void *UserCustom,         //用户自定义数据
+                             i32 Chl, char *Buf,                //音视频解码前帧数据
+                             i32 Len,                  //数据长度
+                             int IsIFrame);
 
-  typedef void(TaudioCallBack)(
-    void* UserCustom,         //用户自定义数据
-    i32 Chl,
-    char* Buf,                //音视频解码前帧数据
-    i32 Len                   //数据长度
-    );
+typedef void(TaudioCallBack)(void *UserCustom,         //用户自定义数据
+                             i32 Chl, char *Buf,                //音视频解码前帧数据
+                             i32 Len                   //数据长度
+);
 
-  typedef void(TalarmCallBack)(
-    i32 AlmType,             //警报类型，参见TAlmType
-    i32 AlmTime,             //警报时间time_t
-    i32 AlmChl,              //警报通道
-    void* UserCustom         //用户自定义数据
-    );
+typedef void(TalarmCallBack)(i32 AlmType,             //警报类型，参见TAlmType
+                             i32 AlmTime,             //警报时间time_t
+                             i32 AlmChl,              //警报通道
+                             void *UserCustom         //用户自定义数据
+);
 
 
 #define Decode_None   0
@@ -326,10 +320,12 @@ EXPORT bool DTMFWavFileToText(char *FileName, char *txt);
 EXPORT bool DTMFBufToText(char *Buf, int BufLen, int iSample/*=8000*/, int iBits/*=16*/, char *txt);
 
 #if defined(ANDROID)
-EXPORT bool thNet_ExtendDraw(HANDLE NetHandle);
-EXPORT bool thNet_EGLCreate(HANDLE NetHandle, void* Window);
-EXPORT bool thNet_EGLUpdate(HANDLE NetHandle, int ScreenWidth, int ScreenHeight);
-EXPORT bool thNet_EGLFree(HANDLE NetHandle);
+EXPORT bool th_OpenGLRenderRGB565(HANDLE NetHandle);
+
+EXPORT bool th_OpenGLCreateEGL(HANDLE NetHandle, void *Window);
+
+EXPORT bool th_OpenGLFreeEGL(HANDLE NetHandle);
+
 #endif
 EXPORT bool thManage_AddDevice(u32 SN, HANDLE NetHandle);
 

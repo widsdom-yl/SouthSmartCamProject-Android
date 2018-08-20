@@ -246,13 +246,13 @@ public class lib extends Activity
 
   public static native String GetLocalIP();
 
-  public static native boolean thNetOpenGLUpdateArea(long NetHandle, int Left, int Top, int Right, int Bottom);
+  public static native boolean thOpenGLSurfaceChanged(long NetHandle, int Width, int Height);
 
-  public static native boolean thNetOpenGLRender(long NetHandle);
+  public static native boolean thOpenGLRenderRGB565(long NetHandle);
 
-  public static native boolean thNetEGLCreate(long NetHandle, Surface surface);
+  public static native boolean thOpenGLCreateEGL(long NetHandle, Surface surface);
 
-  public static native boolean thNetEGLFree(long NetHandle);
+  public static native boolean thOpenGLFreeEGL(long NetHandle);
 
 
 

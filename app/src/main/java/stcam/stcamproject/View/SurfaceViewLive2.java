@@ -68,12 +68,12 @@ public class SurfaceViewLive2 extends SurfaceView implements SurfaceHolder.Callb
 
   public void surfaceCreated(SurfaceHolder holder)
   {
-    lib.thNetEGLCreate(model.NetHandle, surfaceHolder.getSurface());
+    lib.thOpenGLCreateEGL(model.NetHandle, surfaceHolder.getSurface());
   }
 
   public void surfaceDestroyed(SurfaceHolder holder)
   {
-    lib.thNetEGLFree(model.NetHandle);
+    lib.thOpenGLFreeEGL(model.NetHandle);
     isSurfaceExist = false;
     //requestEGLDestory();
   }
@@ -89,7 +89,7 @@ public class SurfaceViewLive2 extends SurfaceView implements SurfaceHolder.Callb
 //           //调用jni surface change 接口
 //           requestEGLChange(surfaceHolder.getSurface());
 //       }
-    lib.thNetOpenGLUpdateArea(model.NetHandle, 0, 0, w, h);
+    lib.thOpenGLSurfaceChanged(model.NetHandle, w, h);
   }
 
   private static String TAG = "VideoSurfaceView";

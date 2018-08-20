@@ -18,11 +18,6 @@
 #define TEXTURE_WIDTH 1024
 #define TEXTURE_HEIGHT 512
 
-//#define IS_YUV420
-#define IS_RGB565
-
-#include "thEGL.h"
-
 //-----------------------------------------------------------------------------
 typedef struct TOpenGLInfo
 {
@@ -86,92 +81,6 @@ bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
   if (Info->ScreenWidth <= 0) return false;
   if (Info->ScreenHeight <= 0) return false;
 
-#ifdef IS_YUV420
-  static int IsInit = false;
-  static GLuint yTextureId;
-  static GLuint uTextureId;
-  static GLuint vTextureId;
-  static int left, top, viewWidth, viewHeight;
-
-  if (!IsInit)
-  {
-    IsInit = true;
-    GLuint programId = createProgram();
-    GLuint aPositionHandle = (GLuint) glGetAttribLocation(programId, "aPosition");
-    GLuint aTextureCoordHandle = (GLuint) glGetAttribLocation(programId, "aTexCoord");
-
-    GLuint textureSamplerHandleY = (GLuint) glGetUniformLocation(programId, "yTexture");
-    GLuint textureSamplerHandleU = (GLuint) glGetUniformLocation(programId, "uTexture");
-    GLuint textureSamplerHandleV = (GLuint) glGetUniformLocation(programId, "vTexture");
-
-    if (Info->ScreenHeight > Info->ScreenWidth)
-    {
-      left = 0;
-      viewWidth = Info->ScreenWidth;
-      viewHeight = (int) (Info->ImgHeight * 1.0f / Info->ImgWidth * viewWidth);
-      top = (Info->ScreenHeight - viewHeight) / 2;
-    } else
-    {
-      top = 0;
-      left = 0;
-      viewHeight = Info->ScreenHeight;
-      viewWidth = Info->ScreenWidth;
-    }
-    //glViewport(0, 0, Info->ScreenWidth, Info->ScreenHeight);
-    glViewport(left, top, Info->ScreenWidth, Info->ScreenHeight);
-
-    glUseProgram(programId);
-    glEnableVertexAttribArray(aPositionHandle);
-    float vertexData[12] = {1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f};
-    glVertexAttribPointer(aPositionHandle, 3, GL_FLOAT, GL_FALSE, 12, vertexData);
-    glEnableVertexAttribArray(aTextureCoordHandle);
-    float textureVertexData[8] = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f};
-    glVertexAttribPointer(aTextureCoordHandle, 2, GL_FLOAT, GL_FALSE, 8, textureVertexData);
-
-    glGenTextures(1, &yTextureId);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, yTextureId);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glUniform1i(textureSamplerHandleY, 0);
-
-    glGenTextures(1, &uTextureId);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, uTextureId);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glUniform1i(textureSamplerHandleU, 1);
-
-    glGenTextures(1, &vTextureId);
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, vTextureId);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glUniform1i(textureSamplerHandleV, 2);
-  }
-  //render
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, yTextureId);
-
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Info->FrameV420.linesize[0], Info->ImgHeight, 0, GL_LUMINANCE,
-               GL_UNSIGNED_BYTE, Info->FrameV420.data[0]);
-  glActiveTexture(GL_TEXTURE1);
-  glBindTexture(GL_TEXTURE_2D, uTextureId);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Info->FrameV420.linesize[1], Info->ImgHeight / 2, 0, GL_LUMINANCE,
-               GL_UNSIGNED_BYTE, Info->FrameV420.data[1]);
-  glActiveTexture(GL_TEXTURE2);
-  glBindTexture(GL_TEXTURE_2D, vTextureId);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Info->FrameV420.linesize[2], Info->ImgHeight / 2, 0, GL_LUMINANCE,
-               GL_UNSIGNED_BYTE, Info->FrameV420.data[2]);
-  //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-  //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-  //eglSwapBuffers(eglDisp, eglWindow);
-  glDrawTexiOES(left, top, 0, viewWidth, viewHeight);
-  //free
-
-  return true;
-#endif
-#ifdef IS_RGB565
   static GLuint s_disable_caps[] = {GL_FOG, GL_LIGHTING, GL_CULL_FACE, GL_ALPHA_TEST, GL_BLEND, GL_COLOR_LOGIC_OP,
                                     GL_DITHER, GL_STENCIL_TEST, GL_DEPTH_TEST, GL_COLOR_MATERIAL, 0};
   int rect[4] = {0, TEXTURE_HEIGHT, TEXTURE_WIDTH, -TEXTURE_HEIGHT};
@@ -217,7 +126,7 @@ bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
   }
   glViewport(0, 0, Info->ScreenWidth, Info->ScreenHeight);
   glDrawTexiOES(left, top, 0, viewWidth, viewHeight);
-#endif
+
   return true;
 
 }

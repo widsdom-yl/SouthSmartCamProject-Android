@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -32,10 +33,10 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
 {
   static final String tag = "PlayBackActivity";
 
-  //SurfaceViewPlayBack1 glView;
-  //int IActivityPlayBack = R.layout.activity_play_back1;
-  SurfaceViewPlayBack2 glView;
-  int IActivityPlayBack = R.layout.activity_play_back2;
+  SurfaceViewPlayBack1 glView;
+  int IActivityPlayBack = R.layout.activity_play_back1;
+  //SurfaceViewPlayBack2 glView;
+  //int IActivityPlayBack = R.layout.activity_play_back2;
 
   SDVideoModel model;
   DevModel devModel;

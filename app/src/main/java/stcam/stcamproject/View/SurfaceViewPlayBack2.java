@@ -73,12 +73,12 @@ public class SurfaceViewPlayBack2 extends SurfaceView implements SurfaceHolder.C
 
   public void surfaceCreated(SurfaceHolder holder)
   {
-    lib.thNetEGLCreate(mDevModel.NetHandle, surfaceHolder.getSurface());
+    lib.thOpenGLCreateEGL(mDevModel.NetHandle, surfaceHolder.getSurface());
   }
 
   public void surfaceDestroyed(SurfaceHolder holder)
   {
-    lib.thNetEGLFree(mDevModel.NetHandle);
+    lib.thOpenGLFreeEGL(mDevModel.NetHandle);
     isSurfaceExist = false;
     //requestEGLDestory();
   }
@@ -94,7 +94,7 @@ public class SurfaceViewPlayBack2 extends SurfaceView implements SurfaceHolder.C
 //           //调用jni surface change 接口
 //           requestEGLChange(surfaceHolder.getSurface());
 //       }
-    lib.thNetOpenGLUpdateArea(mDevModel.NetHandle, 0, 0, w, h);
+    lib.thOpenGLSurfaceChanged(mDevModel.NetHandle, w, h);
   }
 
   private static String TAG = "VideoSurfaceView";
