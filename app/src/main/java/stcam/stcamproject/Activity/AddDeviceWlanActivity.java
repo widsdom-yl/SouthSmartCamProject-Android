@@ -186,6 +186,24 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
   {
     selectPosition = position;
     final SearchDevModel model = lists.get(position);
+
+    //判断是是否已经添加
+
+    boolean exist = false;
+
+    for (DevModel devModel : MainDevListFragment.mDevices)
+    {
+      if (devModel.SN.equals(model.getSN()))
+      {
+        exist = true;
+        break;
+      }
+    }
+    if (exist){
+      SouthUtil.showDialog(this,getString(R.string.error_device_added));
+      return;
+    }
+
     final DevModel dbModel = DataManager.getInstance().getSNDev(model.getSN());
 
 
