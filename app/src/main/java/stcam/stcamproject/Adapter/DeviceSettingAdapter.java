@@ -8,6 +8,7 @@ import com.model.PushSettingModel;
 
 import java.util.List;
 
+import stcam.stcamproject.Config.Config;
 import stcam.stcamproject.R;
 
 public class DeviceSettingAdapter extends BaseAdapter<String>
@@ -56,7 +57,7 @@ public class DeviceSettingAdapter extends BaseAdapter<String>
     {
       if (0 == position)//设备设置
       {
-        Str = devModel.GetDevName() + " >";
+        Str = devModel.GetDevName() + Config.StrOnNext;
       }
       else if (1 == position)//密码管理
       {
@@ -66,22 +67,22 @@ public class DeviceSettingAdapter extends BaseAdapter<String>
         {
           sb.append("*");
         }
-        Str = sb.toString() + " >";
+        Str = sb.toString() + Config.StrOnNext;
       }
       else if (2 == position)//推送开关
       {
         if (mPushSettingModel != null)
         {
-          Str = mPushSettingModel.getPushActiveDesc() + " >";
+          Str = mPushSettingModel.getPushActiveDesc() + Config.StrOnNext;
         }
       }
       else if (3 == position)//高级设置
       {
-        Str = " >";
+        Str = Config.StrOnNext;
       }
       else if (4 == position)//设备版本
       {
-        Str = devModel.SoftVersion + " >";
+        Str = devModel.SoftVersion + Config.StrOnNext;
       }
       holder.setText(R.id.detail_text, Str);
     }

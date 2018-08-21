@@ -116,8 +116,10 @@ public class LoginActivity extends BaseAppCompatActivity
 //        mPasswordView.setText("admin111");
 
     mEmailView.setText(AccountManager.getInstance().getDefaultUsr());
-    mPasswordView.setText(AccountManager.getInstance().getDefaultPwd());
-
+    if (remeber)//zhb add
+    {
+      mPasswordView.setText(AccountManager.getInstance().getDefaultPwd());
+    }
     Button mEmailSignInButton = (Button) findViewById(R.id.email_login_in_button);
     mEmailSignInButton.setOnClickListener(new OnClickListener()
     {

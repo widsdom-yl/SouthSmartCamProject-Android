@@ -9,6 +9,7 @@ import com.model.RecConfigModel;
 import java.util.List;
 
 import stcam.stcamproject.Application.STApplication;
+import stcam.stcamproject.Config.Config;
 import stcam.stcamproject.R;
 
 
@@ -55,7 +56,7 @@ public class PushSettingAdapter extends BaseAdapter<String>
       if (0 == position)
       {
         Str = mPushSettingModel.getPushIntervalDesc();
-        Str = Str + " >";
+        Str = Str + Config.StrOnNext;
         holder.setText(R.id.detail_text, Str);
       }
       else if (1 == position)
@@ -74,14 +75,14 @@ public class PushSettingAdapter extends BaseAdapter<String>
           {
             Str = STApplication.getInstance().getString(R.string.action_level_low);
           }
-          Str = Str + " >";
+          Str = Str + Config.StrOnNext;
           holder.setText(R.id.detail_text, Str);
         }
       }
       else if (2 == position)
       {
         Str = mPushSettingModel.getPIRSensitiveDesc();
-        Str = Str + " >";
+        Str = Str + Config.StrOnNext;
         holder.setText(R.id.detail_text, Str);
       }
       else if (3 == position)
@@ -94,7 +95,7 @@ public class PushSettingAdapter extends BaseAdapter<String>
         {
           Str = STApplication.getInstance().getString(R.string.action_close);
         }
-        Str = Str + " >";
+        Str = Str + Config.StrOnNext;
         holder.setText(R.id.detail_text, Str);
       }
       else if (4 == position)
@@ -105,7 +106,7 @@ public class PushSettingAdapter extends BaseAdapter<String>
           {
             Str = mRecConfigModel.getRec_AlmTimeLen() + STApplication.getInstance().getString(R.string
               .string_second);
-            Str = Str + " >";
+            Str = Str + Config.StrOnNext;
             holder.setText(R.id.detail_text, Str);
           }
         }
@@ -113,7 +114,7 @@ public class PushSettingAdapter extends BaseAdapter<String>
       else if (5 == position)
       {
         //detailArrow.setVisibility(View.VISIBLE);
-        Str = Str + " >";
+        Str = Str + Config.StrOnNext;
         holder.setText(R.id.detail_text, Str);
       }
 

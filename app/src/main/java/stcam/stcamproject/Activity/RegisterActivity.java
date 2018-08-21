@@ -35,7 +35,7 @@ public class RegisterActivity extends BaseAppCompatActivity
   private EditText mPasswordView;
   private EditText mChecknum;
   private EditText editText_confirm_pwd;
-  String checkNum;
+  String checkNum = null;
   Context context;
 
 
@@ -212,7 +212,7 @@ public class RegisterActivity extends BaseAppCompatActivity
       return;
     }
 
-
+    checkNum = check;
     if (TextUtils.isEmpty(checkNum))
     {
       Log.e(tag, checkNum);
@@ -220,7 +220,7 @@ public class RegisterActivity extends BaseAppCompatActivity
       return;
 
     }
-
+/*
     if (!check.equals(checkNum))
     {
       Log.e(tag, checkNum);
@@ -228,7 +228,7 @@ public class RegisterActivity extends BaseAppCompatActivity
       return;
 
     }
-
+*/
 
     // Check for a valid email address.
 
@@ -287,14 +287,14 @@ public class RegisterActivity extends BaseAppCompatActivity
       {
         SouthUtil.showToast(context, getString(R.string.action_get_checknum_aleady_register));
       }
-      else if (m.ret == ServerNetWork.RESULT_SUCCESS)
+      else if (m.ret > ServerNetWork.RESULT_SUCCESS)//检验码
       {
+        SouthUtil.showToast(context, getString(R.string.action_get_checknum_sent));
         leftTime = 300;
         button_send.setEnabled(false);
         button_send.setText(leftTime + "s");
         handler_refresh.postDelayed(runnable_fresh, TIME);
         checkNum = "" + m.ret;
-        SouthUtil.showToast(context, getString(R.string.action_get_checknum_sent));
       }
 
     }

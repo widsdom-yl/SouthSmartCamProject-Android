@@ -12,4 +12,5 @@ public class Config
   public static final int pushtype = 0;//推送服务商 极光(jPush=0)  google=1
 
   public static final int greenColor = Color.parseColor("#2197d8");
+  public static final String StrOnNext = "  >";
 }

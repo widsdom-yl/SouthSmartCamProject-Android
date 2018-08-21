@@ -286,7 +286,7 @@ public class ForgetPwdActivity extends BaseAppCompatActivity implements View.OnC
       {
         SouthUtil.showToast(ForgetPwdActivity.this, getString(R.string.action_get_checknum_aleady_register));
       }
-      else if (m.ret == ServerNetWork.RESULT_SUCCESS)
+      else if (m.ret > ServerNetWork.RESULT_SUCCESS)//检验码
       {
         checkNum = "" + m.ret;
         SouthUtil.showToast(ForgetPwdActivity.this, getString(R.string.action_get_checknum_sent));
