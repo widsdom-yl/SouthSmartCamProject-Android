@@ -120,11 +120,10 @@ void OnRecvDataNotify_Search(void *Sender, char *Buf, i32 BufLen)
   if (SearchEvent)
   {
     PInfo = &PPkt->CmdPkt.MulticastInfo;
-    SearchEvent(Info->UserCustom, PInfo->DevInfo.SN, PInfo->DevInfo.DevType, PInfo->DevInfo.DevModal,
-                PInfo->DevInfo.SoftVersion, PInfo->NetCfg.DataPort, PInfo->NetCfg.HttpPort, PInfo->NetCfg.rtspPort,
-                PInfo->DevInfo.DevName, PInfo->NetCfg.Lan.DevIP, PInfo->NetCfg.Lan.DevMAC, PInfo->NetCfg.Lan.SubMask,
-                PInfo->NetCfg.Lan.Gateway, PInfo->NetCfg.Lan.DNS1, PInfo->NetCfg.DDNS.DDNSServer,
-                PInfo->NetCfg.DDNS.DDNSDomain, PInfo->p2pCfg.UID);
+    SearchEvent(Info->UserCustom, PInfo->DevInfo.SN, PInfo->DevInfo.DevType, PInfo->DevInfo.DevModal, PInfo->DevInfo.SoftVersion,
+                PInfo->NetCfg.DataPort, PInfo->NetCfg.HttpPort, PInfo->NetCfg.rtspPort, PInfo->DevInfo.DevName, PInfo->NetCfg.Lan.DevIP,
+                PInfo->NetCfg.Lan.DevMAC, PInfo->NetCfg.Lan.SubMask, PInfo->NetCfg.Lan.Gateway, PInfo->NetCfg.Lan.DNS1,
+                PInfo->NetCfg.DDNS.DDNSServer, PInfo->NetCfg.DDNS.DDNSDomain, PInfo->p2pCfg.UID);
   }
 }
 //-----------------------------------------------------------------------------
@@ -241,8 +240,8 @@ HANDLE thNet_Init(bool IsInsideDecode, bool IsQueue, bool IsAdjustTime, bool IsA
 #endif
   TPlayParam *Play = (TPlayParam *) malloc(sizeof(TPlayParam));
   if (!Play) return NULL;
-  PRINTF("%s(%d) IsInsideDecode:%d IsQueue:%d IsAdjustTime:%d IsAutoReConn:%d SN:%X\n", __FUNCTION__, __LINE__,
-         IsInsideDecode, IsQueue, IsAdjustTime, IsAutoReConn, SN);
+  PRINTF("%s(%d) IsInsideDecode:%d IsQueue:%d IsAdjustTime:%d IsAutoReConn:%d SN:%X\n", __FUNCTION__, __LINE__, IsInsideDecode, IsQueue,
+         IsAdjustTime, IsAutoReConn, SN);
 #ifdef WIN32
   WSAStartup(MAKEWORD(2, 2), &wsaData);
 #endif
@@ -274,8 +273,7 @@ HANDLE thNet_Init(bool IsInsideDecode, bool IsQueue, bool IsAdjustTime, bool IsA
   return (HANDLE) Play;
 }
 //-----------------------------------------------------------------------------
-bool thNet_SetCallBack(HANDLE NetHandle, TvideoCallBack videoEvent, TaudioCallBack audioEvent, TalarmCallBack AlmEvent,
-                       void *UserCustom)
+bool thNet_SetCallBack(HANDLE NetHandle, TvideoCallBack videoEvent, TaudioCallBack audioEvent, TalarmCallBack AlmEvent, void *UserCustom)
 {
   TPlayParam *Play = (TPlayParam *) NetHandle;
   if (NetHandle == 0) return false;
@@ -568,8 +566,7 @@ void thread_QueueVideo(HANDLE NetHandle)
     if (!PInfo) goto labReadEnd;
     if (Play->DecodeStyle == Decode_None) goto labReadEnd;
     if (Play->DecodeStyle == Decode_IFrame && !PInfo->Frame.IsIFrame) goto labReadEnd;
-    ret = thDecodeVideoFrame(Play->decHandle, tmpNode->Buf, tmpNode->BufLen, &Play->ImgWidth, &Play->ImgHeight,
-                             &Play->FrameV420);
+    ret = thDecodeVideoFrame(Play->decHandle, tmpNode->Buf, tmpNode->BufLen, &Play->ImgWidth, &Play->ImgHeight, &Play->FrameV420);
     if (!ret) goto labReadEnd;
 
     Play->IsVideoDecodeSuccessFlag = true;
@@ -768,8 +765,7 @@ void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo *PInfo, char *Buf, int
 #ifdef ANDROID_EGL
         ThreadLock(&Play->Lock);
 #endif
-        ret = thDecodeVideoFrame(Play->decHandle, Buf, BufLen, &Play->ImgWidth, &Play->ImgHeight,
-                                 &Play->FrameV420);//yuv420
+        ret = thDecodeVideoFrame(Play->decHandle, Buf, BufLen, &Play->ImgWidth, &Play->ImgHeight, &Play->FrameV420);//yuv420
 #ifdef ANDROID_EGL
         ThreadUnlock(&Play->Lock);
 #endif
@@ -786,8 +782,7 @@ void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo *PInfo, char *Buf, int
         if (Play->ImgWidth > 0 && Play->ImgHeight > 0)
         {
 #if (defined(ANDROID))//android
-          ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth,
-                                 Play->ImgHeight);//ddraw yuv420->rgb32
+          ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth, Play->ImgHeight);//ddraw yuv420->rgb32
           pthread_cond_signal(&Play->SyncCond);
 #else//WIN32 ios
           ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth,
@@ -947,9 +942,8 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
     ret = RecvBuf(Play->hSocket, (char *) PHead, HEADPKTSIZE, NET_TIMEOUT / 2);
     if (!ret) continue;
 
-    if (PHead->VerifyCode != Head_VideoPkt && PHead->VerifyCode != Head_AudioPkt &&
-        PHead->VerifyCode != Head_SensePkt && PHead->VerifyCode != Head_TalkPkt &&
-        PHead->VerifyCode != Head_UploadPkt && PHead->VerifyCode != Head_DownloadPkt &&
+    if (PHead->VerifyCode != Head_VideoPkt && PHead->VerifyCode != Head_AudioPkt && PHead->VerifyCode != Head_SensePkt &&
+        PHead->VerifyCode != Head_TalkPkt && PHead->VerifyCode != Head_UploadPkt && PHead->VerifyCode != Head_DownloadPkt &&
         PHead->VerifyCode != Head_CfgPkt && PHead->VerifyCode != Head_MotionInfoPkt &&  //add at 20130506
         PHead->VerifyCode != Head_CmdPkt)
     {
@@ -973,15 +967,24 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
         char *Buf = &RecvBuffer[sizeof(TDataFrameInfo)];
         i32 BufLen = PHead->PktSize - 16;
 
-        if (Play->GroupType == pt_PlayHistory)
+        if (Play->GroupType == pt_PlayHistory && PHead->VerifyCode == Head_VideoPkt)
         {
           ThreadLock(&Play->Lock);
-          i64 iFrameTimeStart = Play->HistoryHead.StartTime * 1000000;
-          Play->TimestampHistoryPosition = (PInfo->Frame.FrameTime - iFrameTimeStart) / 1000;
-          Play->TimestampHistoryDuration = (Play->HistoryHead.EndTime - Play->HistoryHead.StartTime) * 1000;
-
-          Play->TimestampHistoryPosition = PInfo->Frame.PrevIFramePos + PInfo->Head.PktSize;
-          Play->TimestampHistoryDuration = Play->HistoryHead.FileSize;
+          Play->HistoryIndexType = Play->HistoryHead.IndexType;
+          if (Play->HistoryIndexType == 1)//没有=0 按文件大小 = 1 按时长=2
+          {
+            Play->HistoryTimestampPosition = PInfo->Frame.PrevIFramePos + PInfo->Head.PktSize;
+            Play->HistoryTimestampDuration = Play->HistoryHead.FileSize;
+          } else if (Play->HistoryHead.IndexType == 2)
+          {
+            i64 iFrameTimeStart = (i64)(Play->HistoryHead.StartTime) * 1000;//ms
+            Play->HistoryTimestampPosition = (PInfo->Frame.FrameTime / 1000 - iFrameTimeStart);//ms
+            Play->HistoryTimestampDuration = (Play->HistoryHead.EndTime - Play->HistoryHead.StartTime) * 1000;//ms
+          } else
+          {
+            Play->HistoryTimestampPosition = 0;
+            Play->HistoryTimestampDuration = 0;
+          }
           ThreadUnlock(&Play->Lock);
         }
 
@@ -1031,12 +1034,16 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
         {
           if (Play->AlmEvent)
           {
-            Play->AlmEvent(PPkt->CmdPkt.AlmSendPkt.AlmType, PPkt->CmdPkt.AlmSendPkt.AlmTime,
-                           PPkt->CmdPkt.AlmSendPkt.AlmPort, Play->UserCustom);
+            Play->AlmEvent(PPkt->CmdPkt.AlmSendPkt.AlmType, PPkt->CmdPkt.AlmSendPkt.AlmTime, PPkt->CmdPkt.AlmSendPkt.AlmPort,
+                           Play->UserCustom);
           }
         } else if (PPkt->CmdPkt.MsgID == Msg_GetDevRecFileHead)
         {
           Play->HistoryHead = PPkt->CmdPkt.FileHead;
+        }
+        else if (PPkt->CmdPkt.MsgID == Msg_StopPlayRecFile)
+        {
+          Play->HistoryIsClose = true;
         }
       }
         break;
@@ -1194,8 +1201,8 @@ void thread_RecvData_P2P(HANDLE NetHandle)
       }
     }
 
-    BufLen = avRecvFrameData2(Play->p2p_avIndex, Play->RecvBuffer, MAX_BUF_SIZE, &outBufSize, &outFrmSize,
-                              (char *) &frameInfo, sizeof(FRAMEINFO_t), &outFrmInfoSize, &frmNo);
+    BufLen = avRecvFrameData2(Play->p2p_avIndex, Play->RecvBuffer, MAX_BUF_SIZE, &outBufSize, &outFrmSize, (char *) &frameInfo,
+                              sizeof(FRAMEINFO_t), &outFrmInfoSize, &frmNo);
 
     if (BufLen == AV_ER_DATA_NOREADY)
     {
@@ -1213,10 +1220,25 @@ void thread_RecvData_P2P(HANDLE NetHandle)
 
     Play->RecvLen = BufLen;
     PPkt = (TNewCmdPkt *) (Play->RecvBuffer);
-    if (PPkt->VerifyCode == Head_CmdPkt && PPkt->MsgID == Msg_Alarm)
+    if (PPkt->VerifyCode == Head_CmdPkt)
     {
-      if (Play->AlmEvent)
-        Play->AlmEvent(PPkt->AlmSendPkt.AlmType, PPkt->AlmSendPkt.AlmTime, PPkt->AlmSendPkt.AlmPort, Play->UserCustom);
+      switch (PPkt->MsgID)
+      {
+        case Msg_Alarm:
+          if (Play->AlmEvent)
+            Play->AlmEvent(PPkt->AlmSendPkt.AlmType, PPkt->AlmSendPkt.AlmTime, PPkt->AlmSendPkt.AlmPort, Play->UserCustom);
+          break;
+
+        case Msg_GetDevRecFileHead:
+          Play->HistoryHead = PPkt->FileHead;
+          break;
+
+        case Msg_StopPlayRecFile:
+          Play->HistoryIsClose = true;
+          break;
+
+      }//switch (PPkt->MsgID)
+
       continue;
     }
 
@@ -1236,6 +1258,26 @@ void thread_RecvData_P2P(HANDLE NetHandle)
           if (PInfo->Frame.StreamType != 1) continue;
         }
         //20180702 add
+      }
+      if (Play->GroupType == pt_PlayHistory)
+      {
+        ThreadLock(&Play->Lock);
+        Play->HistoryIndexType = Play->HistoryHead.IndexType;
+        if (Play->HistoryIndexType == 1)//没有=0 按文件大小 = 1 按时长=2
+        {
+          Play->HistoryTimestampPosition = PInfo->Frame.PrevIFramePos + PInfo->Head.PktSize;
+          Play->HistoryTimestampDuration = Play->HistoryHead.FileSize;
+        } else if (Play->HistoryHead.IndexType == 2)
+        {
+          i64 iFrameTimeStart = (i64)(Play->HistoryHead.StartTime) * 1000;//ms
+          Play->HistoryTimestampPosition = (PInfo->Frame.FrameTime / 1000 - iFrameTimeStart);//ms
+          Play->HistoryTimestampDuration = (Play->HistoryHead.EndTime - Play->HistoryHead.StartTime) * 1000;//ms
+        } else
+        {
+          Play->HistoryTimestampPosition = 0;
+          Play->HistoryTimestampDuration = 0;
+        }
+        ThreadUnlock(&Play->Lock);
       }
 
       if (!Play->IsIFrameFlag)
@@ -1307,8 +1349,7 @@ strcpy(Play->LocalIP, sLocalIP);
 
   memset(&Sinfo, 0, sizeof(struct st_SInfo));
   IOTC_Session_Check(Play->p2p_SessionID, &Sinfo);
-  Play->p2p_avIndex = avClientStart2(Play->p2p_SessionID, Play->UserName, Play->Password, Play->TimeOut, &nServType, 0,
-                                     &nResend);
+  Play->p2p_avIndex = avClientStart2(Play->p2p_SessionID, Play->UserName, Play->Password, Play->TimeOut, &nServType, 0, &nResend);
 
   if (Play->p2p_avIndex < 0) goto exits;
 
@@ -1409,8 +1450,8 @@ bool thNet_Connect(HANDLE NetHandle, char *UserName, char *Password, char *IPUID
 
   if (Play->IsConnect) Play->iConnectStatus = THNET_CONNSTATUS_SUCCESS; else Play->iConnectStatus = THNET_CONNSTATUS_FAIL;
 
-  PRINTF("%s(%s)(%s) UserName:%s Password:%s TimeOut:%d IsConnect:%d\n", __FUNCTION__, Play->IPUID, Play->LocalIP,
-         Play->UserName, Play->Password, Play->TimeOut, Play->IsConnect);
+  PRINTF("%s(%s)(%s) UserName:%s Password:%s TimeOut:%d IsConnect:%d\n", __FUNCTION__, Play->IPUID, Play->LocalIP, Play->UserName,
+         Play->Password, Play->TimeOut, Play->IsConnect);
   return Play->IsConnect;
 }
 //-----------------------------------------------------------------------------
@@ -1571,8 +1612,8 @@ bool thNet_Play(HANDLE NetHandle, u32 VideoChlMask, u32 AudioChlMask, u32 SubVid
   if (!Play->IsConnect) return false;
 
   if (!(VideoChlMask == 0 && AudioChlMask == 0 && SubVideoChlMask == 0))
-    PRINTF ("%s(%s)(%s) VideoChlMask:%d AudioChlMask:%d SubVideoChlMask:%d\n", __FUNCTION__, Play->IPUID, Play->LocalIP,
-            VideoChlMask, AudioChlMask, SubVideoChlMask);
+    PRINTF ("%s(%s)(%s) VideoChlMask:%d AudioChlMask:%d SubVideoChlMask:%d\n", __FUNCTION__, Play->IPUID, Play->LocalIP, VideoChlMask,
+            AudioChlMask, SubVideoChlMask);
 
   ThreadLock(&Play->Lock);
   Play->VideoChlMask = VideoChlMask;
@@ -1734,9 +1775,8 @@ bool thNet_TalkOpen(HANDLE NetHandle)
   if (Play->talkHandle)
   {
     thAudioTalk_SetFormat(Play->talkHandle, Play->DevCfg.AudioCfgPkt.AudioFormat.nChannels,
-                          Play->DevCfg.AudioCfgPkt.AudioFormat.wBitsPerSample,
-                          Play->DevCfg.AudioCfgPkt.AudioFormat.nSamplesPerSec, AUDIO_COLLECT_SIZE, callback_AudioTalk,
-                          Play);
+                          Play->DevCfg.AudioCfgPkt.AudioFormat.wBitsPerSample, Play->DevCfg.AudioCfgPkt.AudioFormat.nSamplesPerSec,
+                          AUDIO_COLLECT_SIZE, callback_AudioTalk, Play);
   }
   ThreadUnlock(&Play->Lock);
   return (Play->talkHandle != NULL);
@@ -1766,6 +1806,7 @@ bool thNet_RemoteFilePlay(HANDLE NetHandle, char *FileName)
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
   PRINTF("%s(%s) FileName:%s\n", Play->IPUID, Play->LocalIP, FileName);
+  Play->IsVideoDecodeSuccessFlag = false;
   if (!Play->Isp2pConn)
   {
     TNetCmdPkt Pkt;
@@ -1775,6 +1816,8 @@ bool thNet_RemoteFilePlay(HANDLE NetHandle, char *FileName)
     Play->AudioChlMask = 1;
     Play->SubVideoChlMask = 1;
     Play->GroupType = pt_PlayHistory;
+
+    Play->HistoryIsClose = false;
 
     memset(&Pkt, 0, sizeof(Pkt));
     Pkt.HeadPkt.VerifyCode = Head_CmdPkt;
@@ -1814,6 +1857,7 @@ bool thNet_RemoteFileStop(HANDLE NetHandle)
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
   PRINTF("%s(%s)(%s)\n", __FUNCTION__, Play->IPUID, Play->LocalIP);
+  Play->IsVideoDecodeSuccessFlag = false;
   if (!Play->Isp2pConn)
   {
     i32 ret;
@@ -1859,6 +1903,7 @@ bool thNet_RemoteFilePlayControl(HANDLE NetHandle, i32 PlayCtrl, i32 Speed, i32 
   if (!Play->IsConnect) return false;
   PRINTF("%s(%s)(%s) PlayCtrl:%d Speed:%d Pos:%d\n", __FUNCTION__, Play->IPUID, Play->LocalIP, PlayCtrl, Speed, Pos);
 
+  Play->IsVideoDecodeSuccessFlag = false;
   if (!Play->Isp2pConn)
   {
     i32 ret;
@@ -1896,21 +1941,33 @@ bool thNet_RemoteFilePlayControl(HANDLE NetHandle, i32 PlayCtrl, i32 Speed, i32 
 
   return false;
 }
-
+//-----------------------------------------------------------------------------
+int thNet_RemoteFileIsClose(HANDLE NetHandle)
+{
+  TPlayParam *Play = (TPlayParam *) NetHandle;
+  if (NetHandle == 0) return false;
+  return Play->HistoryIsClose;
+}
+//-----------------------------------------------------------------------------
+int thNet_RemoteFileGetIndexType(HANDLE NetHandle)
+{
+  TPlayParam *Play = (TPlayParam *) NetHandle;
+  if (NetHandle == 0) return false;
+  return Play->HistoryIndexType;
+}
 //-----------------------------------------------------------------------------
 int thNet_RemoteFileGetPosition(HANDLE NetHandle)
 {
   TPlayParam *Play = (TPlayParam *) NetHandle;
   if (NetHandle == 0) return false;
-  return Play->TimestampHistoryPosition;
+  return Play->HistoryTimestampPosition;
 }
-
 //-----------------------------------------------------------------------------
 int thNet_RemoteFileGetDuration(HANDLE NetHandle)
 {
   TPlayParam *Play = (TPlayParam *) NetHandle;
   if (NetHandle == 0) return false;
-  return Play->TimestampHistoryDuration;
+  return Play->HistoryTimestampDuration;
 }
 //-----------------------------------------------------------------------------
 bool thNet_RemoteFileSetPosition(HANDLE NetHandle, int Pos)
@@ -2134,8 +2191,7 @@ bool thNet_StartRec(HANDLE NetHandle, char *RecFileName/*FileName=NULL,配合thNet
 #ifdef WIN32
     sprintf(PathFileName, "%s%0.4d%0.2d%0.2d_%0.2d%0.2d%0.2d.mp4", Play->RecPath, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 #else
-    sprintf(PathFileName, "%s%.4d%.2d%.2d_%.2d%.2d%.2d.mp4", Play->RecPath, st.wYear, st.wMonth, st.wDay, st.wHour,
-            st.wMinute, st.wSecond);
+    sprintf(PathFileName, "%s%.4d%.2d%.2d_%.2d%.2d%.2d.mp4", Play->RecPath, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 #endif
   } else
   {
@@ -2144,8 +2200,7 @@ bool thNet_StartRec(HANDLE NetHandle, char *RecFileName/*FileName=NULL,配合thNet
   PRINTF("%s(%s) PathFileName:%s\n", __FUNCTION__, Play->IPUID, PathFileName);
   if (Play->ImgWidth > 0 && Play->ImgHeight > 0)//一开始没有thNet_Play之前，ImgWidth=0 ImgHeight=0
   {
-    Play->RecHandle = thRecordStart(PathFileName, MediaType, Play->ImgWidth, Play->ImgHeight,
-                                    Play->FrameRate,//主 次码流 是否要分开？
+    Play->RecHandle = thRecordStart(PathFileName, MediaType, Play->ImgWidth, Play->ImgHeight, Play->FrameRate,//主 次码流 是否要分开？
                                     CODEC_PCM, afmt->nChannels, afmt->nSamplesPerSec, afmt->wBitsPerSample);
     PRINTF("%s(%d) Play->RecHandle:%p\n", __FUNCTION__, __LINE__, Play->RecHandle);
     return (Play->RecHandle != NULL);
@@ -2207,8 +2262,8 @@ bool thNet_AudioPlayOpen(HANDLE NetHandle)
   if (Play->audioHandle)
   {
     thAudioPlay_SetFormat(Play->audioHandle, Play->DevCfg.AudioCfgPkt.AudioFormat.nChannels,
-                          Play->DevCfg.AudioCfgPkt.AudioFormat.wBitsPerSample,
-                          Play->DevCfg.AudioCfgPkt.AudioFormat.nSamplesPerSec, AUDIO_COLLECT_SIZE);
+                          Play->DevCfg.AudioCfgPkt.AudioFormat.wBitsPerSample, Play->DevCfg.AudioCfgPkt.AudioFormat.nSamplesPerSec,
+                          AUDIO_COLLECT_SIZE);
   }
   ThreadUnlock(&Play->Lock);
   return true;
@@ -2319,8 +2374,7 @@ bool thNet_SaveToJpg(HANDLE NetHandle, char *JpgFileName)
 #ifdef WIN32
     sprintf(PathFileName, "%s%0.4d%0.2d%0.2d_%0.2d%0.2d%0.2d.jpg", Play->JpgPath, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 #else
-    sprintf(PathFileName, "%s%.4d%.2d%.2d_%.2d%.2d%.2d.jpg", Play->JpgPath, st.wYear, st.wMonth, st.wDay, st.wHour,
-            st.wMinute, st.wSecond);
+    sprintf(PathFileName, "%s%.4d%.2d%.2d_%.2d%.2d%.2d.jpg", Play->JpgPath, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 #endif
   } else
   {
@@ -2515,8 +2569,7 @@ void thread_eglRender(HANDLE NetHandle)
     usleep(1000 * 10);
   }
   //eglCreate
-  EGLint configSpec[] = {EGL_RED_SIZE, 8, EGL_GREEN_SIZE, 8, EGL_BLUE_SIZE, 8, EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-                         EGL_NONE};
+  EGLint configSpec[] = {EGL_RED_SIZE, 8, EGL_GREEN_SIZE, 8, EGL_BLUE_SIZE, 8, EGL_SURFACE_TYPE, EGL_WINDOW_BIT, EGL_NONE};
 
   int windowWidth, windowHeight;
   eglDisp = eglGetDisplay(EGL_DEFAULT_DISPLAY);
@@ -2610,18 +2663,18 @@ void thread_eglRender(HANDLE NetHandle)
     //eglRender
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, yTextureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Play->FrameV420.linesize[0], Play->ImgHeight, 0, GL_LUMINANCE,
-                 GL_UNSIGNED_BYTE, Play->FrameV420.data[0]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Play->FrameV420.linesize[0], Play->ImgHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE,
+                 Play->FrameV420.data[0]);
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, uTextureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Play->FrameV420.linesize[1], Play->ImgHeight / 2, 0, GL_LUMINANCE,
-                 GL_UNSIGNED_BYTE, Play->FrameV420.data[1]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Play->FrameV420.linesize[1], Play->ImgHeight / 2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE,
+                 Play->FrameV420.data[1]);
 
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, vTextureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Play->FrameV420.linesize[2], Play->ImgHeight / 2, 0, GL_LUMINANCE,
-                 GL_UNSIGNED_BYTE, Play->FrameV420.data[2]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Play->FrameV420.linesize[2], Play->ImgHeight / 2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE,
+                 Play->FrameV420.data[2]);
 
     //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

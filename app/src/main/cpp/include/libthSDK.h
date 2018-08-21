@@ -241,6 +241,8 @@ Speed:如果PlayCtrl=PS_StepBackward, PS_FastForward ，则保存快进快退倍率 1 2 4 8 
 Pos:如果PlayCtrl=PS_DragPos，则保存文件文件位置Pos
 返 回 值：成功返回true，失败返回false
 ------------------------------------------------------------------------------*/
+EXPORT int thNet_RemoteFileGetIndexType(HANDLE NetHandle);
+EXPORT int thNet_RemoteFileIsClose(HANDLE NetHandle);
 EXPORT int thNet_RemoteFileGetPosition(HANDLE NetHandle);//时间戳，单位ms
 
 EXPORT bool thNet_RemoteFileSetPosition(HANDLE NetHandle, int Pos);//时间戳，单位ms

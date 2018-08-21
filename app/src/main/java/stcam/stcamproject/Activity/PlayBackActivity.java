@@ -26,6 +26,7 @@ import com.thSDK.lib;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
+import stcam.stcamproject.Util.TFun;
 import stcam.stcamproject.View.SurfaceViewPlayBack1;
 import stcam.stcamproject.View.SurfaceViewPlayBack2;
 
@@ -46,10 +47,14 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
   ProgressBar load_progress;
 
   SeekBar seekBarTimer;
-  TextView txtTime;
+  TextView txtTimePosition, txtTimeDuration;
   ImageButton BtnPlay;
-  int remoteFileDuration = 0;//毫秒
   boolean isPlay = true;//默认进入页面播放
+  int iTimeDragPos = 0;
+  boolean IsPauseUpdateseekBar = false;
+  int IndexType = 0;
+  int iPosition = 0;
+  int iMax = 0;
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
@@ -125,15 +130,52 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
     public void run()
     {
       //获取播放的时常，并调节seekbar
-      //如果播放的时间和seekbar的时间绝对值
+      IndexType = lib.thNetRemoteFileGetIndexType(devModel.NetHandle);
+      iPosition = lib.thNetRemoteFileGetPosition(devModel.NetHandle);
+      iMax = lib.thNetRemoteFileGetDuration(devModel.NetHandle);
 
-      int currentDuration = lib.thNetRemoteFileGetPosition(devModel.NetHandle);
-      if (currentDuration > 0)
+      seekBarTimer.setMax(iMax);
+
+      int iTimeNow = lib.GetTime();
+      if (iTimeDragPos == 0)
       {
-        seekBarTimer.setProgress(currentDuration);
+        seekBarTimer.setProgress(iPosition);
       }
-      seekBarTimer.setMax(lib.thNetRemoteFileGetDuration(devModel.NetHandle));
-      //handler_refresh.postDelayed(runnable_refresh, 1000);
+      else
+      {
+        if (iTimeNow - iTimeDragPos > 3)
+        {
+          iTimeDragPos = 0;
+        }
+      }
+
+      if (IndexType == 1)//按文件长度
+      {
+        String StrPosition = String.format("%d %", iPosition * 100 / iMax);
+        String StrDuration = String.format("%d %", 100);
+        txtTimePosition.setText(StrPosition);
+        txtTimeDuration.setText(StrDuration);
+      }
+      else if (IndexType == 2)//按时间戳
+      {
+        int iHour, iMinute, iSecond;
+
+        iPosition = iPosition / 1000;
+        iHour = iPosition / 3600;
+        iMinute = (iPosition - iHour * 60) / 60;
+        iSecond = iPosition % 60;
+        String StrPosition = String.format("%02d:%02d:%02d", iHour, iMinute, iSecond);
+        txtTimePosition.setText(StrPosition);
+
+        iMax = iMax / 1000;
+        iHour = iMax / 3600;
+        iMinute = (iMax - iHour * 60) / 60;
+        iSecond = iMax % 60;
+        String StrDuration = String.format("%02d:%02d:%02d", iHour, iMinute, iSecond);
+        txtTimeDuration.setText(StrDuration);
+      }
+
+      handler_refresh.postDelayed(runnable_refresh, 1000);
     }
   };
 
@@ -196,9 +238,7 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
         case TMsg.Msg_GotFirstFrame:
           load_progress.setVisibility(View.GONE);
           glView.setBackgroundColor(Color.TRANSPARENT);
-          remoteFileDuration = lib.thNetRemoteFileGetDuration(devModel.NetHandle);
           handler_refresh.postDelayed(runnable_refresh, 1000);
-          Log.e(tag, "remoteFileDuration : " + remoteFileDuration + "ms");
           break;
 
         default:
@@ -224,7 +264,8 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
 //        }
 
     seekBarTimer = findViewById(R.id.seekBar_time);
-    txtTime = findViewById(R.id.text_time);
+    txtTimePosition = findViewById(R.id.txtTimePosition);
+    txtTimeDuration = findViewById(R.id.txtTimeDuration);
 
     seekBarTimer.setOnSeekBarChangeListener(this);
 
@@ -268,21 +309,41 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
   @Override
   public void onProgressChanged(SeekBar seekBar, int value, boolean b)
   {
-    int valueCalcute = remoteFileDuration;// / 100 * value / 1000;
-    Log.e(tag, "value is " + value + ",onProgressChanged to : " + valueCalcute + "s");
-    txtTime.setText(valueCalcute + "ms");
+/*
+    if (IsPauseUpdateseekBar)
+    {
+      if (IndexType == 1)//按文件长度
+      {
+        String StrPosition = String.format("%d %", value * 100 / iMax);
+        txtTimePosition.setText(StrPosition);
+      }
+      else if (IndexType == 2)//按时间戳
+      {
+        int iHour, iMinute, iSecond;
+
+        value = value / 1000;
+        iHour = value / 3600;
+        iMinute = (value - iHour * 60) / 60;
+        iSecond = value % 60;
+        String StrPosition = String.format("%02d:%02d:%02d", iHour, iMinute, iSecond);
+        txtTimePosition.setText(StrPosition);
+      }
+    }
+    */
   }
 
   @Override
   public void onStartTrackingTouch(SeekBar seekBar)
   {
+    IsPauseUpdateseekBar = true;
   }
 
   @Override
   public void onStopTrackingTouch(SeekBar seekBar)
   {
-    Log.e(tag, "value is " + seekBar.getProgress());
-    int targetDurtation = seekBar.getProgress();// * remoteFileDuration;// / 100;
-    lib.thNetRemoteFileSetPosition(devModel.NetHandle, targetDurtation);
+    int iPos = seekBar.getProgress();
+    lib.thNetRemoteFileSetPosition(devModel.NetHandle, iPos);
+    iTimeDragPos = lib.GetTime();
+    IsPauseUpdateseekBar = false;
   }
 }

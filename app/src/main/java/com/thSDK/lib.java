@@ -87,6 +87,10 @@ public class lib extends Activity
 
   public static native boolean thNetRemoteFilePlayControl(long NetHandle, int PlayCtrl, int Speed, int Pos);
 
+  public static native int thNetRemoteFileGetIndexType(long NetHandle);//索引类型 没有=0 按文件大小 = 1 按时长=2
+
+  public static native boolean thNetRemoteFileIsClose(long NetHandle);
+
   public static native int thNetRemoteFileGetPosition(long NetHandle);//时间戳，单位ms
 
   public static native int thNetRemoteFileGetDuration(long NetHandle);//文件长度，单位ms
@@ -245,6 +249,8 @@ public class lib extends Activity
   public static native boolean IsConnectWLAN();
 
   public static native String GetLocalIP();
+
+  public static native int GetTime();
 
   public static native boolean thOpenGLSurfaceChanged(long NetHandle, int Width, int Height);
 

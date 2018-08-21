@@ -97,6 +97,11 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_GetLocalIP(JNIEnv *env, jclass obj)
   return jtmpBuf;
 }
 //-----------------------------------------------------------------------------
+JNIEXPORT int JNICALL Java_com_thSDK_lib_GetTime(JNIEnv *env, jclass obj)
+{
+  return time(NULL);
+}
+//-----------------------------------------------------------------------------
 JNIEXPORT u64 JNICALL
 Java_com_thSDK_lib_thNetInit(JNIEnv *env, jclass obj, bool IsInsideDecode, bool IsQueue, bool IsAdjustTime,
                              bool IsAutoReConn, jstring jSN)
@@ -268,6 +273,18 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFilePlay(JNIEnv *env, jclas
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFileStop(JNIEnv *env, jclass obj, u64 NetHandle)
 {
   return thNet_RemoteFileStop((HANDLE) NetHandle);
+}
+//-----------------------------------------------------------------------------
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFileIsClose(JNIEnv *env, jclass obj, u64 NetHandle)
+{
+  //?¶é?´æ?³ï???ä½?ms
+  return thNet_RemoteFileIsClose((HANDLE) NetHandle);
+}
+//-----------------------------------------------------------------------------
+JNIEXPORT int JNICALL Java_com_thSDK_lib_thNetRemoteFileGetIndexType(JNIEnv *env, jclass obj, u64 NetHandle)
+{
+  //?¶é?´æ?³ï???ä½?ms
+  return thNet_RemoteFileGetIndexType((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT int JNICALL Java_com_thSDK_lib_thNetRemoteFileGetPosition(JNIEnv *env, jclass obj, u64 NetHandle)
@@ -619,3 +636,4 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetIsVideoDecodeSuccess(JNIEnv *env,
 {
   return thNet_IsVideoDecodeSuccess((HANDLE) NetHandle);
 }
+//-----------------------------------------------------------------------------
