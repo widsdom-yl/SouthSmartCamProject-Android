@@ -856,6 +856,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
           lod.dismiss();
           if (SearchMsg == null || SearchMsg.equals(""))
           {
+            SouthUtil.showDialog(MainDevListFragment.this.getActivity(), MainDevListFragment.this.getString(R.string.string_search_no_device));
             return;
           }
           Log.e(tag, SearchMsg);

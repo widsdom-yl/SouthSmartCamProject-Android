@@ -33,10 +33,10 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
 {
   static final String tag = "PlayBackActivity";
 
-  SurfaceViewPlayBack1 glView;
-  int IActivityPlayBack = R.layout.activity_play_back1;
-  //SurfaceViewPlayBack2 glView;
-  //int IActivityPlayBack = R.layout.activity_play_back2;
+  //SurfaceViewPlayBack1 glView;
+  //int IActivityPlayBack = R.layout.activity_play_back1;
+  SurfaceViewPlayBack2 glView;
+  int IActivityPlayBack = R.layout.activity_play_back2;
 
   SDVideoModel model;
   DevModel devModel;
@@ -128,13 +128,12 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
       //如果播放的时间和seekbar的时间绝对值
 
       int currentDuration = lib.thNetRemoteFileGetPosition(devModel.NetHandle);
-      if (remoteFileDuration > 0)
+      if (currentDuration > 0)
       {
-        float Position = (float) currentDuration / remoteFileDuration * 100;
-        seekBarTimer.setProgress((int) Position);
-        Log.e(tag, "get current position is " + Position + ",currentDuration is " + currentDuration);
+        seekBarTimer.setProgress(currentDuration);
       }
-      handler_refresh.postDelayed(runnable_refresh, 1000);
+      seekBarTimer.setMax(lib.thNetRemoteFileGetDuration(devModel.NetHandle));
+      //handler_refresh.postDelayed(runnable_refresh, 1000);
     }
   };
 
@@ -233,8 +232,8 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
     BtnPlay.setOnClickListener(this);
     BtnPlay.setImageResource(R.drawable.pause0);
 
-    BtnPlay.setVisibility(View.INVISIBLE);
-    seekBarTimer.setVisibility(View.INVISIBLE);
+    //BtnPlay.setVisibility(View.INVISIBLE);
+    //seekBarTimer.setVisibility(View.INVISIBLE);
   }
 
   @Override
@@ -269,7 +268,7 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
   @Override
   public void onProgressChanged(SeekBar seekBar, int value, boolean b)
   {
-    int valueCalcute = remoteFileDuration / 100 * value / 1000;
+    int valueCalcute = remoteFileDuration;// / 100 * value / 1000;
     Log.e(tag, "value is " + value + ",onProgressChanged to : " + valueCalcute + "s");
     txtTime.setText(valueCalcute + "ms");
   }
@@ -283,7 +282,7 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
   public void onStopTrackingTouch(SeekBar seekBar)
   {
     Log.e(tag, "value is " + seekBar.getProgress());
-    int targetDurtation = seekBar.getProgress() * remoteFileDuration / 100;
+    int targetDurtation = seekBar.getProgress();// * remoteFileDuration;// / 100;
     lib.thNetRemoteFileSetPosition(devModel.NetHandle, targetDurtation);
   }
 }

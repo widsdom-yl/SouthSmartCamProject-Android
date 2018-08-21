@@ -254,6 +254,7 @@ public class lib extends Activity
 
   public static native boolean thOpenGLFreeEGL(long NetHandle);
 
+  public static native boolean thNetIsVideoDecodeSuccess(long NetHandle);
 
 
 }

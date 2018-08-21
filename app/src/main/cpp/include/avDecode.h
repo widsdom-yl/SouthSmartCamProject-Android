@@ -221,6 +221,7 @@ typedef struct TPlayParam
 
 #ifdef ANDROID
   bool IsExitRender;
+  bool IsRenderSuccess;
   H_THREAD thRenderEGL;//视频解码线程句柄
   ANativeWindow * Window;
 #endif

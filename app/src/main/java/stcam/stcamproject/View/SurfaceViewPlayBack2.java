@@ -1,13 +1,14 @@
 package stcam.stcamproject.View;
 import android.content.Context;
 import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import com.model.DevModel;
 import com.model.SDVideoModel;
+import com.thSDK.TMsg;
 import com.thSDK.lib;
-import stcam.stcamproject.Util.FileUtil;
 
 public class SurfaceViewPlayBack2 extends SurfaceView implements SurfaceHolder.Callback
 {
@@ -15,7 +16,6 @@ public class SurfaceViewPlayBack2 extends SurfaceView implements SurfaceHolder.C
   boolean isSurfaceExist = false;
 
   DevModel mDevModel;
-  boolean hasCapture;
   boolean hasGotFirstFrame;
   private Handler mHandler;
   SDVideoModel mSDVideoModel;
@@ -74,6 +74,26 @@ public class SurfaceViewPlayBack2 extends SurfaceView implements SurfaceHolder.C
   public void surfaceCreated(SurfaceHolder holder)
   {
     lib.thOpenGLCreateEGL(mDevModel.NetHandle, surfaceHolder.getSurface());
+
+    new Thread(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        while (true)
+        {
+          hasGotFirstFrame = lib.thNetIsVideoDecodeSuccess(mDevModel.NetHandle);
+          if (hasGotFirstFrame)
+          {
+            if (mHandler != null)
+            {
+              mHandler.sendMessage(Message.obtain(mHandler, TMsg.Msg_GotFirstFrame, null));
+            }
+            return;
+          }
+        }
+      }
+    }).start();
   }
 
   public void surfaceDestroyed(SurfaceHolder holder)
@@ -85,15 +105,6 @@ public class SurfaceViewPlayBack2 extends SurfaceView implements SurfaceHolder.C
 
   public void surfaceChanged(SurfaceHolder holder, int format, int w, int h)
   {
-//       if (!isSurfaceExist){
-//           isSurfaceExist = true;
-//           //初始化surface
-//           requestEGLInit(surfaceHolder.getSurface(),model.NetHandle);
-//       }
-//       else{
-//           //调用jni surface change 接口
-//           requestEGLChange(surfaceHolder.getSurface());
-//       }
     lib.thOpenGLSurfaceChanged(mDevModel.NetHandle, w, h);
   }
 

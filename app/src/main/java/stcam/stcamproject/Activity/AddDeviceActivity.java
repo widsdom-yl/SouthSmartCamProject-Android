@@ -181,6 +181,7 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
         case TMsg.Msg_SearchOver:
           if (SearchMsg.equals(""))
           {
+            SouthUtil.showDialog(AddDeviceActivity.this, AddDeviceActivity.this.getString(R.string.string_search_no_device));
             return;
           }
           Log.e(tag, SearchMsg);
@@ -306,6 +307,10 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
       if (ServerNetWork.RESULT_SUCCESS == m.ret)
       {
         back2TopActivity();
+      }
+      else if (ServerNetWork.RESULT_USER_ISBIND == m.ret)
+      {
+        SouthUtil.showToast(AddDeviceActivity.this, getString(R.string.string_user_IsBind));
       }
       else if (ServerNetWork.RESULT_USER_LOGOUT == m.ret)
       {

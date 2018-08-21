@@ -614,3 +614,8 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thOpenGLFreeEGL(JNIEnv *env, jclass ob
 {
   return th_OpenGLFreeEGL((HANDLE) NetHandle);
 }
+//-----------------------------------------------------------------------------
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetIsVideoDecodeSuccess(JNIEnv *env, jclass obj, u64 NetHandle)
+{
+  return thNet_IsVideoDecodeSuccess((HANDLE) NetHandle);
+}

@@ -40,10 +40,10 @@ import stcam.stcamproject.View.VoiceImageButton;
 public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnClickListener, GestureDetector.OnGestureListener, View
   .OnTouchListener
 {
-  SurfaceViewLive1 glView;
-  int iActivityPlayLive = R.layout.activity_play_live1;
-  //SurfaceViewLive2 glView;
-  //int iActivityPlayLive = R.layout.activity_play_live2;
+  //SurfaceViewLive1 glView;
+  //int iActivityPlayLive = R.layout.activity_play_live1;
+  SurfaceViewLive2 glView;
+  int iActivityPlayLive = R.layout.activity_play_live2;
 
   DevModel devModel;
   VoiceImageButton button_snapshot;

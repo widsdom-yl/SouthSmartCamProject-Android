@@ -325,6 +325,7 @@ EXPORT bool th_OpenGLRenderRGB565(HANDLE NetHandle);
 EXPORT bool th_OpenGLCreateEGL(HANDLE NetHandle, void *Window);
 
 EXPORT bool th_OpenGLFreeEGL(HANDLE NetHandle);
+EXPORT bool thNet_IsVideoDecodeSuccess(HANDLE NetHandle);
 
 #endif
 EXPORT bool thManage_AddDevice(u32 SN, HANDLE NetHandle);

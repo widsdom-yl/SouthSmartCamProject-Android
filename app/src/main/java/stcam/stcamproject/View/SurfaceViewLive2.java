@@ -2,11 +2,15 @@ package stcam.stcamproject.View;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Message;
+import android.support.v4.print.PrintHelper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.model.DevModel;
+import com.thSDK.TMsg;
 import com.thSDK.lib;
 
 import stcam.stcamproject.Util.FileUtil;
@@ -18,7 +22,6 @@ import stcam.stcamproject.Util.FileUtil;
 public class SurfaceViewLive2 extends SurfaceView implements SurfaceHolder.Callback
 {
   public SurfaceHolder surfaceHolder;
-  boolean isSurfaceExist = false;
   DevModel model;
   boolean hasCapture;
   boolean hasGotFirstFrame;
@@ -52,6 +55,7 @@ public class SurfaceViewLive2 extends SurfaceView implements SurfaceHolder.Callb
     surfaceHolder = getHolder();
     surfaceHolder.addCallback(this);
     hasGotFirstFrame = false;
+    hasCapture = false;
     //  this.setBackgroundColor(Color.TRANSPARENT);
   }
 
@@ -69,26 +73,44 @@ public class SurfaceViewLive2 extends SurfaceView implements SurfaceHolder.Callb
   public void surfaceCreated(SurfaceHolder holder)
   {
     lib.thOpenGLCreateEGL(model.NetHandle, surfaceHolder.getSurface());
+    new Thread(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        while (true)
+        {
+          hasGotFirstFrame = lib.thNetIsVideoDecodeSuccess(model.NetHandle);
+          if (hasGotFirstFrame)
+          {
+            if (mHandler != null)
+            {
+              mHandler.sendMessage(Message.obtain(mHandler, TMsg.Msg_GotFirstFrame, null));
+            }
+
+            if (!hasCapture)
+            {
+              hasCapture = true;
+              String fileName = FileUtil.generateThumbFileName(model.SN);
+              if (fileName != null)
+              {
+                lib.thNetSaveToJpg(model.NetHandle, fileName);
+              }
+            }
+            return;
+          }
+        }
+      }
+    }).start();
   }
 
   public void surfaceDestroyed(SurfaceHolder holder)
   {
     lib.thOpenGLFreeEGL(model.NetHandle);
-    isSurfaceExist = false;
-    //requestEGLDestory();
   }
 
   public void surfaceChanged(SurfaceHolder holder, int format, int w, int h)
   {
-//       if (!isSurfaceExist){
-//           isSurfaceExist = true;
-//           //初始化surface
-//           requestEGLInit(surfaceHolder.getSurface(),model.NetHandle);
-//       }
-//       else{
-//           //调用jni surface change 接口
-//           requestEGLChange(surfaceHolder.getSurface());
-//       }
     lib.thOpenGLSurfaceChanged(model.NetHandle, w, h);
   }
 

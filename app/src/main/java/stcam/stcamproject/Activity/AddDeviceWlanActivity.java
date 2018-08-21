@@ -251,7 +251,7 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
             lod.dialogShow();
             DevModel devModelForm = model.exportDevModelForm();
             Network.getCommandApi(devModelForm)
-              .getSSIDList(devModelForm.usr, content, 36, 0)
+              .getSSIDList(devModelForm.usr, content, lib.Msg_WiFiSearch, 0)
               .subscribeOn(Schedulers.io())
               .observeOn(AndroidSchedulers.mainThread())
               .subscribe(observer_SSIDList);
@@ -353,6 +353,10 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
       {
         SouthUtil.showToast(AddDeviceWlanActivity.this, getString(R.string.string_devAddSuccess));
         back2TopActivity();
+      }
+      else if (ServerNetWork.RESULT_USER_ISBIND == m.ret)
+      {
+        SouthUtil.showToast(AddDeviceWlanActivity.this, getString(R.string.string_user_IsBind));
       }
       else if (ServerNetWork.RESULT_USER_LOGOUT == m.ret)
       {

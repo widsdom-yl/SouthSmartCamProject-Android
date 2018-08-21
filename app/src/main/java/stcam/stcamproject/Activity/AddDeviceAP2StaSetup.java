@@ -141,7 +141,7 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
     textView_uid = findViewById(R.id.textView_uid);
     textView_ip = findViewById(R.id.textView_ip);
 
-    //textView_uid.setText(devModel.UID);
+    textView_uid.setText(devModel.DevName);
     textView_ip.setText(devModel.IPUID);
 
     spiner_ssid_name.setOnItemSelectedListener(this);

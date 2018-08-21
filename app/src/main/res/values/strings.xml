@@ -230,4 +230,5 @@
     <string name="confirm_password_same">Confirm password is not the same as new password</string>
     <string name="string_user_logined">The user has logined in on other phones, are you sure to login?</string>
     <string name="string_user_logout">The user has logined in on other phones, Forced offline.</string>
+    <string name="string_user_IsBind">The device is bind by other users</string>
 </resources>

@@ -385,6 +385,10 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
       {
         SouthUtil.showToast(ChangeDevicePwdActivity.this, getString(R.string.string_devAddSuccess));
       }
+      else if (ServerNetWork.RESULT_USER_ISBIND == m.ret)
+      {
+        SouthUtil.showToast(ChangeDevicePwdActivity.this, getString(R.string.string_user_IsBind));
+      }
       else
       {
         SouthUtil.showToast(ChangeDevicePwdActivity.this, getString(R.string.string_devAddFail));

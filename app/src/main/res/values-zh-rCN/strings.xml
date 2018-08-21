@@ -154,7 +154,7 @@
     <string name="action_manager_alarm_level">图像侦测灵敏度</string>
     <string name="action_version">设备版本</string>
     <string name="action_request_ssid">请填写wifi信息</string>
-    <string name="SmartConfigOver">Configuration finish</string>
+    <string name="SmartConfigOver">配置成功</string>
     <string name="SmartConfig">智能配置</string>
     <string name="SmartConfig_connect">连接</string>
     <string name="SmartConfiging">SmartConfiging...</string>
@@ -235,4 +235,5 @@
     <string name="confirm_password_same">两次密码输入不一致</string>
     <string name="string_user_logined">该用户已在其它手机登录，是否确认登录？</string>
     <string name="string_user_logout">该用户已在其它手机登录，被强制下线</string>
+    <string name="string_user_IsBind">该设备已绑定其它用户</string>
 </resources>

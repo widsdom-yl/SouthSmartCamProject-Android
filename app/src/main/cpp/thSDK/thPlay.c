@@ -12,6 +12,10 @@
 #include "../avDecode/thffmpeg.h"
 #include "../include/av_Queue.h"
 
+#ifdef ANDROID
+#define ANDROID_EGL
+#endif
+
 #ifdef WIN32
 #include "../include/pthreads/pthread.h"
 #include "../include/pthreads/semaphore.h"
@@ -497,8 +501,6 @@ void thread_QueueVideo(HANDLE NetHandle)
         thNet_StartRec(NetHandle, NULL);
       }
 
-      //zhb ThreadLock(&Play->Lock);
-
       iCount = avQueue_GetCount(Play->hQueueVideo);
       for (i = iCount - 1; i >= 0; i--)
       {
@@ -523,8 +525,6 @@ void thread_QueueVideo(HANDLE NetHandle)
         Play->decHandle = NULL;
       }
       Play->decHandle = thDecodeVideoInit(Play->VideoMediaType);
-
-      //zhb ThreadUnlock(&Play->Lock);
     }
 
     iCount = avQueue_GetCount(Play->hQueueVideo);
@@ -573,6 +573,7 @@ void thread_QueueVideo(HANDLE NetHandle)
     if (!ret) goto labReadEnd;
 
     Play->IsVideoDecodeSuccessFlag = true;
+
     if (Play->IsSnapShot)
     {
       thDecodeVideoSaveToJpg(Play->decHandle, Play->FileName_Jpg);
@@ -764,13 +765,18 @@ void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo *PInfo, char *Buf, int
       //3
       if (Play->IsInsideDecode)
       {
-//          pthread_mutex_lock(&th_mutex_lock);
+#ifdef ANDROID_EGL
+        ThreadLock(&Play->Lock);
+#endif
         ret = thDecodeVideoFrame(Play->decHandle, Buf, BufLen, &Play->ImgWidth, &Play->ImgHeight,
                                  &Play->FrameV420);//yuv420
-
-//          pthread_mutex_unlock(&th_mutex_lock);
+#ifdef ANDROID_EGL
+        ThreadUnlock(&Play->Lock);
+#endif
         if (!ret) return;
+
         Play->IsVideoDecodeSuccessFlag = true;
+
         if (Play->IsSnapShot)
         {
           thDecodeVideoSaveToJpg(Play->decHandle, Play->FileName_Jpg);
@@ -780,10 +786,8 @@ void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo *PInfo, char *Buf, int
         if (Play->ImgWidth > 0 && Play->ImgHeight > 0)
         {
 #if (defined(ANDROID))//android
-          ThreadLock(&Play->Lock);
           ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth,
                                  Play->ImgHeight);//ddraw yuv420->rgb32
-          ThreadUnlock(&Play->Lock);
           pthread_cond_signal(&Play->SyncCond);
 #else//WIN32 ios
           ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth,
@@ -975,6 +979,9 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//·Ç×èÈû·½Ê½
           i64 iFrameTimeStart = Play->HistoryHead.StartTime * 1000000;
           Play->TimestampHistoryPosition = (PInfo->Frame.FrameTime - iFrameTimeStart) / 1000;
           Play->TimestampHistoryDuration = (Play->HistoryHead.EndTime - Play->HistoryHead.StartTime) * 1000;
+
+          Play->TimestampHistoryPosition = PInfo->Frame.PrevIFramePos + PInfo->Head.PktSize;
+          Play->TimestampHistoryDuration = Play->HistoryHead.FileSize;
           ThreadUnlock(&Play->Lock);
         }
 
@@ -2576,7 +2583,7 @@ void thread_eglRender(HANDLE NetHandle)
     ThreadUnlock(&Play->Lock);
     if (ret != 0)
     {
-      usleep(1000 * 10);
+      //usleep(1000 * 10);
       continue;
     }
 
@@ -2619,6 +2626,8 @@ void thread_eglRender(HANDLE NetHandle)
     //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     eglSwapBuffers(eglDisp, eglWindow);
+
+    Play->IsRenderSuccess = true;
     ThreadUnlock(&Play->Lock);
   }
   //eglFree
@@ -2638,6 +2647,7 @@ bool th_OpenGLCreateEGL(HANDLE NetHandle, void *Window)
 
   Play->Window = (ANativeWindow *) Window;
   Play->IsExitRender = false;
+  Play->IsRenderSuccess = false;
   Play->thRenderEGL = ThreadCreate((void *) thread_eglRender, (HANDLE) NetHandle, false);
   return true;
 }
@@ -2652,3 +2662,11 @@ bool th_OpenGLFreeEGL(HANDLE NetHandle)
   ThreadExit(Play->thRenderEGL, 0);//1000;
   return true;
 }
+//-----------------------------------------------------------------------------
+bool thNet_IsVideoDecodeSuccess(HANDLE NetHandle)
+{
+  TPlayParam *Play = (TPlayParam *) NetHandle;
+  if (NetHandle == 0) return false;
+  return Play->IsVideoDecodeSuccessFlag;
+}
+//-----------------------------------------------------------------------------

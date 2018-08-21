@@ -5,7 +5,7 @@
 // Description : www.southipcam.com
 //-----------------------------------------------------------------------------
 #ifndef th_protocol_H
-#define th_protocol_H 
+#define th_protocol_H
 
 #include "cm_types.h"
 
@@ -127,7 +127,7 @@ typedef enum TStandard {
 typedef struct TVideoFormat {                    //视频格式 sizeof 128
   i32  Standard;                                 //制式 PAL=1, NTSC=0 default=0xff
   i32  Width;                                    //宽 720 360 180 704 352 176 640 320 160
-  i32  Height;                                   //高 480 240 120 576 288 144 
+  i32  Height;                                   //高 480 240 120 576 288 144
   TVideoType VideoType;                          //MPEG4=0x00, MJPEG=0x01  H264=0x02
   u8  Brightness;                               //亮度   0-255
   u8  Contrast;                                 //对比度 0-255
@@ -208,12 +208,12 @@ typedef enum TAudioType {                        //音频格式sizeof 4 u8
 typedef struct TAudioFormat {                    //音频格式 = TWaveFormatEx = sizeof 32
   u32 wFormatTag;                              //PCM=0X0001, ADPCM=0x0011, MP2=0x0050, MP3=0X0055, GSM610=0x0031
   u32 nChannels;                               //单声道=0 立体声=1
-  u32 nSamplesPerSec;                          //采样率 
-  u32 nAvgbytesPerSec;                         //for buffer estimation 
-  u32 nBlockAlign;                             //block size of data 
-  u32 wBitsPerSample;                          //number of bits per sample of mono data 
+  u32 nSamplesPerSec;                          //采样率
+  u32 nAvgbytesPerSec;                         //for buffer estimation
+  u32 nBlockAlign;                             //block size of data
+  u32 wBitsPerSample;                          //number of bits per sample of mono data
   u32 cbSize;                                  //本包大小
-  i32 Reserved;                                      
+  i32 Reserved;
 }TAudioFormat;
 //-----------------------------------------------------------------------------
 typedef struct TAudioCfgPkt {                    //音频设置包 sizeof 48 u8
@@ -242,7 +242,7 @@ typedef enum TPlayCtrl {                         //播放控制sizeof 4 u8
   PS_StepBackward       =6,                 //步退
   PS_StepForward        =7,                 //步进
   PS_DragPos            =8,                 //拖动
-}TPlayCtrl; 
+}TPlayCtrl;
 //-----------------------------------------------------------------------------
 typedef struct TPlayCtrlPkt {
   TPlayCtrl PlayCtrl;
@@ -291,7 +291,8 @@ typedef struct TRecFileHead {                    //录影文件头格式 sizeof 256 u8
   u32 AudioChannel;                            //音频通道数统计
   struct TVideoFormat VideoFormat;               //视频格式
   struct TAudioFormat AudioFormat;               //音频格式
-  char Reserved[32];                             //保留
+  i32 IndexType;                                 //没有=0 按文件大小 = 1 按时长=2
+  char Reserved[28];                             //保留
 }TRecFileHead;
 //-----------------------------------------------------------------------------
 typedef struct TFilePkt {                        //上传文件包 sizeof 532
@@ -384,7 +385,7 @@ typedef struct TAlmCfgPkt {                   //警报配置包 sizeof 268 -> 52 2014
   TAlmCfgItem ReservedItem[2];
 }TAlmCfgPkt;
 //-----------------------------------------------------------------------------
-#define USER_GUEST     1 
+#define USER_GUEST     1
 #define USER_OPERATOR  2
 #define USER_ADMIN     3
 #define GROUP_GUEST    1
@@ -450,10 +451,10 @@ typedef enum TPTZCmd {                           //sizeof 4 u8
 
   PTZ_GetStatus        =42,
   PTZ_AbsoluteMoveXY   =43,//Anto SIP绝对
-  PTZ_AbsoluteZoomIn   =44,//Anto 
+  PTZ_AbsoluteZoomIn   =44,//Anto
   PTZ_AbsoluteZoomOut  =45,//Anto
   PTZ_RelativeMoveXY   =46,//Anto SIP相对
-  PTZ_RelativeZoomIn   =47,//Anto 
+  PTZ_RelativeZoomIn   =47,//Anto
   PTZ_RelativeZoomOut  =48,//Anto
 
   PTZ_RunTour          =49,//Anto 巡航
@@ -496,9 +497,9 @@ typedef struct TPTZPkt {                         //PTZ 云台控制  sizeof 108
 }TPTZPkt;
 //-----------------------------------------------------------------------------
 typedef struct TPlayLivePkt {                    //播放现场包//sizeof 20
-  u32 VideoChlMask;//通道掩码 
+  u32 VideoChlMask;//通道掩码
   //  31 .. 19 18 17 16   15 .. 03 02 01 00
-  //         0  0  0  0          0  0  0  1     
+  //         0  0  0  0          0  0  0  1
   u32 AudioChlMask;
   //  31 .. 19 18 17 16   15 .. 03 02 01 00
   //         0  0  0  0          0  0  0  1
@@ -507,7 +508,7 @@ typedef struct TPlayLivePkt {                    //播放现场包//sizeof 20
   u32 SubVideoChlMask;
   //11  i32 IsRecvAlarm;                               //0接收设备警报 1不接收设备警报
   //end add
-  i32 Flag;                                      //保留 
+  i32 Flag;                                      //保留
 }TPlayLivePkt;
 //-----------------------------------------------------------------------------
 typedef struct TPlayBackPkt {                    //sizeof 20
@@ -603,7 +604,7 @@ typedef enum TMsgID {
   Msg_HIISPCfg_Default       = 81,
   Msg_GetAllCfgEx            = 82,
   Msg_MulticastSetWIFI       = 83,
-  Msg_GetSensors             = 84,//读PH 浊度 温度等  
+  Msg_GetSensors             = 84,//读PH 浊度 温度等
   Msg_DevIsRec               = 85,
   Msg_GetPicFileLst          = 86,
   Msg_GetSnapShotCfg         = 87,
@@ -653,7 +654,7 @@ typedef struct TRecCfgPkt {                      //录影配置包 sizeof 260
 //-----------------------------------------------------------------------------
 typedef struct TDiskCfgPkt {   //sizeof 60
   char Reserved1[24];
-  char20 DiskName;      // 磁盘 
+  char20 DiskName;      // 磁盘
   i32 Active;           // 是否做为录影磁盘 false or true
   u32 DiskSize;       // M ReadOnly
   u32 FreeSize;       // M
@@ -901,7 +902,7 @@ typedef struct THeadPkt{                         //sizeof 8
 //-----------------------------------------------------------------------------
 typedef struct TTalkHeadPkt {                    //对讲包包头  sizeof 32
   u32 VerifyCode;                              //校验码 = 0XDDDDDDDD
-  u32 PktSize;                                 
+  u32 PktSize;
   char20 TalkIP;
   u32 TalkPort;
 }TTalkHeadPkt;
@@ -938,7 +939,7 @@ typedef struct TLoginPkt {                       //用户登录包 sizeof 252->892
   char20 UserName;                               //用户名称
   char20 Password;                               //用户密码
   char20 DevIP;                                  //要连接的设备IP,或 host
-  i32 UserGroup;                                 //Guest=1 Operator=2 Administrator=3  
+  i32 UserGroup;                                 //Guest=1 Operator=2 Administrator=3
   i32 Reserved;                                 //保留
   TDevInfoPkt DevInfoPkt;
   //2009-05-12 add begin
@@ -974,11 +975,11 @@ typedef struct TCmdPkt {                         //sizeof 1460-8
     struct TRecCfgPkt RecCfgPkt;                 //录影配置包
     struct TMDCfgPkt MDCfgPkt;                   //移动侦测包--单通道
     //    struct TDiDoCfgPkt DiDoCfgPkt;               //DIDO配置包 528
-    struct TDoControlPkt DoControlPkt;           //DO控制包    
+    struct TDoControlPkt DoControlPkt;           //DO控制包
     struct THideAreaCfgPkt HideAreaCfgPkt;       //隐藏录影区域包--单通道
     struct TAlmCfgPkt AlmCfgPkt;                 //警报配置包
     struct TVideoCfgPkt VideoCfgPkt;             //视频配置包--单通道
-    struct TAudioCfgPkt AudioCfgPkt;             //音频配置包--单通道    
+    struct TAudioCfgPkt AudioCfgPkt;             //音频配置包--单通道
     struct TRecFileHead FileHead;                //取得设备文件文件头信息
     struct TFilePkt FilePkt;                     //上传文件包
     //struct TRS485CfgPkt RS485CfgPkt;             //485通信包--单通道
@@ -1088,9 +1089,9 @@ typedef struct TNewVideoCfg {//sizeof 16
   bool IsShowFrameRate;
   u8 VideoType;                            //MPEG4=0x0000, MJPEG=0x0001  H264=0x0002
   u8 BitRateType0;                              //0定码流CBR 1定画质VBR
-  u8 BitRateQuant0; 
+  u8 BitRateQuant0;
   u8 BitRateType1;                              //0定码流CBR 1定画质VBR
-  u8 BitRateQuant1; 
+  u8 BitRateQuant1;
 }TNewVideoCfg;
 
 typedef struct TNewAudioCfg{//sizeof 12
@@ -1099,7 +1100,7 @@ typedef struct TNewAudioCfg{//sizeof 12
   u8 VolumeLineIn;
   u8 VolumeLineOut;
   u8 nChannels;                               //单声道=0 立体声=1
-  u8 wBitsPerSample;                          //number of bits per sample of mono data 
+  u8 wBitsPerSample;                          //number of bits per sample of mono data
   u16 nSamplesPerSec;                          //采样率
   u8 wFormatTag;
   u8 Reserved[3];
@@ -1184,11 +1185,11 @@ typedef struct TNewExtractCfg{// sizeof 188 //20171219
   u8 Contrast;
   u8 Hue;
   u8 Saturation;                       //88
-  u8 Sharpness; 
+  u8 Sharpness;
   u8 BrightnessNight;
   u8 ContrastNight;
   u8 HueNight;                         //92
-  u8 SaturationNight; 
+  u8 SaturationNight;
   u8 SharpnessNight;
   bool IsWDR;
   u8 WDRLevel;                         //96
@@ -1262,17 +1263,17 @@ typedef struct TNewCmdPkt {//maxsize sizeof 1008
     struct TDiskCfgPkt DiskCfgPkt;               //磁盘配置包 888
     struct TRecCfgPkt RecCfgPkt;                 //录影配置包
     struct TMDCfgPkt MDCfgPkt;                   //移动侦测包--单通道
-    struct TDoControlPkt DoControlPkt;           //DO控制包    
+    struct TDoControlPkt DoControlPkt;           //DO控制包
     struct THideAreaCfgPkt HideAreaCfgPkt;       //隐藏录影区域包--单通道
     struct TAlmCfgPkt AlmCfgPkt;                 //警报配置包
     struct TVideoCfgPkt VideoCfgPkt;             //视频配置包--单通道
-    struct TAudioCfgPkt AudioCfgPkt;             //音频配置包--单通道    
+    struct TAudioCfgPkt AudioCfgPkt;             //音频配置包--单通道
     struct TRecFileHead FileHead;                //取得设备文件文件头信息
     struct TFilePkt FilePkt;                     //上传文件包
     struct TFTPCfgPkt FTPCfgPkt;
     struct TSMTPCfgPkt SMTPCfgPkt;
     struct Tp2pCfgPkt p2pCfgPkt;
-  };  
+  };
 }TNewCmdPkt;
 
 //#pragma option pop //end C++Builder enum 4 u8

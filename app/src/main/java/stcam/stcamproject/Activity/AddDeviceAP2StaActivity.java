@@ -28,150 +28,163 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 
 /*这个类包含了ap 2 sta 和 直接ap*/
-public class AddDeviceAP2StaActivity extends BaseAppCompatActivity implements BaseAdapter.OnItemClickListener {
-    final static  String tag =  "AddDeviceAP2StaActivity";
-    AddDeviceAdapter adapter;
-    RecyclerView rv;
-    LoadingDialog lod;
-    String SearchMsg;
-    boolean IsSearching;
-    int type;//1:ap2sta 2:ap
-    List<SearchDevModel> lists;
+public class AddDeviceAP2StaActivity extends BaseAppCompatActivity implements BaseAdapter.OnItemClickListener
+{
+  final static String tag = "AddDeviceAP2StaActivity";
+  AddDeviceAdapter adapter;
+  RecyclerView rv;
+  LoadingDialog lod;
+  String SearchMsg;
+  boolean IsSearching;
+  int type;//1:ap2sta 2:ap
+  List<SearchDevModel> lists;
 
 
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_device_ap2_sta);
-        Bundle bundle = this.getIntent().getExtras();
-        if (bundle != null){
-           type = bundle.getInt("type",0);
-        }
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.action_add_ap_sta);
-
-            setCustomTitle(getString(R.string.action_add_ap_sta),true);
-
-        }
-
-
-
-        rv = findViewById(R.id.device_list_view);
-        rv.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
-        rv.setLayoutManager(new LinearLayoutManager(this));
-
-
-        startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
-
-
-    }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        searchDevices();
-    }
-
-    void searchDevices(){
-        if (lod == null){
-            lod = new LoadingDialog(this);
-        }
-        lod.dialogShow();
-
-        SouthUtil.showToast(this,getString(R.string.action_search));
-        new Thread()
-        {
-            @Override
-            public void run()
-            {
-                SearchMsg = lib.thNetSearchDevice(3000, 1);
-                ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_SearchOver, 0, 0, null));
-                IsSearching = false;
-            }
-        }.start();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_search, menu);
-        return true;
-    }
-
-
-    public final Handler ipc = new Handler()
+  @Override
+  protected void onCreate(Bundle savedInstanceState)
+  {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_add_device_ap2_sta);
+    Bundle bundle = this.getIntent().getExtras();
+    if (bundle != null)
     {
-        @Override
-        public void handleMessage(Message msg)
-        {
-
-
-            super.handleMessage(msg);
-            switch (msg.what)
-            {
-                case TMsg.Msg_SearchOver:
-                    lod.dismiss();
-                    if (SearchMsg ==  null || SearchMsg.equals(""))
-                    {
-                        return;
-                    }
-                    Log.e(tag,SearchMsg);
-                    //[{"SN":"80005556","DevModal":"401H","DevName":"IPCAM_80005556","DevMAC":"00:C1:A1:62:55:56",
-                    // "DevIP":"192.168.0.199","SubMask":"255.255.255.0","Gateway":"192.168.0.1","DNS1":"192.168.0.1",
-                    // "SoftVersion":"V7.113.1759.00","DataPort":7556,"HttpPort":8556,"rtspPort":554,
-                    // "DDNSServer":"211.149.199.247","DDNSHost":"80005556.southtech.xyz","UID":"NULL"}]
-                    List<SearchDevModel> list = DeviceParseUtil.parseSearchMsg(SearchMsg);
-                    if (list == null){
-                        return;
-                    }
-                    if (list.size()>0){
-                        lists = list;
-                        adapter = new AddDeviceAdapter(lists);
-                        rv.setAdapter(adapter);
-                        adapter.setOnItemClickListener(AddDeviceAP2StaActivity.this);
-                    }
-
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    };
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish(); // back button
-
-                return true;
-            case R.id.action_search:
-                searchDevices();
-                default:
-                    break;
-        }
-        return super.onOptionsItemSelected(item);
+      type = bundle.getInt("type", 0);
     }
+    android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+    if (actionBar != null)
+    {
+      actionBar.setHomeButtonEnabled(true);
+      actionBar.setDisplayHomeAsUpEnabled(true);
+      actionBar.setTitle(R.string.action_add_ap_sta);
+
+      setCustomTitle(getString(R.string.action_add_ap_sta), true);
+
+    }
+
+
+    rv = findViewById(R.id.device_list_view);
+    rv.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+    rv.setLayoutManager(new LinearLayoutManager(this));
+
+
+    startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
+
+
+  }
+
+  @Override
+  protected void onResume()
+  {
+    super.onResume();
+    searchDevices();
+  }
+
+  void searchDevices()
+  {
+    if (lod == null)
+    {
+      lod = new LoadingDialog(this);
+    }
+    lod.dialogShow();
+
+    SouthUtil.showToast(this, getString(R.string.action_search));
+    new Thread()
+    {
+      @Override
+      public void run()
+      {
+        SearchMsg = lib.thNetSearchDevice(3000, 1);
+        ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_SearchOver, 0, 0, null));
+        IsSearching = false;
+      }
+    }.start();
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu)
+  {
+    getMenuInflater().inflate(R.menu.menu_search, menu);
+    return true;
+  }
+
+
+  public final Handler ipc = new Handler()
+  {
     @Override
-    public void onItemClick(View view, int position) {
+    public void handleMessage(Message msg)
+    {
 
 
-        final SearchDevModel model = lists.get(position);
+      super.handleMessage(msg);
+      switch (msg.what)
+      {
+        case TMsg.Msg_SearchOver:
+          lod.dismiss();
+          if (SearchMsg == null || SearchMsg.equals(""))
+          {
+            SouthUtil.showDialog(AddDeviceAP2StaActivity.this, AddDeviceAP2StaActivity.this.getString(R.string.string_search_no_device));
+            return;
+          }
+          Log.e(tag, SearchMsg);
+          //[{"SN":"80005556","DevModal":"401H","DevName":"IPCAM_80005556","DevMAC":"00:C1:A1:62:55:56",
+          // "DevIP":"192.168.0.199","SubMask":"255.255.255.0","Gateway":"192.168.0.1","DNS1":"192.168.0.1",
+          // "SoftVersion":"V7.113.1759.00","DataPort":7556,"HttpPort":8556,"rtspPort":554,
+          // "DDNSServer":"211.149.199.247","DDNSHost":"80005556.southtech.xyz","UID":"NULL"}]
+          List<SearchDevModel> list = DeviceParseUtil.parseSearchMsg(SearchMsg);
+          if (list == null)
+          {
+            return;
+          }
+          if (list.size() > 0)
+          {
+            lists = list;
+            adapter = new AddDeviceAdapter(lists);
+            rv.setAdapter(adapter);
+            adapter.setOnItemClickListener(AddDeviceAP2StaActivity.this);
+          }
+
+          break;
+
+        default:
+          break;
+      }
+    }
+  };
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item)
+  {
+    switch (item.getItemId())
+    {
+      case android.R.id.home:
+        this.finish(); // back button
+
+        return true;
+      case R.id.action_search:
+        searchDevices();
+      default:
+        break;
+    }
+    return super.onOptionsItemSelected(item);
+  }
+
+  @Override
+  public void onItemClick(View view, int position)
+  {
 
 
-        Intent intent1 = new Intent(STApplication.getInstance(), AddDeviceAP2StaSetup.class);
-        Bundle bundle1 = new Bundle();
-        //bundle1.putParcelable("devModel",model);
+    final SearchDevModel model = lists.get(position);
 
-        DevModel devModel = model.exportDevModelForm();
 
-        bundle1.putParcelable("devModel",devModel);
-        intent1.putExtras(bundle1);
-        startActivity(intent1);
+    Intent intent1 = new Intent(STApplication.getInstance(), AddDeviceAP2StaSetup.class);
+    Bundle bundle1 = new Bundle();
+    //bundle1.putParcelable("devModel",model);
+
+    DevModel devModel = model.exportDevModelForm();
+
+    bundle1.putParcelable("devModel", devModel);
+    intent1.putExtras(bundle1);
+    startActivity(intent1);
 
 
 
@@ -235,13 +248,12 @@ public class AddDeviceAP2StaActivity extends BaseAppCompatActivity implements Ba
                 }).create()*/
 
 
-
-    }
-
+  }
 
 
-    @Override
-    public void onLongClick(View view, int position) {
+  @Override
+  public void onLongClick(View view, int position)
+  {
 
-    }
+  }
 }
