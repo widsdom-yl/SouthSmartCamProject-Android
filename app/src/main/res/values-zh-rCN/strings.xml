@@ -236,5 +236,6 @@
     <string name="string_user_logined">该用户已在其它手机登录，是否确认登录？</string>
     <string name="string_user_logout">该用户已在其它手机登录，被强制下线</string>
     <string name="string_user_IsBind">该设备已绑定其它用户</string>
+    <string name="string_user_IsBind1">该设备已被 %s 绑定</string>
     <string name="error_device_added">设备已添加,不能重复添加.</string>
 </resources>

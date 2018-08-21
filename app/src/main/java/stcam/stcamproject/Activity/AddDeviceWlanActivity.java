@@ -8,6 +8,7 @@ import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -199,8 +200,9 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
         break;
       }
     }
-    if (exist){
-      SouthUtil.showDialog(this,getString(R.string.error_device_added));
+    if (exist)
+    {
+      SouthUtil.showDialog(this, getString(R.string.error_device_added));
       return;
     }
 
@@ -374,7 +376,17 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
       }
       else if (ServerNetWork.RESULT_USER_ISBIND == m.ret)
       {
-        SouthUtil.showToast(AddDeviceWlanActivity.this, getString(R.string.string_user_IsBind));
+        String Str;
+        if (!TextUtils.isEmpty(m.Info))
+        {
+          String sFormat = getString(R.string.string_user_IsBind1);
+          Str = String.format(sFormat, m.Info);
+        }
+        else
+        {
+          Str = getString(R.string.string_user_IsBind);
+        }
+        SouthUtil.showToast(AddDeviceWlanActivity.this, Str);
       }
       else if (ServerNetWork.RESULT_USER_LOGOUT == m.ret)
       {

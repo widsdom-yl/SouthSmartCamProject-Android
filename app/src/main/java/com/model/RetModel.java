@@ -6,4 +6,5 @@ package com.model;
 
 public class RetModel {
     public int ret;
+    public String Info = null;
 }

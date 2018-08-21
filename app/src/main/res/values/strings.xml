@@ -231,5 +231,6 @@
     <string name="string_user_logined">The user has logined in on other phones, are you sure to login?</string>
     <string name="string_user_logout">The user has logined in on other phones, Forced offline.</string>
     <string name="string_user_IsBind">The device is bind by other users</string>
+    <string name="string_user_IsBind1">The device is bind by %s</string>
     <string name="error_device_added">The device has been added,can not add again.</string>
 </resources>

@@ -3,6 +3,7 @@ package stcam.stcamproject.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -387,7 +388,17 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
       }
       else if (ServerNetWork.RESULT_USER_ISBIND == m.ret)
       {
-        SouthUtil.showToast(ChangeDevicePwdActivity.this, getString(R.string.string_user_IsBind));
+        String Str;
+        if (!TextUtils.isEmpty(m.Info))
+        {
+          String sFormat = getString(R.string.string_user_IsBind1);
+          Str = String.format(sFormat, m.Info);
+        }
+        else
+        {
+          Str = getString(R.string.string_user_IsBind);
+        }
+        SouthUtil.showToast(ChangeDevicePwdActivity.this, Str);
       }
       else
       {

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -310,7 +311,17 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
       }
       else if (ServerNetWork.RESULT_USER_ISBIND == m.ret)
       {
-        SouthUtil.showToast(AddDeviceActivity.this, getString(R.string.string_user_IsBind));
+        String Str;
+        if (!TextUtils.isEmpty(m.Info))
+        {
+          String sFormat = getString(R.string.string_user_IsBind1);
+          Str = String.format(sFormat, m.Info);
+        }
+        else
+        {
+          Str = getString(R.string.string_user_IsBind);
+        }
+        SouthUtil.showToast(AddDeviceActivity.this, Str);
       }
       else if (ServerNetWork.RESULT_USER_LOGOUT == m.ret)
       {
