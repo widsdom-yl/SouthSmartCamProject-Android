@@ -35,7 +35,6 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
 
     // Example of a call to a native method
     TextView tv = (TextView) findViewById(R.id.sample_text);
-    //tv.setText(lib.testGetFfmpeg());
     try
     {
       PackageInfo packageInfo = this.getApplicationContext()

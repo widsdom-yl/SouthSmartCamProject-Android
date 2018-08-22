@@ -238,4 +238,5 @@
     <string name="string_user_IsBind">该设备已绑定其它用户</string>
     <string name="string_user_IsBind1">该设备已被 %s 绑定</string>
     <string name="error_device_added">设备已添加,不能重复添加.</string>
+    <string name="string_NoPicture">没有图片，没有TF卡或已删除</string>
 </resources>

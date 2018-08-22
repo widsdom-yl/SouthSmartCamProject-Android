@@ -23,7 +23,7 @@ public class lib extends Activity
   public static final int RESULT_SUCCESS = 1;//成功
   public static final int RESULT_SUCCESS_REBOOT = 2;//成功，需要重启
 
-  public static native long thNetInit(boolean IsInsideDecode, boolean IsQueue, boolean IsAdjustTime, boolean IsAutoReConn, String SN);
+  public static native long thNetInit(boolean IsQueue, boolean IsAdjustTime, boolean IsAutoReConn);
 
   public static native boolean thNetSetDecodeStyle(long NetHandle, int DecodeStyle);
 
@@ -213,7 +213,6 @@ public class lib extends Activity
   public final static int Msg_SetRecCfgEx = 90;
   public final static int Msg_GetRecStartTime = 91;
   public final static int Msg_FormattfCard = 92;
-
   public final static int Msg_CheckUpgradeBin = 93;
   public final static int Msg_TestModeStart = 94;
   public final static int Msg_TestModeStop = 95;
@@ -224,33 +223,21 @@ public class lib extends Activity
   public final static int Msg_PlayWavFile = 100;
   public final static int Msg_______ = 100;
 
-  public static native boolean thManageAddDevice(String SN, long NetHandle);
-
-  public static native boolean thManageDelDevice(String SN);
-
-  public static native boolean thManageDisconnFreeAll();
-
-  public static native boolean thManageNetworkSwitch(int NetWorkType);//TYPE_NONE=-1 TYPE_MOBILE=0 TYPE_WIFI=1
-
-  public static native boolean thManageForeBackgroundSwitch(int IsForeground);//Background=0 Foreground=1
-
-  public static native int jsmtInit();
-
-  public static native int jsmtStop();
-
-  public static native int jsmtStart(String SSID, String Password, String Tlv, String Target, int AuthMode);
-
-  public static native boolean P2PInit();
-
-  public static native boolean P2PFree();
-
-  public static native String testGetFfmpeg();
-
   public static native boolean IsConnectWLAN();
 
   public static native String GetLocalIP();
 
   public static native int GetTime();
+
+  public static native int jsmtInit();
+
+  public static native int jsmtStart(String SSID, String Password, String Tlv, String Target, int AuthMode);
+
+  public static native int jsmtStop();
+
+  public static native boolean P2PInit();
+
+  public static native boolean P2PFree();
 
   public static native boolean thOpenGLSurfaceChanged(long NetHandle, int Width, int Height);
 
@@ -260,7 +247,7 @@ public class lib extends Activity
 
   public static native boolean thOpenGLFreeEGL(long NetHandle);
 
-  public static native boolean thNetIsVideoDecodeSuccess(long NetHandle);
+  public static native boolean thOpenGLIsRenderSuccess(long NetHandle);
 
 
 }

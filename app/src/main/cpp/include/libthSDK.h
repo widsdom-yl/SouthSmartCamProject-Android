@@ -18,7 +18,7 @@ extern "C"
 
 //*****************************************************************************
 //-----------------------------------------------------------------------------
-EXPORT HANDLE thNet_Init(bool IsInsideDecode, bool IsQueue, bool IsAdjustTime, bool IsAutoReConn, u32 SN);
+EXPORT HANDLE thNet_Init(bool IsQueue, bool IsAdjustTime, bool IsAutoReConn);
 /*-----------------------------------------------------------------------------
 函数描述：初始化网络播放
 参数说明：
@@ -322,23 +322,21 @@ EXPORT bool DTMFWavFileToText(char *FileName, char *txt);
 EXPORT bool DTMFBufToText(char *Buf, int BufLen, int iSample/*=8000*/, int iBits/*=16*/, char *txt);
 
 #if defined(ANDROID)
-EXPORT bool th_OpenGLRenderRGB565(HANDLE NetHandle);
+EXPORT bool thOpenGL_RenderRGB565(HANDLE NetHandle);
 
-EXPORT bool th_OpenGLCreateEGL(HANDLE NetHandle, void *Window);
+EXPORT bool thOpenGL_CreateEGL(HANDLE NetHandle, void *Window);
 
-EXPORT bool th_OpenGLFreeEGL(HANDLE NetHandle);
-EXPORT bool thNet_IsVideoDecodeSuccess(HANDLE NetHandle);
+EXPORT bool thOpenGL_FreeEGL(HANDLE NetHandle);
+EXPORT bool thOpenGL_IsRenderSuccess(HANDLE NetHandle);
 
 #endif
+/*
 EXPORT bool thManage_AddDevice(u32 SN, HANDLE NetHandle);
-
 EXPORT bool thManage_DelDevice(u32 SN);
-
 EXPORT bool thManage_DisconnFreeAll();
-
 EXPORT bool thManage_NetworkSwitch(int NetWorkType);//TYPE_NONE=-1 TYPE_MOBILE=0 TYPE_WIFI=1
 EXPORT bool thManage_ForeBackgroundSwitch(int IsForeground);//Background=0 Foreground=1
-
+*/
 #ifdef __cplusplus
 }
 #endif

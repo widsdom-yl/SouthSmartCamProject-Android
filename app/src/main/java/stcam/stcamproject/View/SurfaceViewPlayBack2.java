@@ -82,7 +82,7 @@ public class SurfaceViewPlayBack2 extends SurfaceView implements SurfaceHolder.C
       {
         while (true)
         {
-          hasGotFirstFrame = lib.thNetIsVideoDecodeSuccess(mDevModel.NetHandle);
+          hasGotFirstFrame = lib.thOpenGLIsRenderSuccess(mDevModel.NetHandle);
           if (hasGotFirstFrame)
           {
             if (mHandler != null)

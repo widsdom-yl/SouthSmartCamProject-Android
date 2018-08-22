@@ -342,7 +342,6 @@ void make_ExtraDataAudio(int nSamplesPerSec, int nChannels, unsigned char* Extra
 //-----------------------------------------------------------------------------
 bool thRecordWriteVideo(HANDLE RecHandle, char* Buf, int Len, i64 pts)//pts = -1 为自动计算
 {
-    pts = -1;
   int ret, IsIFrame;
   AVPacket packet;
   TRecInfoPkt* Info = (TRecInfoPkt*)RecHandle;

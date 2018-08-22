@@ -9,8 +9,8 @@
 #include <android/native_window_jni.h>
 
 //-----------------------------------------------------------------------------
-typedef void (*pvUcnvFunc)(const char *lpcstrDstEcd, const char *lpcstrSrcEcd, char *dst, unsigned long dstLen,
-                           const char *src, unsigned long nInLen, unsigned long *pnErrCode);
+typedef void (*pvUcnvFunc)(const char *lpcstrDstEcd, const char *lpcstrSrcEcd, char *dst, unsigned long dstLen, const char *src,
+                           unsigned long nInLen, unsigned long *pnErrCode);
 
 void UcnvConvert_GB2312toUTF8(char *dst, unsigned long dstLen, const char *src, unsigned long *pnErrC)
 {
@@ -103,21 +103,11 @@ JNIEXPORT int JNICALL Java_com_thSDK_lib_GetTime(JNIEnv *env, jclass obj)
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT u64 JNICALL
-Java_com_thSDK_lib_thNetInit(JNIEnv *env, jclass obj, bool IsInsideDecode, bool IsQueue, bool IsAdjustTime,
-                             bool IsAutoReConn, jstring jSN)
+Java_com_thSDK_lib_thNetInit(JNIEnv *env, jclass obj, bool IsQueue, bool IsAdjustTime, bool IsAutoReConn)
 {
   u64 NetHandle = 0;
   u32 iSN = 0;
-  int ret;
-  char *sSN = (char *) (*env)->GetStringUTFChars(env, jSN, NULL);
-  if (strlen(sSN) == 0) sSN = NULL;
-  ret = sscanf(sSN, "%x", &iSN);
-  if (ret != 1) goto exits;
-
-  NetHandle = (u64) thNet_Init(IsInsideDecode, IsQueue, IsAdjustTime, IsAutoReConn, iSN);
-
-  exits:
-  (*env)->ReleaseStringUTFChars(env, jSN, sSN);
+  NetHandle = (u64) thNet_Init(IsQueue, IsAdjustTime, IsAutoReConn);
   return NetHandle;
 }
 //-----------------------------------------------------------------------------
@@ -132,8 +122,8 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetFree(JNIEnv *env, jclass obj, u64
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL
-Java_com_thSDK_lib_thNetConnect(JNIEnv *env, jclass obj, u64 NetHandle, jstring jUserName, jstring jPassword,
-                                jstring jIPUID, int DataPort, int TimeOut)
+Java_com_thSDK_lib_thNetConnect(JNIEnv *env, jclass obj, u64 NetHandle, jstring jUserName, jstring jPassword, jstring jIPUID, int DataPort,
+                                int TimeOut)
 {
   int ret;
   char *UserName = (char *) (*env)->GetStringUTFChars(env, jUserName, NULL);
@@ -184,8 +174,7 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetGetConnectStatus(JNIEnv *env, jcl
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL
-Java_com_thSDK_lib_thNetPlay(JNIEnv *env, jclass obj, u64 NetHandle, int VideoChlMask, int AudioChlMask,
-                             int SubVideoChlMask)
+Java_com_thSDK_lib_thNetPlay(JNIEnv *env, jclass obj, u64 NetHandle, int VideoChlMask, int AudioChlMask, int SubVideoChlMask)
 {
   return thNet_Play((HANDLE) NetHandle, VideoChlMask, AudioChlMask, SubVideoChlMask);
 }
@@ -214,15 +203,6 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetGetAllCfg(JNIEnv *env, jclass 
   return jtmpBuf;
 }
 
-JNIEXPORT jstring JNICALL Java_com_thSDK_lib_testGetFfmpeg(JNIEnv *env, jclass obj)
-{
-  char info[10000] = {0};
-  LOGE("=======Java_com_thSDK_lib_testGetFfmpeg");
-  sprintf(info, "%s\n", avcodec_configuration());
-  return (*env)->NewStringUTF(env, info);
-
-}
-
 JNIEXPORT jint Java_com_thSDK_lib_jsmtInit(JNIEnv *env, jclass obj)
 {
   return InitSmartConnection();
@@ -234,8 +214,7 @@ JNIEXPORT jint Java_com_thSDK_lib_jsmtStop(JNIEnv *env, jclass obj)
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT jint
-Java_com_thSDK_lib_jsmtStart(JNIEnv *env, jclass obj, jstring nSSID, jstring nPassword, jstring nTlv, jstring nTarget,
-                             int nAuthMode)
+Java_com_thSDK_lib_jsmtStart(JNIEnv *env, jclass obj, jstring nSSID, jstring nPassword, jstring nTlv, jstring nTarget, int nAuthMode)
 {
   const char *SSID = (*env)->GetStringUTFChars(env, nSSID, NULL);
   const char *Password = (*env)->GetStringUTFChars(env, nPassword, NULL);
@@ -422,10 +401,9 @@ typedef struct TSearchInfo
 static TSearchInfo Search;
 
 //-------------------------------------
-void
-callback_SearchDev(void *UserCustom, u32 SN, int DevType, char *DevModal, char *SoftVersion, int DataPort, int HttpPort,
-                   int rtspPort, char *DevName, char *DevIP, char *DevMAC, char *SubMask, char *Gateway, char *DNS1,
-                   char *DDNSServer, char *DDNSHost, char *UID)
+void callback_SearchDev(void *UserCustom, u32 SN, int DevType, char *DevModal, char *SoftVersion, int DataPort, int HttpPort, int rtspPort,
+                        char *DevName, char *DevIP, char *DevMAC, char *SubMask, char *Gateway, char *DNS1, char *DDNSServer,
+                        char *DDNSHost, char *UID)
 {
   unsigned long pnErrC;
   char Str[1000];
@@ -495,8 +473,7 @@ callback_SearchDev(void *UserCustom, u32 SN, int DevType, char *DevModal, char *
   } else
   {
     if (Search.SearchCount != 0) strcat(Search.tmpBuf, "@");
-    sprintf(Str, "%s,%.8x,%d,%d,%s,%s,%s,%s,%s", DevIP, SN, DataPort, HttpPort, DevMAC, uDevName, DDNSServer, DDNSHost,
-            UID);
+    sprintf(Str, "%s,%.8x,%d,%d,%s,%s,%s,%s,%s", DevIP, SN, DataPort, HttpPort, DevMAC, uDevName, DDNSServer, DDNSHost, UID);
     strcat(Search.tmpBuf, Str);
   }
   Search.SearchCount++;
@@ -545,6 +522,7 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetSearchDevice(JNIEnv *env, jcla
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+/*
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thManageAddDevice(JNIEnv *env, jclass obj, jstring jSN, u64 NetHandle)
 {
   int i, ret;
@@ -591,8 +569,8 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thManageDisconnFreeAll(JNIEnv *env, jc
   return thManage_DisconnFreeAll();
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thManageNetworkSwitch(JNIEnv *env, jclass obj,
-                                                                int NetWorkType)//TYPE_NONE=-1 TYPE_MOBILE=0 TYPE_WIFI=1
+JNIEXPORT bool JNICALL
+Java_com_thSDK_lib_thManageNetworkSwitch(JNIEnv *env, jclass obj, int NetWorkType)//TYPE_NONE=-1 TYPE_MOBILE=0 TYPE_WIFI=1
 {
   return thManage_NetworkSwitch(NetWorkType);
 }
@@ -602,6 +580,7 @@ Java_com_thSDK_lib_thManageForeBackgroundSwitch(JNIEnv *env, jclass obj, int IsF
 {
   return thManage_ForeBackgroundSwitch(IsForeground);
 }
+*/
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL
 Java_com_thSDK_lib_thOpenGLSurfaceChanged(JNIEnv *env, jclass obj, u64 NetHandle, int Width, int Height)
@@ -618,22 +597,22 @@ Java_com_thSDK_lib_thOpenGLSurfaceChanged(JNIEnv *env, jclass obj, u64 NetHandle
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thOpenGLRenderRGB565(JNIEnv *env, jclass obj, u64 NetHandle)
 {
-  return th_OpenGLRenderRGB565((HANDLE) NetHandle);
+  return thOpenGL_RenderRGB565((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thOpenGLCreateEGL(JNIEnv *env, jclass obj, u64 NetHandle, jobject surface)
 {
   ANativeWindow *Window = ANativeWindow_fromSurface(env, surface);
-  return th_OpenGLCreateEGL((HANDLE) NetHandle, Window);
+  return thOpenGL_CreateEGL((HANDLE) NetHandle, Window);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thOpenGLFreeEGL(JNIEnv *env, jclass obj, u64 NetHandle)
 {
-  return th_OpenGLFreeEGL((HANDLE) NetHandle);
+  return thOpenGL_FreeEGL((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetIsVideoDecodeSuccess(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thOpenGLIsRenderSuccess(JNIEnv *env, jclass obj, u64 NetHandle)
 {
-  return thNet_IsVideoDecodeSuccess((HANDLE) NetHandle);
+  return thOpenGL_IsRenderSuccess((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------

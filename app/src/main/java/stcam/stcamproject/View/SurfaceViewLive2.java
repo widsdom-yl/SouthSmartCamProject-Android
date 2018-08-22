@@ -80,7 +80,7 @@ public class SurfaceViewLive2 extends SurfaceView implements SurfaceHolder.Callb
       {
         while (true)
         {
-          hasGotFirstFrame = lib.thNetIsVideoDecodeSuccess(model.NetHandle);
+          hasGotFirstFrame = lib.thOpenGLIsRenderSuccess(model.NetHandle);
           if (hasGotFirstFrame)
           {
             if (mHandler != null)

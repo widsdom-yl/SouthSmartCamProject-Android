@@ -137,19 +137,29 @@ public class RegisterActivity extends BaseAppCompatActivity
 
   private void getCheckNum()
   {
-    // Reset errors.
-
-    // Store values at the time of the login attempt.
     String email = mEmailView.getText().toString();
-
-
-    if (!isEmailValid(email))
+    String password = mPasswordView.getText().toString();
+    String confirmPassword = editText_confirm_pwd.getText().toString();
+    if (TextUtils.isEmpty(email))
+    {
+      SouthUtil.showDialog(this, getString(R.string.error_field_required));
+      return;
+    }
+    else if (!isEmailValid(email))
     {
       SouthUtil.showDialog(this, getString(R.string.error_invalid_email));
       return;
     }
-
-    // Show a progress spinner, and kick off a background task to
+    if (!TextUtils.isEmpty(password) && !isPasswordValid(password))
+    {
+      SouthUtil.showDialog(this, getString(R.string.error_invalid_password));
+      return;
+    }
+    if (!password.equals(confirmPassword))
+    {
+      SouthUtil.showDialog(this, getString(R.string.error_invalid_confirm_password));
+      return;
+    }
 
     if (lod == null)
     {
@@ -182,30 +192,21 @@ public class RegisterActivity extends BaseAppCompatActivity
     String password = mPasswordView.getText().toString();
     String confirmPassword = editText_confirm_pwd.getText().toString();
     String check = mChecknum.getText().toString();
-
-
     if (TextUtils.isEmpty(email))
     {
       SouthUtil.showDialog(this, getString(R.string.error_field_required));
       return;
-
     }
     else if (!isEmailValid(email))
     {
       SouthUtil.showDialog(this, getString(R.string.error_invalid_email));
       return;
-
     }
-
-
-    // Check for a valid password, if the user entered one.
     if (!TextUtils.isEmpty(password) && !isPasswordValid(password))
     {
-
       SouthUtil.showDialog(this, getString(R.string.error_invalid_password));
       return;
     }
-
     if (!password.equals(confirmPassword))
     {
       SouthUtil.showDialog(this, getString(R.string.error_invalid_confirm_password));

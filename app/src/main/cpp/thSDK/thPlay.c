@@ -12,16 +12,7 @@
 #include "../avDecode/thffmpeg.h"
 #include "../include/av_Queue.h"
 
-#ifdef ANDROID
-#define ANDROID_EGL
-#endif
-
-#ifdef WIN32
-#include "../include/pthreads/pthread.h"
-#include "../include/pthreads/semaphore.h"
-#endif
 #define NET_TIMEOUT       10000  // ms
-
 #define IsUsedP2P
 
 #ifdef IsUsedP2P
@@ -29,15 +20,28 @@
 #include "../include/tutk/IOTCAPIs.h"
 #include "../include/tutk/AVAPIs.h"
 #include "../include/tutk/AVFRAMEINFO.h"
-#include "../include/tutk/AVIOCTRLDEFs.h"
 
-#ifdef WIN32
+#if defined(WIN32)
 #pragma comment (lib, "lib.win32/tutk/AVAPIs.lib")
 #pragma comment (lib, "lib.win32/tutk/IOTCAPIs.lib")
 #endif
 #endif
 
+#if defined(WIN32)
+#include "../include/pthreads/pthread.h"
+#include "../include/pthreads/semaphore.h"
+#include "thPlay_windows.h"
+#endif
 
+#if defined(ANDROID)
+#define ANDROID_IS_QUEUEDRAW
+#include "thPlay_android.h"
+
+#endif
+
+#if defined(IOS)
+#include "thPlay_ios.h"
+#endif
 //---------------------------------------------------------
 typedef struct TPlayManggeParam
 {
@@ -76,8 +80,6 @@ bool net_SetTalk(HANDLE NetHandle, char *Buf, i32 BufLen);
 bool net_Connect_IP(HANDLE NetHandle, bool IsCreateRecvThread);
 
 bool net_Connect_P2P(HANDLE NetHandle, bool IsCreateRecvThread);
-
-void STDCALL Time_QueueDraw(HANDLE mmHandle, u32 uMsg, void *dwUser, u32 dw1, u32 dw2);
 
 void thread_QueueVideo(HANDLE NetHandle);
 
@@ -233,20 +235,18 @@ bool thSearch_Free(HANDLE SearchHandle)
   return ret;
 }
 //-----------------------------------------------------------------------------
-HANDLE thNet_Init(bool IsInsideDecode, bool IsQueue, bool IsAdjustTime, bool IsAutoReConn, u32 SN)
+HANDLE thNet_Init(bool IsQueue, bool IsAdjustTime, bool IsAutoReConn)
 {
 #ifdef WIN32
   WSADATA wsaData;
 #endif
   TPlayParam *Play = (TPlayParam *) malloc(sizeof(TPlayParam));
   if (!Play) return NULL;
-  PRINTF("%s(%d) IsInsideDecode:%d IsQueue:%d IsAdjustTime:%d IsAutoReConn:%d SN:%X\n", __FUNCTION__, __LINE__, IsInsideDecode, IsQueue,
-         IsAdjustTime, IsAutoReConn, SN);
+  PRINTF("%s(%d) IsQueue:%d IsAdjustTime:%d IsAutoReConn:%d\n", __FUNCTION__, __LINE__, IsQueue, IsAdjustTime, IsAutoReConn);
 #ifdef WIN32
   WSAStartup(MAKEWORD(2, 2), &wsaData);
 #endif
   memset(Play, 0, sizeof(TPlayParam));
-  Play->IsInsideDecode = IsInsideDecode;
   Play->IsQueue = IsQueue;
   Play->IsAdjustTime = IsAdjustTime;
   Play->IsAutoReConn = IsAutoReConn;
@@ -265,11 +265,6 @@ HANDLE thNet_Init(bool IsInsideDecode, bool IsQueue, bool IsAdjustTime, bool IsA
 
   Play->iConnectStatus = THNET_CONNSTATUS_NO;
 
-  if (SN > 0)
-  {
-    Play->SN = SN;
-    thManage_AddDevice(SN, (HANDLE) Play);
-  }
   return (HANDLE) Play;
 }
 //-----------------------------------------------------------------------------
@@ -301,7 +296,6 @@ bool thNet_Free(HANDLE NetHandle)
 #ifdef WIN32
   //  WSACleanup();
 #endif
-  thManage_DelDevice(SN);
   return true;
 }
 //-----------------------------------------------------------------------------
@@ -399,83 +393,10 @@ bool net_GetAllCfg(HANDLE NetHandle)//not export
 }
 
 //-----------------------------------------------------------------------------
-void STDCALL Time_QueueDraw(HANDLE mmHandle, u32 uMsg, void *dwUser, u32 dw1, u32 dw2)
-{
-  TavNode *tmpNode;
-  int i, ret, iPktCount;
-  TavPicture *pFrameV;
-  TPlayParam *Play = (TPlayParam *) dwUser;
-  if (!Play) return;
-
-#ifdef WIN32
-  if (mmHandle != Play->hTimerIDQueueDraw) return;//WIN32 ios
-#endif
-  if (Play->IsExit) return;
-
-  //0
-  iPktCount = avQueue_GetCount(Play->hQueueDraw);
-
-#ifdef WIN32
-  //  PostMessage((HWND)2033304, 0x00008888, 0, iPktCount);
-#endif
-  if (iPktCount == 0) return;
-  //PRINTF("iPktCount:%d  ", iPktCount);
-  if (iPktCount > 5 && iPktCount <= 10)
-  {
-    tmpNode = avQueue_ReadBegin(Play->hQueueDraw);
-    if (tmpNode != NULL)
-    {
-      if (tmpNode->Buf1 != NULL) free(tmpNode->Buf1);
-    }
-    avQueue_ReadEnd(Play->hQueueDraw, tmpNode);
-  }
-
-  //1
-  iPktCount = avQueue_GetCount(Play->hQueueDraw);
-  if (iPktCount == 0) return;
-  if (iPktCount > 10)
-  {
-    for (i = 0; i < 1; i++)
-    {
-      tmpNode = avQueue_ReadBegin(Play->hQueueDraw);
-      if (tmpNode != NULL)
-      {
-        if (tmpNode->Buf1 != NULL) free(tmpNode->Buf1);
-      }
-      avQueue_ReadEnd(Play->hQueueDraw, tmpNode);
-    }
-  }
-  //2
-  tmpNode = avQueue_ReadBegin(Play->hQueueDraw);
-  if (tmpNode == NULL) return;
-  if (tmpNode->Buf == NULL)
-  {
-    if (tmpNode->Buf1 != NULL) free(tmpNode->Buf1);
-    avQueue_ReadEnd(Play->hQueueDraw, tmpNode);
-    return;
-  }
-  //3
-  pFrameV = (TavPicture *) tmpNode->Buf;
-  if (Play->ImgWidth > 0 && Play->ImgHeight > 0)
-  {
-    //zhb ThreadLock(&Play->Lock);
-    ret = thRender_FillMem(Play->RenderHandle, *pFrameV, Play->ImgWidth, Play->ImgHeight);
-    for (i = 0; i < MAX_DSPINFO_COUNT; i++)
-    {
-      TDspInfo *PDspInfo = &Play->DspInfoLst[i];
-      if (PDspInfo->DspHandle == NULL) continue;
-      ret = thRender_Display(Play->RenderHandle, PDspInfo->DspHandle, PDspInfo->DspRect);
-    }
-    //zhb ThreadUnlock(&Play->Lock);
-  }
-
-  if (tmpNode->Buf1 != NULL) free(tmpNode->Buf1);
-  avQueue_ReadEnd(Play->hQueueDraw, tmpNode);
-}
-
-//-----------------------------------------------------------------------------
 void thread_QueueVideo(HANDLE NetHandle)
 {
+  struct timeval tv1, tv2;
+  int idec;
   int iYUVSize;
   char *newBuf;
   TavPicture newFrameV;
@@ -484,6 +405,8 @@ void thread_QueueVideo(HANDLE NetHandle)
   TDataFrameInfo *PInfo;
   TPlayParam *Play = (TPlayParam *) NetHandle;
   if (NetHandle == 0) return;
+
+  gettimeofday(&tv1, NULL);
   while (1)
   {
     if (Play->IsExit) break;
@@ -506,7 +429,7 @@ void thread_QueueVideo(HANDLE NetHandle)
         if (tmpNode == NULL) continue;
         avQueue_ReadEnd(Play->hQueueVideo, tmpNode);
       }
-
+#ifdef ANDROID_IS_QUEUEDRAW
       iCount = avQueue_GetCount(Play->hQueueDraw);
       for (i = iCount - 1; i >= 0; i--)
       {
@@ -516,7 +439,7 @@ void thread_QueueVideo(HANDLE NetHandle)
         if (tmpNode->Buf1) free(tmpNode->Buf1);
         avQueue_ReadEnd(Play->hQueueDraw, tmpNode);
       }
-
+#endif
       if (Play->decHandle)
       {
         thDecodeVideoFree(Play->decHandle);
@@ -552,6 +475,7 @@ void thread_QueueVideo(HANDLE NetHandle)
       continue;
     }
     //todo
+
     tmpNode = avQueue_ReadBegin(Play->hQueueVideo);
     if (tmpNode == NULL)
     {
@@ -566,8 +490,11 @@ void thread_QueueVideo(HANDLE NetHandle)
     if (!PInfo) goto labReadEnd;
     if (Play->DecodeStyle == Decode_None) goto labReadEnd;
     if (Play->DecodeStyle == Decode_IFrame && !PInfo->Frame.IsIFrame) goto labReadEnd;
+    ThreadLock(&Play->Lock);
     ret = thDecodeVideoFrame(Play->decHandle, tmpNode->Buf, tmpNode->BufLen, &Play->ImgWidth, &Play->ImgHeight, &Play->FrameV420);
+    ThreadUnlock(&Play->Lock);
     if (!ret) goto labReadEnd;
+    pthread_cond_signal(&Play->SyncCond);
 
     Play->IsVideoDecodeSuccessFlag = true;
 
@@ -576,31 +503,15 @@ void thread_QueueVideo(HANDLE NetHandle)
       thDecodeVideoSaveToJpg(Play->decHandle, Play->FileName_Jpg);
       Play->IsSnapShot = false;
     }
-
-#if (defined(ANDROID) && defined(IS_VIDEOPLAY_OPENGL))
-
-#define TEXTURE_WIDTH 1024//android
-#define TEXTURE_HEIGHT 512
-    iYUVSize = Play->ImgWidth * Play->ImgHeight * 2;//AV_PIX_FMT_RGB565
-    newBuf = (char *) malloc(iYUVSize);
-    if (!newBuf) goto labReadEnd;
-    thImgConvertFill(&newFrameV, newBuf, AV_PIX_FMT_RGB565, Play->ImgWidth, Play->ImgHeight);
-    thImgConvertScale1(//only copy ?
-      &newFrameV, AV_PIX_FMT_RGB565, TEXTURE_WIDTH,//Play->ImgWidth,
-      TEXTURE_HEIGHT,//Play->ImgHeight,
-      &Play->FrameV420, AV_PIX_FMT_YUV420P, Play->ImgWidth, Play->ImgHeight, 0);
-#endif
-
-#ifdef WIN32
+#ifdef ANDROID_IS_QUEUEDRAW
     iYUVSize = Play->ImgWidth * Play->ImgHeight * 2;//AV_PIX_FMT_YUV420P //WIN32 ios
     newBuf = (char *) malloc(iYUVSize);
     if (!newBuf) goto labReadEnd;
     thImgConvertFill(&newFrameV, newBuf, AV_PIX_FMT_YUV420P, Play->ImgWidth, Play->ImgHeight);
     thImgConvertScale1(//only copy ?
-      &newFrameV, AV_PIX_FMT_YUV420P, Play->ImgWidth, Play->ImgHeight, &Play->FrameV420, AV_PIX_FMT_YUV420P,
-      Play->ImgWidth, Play->ImgHeight, 0);
+      &newFrameV, AV_PIX_FMT_YUV420P, Play->ImgWidth, Play->ImgHeight, &Play->FrameV420, AV_PIX_FMT_YUV420P, Play->ImgWidth,
+      Play->ImgHeight, 0);
 #endif
-
     if (Play->FrameRate == 0) Play->FrameRate = 30;
     Play->iFrameTime = 1000 / Play->FrameRate;
 
@@ -616,14 +527,18 @@ void thread_QueueVideo(HANDLE NetHandle)
   Play->hTimerIDQueueDraw = mmTimeSetEvent(Play->iSleepTime, Time_QueueDraw, (void*)Play);
 }
 #endif
-
+#ifdef ANDROID_IS_QUEUEDRAW
     if (avQueue_Write(Play->hQueueDraw, (char *) &newFrameV, sizeof(TavPicture), newBuf, iYUVSize) == NULL)
     {
       free(newBuf);
     }
-
+#endif
     labReadEnd:
     avQueue_ReadEnd(Play->hQueueVideo, tmpNode);
+    gettimeofday(&tv2, NULL);
+    idec = timeval_dec(&tv2, &tv1);
+    tv1 = tv2;
+    PRINTF("iVideoPktCount:%d idec:%03d\n", iCount, idec);
   }
 }
 
@@ -694,7 +609,7 @@ void thread_QueueRec(HANDLE NetHandle)
       if (PInfo->Head.VerifyCode == Head_VideoPkt)
       {
         u64 pts = PInfo->Frame.FrameTime / 1000 * 90;
-        if (Play->RecHandle) thRecordWriteVideo(Play->RecHandle, tmpNode->Buf, tmpNode->BufLen, pts);
+        if (Play->RecHandle) thRecordWriteVideo(Play->RecHandle, tmpNode->Buf, tmpNode->BufLen, -1);
       } else if (PInfo->Head.VerifyCode == Head_AudioPkt)
       {
         if (Play->RecHandle)
@@ -741,60 +656,49 @@ void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo *PInfo, char *Buf, int
           thNet_StopRec(NetHandle);
           thNet_StartRec(NetHandle, NULL);
         }
-        if (Play->IsInsideDecode)
+        if (Play->decHandle)//1.2
         {
-          if (Play->decHandle)//1.2
-          {
-            thDecodeVideoFree(Play->decHandle);
-            Play->decHandle = NULL;
-          }
-          Play->decHandle = thDecodeVideoInit(Play->VideoMediaType);//1.3
+          thDecodeVideoFree(Play->decHandle);
+          Play->decHandle = NULL;
         }
+        Play->decHandle = thDecodeVideoInit(Play->VideoMediaType);//1.3
         ThreadUnlock(&Play->Lock);
       }
       //2
       pts = PInfo->Frame.FrameTime / 1000 * 90;
-      if (Play->RecHandle)
+      if (Play->RecHandle) thRecordWriteVideo(Play->RecHandle, Buf, BufLen, -1);
+      //3
+#ifdef ANDROID
+      ThreadLock(&Play->Lock);
+      ret = thDecodeVideoFrame(Play->decHandle, Buf, BufLen, &Play->ImgWidth, &Play->ImgHeight, &Play->FrameV420);//yuv420
+      ThreadUnlock(&Play->Lock);
+      if (!ret) return;
+      pthread_cond_signal(&Play->SyncCond);
+#else
+      ret = thDecodeVideoFrame(Play->decHandle, Buf, BufLen, &Play->ImgWidth, &Play->ImgHeight, &Play->FrameV420);//yuv420
+      if (!ret) return;
+#endif
+
+      Play->IsVideoDecodeSuccessFlag = true;
+
+      if (Play->IsSnapShot)
       {
-        thRecordWriteVideo(Play->RecHandle, Buf, BufLen, pts);
+        thDecodeVideoSaveToJpg(Play->decHandle, Play->FileName_Jpg);
+        Play->IsSnapShot = false;
       }
 
-      //3
-      if (Play->IsInsideDecode)
+      if (Play->ImgWidth > 0 && Play->ImgHeight > 0)
       {
-#ifdef ANDROID_EGL
-        ThreadLock(&Play->Lock);
+#if defined(WIN32)
+        ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth,
+                                   Play->ImgHeight);//ddraw yuv420->rgb32
+            for (i = 0; i < MAX_DSPINFO_COUNT; i++)
+            {
+              TDspInfo *PDspInfo = &Play->DspInfoLst[i];
+              if (PDspInfo->DspHandle == NULL) continue;
+              ret = thRender_Display(Play->RenderHandle, PDspInfo->DspHandle, PDspInfo->DspRect);
+            }
 #endif
-        ret = thDecodeVideoFrame(Play->decHandle, Buf, BufLen, &Play->ImgWidth, &Play->ImgHeight, &Play->FrameV420);//yuv420
-#ifdef ANDROID_EGL
-        ThreadUnlock(&Play->Lock);
-#endif
-        if (!ret) return;
-
-        Play->IsVideoDecodeSuccessFlag = true;
-
-        if (Play->IsSnapShot)
-        {
-          thDecodeVideoSaveToJpg(Play->decHandle, Play->FileName_Jpg);
-          Play->IsSnapShot = false;
-        }
-
-        if (Play->ImgWidth > 0 && Play->ImgHeight > 0)
-        {
-#if (defined(ANDROID))//android
-          ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth, Play->ImgHeight);//ddraw yuv420->rgb32
-          pthread_cond_signal(&Play->SyncCond);
-#else//WIN32 ios
-          ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth,
-                                 Play->ImgHeight);//ddraw yuv420->rgb32
-          for (i = 0; i < MAX_DSPINFO_COUNT; i++)
-          {
-            TDspInfo *PDspInfo = &Play->DspInfoLst[i];
-            if (PDspInfo->DspHandle == NULL) continue;
-            ret = thRender_Display(Play->RenderHandle, PDspInfo->DspHandle, PDspInfo->DspRect);
-          }
-#endif
-        }
       }
     }
   } else if (PInfo->Head.VerifyCode == Head_AudioPkt)
@@ -1049,7 +953,7 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
 
       case Head_CfgPkt:
       {
-        THeadPkt* PHead = (THeadPkt*)RecvBuffer;
+        THeadPkt *PHead = (THeadPkt *) RecvBuffer;
         memcpy(&Play->DevCfg, &RecvBuffer[sizeof(THeadPkt)], PHead->PktSize);
         Play->DevCfg.DevInfoPkt.SN = Play->DevCfg.DevInfoPkt.SN;
       }
@@ -1429,11 +1333,11 @@ bool thNet_Connect(HANDLE NetHandle, char *UserName, char *Password, char *IPUID
 
   if (Play->IsConnect)
   {
-    //sem_init(&Play->semHttpDownload, 0, 0);
     if (Play->IsQueue)
     {
-      Play->hQueueDraw = avQueue_Init(MAX_QUEUE_COUNT, true, false);//newBuf在Time_QueueDraw中释放
-
+#ifdef ANDROID_IS_QUEUEDRAW
+      Play->hQueueDraw = avQueue_Init(MAX_QUEUE_COUNT, true, false);//newBuf在Time_QueueDraw或thread_eglRender中释放
+#endif
       Play->hQueueVideo = avQueue_Init(MAX_QUEUE_COUNT, true, true);
       Play->hQueueAudio = avQueue_Init(MAX_QUEUE_COUNT, true, true);
       Play->hQueueRec = avQueue_Init(MAX_QUEUE_COUNT, true, true);
@@ -1443,20 +1347,17 @@ bool thNet_Connect(HANDLE NetHandle, char *UserName, char *Password, char *IPUID
       Play->thQueueRec = ThreadCreate((void *) thread_QueueRec, Play, false);
     }
 
-    if (Play->IsInsideDecode)
-    {
-      TMediaType MediaType = CODEC_NONE;
-      TVideoFormat *vfmt = &Play->DevCfg.VideoCfgPkt.VideoFormat;
-      if (vfmt->VideoType == MPEG4) vfmt->VideoType = H264;
+    TMediaType MediaType = CODEC_NONE;
+    TVideoFormat *vfmt = &Play->DevCfg.VideoCfgPkt.VideoFormat;
+    if (vfmt->VideoType == MPEG4) vfmt->VideoType = H264;
 
-      if (vfmt->VideoType == MJPEG) MediaType = CODEC_MJPEG;
-      else if (vfmt->VideoType == MPEG4) MediaType = CODEC_MPEG4;
-      else if (vfmt->VideoType == H264) MediaType = CODEC_H264;
-      else if (vfmt->VideoType == H265) MediaType = CODEC_H265;
-      Play->VideoMediaType = MediaType;
-      Play->decHandle = thDecodeVideoInit(MediaType);
-      Play->RenderHandle = thRender_Init(0);
-    }
+    if (vfmt->VideoType == MJPEG) MediaType = CODEC_MJPEG;
+    else if (vfmt->VideoType == MPEG4) MediaType = CODEC_MPEG4;
+    else if (vfmt->VideoType == H264) MediaType = CODEC_H264;
+    else if (vfmt->VideoType == H265) MediaType = CODEC_H265;
+    Play->VideoMediaType = MediaType;
+    Play->decHandle = thDecodeVideoInit(MediaType);
+    Play->RenderHandle = thRender_Init(0);
   }
 
   if (Play->IsConnect) Play->iConnectStatus = THNET_CONNSTATUS_SUCCESS; else Play->iConnectStatus = THNET_CONNSTATUS_FAIL;
@@ -1527,13 +1428,15 @@ bool thNet_DisConn(HANDLE NetHandle)
 
   if (Play->IsQueue)
   {
+#ifdef WIN32
     if (Play->hTimerIDQueueDraw)
     {
       mmTimeKillEvent(Play->hTimerIDQueueDraw);
       Play->hTimerIDQueueDraw = NULL;
       Play->iSleepTime = 0;
     }
-
+#endif
+#ifdef ANDROID_IS_QUEUEDRAW
     if (Play->hQueueDraw)
     {
       iCount = avQueue_GetCount(Play->hQueueDraw);
@@ -1547,7 +1450,7 @@ bool thNet_DisConn(HANDLE NetHandle)
       avQueue_Free(Play->hQueueDraw);
       Play->hQueueDraw = NULL;
     }
-
+#endif
     ThreadExit(Play->thQueueVideo, 0);//1000;
 
     if (Play->hQueueVideo)
@@ -1573,26 +1476,23 @@ bool thNet_DisConn(HANDLE NetHandle)
     }
   }
 
-  if (Play->IsInsideDecode)
+  if (Play->decHandle)
   {
-    if (Play->decHandle)
-    {
-      if (thDecodeVideoFree(Play->decHandle)) Play->decHandle = NULL;
-    }
-    if (Play->RenderHandle)
-    {
-      if (thRender_Free(Play->RenderHandle)) Play->RenderHandle = NULL;
-    }
-    if (Play->audioHandle)
-    {
-      thAudioPlay_Free(Play->audioHandle);
-      Play->audioHandle = NULL;
-    }
-    if (Play->talkHandle)
-    {
-      thAudioTalk_Free(Play->talkHandle);
-      Play->talkHandle = NULL;
-    }
+    if (thDecodeVideoFree(Play->decHandle)) Play->decHandle = NULL;
+  }
+  if (Play->RenderHandle)
+  {
+    if (thRender_Free(Play->RenderHandle)) Play->RenderHandle = NULL;
+  }
+  if (Play->audioHandle)
+  {
+    thAudioPlay_Free(Play->audioHandle);
+    Play->audioHandle = NULL;
+  }
+  if (Play->talkHandle)
+  {
+    thAudioTalk_Free(Play->talkHandle);
+    Play->talkHandle = NULL;
   }
 
   return true;
@@ -1771,7 +1671,6 @@ bool thNet_TalkOpen(HANDLE NetHandle)
   TPlayParam *Play = (TPlayParam *) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
-  if (!Play->IsInsideDecode) return false;
   PRINTF("%s(%s)(%s)\n", __FUNCTION__, Play->IPUID, Play->LocalIP);
 
   if (Play->Isp2pConn && Play->p2p_talkIndex < 0)
@@ -1798,7 +1697,6 @@ bool thNet_TalkClose(HANDLE NetHandle)
   TPlayParam *Play = (TPlayParam *) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
-  if (!Play->IsInsideDecode) return false;
   PRINTF("%s(%s)(%s)\n", __FUNCTION__, Play->IPUID, Play->LocalIP);
   if (Play->talkHandle)
   {
@@ -2212,7 +2110,7 @@ bool thNet_StartRec(HANDLE NetHandle, char *RecFileName/*FileName=NULL,配合thNet
   {
     strcpy(PathFileName, RecFileName);
   }
-  PRINTF("%s(%s) PathFileName:%s\n", __FUNCTION__, Play->IPUID, PathFileName);
+
   if (Play->ImgWidth > 0 && Play->ImgHeight > 0)//一开始没有thNet_Play之前，ImgWidth=0 ImgHeight=0
   {
     Play->RecHandle = thRecordStart(PathFileName, MediaType, Play->ImgWidth, Play->ImgHeight, Play->FrameRate,//主 次码流 是否要分开？
@@ -2268,7 +2166,6 @@ bool thNet_AudioPlayOpen(HANDLE NetHandle)
 {
   TPlayParam *Play = (TPlayParam *) NetHandle;
   if (NetHandle == 0) return false;
-  if (!Play->IsInsideDecode) return false;
   PRINTF("%s(%s)\n", __FUNCTION__, Play->IPUID);
 
   ThreadLock(&Play->Lock);
@@ -2288,7 +2185,6 @@ bool thNet_AudioPlayClose(HANDLE NetHandle)
 {
   TPlayParam *Play = (TPlayParam *) NetHandle;
   if (NetHandle == 0) return false;
-  if (!Play->IsInsideDecode) return false;
   PRINTF("%s(%s)\n", __FUNCTION__, Play->IPUID);
 
   ThreadLock(&Play->Lock);
@@ -2306,7 +2202,6 @@ bool thNet_SetAudioIsMute(HANDLE NetHandle, int IsAudioMute)
 {
   TPlayParam *Play = (TPlayParam *) NetHandle;
   if (NetHandle == 0) return false;
-  if (!Play->IsInsideDecode) return false;
   PRINTF("%s(%s) IsAudioMute:%d\n", __FUNCTION__, Play->IPUID, IsAudioMute);
 
   ThreadLock(&Play->Lock);
@@ -2438,303 +2333,5 @@ bool P2P_Free()
     PlayLst.Isp2pInit = false;
   }
   return true;
-}
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-bool thManage_AddDevice(u32 SN, HANDLE NetHandle)
-{
-  int i, ret;
-
-  if (NetHandle == 0) return false;
-
-  ret = false;
-  for (i = 0; i < MAX_MANAGE_PLAY_COUNT; i++)
-  {
-    if (PlayLst.Lst[i].SN == 0)
-    {
-      PlayLst.Lst[i].SN = SN;
-      PlayLst.Lst[i].NetHandle = NetHandle;
-      PlayLst.iPlayCount = PlayLst.iPlayCount + 1;
-      ret = true;
-      break;
-    }
-  }
-
-  return ret;
-}
-//-----------------------------------------------------------------------------
-bool thManage_DelDevice(u32 SN)
-{
-  int i, ret;
-
-  ret = false;
-  for (i = 0; i < MAX_MANAGE_PLAY_COUNT; i++)
-  {
-    if (PlayLst.Lst[i].SN == SN)
-    {
-      PlayLst.Lst[i].SN = 0;
-      PlayLst.Lst[i].NetHandle = 0;
-      PlayLst.iPlayCount = PlayLst.iPlayCount - 1;
-      if (PlayLst.iPlayCount < 0) PlayLst.iPlayCount = 0;
-
-      ret = true;
-      break;
-    }
-  }
-
-  return ret;
-}
-//-----------------------------------------------------------------------------
-bool thManage_DisconnFreeAll()
-{
-  int i, ret;
-
-  for (i = 0; i < MAX_MANAGE_PLAY_COUNT; i++)
-  {
-    if (PlayLst.Lst[i].NetHandle)
-    {
-      ret = thNet_Free(PlayLst.Lst[i].NetHandle);
-      PlayLst.Lst[i].NetHandle = 0;
-      PlayLst.Lst[i].SN = 0;
-    }
-  }
-
-  P2P_Free();
-  return true;
-}
-//-----------------------------------------------------------------------------
-bool thManage_NetworkSwitch(int NetWorkType)//TYPE_NONE=-1 TYPE_MOBILE=0 TYPE_WIFI=1
-{
-  if (PlayLst.NetWorkType != NetWorkType)
-  {
-    PlayLst.NetWorkType = NetWorkType;
-  }
-}
-//-----------------------------------------------------------------------------
-bool thManage_ForeBackgroundSwitch(int IsForeground)//Background=0 Foreground=1
-{
-  if (PlayLst.IsForeground != IsForeground)
-  {
-    PlayLst.IsForeground = IsForeground;
-  }
-}
-//-----------------------------------------------------------------------------
-bool th_OpenGLRenderRGB565(HANDLE NetHandle)//android opengl render
-{
-  int i;
-  int ret = false;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
-  if (NetHandle == 0) return false;
-  if (!Play->IsConnect) return false;
-  if (Play->RenderHandle == 0) return false;
-  if (Play->IsQueue)
-  {
-    Time_QueueDraw(0, 0, (void *) NetHandle, 0, 0);
-    return true;
-  } else
-  {
-    struct timeval tm;
-    struct timespec tnow;
-    //PRINTF("%s(%d) NetHandle:%d\n", __FUNCTION__, __LINE__, NetHandle);
-    pthread_mutex_lock(&Play->Lock);
-    //      pthread_cond_wait(&Play->SyncCond, &Play->Lock);
-    gettimeofday(&tm, NULL);
-    tnow.tv_sec = tm.tv_sec + 1;
-    tnow.tv_nsec = tm.tv_usec * 1000;
-    ret = pthread_cond_timedwait(&Play->SyncCond, &Play->Lock, &tnow);
-    pthread_mutex_unlock(&Play->Lock);
-    if (ret != 0) return false;
-
-    for (i = 0; i < MAX_DSPINFO_COUNT; i++)
-    {
-      TDspInfo *PDspInfo = &Play->DspInfoLst[i];
-      if (PDspInfo->DspHandle == NULL) continue;
-      if (PDspInfo->DspRect.right - PDspInfo->DspRect.left > 0 && PDspInfo->DspRect.bottom - PDspInfo->DspRect.top > 0)
-      {
-        ret = thRender_Display(Play->RenderHandle, PDspInfo->DspHandle, PDspInfo->DspRect);
-      }
-    }
-  }
-  return ret;
-}
-//-----------------------------------------------------------------------------
-#include <EGL/egl.h>
-#include <android/native_window_jni.h>
-#include <GLES2/gl2.h>
-#include "../avDecode/thEGL.h"
-
-void thread_eglRender(HANDLE NetHandle)
-{
-  int ret;
-  EGLConfig eglConf;
-  EGLSurface eglWindow;
-  EGLContext eglCtx;
-  EGLDisplay eglDisp;
-  GLuint yTextureId;
-  GLuint uTextureId;
-  GLuint vTextureId;
-
-  TPlayParam *Play = (TPlayParam *) NetHandle;
-  if (NetHandle == 0) return;
-
-  while (1)
-  {
-    if (Play->ImgWidth > 0 && Play->ImgHeight > 0) break;
-    usleep(1000 * 10);
-  }
-  //eglCreate
-  EGLint configSpec[] = {EGL_RED_SIZE, 8, EGL_GREEN_SIZE, 8, EGL_BLUE_SIZE, 8, EGL_SURFACE_TYPE, EGL_WINDOW_BIT, EGL_NONE};
-
-  int windowWidth, windowHeight;
-  eglDisp = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-  EGLint eglMajVers, eglMinVers;
-  EGLint numConfigs;
-  eglInitialize(eglDisp, &eglMajVers, &eglMinVers);
-  eglChooseConfig(eglDisp, configSpec, &eglConf, 1, &numConfigs);
-  eglWindow = eglCreateWindowSurface(eglDisp, eglConf, Play->Window, NULL);
-  eglQuerySurface(eglDisp, eglWindow, EGL_WIDTH, &windowWidth);
-  eglQuerySurface(eglDisp, eglWindow, EGL_HEIGHT, &windowHeight);
-  const EGLint ctxAttr[] = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE};
-  eglCtx = eglCreateContext(eglDisp, eglConf, EGL_NO_CONTEXT, ctxAttr);
-  eglMakeCurrent(eglDisp, eglWindow, eglWindow, eglCtx);
-
-  GLuint programId = createProgram();
-  GLuint aPositionHandle = (GLuint) glGetAttribLocation(programId, "aPosition");
-  GLuint aTextureCoordHandle = (GLuint) glGetAttribLocation(programId, "aTexCoord");
-  GLuint textureSamplerHandleY = (GLuint) glGetUniformLocation(programId, "yTexture");
-  GLuint textureSamplerHandleU = (GLuint) glGetUniformLocation(programId, "uTexture");
-  GLuint textureSamplerHandleV = (GLuint) glGetUniformLocation(programId, "vTexture");
-
-  glUseProgram(programId);
-  glEnableVertexAttribArray(aPositionHandle);
-  float vertexData[12] = {1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f};
-  glVertexAttribPointer(aPositionHandle, 3, GL_FLOAT, GL_FALSE, 12, vertexData);
-  glEnableVertexAttribArray(aTextureCoordHandle);
-  float textureVertexData[8] = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f};
-  glVertexAttribPointer(aTextureCoordHandle, 2, GL_FLOAT, GL_FALSE, 8, textureVertexData);
-
-  glGenTextures(1, &yTextureId);
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, yTextureId);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glUniform1i(textureSamplerHandleY, 0);
-
-  glGenTextures(1, &uTextureId);
-  glActiveTexture(GL_TEXTURE1);
-  glBindTexture(GL_TEXTURE_2D, uTextureId);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glUniform1i(textureSamplerHandleU, 1);
-
-  glGenTextures(1, &vTextureId);
-  glActiveTexture(GL_TEXTURE2);
-  glBindTexture(GL_TEXTURE_2D, vTextureId);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glUniform1i(textureSamplerHandleV, 2);
-
-  struct timeval tm;
-  struct timespec tnow;
-  while (1)
-  {
-    if (Play->IsExit) break;
-    if (Play->IsExitRender) break;
-
-    ThreadLock(&Play->Lock);
-    //      pthread_cond_wait(&Play->SyncCond, &Play->Lock);
-    gettimeofday(&tm, NULL);
-    tnow.tv_sec = tm.tv_sec + 1;
-    tnow.tv_nsec = tm.tv_usec * 1000;
-    ret = pthread_cond_timedwait(&Play->SyncCond, &Play->Lock, &tnow);
-    ThreadUnlock(&Play->Lock);
-    if (ret != 0)
-    {
-      //usleep(1000 * 10);
-      continue;
-    }
-
-    ThreadLock(&Play->Lock);
-    int ScreenWidth = Play->DspInfoLst[0].DspRect.right - Play->DspInfoLst[0].DspRect.left;
-    int ScreenHeight = Play->DspInfoLst[0].DspRect.bottom - Play->DspInfoLst[0].DspRect.top;
-    int left, top, viewWidth, viewHeight;
-    if (ScreenHeight > ScreenWidth)
-    {
-      left = 0;
-      viewWidth = ScreenWidth;
-      viewHeight = (int) (Play->ImgHeight * 1.0f / Play->ImgWidth * viewWidth);
-      top = (ScreenHeight - viewHeight) / 2;
-    } else
-    {
-      top = 0;
-      left = 0;
-      viewHeight = ScreenHeight;
-      viewWidth = ScreenWidth;
-    }
-    glViewport(left, top, viewWidth, viewHeight);
-
-    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    //eglRender
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, yTextureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Play->FrameV420.linesize[0], Play->ImgHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE,
-                 Play->FrameV420.data[0]);
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, uTextureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Play->FrameV420.linesize[1], Play->ImgHeight / 2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE,
-                 Play->FrameV420.data[1]);
-
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, vTextureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Play->FrameV420.linesize[2], Play->ImgHeight / 2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE,
-                 Play->FrameV420.data[2]);
-
-    //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    eglSwapBuffers(eglDisp, eglWindow);
-
-    Play->IsRenderSuccess = true;
-    ThreadUnlock(&Play->Lock);
-  }
-  //eglFree
-  eglMakeCurrent(eglDisp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-  eglDestroyContext(eglDisp, eglCtx);
-  eglDestroySurface(eglDisp, eglWindow);
-  eglTerminate(eglDisp);
-  eglDisp = EGL_NO_DISPLAY;
-  eglWindow = EGL_NO_SURFACE;
-  eglCtx = EGL_NO_CONTEXT;
-}
-//-----------------------------------------------------------------------------
-bool th_OpenGLCreateEGL(HANDLE NetHandle, void *Window)
-{
-  TPlayParam *Play = (TPlayParam *) NetHandle;
-  if (NetHandle == 0) return false;
-
-  Play->Window = (ANativeWindow *) Window;
-  Play->IsExitRender = false;
-  Play->IsRenderSuccess = false;
-  Play->thRenderEGL = ThreadCreate((void *) thread_eglRender, (HANDLE) NetHandle, false);
-  return true;
-}
-//-----------------------------------------------------------------------------
-bool th_OpenGLFreeEGL(HANDLE NetHandle)
-{
-  TPlayParam *Play = (TPlayParam *) NetHandle;
-  if (NetHandle == 0) return false;
-  ThreadLock(&Play->Lock);
-  Play->IsExitRender = true;
-  ThreadUnlock(&Play->Lock);
-  ThreadExit(Play->thRenderEGL, 0);//1000;
-  return true;
-}
-//-----------------------------------------------------------------------------
-bool thNet_IsVideoDecodeSuccess(HANDLE NetHandle)
-{
-  TPlayParam *Play = (TPlayParam *) NetHandle;
-  if (NetHandle == 0) return false;
-  return Play->IsVideoDecodeSuccessFlag;
 }
 //-----------------------------------------------------------------------------

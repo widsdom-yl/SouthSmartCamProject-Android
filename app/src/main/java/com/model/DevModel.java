@@ -337,14 +337,8 @@ public class DevModel implements Parcelable
             tmpNode.NetHandle = lib.thNetInit(
               true,
               false,
-              false,
-              false,
-              tmpNode.SN
+              false
             );
-            if (tmpNode.NetHandle > 0)
-            {
-              lib.thManageAddDevice(tmpNode.SN, tmpNode.NetHandle);
-            }
           }
 
           if (!tmpNode.IsConnect())

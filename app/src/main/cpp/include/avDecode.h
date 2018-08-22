@@ -144,13 +144,14 @@ typedef struct TPlayParam
 #define MAX_DSPINFO_COUNT  10
   TDspInfo DspInfoLst[MAX_DSPINFO_COUNT];//显示区域
 
-  bool IsInsideDecode;//0=外部解码 1=内部解码
   bool IsQueue;//是否队列解码显示
   bool IsAdjustTime;//是否校准设备时间
 
 #define MAX_QUEUE_COUNT    120
   HANDLE hQueueDraw;//上屏队列句柄
+#ifdef WIN32
   HANDLE hTimerIDQueueDraw;//上屏事件句柄
+#endif
   u32 iSleepTime;//
   int iFrameTime;//
 

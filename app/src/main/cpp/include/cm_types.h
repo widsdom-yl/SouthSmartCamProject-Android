@@ -56,6 +56,10 @@
 #define ANDROID __ANDROID__
 #endif
 
+#if defined(TARGET_OS_IPHONE) || defined(TARGET_IPHONE_SIMULATOR)
+#define IOS
+#endif
+
 #ifdef WIN32
 
 #include <windows.h>

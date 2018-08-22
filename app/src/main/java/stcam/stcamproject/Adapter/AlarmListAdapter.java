@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.model.AlarmImageModel;
 
 import java.util.List;
+import java.util.Locale;
 
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.GlideApp;
@@ -15,105 +16,144 @@ import stcam.stcamproject.R;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.SlidingButtonView;
 
-public class AlarmListAdapter extends BaseAdapter<AlarmImageModel> implements SlidingButtonView.IonSlidingButtonListener {
+public class AlarmListAdapter extends BaseAdapter<AlarmImageModel> implements SlidingButtonView.IonSlidingButtonListener
+{
 
-    private SlidingButtonView mMenu;
-    public AlarmListAdapter( List<AlarmImageModel> list) {
-        super(R.layout.alarm_list_delete_view, list);
+  private SlidingButtonView mMenu;
+
+  public AlarmListAdapter(List<AlarmImageModel> list)
+  {
+    super(R.layout.alarm_list_delete_view, list);
+  }
+
+  protected void convert(final BaseHolder holder, AlarmImageModel model, int position)
+  {
+    super.convert(holder, model, position);
+
+    RelativeLayout layout_content = holder.getView(R.id.layout_content);
+
+
+    SlidingButtonView slidingButtonView = holder.getView(R.id.slidingButtonView);
+
+    slidingButtonView.setSlidingButtonListener(this);
+
+    holder.setText(R.id.file_name_text, model.DevName).setText(R.id.time_text, model.AlmTime);
+    ImageView imageView = holder.getView(R.id.alarm_image);
+
+
+    Locale locale = Locale.getDefault();
+    String language = locale.getLanguage();//“zh”为中文，“en”为英文...
+    if (language.equals(Locale.CHINESE) || language.equals(Locale.SIMPLIFIED_CHINESE))
+    {
+      GlideApp.with(STApplication.getInstance()).asBitmap()
+        .load(model.Img)
+        .centerCrop()
+        .placeholder(R.drawable.imagethumb_cn)//zhbzhb
+        .into(imageView);
+    }
+    else
+    {
+      GlideApp.with(STApplication.getInstance()).asBitmap()
+        .load(model.Img)
+        .centerCrop()
+        .placeholder(R.drawable.imagethumb_en)//zhbzhb
+        .into(imageView);
     }
 
-    protected void convert(final BaseHolder holder, AlarmImageModel model, int position) {
-        super.convert(holder,model,position);
 
-        RelativeLayout layout_content = holder.getView(R.id.layout_content);
+    layout_content.getLayoutParams().width = SouthUtil.getScreenWidth(STApplication.getInstance());
 
+    TextView tv_Delete = holder.getView(R.id.tv_delete);
+    tv_Delete.setOnClickListener(new View.OnClickListener()
+    {
+      @Override
+      public void onClick(View view)
+      {
 
-        SlidingButtonView slidingButtonView = holder.getView(R.id.slidingButtonView);
+        int n = holder.getLayoutPosition();
 
-        slidingButtonView.setSlidingButtonListener(this);
-
-        holder.setText(R.id.file_name_text,model.DevName).setText(R.id.time_text,model.AlmTime);
-        ImageView imageView = holder.getView(R.id.alarm_image);
-        GlideApp.with(STApplication.getInstance()).asBitmap()
-                .load(model.Img)
-                .centerCrop()
-                .placeholder(R.drawable.imagethumb)
-                .into(imageView);
-
-        layout_content.getLayoutParams().width = SouthUtil.getScreenWidth(STApplication.getInstance());
-
-        TextView tv_Delete = holder.getView(R.id.tv_delete);
-        tv_Delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                int n = holder.getLayoutPosition();
-
-                if (mDeleteClickListener != null)
-                    mDeleteClickListener.onDeleteBtnCilck(view,n);
-            }
-        });
-
-        layout_content.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (menuIsOpen()) {
-                    closeMenu();//关闭菜单
-                }
-                else{
-                    int n = holder.getLayoutPosition();
-                    if (mDeleteClickListener != null)
-                        mDeleteClickListener.onItemCilck(view,n);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onMenuIsOpen(View view) {
-        mMenu = (SlidingButtonView) view;
-    }
-
-    @Override
-    public void onDownOrMove(SlidingButtonView slidingDeleteView) {
-        if(menuIsOpen())
+        if (mDeleteClickListener != null)
         {
-            if(mMenu != slidingDeleteView)
-            {
-                closeMenu();
-            }
+          mDeleteClickListener.onDeleteBtnCilck(view, n);
         }
-    }
+      }
+    });
 
-    /**
-     * 关闭菜单
-     */
-    public void closeMenu() {
-        mMenu.closeMenu();
-        mMenu = null;
+    layout_content.setOnClickListener(new View.OnClickListener()
+    {
+      @Override
+      public void onClick(View view)
+      {
 
-    }
-    /**
-     * 判断是否有菜单打开
-     */
-    public Boolean menuIsOpen() {
-        if(mMenu != null){
-            return true;
+        if (menuIsOpen())
+        {
+          closeMenu();//关闭菜单
         }
-        return false;
-    }
+        else
+        {
+          int n = holder.getLayoutPosition();
+          if (mDeleteClickListener != null)
+          {
+            mDeleteClickListener.onItemCilck(view, n);
+          }
+        }
+      }
+    });
+  }
 
-    public void setmDeleteClickListener(DeleteClickListener listener) {
-        mDeleteClickListener = listener;
-    }
+  @Override
+  public void onMenuIsOpen(View view)
+  {
+    mMenu = (SlidingButtonView) view;
+  }
 
-    public interface DeleteClickListener {
-        void onDeleteBtnCilck(View view,int position);
-        void onItemCilck(View view,int position);
+  @Override
+  public void onDownOrMove(SlidingButtonView slidingDeleteView)
+  {
+    if (menuIsOpen())
+    {
+      if (mMenu != slidingDeleteView)
+      {
+        closeMenu();
+      }
     }
+  }
 
-    DeleteClickListener mDeleteClickListener;
+  /**
+   * 关闭菜单
+   */
+  public void closeMenu()
+  {
+    mMenu.closeMenu();
+    mMenu = null;
+
+  }
+
+  /**
+   * 判断是否有菜单打开
+   */
+  public Boolean menuIsOpen()
+  {
+    if (mMenu != null)
+    {
+      return true;
+    }
+    return false;
+  }
+
+  public void setmDeleteClickListener(DeleteClickListener listener)
+  {
+    mDeleteClickListener = listener;
+  }
+
+  public interface DeleteClickListener
+  {
+    void onDeleteBtnCilck(View view, int position);
+
+    void onItemCilck(View view, int position);
+  }
+
+  DeleteClickListener mDeleteClickListener;
 
 
 }
