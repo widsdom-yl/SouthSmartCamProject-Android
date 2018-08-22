@@ -3,6 +3,7 @@ package stcam.stcamproject.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
@@ -108,6 +109,18 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
     return view;
   }
 
+    Handler handler_refresh = new Handler();
+    Runnable runnable_fresh = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+
+            getAlarmList(true);
+
+
+        }
+    };
 
   void getAlarmList(boolean refresh)
   {
