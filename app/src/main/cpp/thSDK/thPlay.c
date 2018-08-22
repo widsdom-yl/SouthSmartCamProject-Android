@@ -977,7 +977,7 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
             Play->HistoryTimestampDuration = Play->HistoryHead.FileSize;
           } else if (Play->HistoryHead.IndexType == 2)
           {
-            i64 iFrameTimeStart = (i64)(Play->HistoryHead.StartTime) * 1000;//ms
+            i64 iFrameTimeStart = (i64) (Play->HistoryHead.StartTime) * 1000;//ms
             Play->HistoryTimestampPosition = (PInfo->Frame.FrameTime / 1000 - iFrameTimeStart);//ms
             Play->HistoryTimestampDuration = (Play->HistoryHead.EndTime - Play->HistoryHead.StartTime) * 1000;//ms
           } else
@@ -1040,11 +1040,18 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
         } else if (PPkt->CmdPkt.MsgID == Msg_GetDevRecFileHead)
         {
           Play->HistoryHead = PPkt->CmdPkt.FileHead;
-        }
-        else if (PPkt->CmdPkt.MsgID == Msg_StopPlayRecFile)
+        } else if (PPkt->CmdPkt.MsgID == Msg_StopPlayRecFile)
         {
           Play->HistoryIsClose = true;
         }
+      }
+        break;
+
+      case Head_CfgPkt:
+      {
+        THeadPkt* PHead = (THeadPkt*)RecvBuffer;
+        memcpy(&Play->DevCfg, &RecvBuffer[sizeof(THeadPkt)], PHead->PktSize);
+        Play->DevCfg.DevInfoPkt.SN = Play->DevCfg.DevInfoPkt.SN;
       }
         break;
     }//end switch
@@ -1269,7 +1276,7 @@ void thread_RecvData_P2P(HANDLE NetHandle)
           Play->HistoryTimestampDuration = Play->HistoryHead.FileSize;
         } else if (Play->HistoryHead.IndexType == 2)
         {
-          i64 iFrameTimeStart = (i64)(Play->HistoryHead.StartTime) * 1000;//ms
+          i64 iFrameTimeStart = (i64) (Play->HistoryHead.StartTime) * 1000;//ms
           Play->HistoryTimestampPosition = (PInfo->Frame.FrameTime / 1000 - iFrameTimeStart);//ms
           Play->HistoryTimestampDuration = (Play->HistoryHead.EndTime - Play->HistoryHead.StartTime) * 1000;//ms
         } else
@@ -1302,6 +1309,10 @@ void thread_RecvData_P2P(HANDLE NetHandle)
       memcpy(Play->RecvDownloadBuf, Play->RecvBuffer + sizeof(PInfo->Head), PInfo->Head.PktSize);
       Play->RecvDownloadLen = PInfo->Head.PktSize;
       //if (Play->semHttpDownload) sem_post(&Play->semHttpDownload);
+    } else if (PInfo->Head.VerifyCode == Head_CfgPkt)
+    {
+      memcpy(&Play->DevCfg, &Play->RecvBuffer[sizeof(PInfo->Head)], PInfo->Head.PktSize);
+      Play->DevCfg.DevInfoPkt.SN = Play->DevCfg.DevInfoPkt.SN;
     }
   }
 }
@@ -1941,6 +1952,7 @@ bool thNet_RemoteFilePlayControl(HANDLE NetHandle, i32 PlayCtrl, i32 Speed, i32 
 
   return false;
 }
+
 //-----------------------------------------------------------------------------
 int thNet_RemoteFileIsClose(HANDLE NetHandle)
 {
@@ -1948,6 +1960,7 @@ int thNet_RemoteFileIsClose(HANDLE NetHandle)
   if (NetHandle == 0) return false;
   return Play->HistoryIsClose;
 }
+
 //-----------------------------------------------------------------------------
 int thNet_RemoteFileGetIndexType(HANDLE NetHandle)
 {
@@ -1955,6 +1968,7 @@ int thNet_RemoteFileGetIndexType(HANDLE NetHandle)
   if (NetHandle == 0) return false;
   return Play->HistoryIndexType;
 }
+
 //-----------------------------------------------------------------------------
 int thNet_RemoteFileGetPosition(HANDLE NetHandle)
 {
@@ -1962,6 +1976,7 @@ int thNet_RemoteFileGetPosition(HANDLE NetHandle)
   if (NetHandle == 0) return false;
   return Play->HistoryTimestampPosition;
 }
+
 //-----------------------------------------------------------------------------
 int thNet_RemoteFileGetDuration(HANDLE NetHandle)
 {

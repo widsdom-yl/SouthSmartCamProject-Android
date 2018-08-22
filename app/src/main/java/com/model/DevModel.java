@@ -227,7 +227,7 @@ public class DevModel implements Parcelable
       case IS_CONN_LAN:
         return "LAN";
       case IS_CONN_DDNS:
-        return "DDNS";
+        return "DDNS";//CID
       case IS_CONN_P2P:
         return "P2P";
       default:

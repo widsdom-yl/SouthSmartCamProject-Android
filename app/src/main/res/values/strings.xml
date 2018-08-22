@@ -192,7 +192,7 @@
     <string name="string_confirm_new_password">Confirm password</string>
     <string name="action_check_update">Check update</string>
     <string name="string_current_newer">Current version of the latest version</string>
-    <string name="string_current_older">The current version needs to be upgraded. Please  upgrade to App store</string>
+    <string name="string_current_older">The App is updated. Is it upgraded?</string>
     <string name="string_search_no_device">Cannot search the device</string>
     <string name="action_input_verify_code">Input verity code</string>
     <string name="action_get_verify_code">Get verity code</string>

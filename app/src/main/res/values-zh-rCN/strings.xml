@@ -198,7 +198,7 @@
     <string name="string_confirm_new_password">请输入确认密码</string>
     <string name="action_check_update">    检查更新</string>
     <string name="string_current_newer">当前为最新版本</string>
-    <string name="string_current_older">当前版本需要升级，请到App store升级</string>
+    <string name="string_current_older">当前版本需要升级，是否升级？</string>
     <string name="string_search_no_device">未搜索到设备</string>
     <string name="action_input_verify_code">请输入验证码</string>
     <string name="action_get_verify_code">获取验证码</string>

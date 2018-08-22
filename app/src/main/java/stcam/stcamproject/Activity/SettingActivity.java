@@ -317,8 +317,6 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
           {
             SouthUtil.showDialog(SettingActivity.this, "当前无有效连接，无法转AP模式");
           }
-
-
         }
         break;
       default:
@@ -329,23 +327,11 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
   @Override
   public void onItemClick(View view, int position)
   {
-
-
-        /*
-         items.add(getString(R.string.device_name));
-        items.add(getString(R.string.action_device_pwd));
-        items.add(getString(R.string.action_push));
-        items.add(getString(R.string.action_manager_senior));
-        items.add(getString(R.string.action_manager_volume));
-//        items.add(getString(R.string.action_manager_alarm_level));
-        items.add(getString(R.string.action_version));
-        * */
     if (entryType == EnumMainEntry_Visitor)
     {
       SouthUtil.showDialog(this, getString(R.string.string_mode_visitor));
       return;
     }
-
 
     if (!devNode.IsConnect())
     {
@@ -353,9 +339,8 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       return;
     }
 
-    if (0 == position)
+    if (0 == position)//修改设备名称
     {
-
       if (devNode.IsShare == 0)
       {
         SouthUtil.showDialog(this, getString(R.string.string_device_is_share));
@@ -365,9 +350,8 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       changeDeviceNameDialog();
 
     }
-    else if (1 == position)
+    else if (1 == position)//修改密码
     {
-
       if (devNode.IsShare == 0)
       {
         SouthUtil.showDialog(this, getString(R.string.string_device_is_share));
@@ -382,7 +366,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       intent.putExtras(bundle);
       startActivity(intent);
     }
-    else if (2 == position)
+    else if (2 == position)//推送开关
     {
 
       if (devNode.IsPush == 0)
@@ -393,7 +377,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
       dialogChoice1();
     }
-    else if (3 == position)
+    else if (3 == position)//高级设置
     {
       if (devNode.IsShare == 0)
       {
@@ -408,8 +392,13 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       startActivity(intent);
     }
 
-    else if (4 == position)
+    else if (4 == position)//设备版本，检查更新
     {
+      if (devNode.IsShare == 0)
+      {
+        SouthUtil.showDialog(this, getString(R.string.string_device_is_share));
+        return;
+      }
       checkDevUpdate();
     }
   }
@@ -431,7 +420,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
   }
 
 
-  /*开关*/
+  /*推送开关*/
   private void dialogChoice1()
   {
 

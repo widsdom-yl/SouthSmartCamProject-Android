@@ -134,47 +134,49 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
       iPosition = lib.thNetRemoteFileGetPosition(devModel.NetHandle);
       iMax = lib.thNetRemoteFileGetDuration(devModel.NetHandle);
 
-      seekBarTimer.setMax(iMax);
+      if (iMax > 0 && IndexType > 0)
+      {
+        seekBarTimer.setMax(iMax);
 
-      int iTimeNow = lib.GetTime();
-      if (iTimeDragPos == 0)
-      {
-        seekBarTimer.setProgress(iPosition);
-      }
-      else
-      {
-        if (iTimeNow - iTimeDragPos > 3)
+        int iTimeNow = lib.GetTime();
+        if (iTimeDragPos == 0)
         {
-          iTimeDragPos = 0;
+          seekBarTimer.setProgress(iPosition);
         }
-      }
+        else
+        {
+          if (iTimeNow - iTimeDragPos > 3)
+          {
+            iTimeDragPos = 0;
+          }
+        }
 
-      if (IndexType == 1)//按文件长度
-      {
-        String StrPosition = String.format("%d %", iPosition * 100 / iMax);
-        String StrDuration = String.format("%d %", 100);
-        txtTimePosition.setText(StrPosition);
-        txtTimeDuration.setText(StrDuration);
-      }
-      else if (IndexType == 2)//按时间戳
-      {
-        int iHour, iMinute, iSecond;
+        if (IndexType == 1)//按文件长度
+        {
+          String StrPosition = String.format("%d %", iPosition * 100 / iMax);
+          String StrDuration = String.format("%d %", 100);
+          txtTimePosition.setText(StrPosition);
+          txtTimeDuration.setText(StrDuration);
+        }
+        else if (IndexType == 2)//按时间戳
+        {
+          int iHour, iMinute, iSecond;
 
-        iPosition = iPosition / 1000;
-        iHour = iPosition / 3600;
-        iMinute = (iPosition - iHour * 60) / 60;
-        iSecond = iPosition % 60;
-        String StrPosition = String.format("%02d:%02d:%02d", iHour, iMinute, iSecond);
-        txtTimePosition.setText(StrPosition);
+          iPosition = iPosition / 1000;
+          iHour = iPosition / 3600;
+          iMinute = (iPosition - iHour * 60) / 60;
+          iSecond = iPosition % 60;
+          String StrPosition = String.format("%02d:%02d:%02d", iHour, iMinute, iSecond);
+          txtTimePosition.setText(StrPosition);
 
-        iMax = iMax / 1000;
-        iHour = iMax / 3600;
-        iMinute = (iMax - iHour * 60) / 60;
-        iSecond = iMax % 60;
-        String StrDuration = String.format("%02d:%02d:%02d", iHour, iMinute, iSecond);
-        txtTimeDuration.setText(StrDuration);
-      }
-
+          iMax = iMax / 1000;
+          iHour = iMax / 3600;
+          iMinute = (iMax - iHour * 60) / 60;
+          iSecond = iMax % 60;
+          String StrDuration = String.format("%02d:%02d:%02d", iHour, iMinute, iSecond);
+          txtTimeDuration.setText(StrDuration);
+        }
+      }//if (iMax > 0 && IndexType > 0)
       handler_refresh.postDelayed(runnable_refresh, 1000);
     }
   };

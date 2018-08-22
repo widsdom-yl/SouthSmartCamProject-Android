@@ -712,7 +712,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     {
       if (entryType == EnumMainEntry_Login)
       {
-        if (tmpNode.IsShare == 0)
+        if (tmpNode.IsShare == 0)//去掉？
         {
           SouthUtil.showDialog(this.getActivity(), getString(R.string.string_device_is_share));
           return;
@@ -747,11 +747,13 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     {
       if (entryType == EnumMainEntry_Login)
       {
+        /*//去掉 zhb add
         if (tmpNode.IsShare == 0)
         {
           SouthUtil.showDialog(this.getActivity(), getString(R.string.string_device_is_share));
           return;
         }
+        */
         if (tmpNode.IsHistory == 0)
         {
           SouthUtil.showToast(STApplication.getInstance(), getString(R.string.string_no_record_permisson));

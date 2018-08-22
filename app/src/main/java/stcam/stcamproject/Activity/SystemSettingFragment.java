@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -250,6 +251,7 @@ public class SystemSettingFragment extends Fragment implements BaseAdapter.OnIte
       .subscribe(observer_check_update);
   }
 
+  UpdateModel UpdateApp;//zhb
   Observer<UpdateModel> observer_check_update = new Observer<UpdateModel>()
   {
     @Override
@@ -269,40 +271,52 @@ public class SystemSettingFragment extends Fragment implements BaseAdapter.OnIte
     }
 
     @Override
-    public void onNext(UpdateModel m)
+    public void onNext(UpdateModel m)//App升级
     {
       lod.dismiss();
-      if (m != null)
+      if (m == null)
       {
-        Log.e(tag, "---------------------onNext:" + m.ver);
-
-        try
-        {
-          PackageInfo packageInfo = null;
-          packageInfo = STApplication.getInstance()
-            .getPackageManager()
-            .getPackageInfo(STApplication.getInstance().getPackageName(), 0);
-
-          String localVersion = packageInfo.versionName;
-
-          if (!compareStringValue(localVersion, m.ver))
-          {
-            SouthUtil.showDialog(SystemSettingFragment.this.getContext(), STApplication.getInstance().getString(R.string
-              .string_current_older));
-          }
-          else
-          {
-            SouthUtil.showDialog(SystemSettingFragment.this.getContext(), STApplication.getInstance().getString(R.string
-              .string_current_newer));
-          }
-        }
-        catch (PackageManager.NameNotFoundException e)
-        {
-          e.printStackTrace();
-        }
-
+        return;
       }
+      try
+      {
+        PackageInfo packageInfo = null;
+        packageInfo = STApplication.getInstance()
+          .getPackageManager()
+          .getPackageInfo(STApplication.getInstance().getPackageName(), 0);
 
+        UpdateApp = m;
+        String VerOld = packageInfo.versionName;
+        String VerNew = UpdateApp.ver;
+
+        int ret = VerNew.compareTo(VerOld);
+        if (ret > 0)
+        {
+          //提示升级
+          new android.app.AlertDialog.Builder(SystemSettingFragment.this.getContext())
+            .setTitle(SystemSettingFragment.this.getString(R.string.string_current_older))
+            .setPositiveButton(getString(R.string.action_ok), new DialogInterface.OnClickListener()
+            {
+              @Override
+              public void onClick(DialogInterface dialogInterface, int i)
+              {
+                Uri uri = Uri.parse(UpdateApp.url);
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                SystemSettingFragment.this.startActivity(intent);
+              }
+            })
+            .setNegativeButton(getString(R.string.action_cancel), null)
+            .show();
+        }
+        else
+        {
+          SouthUtil.showToast(SystemSettingFragment.this.getContext(), getString(R.string.string_current_newer));
+        }
+      }
+      catch (PackageManager.NameNotFoundException e)
+      {
+        e.printStackTrace();
+      }
 
     }
   };
