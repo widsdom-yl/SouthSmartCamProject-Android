@@ -11,6 +11,7 @@ import com.thSDK.lib;
 
 import org.json.JSONObject;
 
+import stcam.stcamproject.Config.Config;
 import stcam.stcamproject.Manager.DataManager;
 import stcam.stcamproject.Util.TFun;
 
@@ -237,8 +238,8 @@ public class DevModel implements Parcelable
 
   public DevModel()
   {
-    usr = "admin";
-    pwd = "admin";
+    usr = Config.DEFAULTUSERNAME;
+    pwd = Config.DEFAULTPASSWORD;
   }
 
   public void updateUserAndPwd()

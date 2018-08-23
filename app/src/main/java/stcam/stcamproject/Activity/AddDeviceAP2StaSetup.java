@@ -28,6 +28,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import stcam.stcamproject.Application.STApplication;
+import stcam.stcamproject.Config.Config;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.Util.SouthUtil;
@@ -49,7 +50,7 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
   int currentSSIDPosition = 0;
   final static String tag = "AddDeviceAP2StaSetup";
 
-  int leftTime = 20;
+  int leftTime = Config.TIMEOUT_APToSTA;
   Handler handler_refresh = new Handler();
   Runnable runnable_fresh = new Runnable()
   {
@@ -68,8 +69,6 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
         lod.dismiss();
         back2TopActivity(false);
       }
-
-
     }
   };
 
@@ -239,7 +238,7 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
   {
     if (wait)
     {
-      leftTime = 20;
+      leftTime = Config.TIMEOUT_APToSTA;//zhb 20;
       if (lod == null)
       {
         lod = new LoadingDialog(this);

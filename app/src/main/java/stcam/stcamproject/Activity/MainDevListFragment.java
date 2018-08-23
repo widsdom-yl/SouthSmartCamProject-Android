@@ -836,7 +836,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
       @Override
       public void run()
       {
-        SearchMsg = lib.thNetSearchDevice(3000, 1);
+        SearchMsg = lib.thNetSearchDevice(5000, 1);
         ipc_search.sendMessage(Message.obtain(ipc_search, TMsg.Msg_SearchOver, 0, 0, null));
         IsSearching = false;
       }
@@ -856,7 +856,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
       {
         case TMsg.Msg_SearchOver:
           lod.dismiss();
-          if (SearchMsg == null || SearchMsg.equals(""))
+          if (SearchMsg == null || SearchMsg.equals("[]"))
           {
             SouthUtil.showDialog(MainDevListFragment.this.getActivity(), MainDevListFragment.this.getString(R.string.string_search_no_device));
             return;

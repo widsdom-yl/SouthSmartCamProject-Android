@@ -1,9 +1,11 @@
 package stcam.stcamproject.Activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +27,7 @@ import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.DeviceParseUtil;
 import stcam.stcamproject.Util.SouthUtil;
+import stcam.stcamproject.Util.TFun;
 import stcam.stcamproject.View.LoadingDialog;
 
 /*这个类包含了ap 2 sta 和 直接ap*/
@@ -39,6 +42,7 @@ public class AddDeviceAP2StaActivity extends BaseAppCompatActivity implements Ba
   int type;//1:ap2sta 2:ap
   List<SearchDevModel> lists;
 
+  boolean IsOpenWifiSetup = false;
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -66,17 +70,34 @@ public class AddDeviceAP2StaActivity extends BaseAppCompatActivity implements Ba
     rv.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     rv.setLayoutManager(new LinearLayoutManager(this));
 
+    //zhb add wwwwwwwwwwww
+    new AlertDialog.Builder(AddDeviceAP2StaActivity.this)
+      .setTitle(AddDeviceAP2StaActivity.this.getString(R.string.string_tip))
+      .setMessage(AddDeviceAP2StaActivity.this.getString(R.string.string_Info_APToSTA))
+      .setPositiveButton(getString(R.string.string_gotoSetup), new DialogInterface.OnClickListener()
+      {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i)
+        {
+          startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
+          IsOpenWifiSetup = true;
+        }
+      })
+      //.setNegativeButton(getString(R.string.action_cancel), null)
+      .show();
+    //zhb add
 
-    startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
-
-
+    //startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
   }
 
   @Override
   protected void onResume()
   {
     super.onResume();
-    searchDevices();
+    if (IsOpenWifiSetup)
+    {
+      searchDevices();
+    }
   }
 
   void searchDevices()
@@ -93,7 +114,7 @@ public class AddDeviceAP2StaActivity extends BaseAppCompatActivity implements Ba
       @Override
       public void run()
       {
-        SearchMsg = lib.thNetSearchDevice(3000, 1);
+        SearchMsg = lib.thNetSearchDevice(5000, 1);
         ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_SearchOver, 0, 0, null));
         IsSearching = false;
       }
@@ -108,21 +129,30 @@ public class AddDeviceAP2StaActivity extends BaseAppCompatActivity implements Ba
   }
 
 
+  int iSearchTotal = 0;
+
   public final Handler ipc = new Handler()
   {
     @Override
     public void handleMessage(Message msg)
     {
-
-
       super.handleMessage(msg);
       switch (msg.what)
       {
         case TMsg.Msg_SearchOver:
           lod.dismiss();
-          if (SearchMsg == null || SearchMsg.equals(""))
+          if (SearchMsg == null || SearchMsg.equals("[]"))
           {
-            SouthUtil.showDialog(AddDeviceAP2StaActivity.this, AddDeviceAP2StaActivity.this.getString(R.string.string_search_no_device));
+            iSearchTotal++;
+            if (iSearchTotal <= 5)
+            {
+              SouthUtil.showToast(STApplication.getInstance(), getString(R.string.string_search_no_device1));
+              searchDevices();
+            }
+            else
+            {
+              SouthUtil.showToast(STApplication.getInstance(), getString(R.string.string_search_no_device));
+            }
             return;
           }
           Log.e(tag, SearchMsg);

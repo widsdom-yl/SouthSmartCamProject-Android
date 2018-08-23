@@ -82,6 +82,12 @@ public class ChangeLoginPasswordActivity extends BaseAppCompatActivity implement
       SouthUtil.showDialog(ChangeLoginPasswordActivity.this, getString(R.string.old_password_wrong));
       return;
     }
+    else if (editText_new_pwd.getText().toString().equals(editText_old_pwd.getText().toString()))
+    {
+      //新旧密码相同
+      SouthUtil.showDialog(ChangeLoginPasswordActivity.this, getString(R.string.confirm_password_same));
+      return;
+    }
     else if (editText_new_pwd.getText().length() < 4)
     {
       //密码小于4位
@@ -90,7 +96,7 @@ public class ChangeLoginPasswordActivity extends BaseAppCompatActivity implement
     }
     else if (!editText_new_pwd.getText().toString().equals(editText_confirm_pwd.getText().toString()))
     {
-      SouthUtil.showDialog(ChangeLoginPasswordActivity.this, getString(R.string.confirm_password_same));
+      SouthUtil.showDialog(ChangeLoginPasswordActivity.this, getString(R.string.confirm_password_nosame));
       //两次密码不一致
       return;
     }

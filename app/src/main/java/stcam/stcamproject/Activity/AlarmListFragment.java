@@ -109,31 +109,37 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
     return view;
   }
 
-    Handler handler_refresh = new Handler();
-    Runnable runnable_fresh = new Runnable()
+  Handler handler_refresh = new Handler();
+  Runnable runnable_fresh = new Runnable()
+  {
+    @Override
+    public void run()
     {
-        @Override
-        public void run()
-        {
 
-            getAlarmList(true);
+      getAlarmList(true);
 
 
-        }
-    };
-@Override
-public void setUserVisibleHint(boolean isVisibleToUser) {
-    super.setUserVisibleHint(isVisibleToUser);
-    if (isVisibleToUser) {
-    //相当于Fragment的onResume
-
-        handler_refresh.postDelayed(runnable_fresh,500);
-
-    } else {
-    //相当于Fragment的onPause
     }
-}
+  };
 
+  @Override
+  public void setUserVisibleHint(boolean isVisibleToUser)
+  {
+    super.setUserVisibleHint(isVisibleToUser);
+    if (isVisibleToUser)
+    {
+      //相当于Fragment的onResume
+
+      handler_refresh.postDelayed(runnable_fresh, 500);
+
+    }
+    else
+    {
+      //相当于Fragment的onPause
+    }
+  }
+
+  int iAlmCount;//zhb
 
   void getAlarmList(boolean refresh)
   {
@@ -240,6 +246,7 @@ public void setUserVisibleHint(boolean isVisibleToUser) {
           adapter.setOnItemClickListener(AlarmListFragment.this);
           adapter.setmDeleteClickListener(AlarmListFragment.this);
           rv.setAdapter(adapter);
+          //zzzzzzzzz
         }
         else
         {
@@ -256,7 +263,6 @@ public void setUserVisibleHint(boolean isVisibleToUser) {
           adapter.resetMList(alarmImageArray);
           adapter.notifyDataSetChanged();
         }
-
 
         //MyContext.getInstance()
         Log.e(tag, "---------------------1:no dev");
@@ -295,7 +301,7 @@ public void setUserVisibleHint(boolean isVisibleToUser) {
     public void onNext(RetModel retModel)
     {
       lod.dismiss();
-      if (retModel.ret == ServerNetWork.RESULT_SUCCESS)
+      if (retModel.ret == ServerNetWork.RESULT_SUCCESS)//app_user_delalmfile
       {
         if (alarmImageArray != null)
         {
@@ -357,15 +363,21 @@ public void setUserVisibleHint(boolean isVisibleToUser) {
 
             StringBuilder stringBuilder = new StringBuilder();
             int size = alarmImageArray.size();
+            iAlmCount = 0;
             for (int ii = 0; ii < size; ++ii)
             {
               stringBuilder.append(alarmImageArray.get(ii).ID);
+              iAlmCount++;
               if (ii != size - 1)
               {
                 stringBuilder.append("@");
               }
             }
-            deleAlarmList(stringBuilder.toString());
+            deleAlarmList(stringBuilder.toString());//app_user_delalmfile
+
+            String sFormat = getString(R.string.string_DeleteRecordCount);//zhb add
+            String Str = String.format(sFormat, iAlmCount);
+            SouthUtil.showDialog(AlarmListFragment.this.getContext(), Str);
           }
         })
         .setNegativeButton(this.getContext().getString(R.string.action_cancel), null)

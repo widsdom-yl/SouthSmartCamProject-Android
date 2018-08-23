@@ -103,12 +103,9 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
         default:
           break;
       }
-
-
     }
 
     initView();
-
   }
 
   @Override
@@ -125,29 +122,10 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
 
   void initView()
   {
-
     editText_confirm_pwd = findViewById(R.id.editText_confirm_pwd);
     editText_new_pwd = findViewById(R.id.editText_password);
     editText_old_pwd = findViewById(R.id.editText_old_pwd);
     confirmButton = findViewById(R.id.button_next);
-
-//        switch (enumType) {
-//            case SHARE:
-//                //ShareModel model
-//                text_uid_detail.setText(shareModel.UID);
-//                break;
-//            case WLAN:
-//            case STA:
-//            case AP:
-//                text_uid_detail.setText( model.getUID());
-//                break;
-//            case DEVICE_SETTING:
-//                text_uid_detail.setText( setModel.UID);
-//            default:
-//                break;
-//        }
-
-
     confirmButton.setOnClickListener(this);
 
     if (dbModel != null)
@@ -157,106 +135,122 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
     }
   }
 
+  String PasswordOld = null;
+  String PasswordNew = null;
+  String PasswordNew1 = null;
+
   @Override
   public void onClick(View view)
   {
-    if (view.getId() == R.id.button_next)
+    if (view.getId() != R.id.button_next)
     {
-      Log.e(tag, "----0,change pwd ,new pwd is  " + editText_new_pwd.getText().toString());
-      if (editText_new_pwd.getText().toString().length() >= 20)
-      {
-        SouthUtil.showDialog(ChangeDevicePwdActivity.this, getString(R.string.action_dev_pwd_limit_lessthan_19));
-        return;
-      }
-      if (editText_new_pwd.getText().toString().equals(editText_confirm_pwd.getText().toString()) && editText_new_pwd.getText().toString
-        ().length() >= 4)
-      {
-        Log.e(tag, "----1,change pwd ,new pwd is  " + editText_new_pwd.getText().toString());
-        if (dbModel == null)
-        {
-          Log.e(tag, "----2,change pwd ,new pwd is  " + editText_new_pwd.getText().toString());
-          DevModel devModel = new DevModel();
-          devModel.SN = SN;
-          devModel.usr = "admin";//默认填写admin
-          devModel.pwd = editText_new_pwd.getText().toString();
-          boolean ret = DataManager.getInstance().addDev(devModel);
-          Log.e(tag, "addDev ,ret is " + ret);
-        }
-        else
-        {
-          Log.e(tag, "----3,change pwd ,new pwd is  " + editText_new_pwd.getText().toString());
-          dbModel.pwd = editText_new_pwd.getText().toString();
-          boolean ret = DataManager.getInstance().updateDev(dbModel);
-          Log.e(tag, "updateDev ,ret is " + ret);
-        }
-
-        //修改密码
-
-
-        if (enumType == EnumChangeDevicePwd.WLAN)
-        {
-          if (lod == null)
-          {
-            lod = new LoadingDialog(this);
-          }
-          lod.dialogShow();
-          ServerNetWork.getCommandApi().app_user_add_dev(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance()
-              .getDefaultPwd(),
-            JPushManager.getJPushRegisterID(),
-            Config.mbtype,
-            Config.apptype,
-            Config.pushtype,
-            model.getSN(),
-            0)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(observer_add_dev);
-        }
-        else if (enumType == EnumChangeDevicePwd.STA)
-        {
-          // AddDeviceAP2StaSetup
-          Intent intent = new Intent(this, AddDeviceAP2StaSetup.class);
-          intent.putExtra("model", model);
-          startActivity(intent);
-        }
-        else if (enumType == EnumChangeDevicePwd.SHARE)
-        {
-          if (lod == null)
-          {
-            lod = new LoadingDialog(this);
-          }
-          lod.dialogShow();
-          ServerNetWork.getCommandApi().app_share_add_dev(
-            AccountManager.getInstance().getDefaultUsr(),
-            AccountManager.getInstance().getDefaultPwd(),
-            shareModel.From,
-            JPushManager.getJPushRegisterID(),
-            Config.mbtype,
-            Config.apptype,
-            Config.pushtype,
-            shareModel.SN,
-            shareModel.IsVideo,
-            shareModel.IsHistory,
-            shareModel.IsPush,
-            1,//shareModel.IsSetup,
-            shareModel.IsControl
-          ).subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(observer_add_dev);
-        }
-        else if (enumType == EnumChangeDevicePwd.DEVICE_SETTING)
-        {
-          if (lod == null)
-          {
-            lod = new LoadingDialog(this);
-          }
-          lod.dialogShow();
-          ChangeDevicePwdTask task = new ChangeDevicePwdTask();
-          task.execute();
-          // finish();
-        }
-      }
+      return;
     }
 
+    PasswordOld = editText_old_pwd.getText().toString();
+    PasswordNew = editText_new_pwd.getText().toString();
+    PasswordNew1 = editText_confirm_pwd.getText().toString();
+
+    if (!PasswordNew.equals(PasswordOld))
+    {
+      SouthUtil.showDialog(ChangeDevicePwdActivity.this, getString(R.string.confirm_password_same));
+      return;
+    }
+
+    if (PasswordNew.length() >= 20)
+    {
+      SouthUtil.showDialog(ChangeDevicePwdActivity.this, getString(R.string.action_dev_pwd_limit_lessthan_19));
+      return;
+    }
+    if (!PasswordNew.equals(PasswordNew1))
+    {
+      SouthUtil.showDialog(ChangeDevicePwdActivity.this, getString(R.string.confirm_password_nosame));
+      return;
+    }
+    if (PasswordNew.length() <= 4)
+    {
+      SouthUtil.showDialog(ChangeDevicePwdActivity.this, getString(R.string.password_length_limit));
+      return;
+    }
+
+    if (dbModel == null)
+    {
+      DevModel devModel = new DevModel();
+      devModel.SN = SN;
+      devModel.usr = Config.DEFAULTPASSWORD;//默认填写admin
+      devModel.pwd = PasswordNew;
+      boolean ret = DataManager.getInstance().addDev(devModel);
+    }
+    else
+    {
+      dbModel.pwd = PasswordNew;
+      boolean ret = DataManager.getInstance().updateDev(dbModel);
+    }
+
+    //修改密码
+
+
+    if (enumType == EnumChangeDevicePwd.WLAN)
+    {
+      if (lod == null)
+      {
+        lod = new LoadingDialog(this);
+      }
+      lod.dialogShow();
+      ServerNetWork.getCommandApi().app_user_add_dev(AccountManager.getInstance().getDefaultUsr(), AccountManager.getInstance()
+          .getDefaultPwd(),
+        JPushManager.getJPushRegisterID(),
+        Config.mbtype,
+        Config.apptype,
+        Config.pushtype,
+        model.getSN(),
+        0)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer_add_dev);
+    }
+    else if (enumType == EnumChangeDevicePwd.STA)
+    {
+      // AddDeviceAP2StaSetup
+      Intent intent = new Intent(this, AddDeviceAP2StaSetup.class);
+      intent.putExtra("model", model);
+      startActivity(intent);
+    }
+    else if (enumType == EnumChangeDevicePwd.SHARE)
+    {
+      if (lod == null)
+      {
+        lod = new LoadingDialog(this);
+      }
+      lod.dialogShow();
+      ServerNetWork.getCommandApi().app_share_add_dev(
+        AccountManager.getInstance().getDefaultUsr(),
+        AccountManager.getInstance().getDefaultPwd(),
+        shareModel.From,
+        JPushManager.getJPushRegisterID(),
+        Config.mbtype,
+        Config.apptype,
+        Config.pushtype,
+        shareModel.SN,
+        shareModel.IsVideo,
+        shareModel.IsHistory,
+        shareModel.IsPush,
+        1,//shareModel.IsSetup,
+        shareModel.IsControl
+      ).subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer_add_dev);
+    }
+    else if (enumType == EnumChangeDevicePwd.DEVICE_SETTING)
+    {
+      if (lod == null)
+      {
+        lod = new LoadingDialog(this);
+      }
+      lod.dialogShow();
+      ChangeDevicePwdTask task = new ChangeDevicePwdTask();
+      task.execute();
+      // finish();
+    }
   }
 
   class ChangeDevicePwdTask extends AsyncTask<String, Void, String>
