@@ -159,18 +159,26 @@ public class SouthUtil
     return outMetrics.widthPixels;
   }
 
-  public static boolean isEmpty(String s) {
+  public static boolean isEmpty(String s)
+  {
     if (null == s)
+    {
       return true;
+    }
     if (s.length() == 0)
+    {
       return true;
+    }
     if (s.trim().length() == 0)
+    {
       return true;
+    }
     return false;
   }
 
-  public static void broadcastLogoutInfo(){
-    String message ="USER_LOGOUT";
+  public static void broadcastLogoutInfo()
+  {
+    String message = "USER_LOGOUT";
     //String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
     Intent msgIntent = new Intent(MainViewPagerActivity.MESSAGE_RECEIVED_ACTION);
     msgIntent.putExtra(MainViewPagerActivity.KEY_MESSAGE, message);

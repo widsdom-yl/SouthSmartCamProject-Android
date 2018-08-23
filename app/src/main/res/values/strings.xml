@@ -228,7 +228,8 @@
     <string name="old_password_wrong">old password is wrong</string>
     <string name="password_length_limit">Password length should not less than 4!</string>
     <string name="confirm_password_same">Confirm password is not the same as new password</string>
-    <string name="string_user_logined">The user has logined in on other phones, are you sure to login?</string>
+    <string name="string_user_logined1">The user has logined in on other phones, are you sure to login?</string>
+    <string name="string_user_logined">The user has logined in on other phones.</string>
     <string name="string_user_logout">The user has logined in on other phones, Forced offline.</string>
     <string name="string_user_IsBind">The device is bind by other users</string>
     <string name="string_user_IsBind1">The device is bind by %s</string>

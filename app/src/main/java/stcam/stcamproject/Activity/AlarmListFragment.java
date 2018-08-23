@@ -312,7 +312,6 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
   {
     if (view.getId() == R.id.clear_button)
     {
-
       new AlertDialog.Builder(this.getContext())
         .setTitle(this.getContext().getString(R.string.action_clear_alarm_image))
         .setPositiveButton(this.getContext().getString(R.string.action_ok), new DialogInterface.OnClickListener()

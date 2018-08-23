@@ -54,6 +54,8 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
     {
       public void run()
       {
+//zhb
+        /*
         boolean isRemeber = AccountManager.getInstance().getIsRemeberAccount();
         String usr = AccountManager.getInstance().getDefaultUsr();
         String pwd = AccountManager.getInstance().getDefaultPwd();
@@ -70,7 +72,10 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
           startActivity(intent);
           finish();
         }
-
+*/
+        Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
       }
 
     }, 1 * 1000);

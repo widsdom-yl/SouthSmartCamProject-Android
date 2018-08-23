@@ -1,6 +1,8 @@
 package stcam.stcamproject.Activity;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -43,12 +45,12 @@ import stcam.stcamproject.network.ServerNetWork;
  */
 public class LoginActivity extends BaseAppCompatActivity
 {
+  String UserName = null;
+  String Password = null;
+  boolean IsAutoLogin = false;
 
-
-  // UI references.
   private AutoCompleteTextView mEmailView;
   private EditText mPasswordView;
-  boolean remeber;
 
   String[] permissions = new String[]{
     Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -76,14 +78,17 @@ public class LoginActivity extends BaseAppCompatActivity
     Bundle bundle = this.getIntent().getExtras();
     if (bundle != null)
     {
-      try {
+      try
+      {
         // intent.putExtra("extra","logout");
-        String  info = bundle.getString("extra");
-        if (info.equals("logout")){
-            SouthUtil.showDialog(this, getString(R.string.string_user_logout));
+        String info = bundle.getString("extra");
+        if (info.equals("logout"))
+        {
+          SouthUtil.showDialog(this, getString(R.string.string_user_logout));
         }
       }
-      catch (Exception e){
+      catch (Exception e)
+      {
 
       }
     }
@@ -92,12 +97,21 @@ public class LoginActivity extends BaseAppCompatActivity
 
     Log.e(tag, "onCreate: " + JPushManager.getJPushRegisterID());
     // Set up the login form.
-    mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 
+    IsAutoLogin = AccountManager.getInstance().getIsRemeberAccount();
     checkbox = findViewById(R.id.checkbox);
-    remeber = AccountManager.getInstance().getIsRemeberAccount();
-    checkbox.setChecked(remeber);
+    checkbox.setChecked(IsAutoLogin);
+
+    UserName = AccountManager.getInstance().getDefaultUsr();
+    mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+    mEmailView.setText(UserName);
+
+    Password = AccountManager.getInstance().getDefaultPwd();
     mPasswordView = (EditText) findViewById(R.id.editText_password);
+    if (IsAutoLogin)//zhb add
+    {
+      mPasswordView.setText(Password);
+    }
     mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener()
     {
       @Override
@@ -111,15 +125,6 @@ public class LoginActivity extends BaseAppCompatActivity
         return false;
       }
     });
-
-//        mEmailView.setText("4719373@qq.com");
-//        mPasswordView.setText("admin111");
-
-    mEmailView.setText(AccountManager.getInstance().getDefaultUsr());
-    if (remeber)//zhb add
-    {
-      mPasswordView.setText(AccountManager.getInstance().getDefaultPwd());
-    }
     Button mEmailSignInButton = (Button) findViewById(R.id.email_login_in_button);
     mEmailSignInButton.setOnClickListener(new OnClickListener()
     {
@@ -169,19 +174,27 @@ public class LoginActivity extends BaseAppCompatActivity
       @Override
       public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
       {
-        //do something
-        remeber = isChecked;
+        IsAutoLogin = isChecked;
       }
     });
-  }
 
-  protected void onDestroy() {
-    super.onDestroy();
-    if (lod != null) {
-      lod.dismiss();
+    if (!TextUtils.isEmpty(UserName) && !TextUtils.isEmpty(Password))
+    {
+      if (IsAutoLogin && UserName.length() > 0 && Password.length() > 0)
+      {
+        attemptLogin();
+      }
     }
   }
 
+  protected void onDestroy()
+  {
+    super.onDestroy();
+    if (lod != null)
+    {
+      lod.dismiss();
+    }
+  }
 
 
   private String[] denied;
@@ -366,7 +379,7 @@ public class LoginActivity extends BaseAppCompatActivity
       {
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-        AccountManager.getInstance().saveAccount(email, password, remeber);
+        AccountManager.getInstance().saveAccount(email, password, IsAutoLogin);
         Intent intent = new Intent(STApplication.getInstance(), MainViewPagerActivity.class);
         intent.putExtra("entry", MainDevListFragment.EnumMainEntry.EnumMainEntry_Login);
         startActivity(intent);
@@ -374,17 +387,34 @@ public class LoginActivity extends BaseAppCompatActivity
       }
       else if (ServerNetWork.RESULT_USER_LOGINED == m.ret)
       {
-        //todo 已有用户登录
-        SouthUtil.showDialog(LoginActivity.this, getString(R.string.string_user_logined));
-        //这里要改为“确定” “取消”提示框
-
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-        AccountManager.getInstance().saveAccount(email, password, remeber);
-        Intent intent = new Intent(STApplication.getInstance(), MainViewPagerActivity.class);
-        intent.putExtra("entry", MainDevListFragment.EnumMainEntry.EnumMainEntry_Login);
-        startActivity(intent);
-        LoginActivity.this.finish();
+        //todo 已有用户登录 //zhb
+        new AlertDialog.Builder(LoginActivity.this)
+          .setTitle(LoginActivity.this.getString(R.string.string_user_logined))
+          .setPositiveButton(LoginActivity.this.getString(R.string.action_ok), new DialogInterface.OnClickListener()
+          {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i)
+            {
+/*
+              String email = mEmailView.getText().toString();
+              String password = mPasswordView.getText().toString();
+              //AccountManager.getInstance().saveAccount(email, password, IsAutoLogin);
+              Intent intent = new Intent(STApplication.getInstance(), MainViewPagerActivity.class);
+              intent.putExtra("entry", MainDevListFragment.EnumMainEntry.EnumMainEntry_Login);
+              startActivity(intent);
+              LoginActivity.this.finish();
+*/
+            }
+          })
+          //.setNegativeButton(LoginActivity.this.getString(R.string.action_cancel), null)
+          .show();
+        UserName = "";
+        Password = "";
+        IsAutoLogin = false;
+        AccountManager.getInstance().saveAccount(UserName, Password, IsAutoLogin);
+        mEmailView.setText(UserName);
+        mPasswordView.setText(Password);
+        checkbox.setChecked(IsAutoLogin);
       }
       else
       {
