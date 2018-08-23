@@ -121,6 +121,19 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
 
         }
     };
+@Override
+public void setUserVisibleHint(boolean isVisibleToUser) {
+    super.setUserVisibleHint(isVisibleToUser);
+    if (isVisibleToUser) {
+    //相当于Fragment的onResume
+
+        handler_refresh.postDelayed(runnable_fresh,500);
+
+    } else {
+    //相当于Fragment的onPause
+    }
+}
+
 
   void getAlarmList(boolean refresh)
   {

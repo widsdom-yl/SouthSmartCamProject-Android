@@ -96,6 +96,32 @@ public class MediaFragment extends Fragment implements BaseAdapter.OnItemClickLi
             adapter.notifyDataSetChanged();
         }
     }
+    
+    Handler handler_refresh = new Handler();
+    Runnable runnable_fresh = new Runnable()
+    {
+    @Override
+    public void run()
+    {
+    
+   refreshUI();
+    
+    
+}
+};
+@Override
+public void setUserVisibleHint(boolean isVisibleToUser) {
+super.setUserVisibleHint(isVisibleToUser);
+if (isVisibleToUser) {
+//相当于Fragment的onResume
+
+handler_refresh.postDelayed(runnable_fresh,500);
+
+} else {
+//相当于Fragment的onPause
+}
+}
+
 
     @Override
     public void onItemClick(View view, int position) {
