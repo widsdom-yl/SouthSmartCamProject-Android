@@ -146,7 +146,9 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
     {
       return;
     }
-////
+
+
+    
     PasswordOld = editText_old_pwd.getText().toString();
     PasswordNew = editText_new_pwd.getText().toString();
     PasswordNew1 = editText_confirm_pwd.getText().toString();
