@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.model.AlarmImageModel;
 
 import java.util.List;
-import java.util.Locale;
 
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.GlideApp;
@@ -26,6 +25,7 @@ public class AlarmListAdapter extends BaseAdapter<AlarmImageModel> implements Sl
     super(R.layout.alarm_list_delete_view, list);
   }
 
+
   protected void convert(final BaseHolder holder, AlarmImageModel model, int position)
   {
     super.convert(holder, model, position);
@@ -41,9 +41,7 @@ public class AlarmListAdapter extends BaseAdapter<AlarmImageModel> implements Sl
     ImageView imageView = holder.getView(R.id.alarm_image);
 
 
-    Locale locale = Locale.getDefault();
-    String language = locale.getLanguage();//“zh”为中文，“en”为英文...
-    if (language.equals(Locale.CHINESE) || language.equals(Locale.SIMPLIFIED_CHINESE))
+    if (SouthUtil.isZh(STApplication.getInstance()))
     {
       GlideApp.with(STApplication.getInstance()).asBitmap()
         .load(model.Img)

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 import stcam.stcamproject.Activity.MainViewPagerActivity;
@@ -194,6 +195,16 @@ public class SouthUtil
 //
 //			}
     LocalBroadcastManager.getInstance(STApplication.getInstance()).sendBroadcast(msgIntent);
+  }
+
+
+  public static boolean isZh(Context context) {
+    Locale locale = context.getResources().getConfiguration().locale;
+    String language = locale.getLanguage();
+    if (language.endsWith("zh") || language.endsWith("TW"))
+      return true;
+    else
+      return false;
   }
 
 
