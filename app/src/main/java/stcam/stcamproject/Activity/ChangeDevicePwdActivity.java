@@ -151,7 +151,7 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
     PasswordNew = editText_new_pwd.getText().toString();
     PasswordNew1 = editText_confirm_pwd.getText().toString();
 
-    if (!PasswordNew.equals(PasswordOld))
+    if (PasswordNew.equals(PasswordOld))
     {
       SouthUtil.showDialog(ChangeDevicePwdActivity.this, getString(R.string.confirm_password_same));
       return;
