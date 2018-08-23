@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.model.DevModel;
 import com.model.RetModel;
@@ -50,7 +51,7 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
     RecyclerView rv;
     final static String tag = "AddDeviceWlanActivity";
     List<SearchDevModel> mlists = new ArrayList<>();
-
+    TextView selectTitleTextView;
     int selectPosition;
 
     @Override
@@ -92,6 +93,8 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
         rv = findViewById(R.id.device_list_view);
         // rv.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         rv.setLayoutManager(new LinearLayoutManager(this));
+
+        selectTitleTextView = findViewById(R.id.textView_select);
     }
 
     void searchDevices() {
@@ -154,6 +157,12 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
                             }
                         }
 
+                        if (mlists.size()>0){
+                            selectTitleTextView.setVisibility(View.VISIBLE);
+                        }
+                        else {
+                            selectTitleTextView.setVisibility(View.INVISIBLE);
+                        }
                         adapter = new AddDeviceAdapter(mlists);
                         rv.setAdapter(adapter);
                         adapter.setOnItemClickListener(AddDeviceWlanActivity.this);

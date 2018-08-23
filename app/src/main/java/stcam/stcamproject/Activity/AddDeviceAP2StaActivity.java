@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.model.DevModel;
 import com.model.SearchDevModel;
@@ -27,7 +28,6 @@ import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.DeviceParseUtil;
 import stcam.stcamproject.Util.SouthUtil;
-import stcam.stcamproject.Util.TFun;
 import stcam.stcamproject.View.LoadingDialog;
 
 /*这个类包含了ap 2 sta 和 直接ap*/
@@ -43,6 +43,8 @@ public class AddDeviceAP2StaActivity extends BaseAppCompatActivity implements Ba
   List<SearchDevModel> lists;
 
   boolean IsOpenWifiSetup = false;
+
+  TextView selectTitleTextView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -69,6 +71,9 @@ public class AddDeviceAP2StaActivity extends BaseAppCompatActivity implements Ba
     rv = findViewById(R.id.device_list_view);
     rv.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     rv.setLayoutManager(new LinearLayoutManager(this));
+
+    selectTitleTextView = findViewById(R.id.textView_select);
+
 
     //zhb add wwwwwwwwwwww
     new AlertDialog.Builder(AddDeviceAP2StaActivity.this)
@@ -171,6 +176,13 @@ public class AddDeviceAP2StaActivity extends BaseAppCompatActivity implements Ba
             adapter = new AddDeviceAdapter(lists);
             rv.setAdapter(adapter);
             adapter.setOnItemClickListener(AddDeviceAP2StaActivity.this);
+          }
+
+          if (list.size()>0){
+            selectTitleTextView.setVisibility(View.VISIBLE);
+          }
+          else {
+            selectTitleTextView.setVisibility(View.INVISIBLE);
           }
 
           break;

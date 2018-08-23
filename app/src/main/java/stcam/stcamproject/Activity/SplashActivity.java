@@ -10,8 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import stcam.stcamproject.Application.STApplication;
-import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.R;
 
 public class SplashActivity extends AppCompatActivity implements View.OnClickListener
