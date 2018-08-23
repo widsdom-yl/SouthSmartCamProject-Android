@@ -292,7 +292,8 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
         if (retModel.ret == 1)
         {
           lod.dismiss();
-          SouthUtil.showDialog(ChangeDevicePwdActivity.this, getString(R.string.action_Success));
+          SouthUtil.showToast(ChangeDevicePwdActivity.this, getString(R.string.action_Success));
+          ChangeDevicePwdActivity.this.finish();
         }
         else if (retModel.ret == 2)
         {
@@ -347,7 +348,8 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
       {
         if (retModel.ret == 1)
         {
-          SouthUtil.showDialog(ChangeDevicePwdActivity.this, getString(R.string.action_Success));
+          SouthUtil.showToast(ChangeDevicePwdActivity.this, getString(R.string.action_Success));
+          ChangeDevicePwdActivity.this.finish();
         }
         else
         {
