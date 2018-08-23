@@ -108,10 +108,16 @@ public class LoginActivity extends BaseAppCompatActivity
 
     Password = AccountManager.getInstance().getDefaultPwd();
     mPasswordView = (EditText) findViewById(R.id.editText_password);
-    if (IsAutoLogin)//zhb add
+    //if (IsAutoLogin)//zhb add
     {
       mPasswordView.setText(Password);
     }
+    if (!TextUtils.isEmpty(UserName) && !TextUtils.isEmpty(Password))//zhb
+    {
+      IsAutoLogin = true;
+      checkbox.setChecked(IsAutoLogin);;
+    }
+
     mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener()
     {
       @Override

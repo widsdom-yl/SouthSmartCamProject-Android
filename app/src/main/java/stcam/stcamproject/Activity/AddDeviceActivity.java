@@ -180,7 +180,7 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
       switch (msg.what)
       {
         case TMsg.Msg_SearchOver:
-          if (SearchMsg.equals(""))
+          if (SearchMsg.equals("[]"))
           {
             SouthUtil.showDialog(AddDeviceActivity.this, AddDeviceActivity.this.getString(R.string.string_search_no_device));
             return;
@@ -210,16 +210,27 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
   };
 
 
-  void addDevice_share(String json)
+  void addDevice_share(String json)//扫描添加共享
   {
     ShareModel model = GsonUtil.parseJsonWithGson(json, ShareModel.class);
     if (model != null)
     {
+      //判断是是否已经添加
+      for (DevModel tmpNode : MainDevListFragment.mDevices)
+      {
+        if (model.SN.equals(tmpNode.SN))
+        {
+          SouthUtil.showDialog(this, getString(R.string.error_device_added));
+          return;
+        }
+      }
+
       //Log.e(tag, "model.uid:" + model.UID);
       DevModel devModel = new DevModel();
       devModel.SN = model.SN;
-      devModel.usr = "admin";//默认填写admin
+      devModel.usr = Config.DEFAULTUSERNAME;//默认填写admin
       devModel.pwd = model.Pwd;
+
       boolean ret = DataManager.getInstance().addDev(devModel);
 
       if (lod == null)
@@ -255,8 +266,8 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
     List<Observable<RetModel>> observables = new ArrayList<>();
     for (SearchDevModel device : devices)
     {
-      observables.add(ServerNetWork.getCommandApi().app_user_add_dev(AccountManager.getInstance().getDefaultUsr(), AccountManager
-          .getInstance().getDefaultPwd(),
+      observables.add(ServerNetWork.getCommandApi().app_user_add_dev(AccountManager.getInstance().getDefaultUsr(),
+        AccountManager.getInstance().getDefaultPwd(),
         JPushManager.getJPushRegisterID(),
         Config.mbtype,
         Config.apptype,
@@ -327,7 +338,7 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
       {
         //RESULT_USER_LOGOUT 为收不到推送的情况下，访问服务器时的返回值，收到
         //返回登录界面，取消保存的AutoLogin
-       // SouthUtil.showToast(AddDeviceActivity.this, getString(R.string.string_user_logout));
+        // SouthUtil.showToast(AddDeviceActivity.this, getString(R.string.string_user_logout));
         //需要同时处理推送消息，内容为 "USER_LOGOUT"
 
         SouthUtil.broadcastLogoutInfo();

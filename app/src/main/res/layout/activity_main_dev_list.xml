@@ -24,19 +24,19 @@
         />
 
     <Button
-        android:textAllCaps="false"
         android:id="@+id/add_text_button"
-        android:layout_toLeftOf="@+id/add_button"
-        android:layout_marginRight="1dp"
-        android:layout_width="30dp"
+        android:layout_width="50dp"
         android:layout_height="24dp"
-        android:gravity="right|center"
+        android:layout_marginRight="1dp"
         android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@+id/add_button"
         android:background="@color/transparent"
-        android:text="@string/action_add"
         android:clickable="true"
+        android:gravity="right|center"
+        android:text="@string/action_add"
+        android:textAllCaps="false"
         android:textColor="@drawable/white_text_color"
-        android:textSize="14sp" />
+        android:textSize="14sp"/>
 
     <ImageButton
         android:id="@+id/add_button"

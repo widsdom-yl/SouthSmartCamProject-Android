@@ -85,7 +85,7 @@
     <string name="action_add_ap_sta">AP转STA添加</string>
     <string name="action_add_ap">AP热点单机直连</string>
     <string name="action_media">图像</string>
-    <string name="action_one_key_setting_desc0">按住RESET键5秒，\n听到\"等待连接\"或红蓝指示灯同时闪烁后，\n输入路由器密码，\n进行下一步</string>
+    <string name="action_one_key_setting_desc0">1.输入路由器密码，\n2.按住设备RESET键5秒，\n3.听到\"WIFI进入智能连接模式\"或红蓝指示灯同时闪烁后，\n4.进行下一步</string>
     <string name="action_one_key_setting_desc1">听到\"配置成功\"或指示灯红灯、蓝灯同时长亮后，搜索设备</string>
     <string name="string_tip">温馨提示</string>
     <string name="ssid">路由器SSID</string>
@@ -178,7 +178,7 @@
     <string name="action_dev_pwd_limit_lessthan_19">密码不能超过19位数</string>
     <string name="action_check_remeber_pwd">自动登录</string>
     <string name="string_smart_device">智能设备</string>
-    <string name="action_clear">全部删除</string>
+    <string name="action_clear">删除多项</string>
     <string name="action_visitor_mode_disable_excute">当前为游客模式，不能操作</string>
     <string name="string_user">用户名</string>
     <string name="string_user_colon2">用&#160;户&#160;名:</string>
@@ -200,6 +200,7 @@
     <string name="string_current_newer">当前为最新版本</string>
     <string name="string_current_older">当前版本需要升级，是否升级？</string>
     <string name="string_search_no_device">未搜索到设备</string>
+    <string name="string_search_no_device1">未搜索到设备，正在尝试再次搜索</string>
     <string name="action_input_verify_code">请输入验证码</string>
     <string name="action_get_verify_code">获取验证码</string>
     <string name="action_clear_alarm_image">确定清空报警图片?</string>
@@ -232,7 +233,8 @@
     <string name="string_loadmore">正在努力加载中...</string>
     <string name="old_password_wrong">原密码错误</string>
     <string name="password_length_limit">密码长度不得小于4位数</string>
-    <string name="confirm_password_same">两次密码输入不一致</string>
+    <string name="confirm_password_nosame">两次密码输入不一致</string>
+    <string name="confirm_password_same">新旧密码相同</string>
     <string name="string_user_logined1">该用户已在其它手机登录，是否确认登录？</string>
     <string name="string_user_logined">该用户已在其它手机登录</string>
     <string name="string_user_logout">该用户已在其它手机登录，被强制下线</string>
@@ -240,4 +242,7 @@
     <string name="string_user_IsBind1">该设备已被 %s 绑定</string>
     <string name="error_device_added">设备已添加,不能重复添加.</string>
     <string name="string_NoPicture">没有图片，没有TF卡或已删除</string>
+    <string name="string_DeleteRecordCount">已删除 %d 条记录</string>
+    <string name="string_Info_APToSTA">1.在你的移动手机上连接摄像机设备，去设置>wifi,选择“IPCAM_AP_XXXXXXXX”网络.\n2.打开CAMLS这款应用,按照安装向导完成剩下的步骤。</string>
+    <string name="string_gotoSetup">去设置</string>
 </resources>

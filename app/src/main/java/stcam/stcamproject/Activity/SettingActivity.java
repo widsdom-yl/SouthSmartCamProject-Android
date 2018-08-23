@@ -197,7 +197,14 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       imageview_thumb.setImageBitmap(bitmap);
 
     }
-    textview_uid.setText("SN:" + devNode.SN);
+    if (devNode.IPUID.length() == 20)//UID 有UID则多显示一行UID，没有UID则只显示SN
+    {
+      textview_uid.setText("SN:" + devNode.SN + "\nUID:" + devNode.IPUID);
+    }
+    else
+    {
+      textview_uid.setText("SN:" + devNode.SN);
+    }
     mAdapter.notifyDataSetChanged();
   }
 
@@ -944,6 +951,8 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
             lib.thNetThreadDisConnFree(existModel.NetHandle);
             existModel.NetHandle = 0;
             MainDevListFragment.mDevices.remove(existModel);
+            //
+
             break;
           }
         }

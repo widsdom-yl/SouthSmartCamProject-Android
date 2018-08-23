@@ -81,7 +81,7 @@
     <string name="action_add_ap_sta">Add AP to STA</string>
     <string name="action_add_ap">AP hot spot direct connection</string>
     <string name="action_media">Image</string>
-    <string name="action_one_key_setting_desc0">Press and hold the RESET button for 5 seconds, \nHeard \"wait to connect \" or when the Red and Blue light flicker,\nenter the password of the router and proceed to the next step.</string>
+    <string name="action_one_key_setting_desc0">1.Input the password of the router\n2.Press and hold the RESET button for 5 seconds, \n3.Heard \"wait to connect \" or when the Red and Blue light flicker,\n4.Press next.</string>
     <string name="action_one_key_setting_desc1">Heard \" configuration success\" or when the Red and Blue light are turned on at the same time, search equipment.</string>
     <string name="string_tip">Kindly reminder</string>
     <string name="ssid">Router SSID</string>
@@ -194,6 +194,7 @@
     <string name="string_current_newer">Current version of the latest version</string>
     <string name="string_current_older">The App is updated. Is it upgraded?</string>
     <string name="string_search_no_device">Cannot search the device</string>
+    <string name="string_search_no_device1">Cannot search the device, try to search again!</string>
     <string name="action_input_verify_code">Input verity code</string>
     <string name="action_get_verify_code">Get verity code</string>
     <string name="action_clear_alarm_image">Confirm to delete alarm image?</string>
@@ -227,11 +228,15 @@
     <string name="string_loadmore">loading more...</string>
     <string name="old_password_wrong">old password is wrong</string>
     <string name="password_length_limit">Password length should not less than 4!</string>
-    <string name="confirm_password_same">Confirm password is not the same as new password</string>
+    <string name="confirm_password_nosame">Confirm password is not the same as new password</string>
+    <string name="confirm_password_same">The old password is the same as the new password</string>
     <string name="string_user_logined1">The user has logined in on other phones, are you sure to login?</string>
     <string name="string_user_logined">The user has logined in on other phones.</string>
     <string name="string_user_logout">The user has logined in on other phones, Forced offline.</string>
     <string name="string_user_IsBind">The device is bind by other users</string>
     <string name="string_user_IsBind1">The device is bind by %s</string>
     <string name="error_device_added">The device has been added,can not add again.</string>
+    <string name="string_DeleteRecordCount">%d records were deleted!</string>
+    <string name="string_Info_APToSTA">1.commect to the Camera device on your mobie device, go to setings>wifi and select“IPCAM_AP_XXXXXXXX”network.\n2.Open the CAMLS app and follow the installation wizard to complete the rest of the steps.</string>
+    <string name="string_gotoSetup">go to setings</string>
 </resources>

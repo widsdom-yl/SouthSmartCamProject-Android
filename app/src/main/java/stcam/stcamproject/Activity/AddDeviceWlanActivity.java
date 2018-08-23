@@ -32,6 +32,7 @@ import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 import stcam.stcamproject.Adapter.AddDeviceAdapter;
 import stcam.stcamproject.Adapter.BaseAdapter;
+import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Config.Config;
 import stcam.stcamproject.Manager.AccountManager;
 import stcam.stcamproject.Manager.DataManager;
@@ -113,28 +114,36 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
       @Override
       public void run()
       {
-        SearchMsg = lib.thNetSearchDevice(3000, 1);
+        SearchMsg = lib.thNetSearchDevice(5000, 1);
         ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_SearchOver, 0, 0, null));
         IsSearching = false;
       }
     }.start();
   }
 
+  int iSearchTotal = 0;
   public final Handler ipc = new Handler()
   {
     @Override
     public void handleMessage(Message msg)
     {
-
-
       super.handleMessage(msg);
       switch (msg.what)
       {
         case TMsg.Msg_SearchOver:
           lod.dismiss();
-          if (SearchMsg == null || SearchMsg.equals(""))
+          if (SearchMsg == null || SearchMsg.equals("[]"))
           {
-            SouthUtil.showDialog(AddDeviceWlanActivity.this, AddDeviceWlanActivity.this.getString(R.string.string_search_no_device));
+            iSearchTotal++;
+            if (iSearchTotal <= 5)
+            {
+              SouthUtil.showToast(STApplication.getInstance(), getString(R.string.string_search_no_device1));
+              searchDevices();
+            }
+            else
+            {
+              SouthUtil.showToast(STApplication.getInstance(), getString(R.string.string_search_no_device));
+            }
             return;
           }
           Log.e(tag, "search ret:" + SearchMsg);
@@ -189,9 +198,7 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
     final SearchDevModel model = lists.get(position);
 
     //判断是是否已经添加
-
     boolean exist = false;
-
     for (DevModel devModel : MainDevListFragment.mDevices)
     {
       if (devModel.SN.equals(model.getSN()))
@@ -213,7 +220,7 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
     final EditText editText = (EditText) halfview.findViewById(R.id.dialog_edit);
     if (dbModel == null)
     {
-      editText.setText("admin");
+      editText.setText(Config.DEFAULTPASSWORD);
     }
     else
     {
@@ -250,7 +257,7 @@ public class AddDeviceWlanActivity extends BaseAppCompatActivity implements Base
               Log.e(tag, "----2,change pwd ,new pwd is  " + content);
               DevModel devModel = new DevModel();
               devModel.SN = model.getSN();
-              devModel.usr = "admin";//默认填写admin
+              devModel.usr = Config.DEFAULTUSERNAME;//默认填写admin
               devModel.pwd = content;
               boolean ret = DataManager.getInstance().addDev(devModel);
               Log.e(tag, "addDev ,ret is " + ret);
