@@ -234,7 +234,7 @@
     <string name="password_length_limit">密码长度不得小于4位数</string>
     <string name="confirm_password_nosame">两次密码输入不一致</string>
     <string name="confirm_password_same">新旧密码相同</string>
-    <string name="string_user_logined1">该用户已在其它手机登录，是否确认登录？</string>
+    <string name="string_user_logined1">该用户已在其它手机登录，是否要重新登录？</string>
     <string name="string_user_logined">该用户已在其它手机登录</string>
     <string name="string_user_logout">该用户已在其它手机登录，被强制下线</string>
     <string name="string_user_IsBind">该设备已绑定其它用户</string>
@@ -242,6 +242,7 @@
     <string name="error_device_added">设备已添加,不能重复添加.</string>
     <string name="string_NoPicture">没有图片，没有TF卡或已删除</string>
     <string name="string_DeleteRecordCount">已删除 %d 条记录</string>
+    <string name="string_DeleteRecordCount1">存在分享设备，仅删除 %d 条记录</string>
     <string name="string_Info_APToSTA">1.在你的移动手机上连接摄像机设备，去设置>wifi,选择“IPCAM_AP_XXXXXXXX”网络.\n2.打开CAMLS这款应用,按照安装向导完成剩下的步骤。</string>
     <string name="string_gotoSetup">去设置</string>
     <string name="action_selectdevice">请选择设备</string>

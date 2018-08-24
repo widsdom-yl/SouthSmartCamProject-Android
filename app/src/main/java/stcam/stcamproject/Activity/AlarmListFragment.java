@@ -17,6 +17,7 @@ import android.widget.Button;
 
 import com.github.nuptboyzhb.lib.SuperSwipeRefreshLayout;
 import com.model.AlarmImageModel;
+import com.model.DevModel;
 import com.model.RetModel;
 
 import java.text.SimpleDateFormat;
@@ -340,6 +341,39 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
   }
 
   @Override
+  public void onItemCilck(View view, int position)
+  {
+    AlarmImageModel model = alarmImageArray.get(position);
+    Intent intent = new Intent(STApplication.getInstance(), AlarmDetailActivity.class);
+
+    Bundle bundle = new Bundle();
+    bundle.putSerializable("model", model);
+
+    intent.putExtras(bundle);
+    startActivity(intent);
+  }
+
+  @Override
+  public void onDeleteBtnCilck(View view, int position)
+  {
+    String SN = alarmImageArray.get(position).SN;
+    for (DevModel tmpNode : MainDevListFragment.mDevices)
+    {
+      if (tmpNode.SN.equals(SN))
+      {
+        if (tmpNode.IsShare == 0)
+        {
+          SouthUtil.showToast(STApplication.getInstance(), getString(R.string.string_device_is_share));
+          return;
+        }
+      }
+    }
+
+    int ID = alarmImageArray.get(position).ID;
+    deleAlarmList("" + ID);
+  }
+
+  @Override
   public void onClick(View view)
   {
     if (view.getId() == R.id.clear_button)
@@ -363,21 +397,55 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
 
             StringBuilder stringBuilder = new StringBuilder();
             int size = alarmImageArray.size();
+            int iShareCount = 0;
             iAlmCount = 0;
-            for (int ii = 0; ii < size; ++ii)
+            for (int k = 0; k < size; ++k)
             {
-              stringBuilder.append(alarmImageArray.get(ii).ID);
-              iAlmCount++;
-              if (ii != size - 1)
+              String SN = alarmImageArray.get(k).SN;
+              boolean IsExistsShareDev = false;
+              for (DevModel tmpNode : MainDevListFragment.mDevices)
               {
-                stringBuilder.append("@");
+                if (tmpNode.IsShare == 0)
+                {
+                  IsExistsShareDev = true;
+                  iShareCount++;
+                  break;
+                }
+              }
+              if (!IsExistsShareDev)
+              {
+                int ID = alarmImageArray.get(k).ID;
+                stringBuilder.append(ID);
+                iAlmCount++;
+                if (k != size - 1)
+                {
+                  stringBuilder.append("@");
+                }
               }
             }
-            deleAlarmList(stringBuilder.toString());//app_user_delalmfile
 
-            String sFormat = getString(R.string.string_DeleteRecordCount);//zhb add
+            if (iAlmCount > 0)
+            {
+              deleAlarmList(stringBuilder.toString());//app_user_delalmfile
+            }
+            else
+            {
+              lod.dismiss();
+            }
+
+            String sFormat = null;
+            if (iShareCount > 0)
+            {
+              sFormat = getString(R.string.string_DeleteRecordCount1);//zhb add
+            }
+            else
+            {
+              sFormat = getString(R.string.string_DeleteRecordCount);//zhb add
+            }
+
             String Str = String.format(sFormat, iAlmCount);
-            SouthUtil.showDialog(AlarmListFragment.this.getContext(), Str);
+            //SouthUtil.showDialog(AlarmListFragment.this.getContext(), Str);
+            SouthUtil.showToast(STApplication.getInstance(), Str);
           }
         })
         .setNegativeButton(this.getContext().getString(R.string.action_cancel), null)
@@ -389,26 +457,6 @@ public class AlarmListFragment extends Fragment implements BaseAdapter.OnItemCli
     {
       getAlarmList(false);
     }
-
-
   }
 
-  @Override
-  public void onDeleteBtnCilck(View view, int position)
-  {
-    deleAlarmList("" + alarmImageArray.get(position).ID);
-  }
-
-  @Override
-  public void onItemCilck(View view, int position)
-  {
-    AlarmImageModel model = alarmImageArray.get(position);
-    Intent intent = new Intent(STApplication.getInstance(), AlarmDetailActivity.class);
-
-    Bundle bundle = new Bundle();
-    bundle.putSerializable("model", model);
-
-    intent.putExtras(bundle);
-    startActivity(intent);
-  }
 }

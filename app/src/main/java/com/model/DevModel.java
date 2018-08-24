@@ -73,7 +73,7 @@ public class DevModel implements Parcelable
   public int IsPush;//权限     有
   public int IsControl;//权限  有
   public int IsSetup;//权限    未用到
-  public int IsShare;//权限    未用到
+  public int IsShare;//权限    有
   public int IsRec;//权限      未用到
   public int IsSnapshot;//权限 未用到
 

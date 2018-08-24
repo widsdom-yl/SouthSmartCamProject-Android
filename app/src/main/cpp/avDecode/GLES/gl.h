@@ -3,7 +3,7 @@
 
 /* $Revision: 10601 $ on $Date:: 2010-03-04 22:15:27 -0800 #$ */
 
-#include "glplatform.h"
+#include glplatform.h"
 
 #ifdef __cplusplus
 extern "C" {

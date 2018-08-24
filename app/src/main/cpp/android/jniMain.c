@@ -1,12 +1,11 @@
-#include <mtk_SmartConfig.h>
+#include <android/native_window_jni.h>
+#include <jni.h>
+#include "../include/mtk_SmartConfig.h"
 #include "../include/libthSDK.h"
 #include "../include/TFun.h"
-#include "jni.h"
-#include "avDecode/thffmpeg.h"
-#include "avDecode/thOpenGL_SLES.h"
-
-#include "avDecode/thEGL.h"
-#include <android/native_window_jni.h>
+#include "../avDecode/thffmpeg.h"
+#include "../avDecode/thOpenGL_SLES.h"
+#include "../avDecode/thEGL.h"
 
 //-----------------------------------------------------------------------------
 typedef void (*pvUcnvFunc)(const char *lpcstrDstEcd, const char *lpcstrSrcEcd, char *dst, unsigned long dstLen, const char *src,

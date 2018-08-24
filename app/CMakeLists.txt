@@ -1,18 +1,12 @@
 # For more information about using CMake with Android Studio, read the
 # documentation: https://d.android.com/studio/projects/add-native-code.html
-
 # Sets the minimum version of CMake required to build the native library.
 
 cmake_minimum_required(VERSION 3.4.1)
 
-
-
-
-
-
 set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src/main/cpp)
 set(JPEG_DIR ${CMAKE_SOURCE_DIR}/src/main/cpp/avDecode/libjpeg)
-set(LIB_DIR ${CMAKE_SOURCE_DIR}/src/main/cpp/lib)
+set(LIB_DIR ${CMAKE_SOURCE_DIR}/src/main/cpp/android/lib/armeabi)
 
 add_library(AVAPIs SHARED IMPORTED)
 set_target_properties(AVAPIs PROPERTIES IMPORTED_LOCATION ${LIB_DIR}/libAVAPIs.so)
@@ -29,11 +23,8 @@ set_target_properties(SDL2 PROPERTIES IMPORTED_LOCATION ${LIB_DIR}/libSDL2.so)
 add_library(SDL2main SHARED IMPORTED)
 set_target_properties(SDL2main PROPERTIES IMPORTED_LOCATION ${LIB_DIR}/libSDL2main.so)
 
-
-
 add_library(SmartConnection STATIC IMPORTED)
 set_target_properties(SmartConnection PROPERTIES IMPORTED_LOCATION ${LIB_DIR}/libSmartConnection.a)
-
 
 add_library(vo-aacenc STATIC IMPORTED)
 set_target_properties(vo-aacenc PROPERTIES IMPORTED_LOCATION ${LIB_DIR}/libvo-aacenc.a)
@@ -56,7 +47,7 @@ add_library( # Sets the name of the library.
              SHARED
 
              # Provides a relative path to your source file(s).
-             ${SOURCE_DIR}/jniMain.c
+             ${SOURCE_DIR}/android/jniMain.c
              ${SOURCE_DIR}/avDecode/thEGL.c
              ${SOURCE_DIR}/thSDK/thPlay.c ${SOURCE_DIR}/thSDK/axdllEx.c
              ${SOURCE_DIR}/common/av_Queue.c ${SOURCE_DIR}/common/List.c ${SOURCE_DIR}/common/skt.c ${SOURCE_DIR}/common/TFun.c ${SOURCE_DIR}/cJSON/cJSON.c

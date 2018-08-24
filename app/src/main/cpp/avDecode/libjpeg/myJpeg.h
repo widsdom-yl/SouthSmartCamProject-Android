@@ -6,7 +6,7 @@
 
 
 //-----------------------------------------------------------------------------
-int rgb24_jpg(char* dstFile, char* rgbBuf, int w, int h);
+int rgb24_jpg(char* FileName, char* rgbBuf, int w, int h);
 int bmp_jpg(char* srcFile, char* dstFile);
 
 #endif

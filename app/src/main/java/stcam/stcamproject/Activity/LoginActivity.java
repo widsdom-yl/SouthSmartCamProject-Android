@@ -396,25 +396,18 @@ public class LoginActivity extends BaseAppCompatActivity
       {
         //todo 已有用户登录 //zhb
         new AlertDialog.Builder(LoginActivity.this)
-          .setTitle(LoginActivity.this.getString(R.string.string_user_logined))
+          .setTitle(LoginActivity.this.getString(R.string.string_user_logined1))
           .setPositiveButton(LoginActivity.this.getString(R.string.action_ok), new DialogInterface.OnClickListener()
           {
             @Override
             public void onClick(DialogInterface dialogInterface, int i)
             {
-/*
-              String email = mEmailView.getText().toString();
-              String password = mPasswordView.getText().toString();
-              //AccountManager.getInstance().saveAccount(email, password, IsAutoLogin);
-              Intent intent = new Intent(STApplication.getInstance(), MainViewPagerActivity.class);
-              intent.putExtra("entry", MainDevListFragment.EnumMainEntry.EnumMainEntry_Login);
-              startActivity(intent);
-              LoginActivity.this.finish();
-*/
+              attemptLogin();
             }
           })
-          //.setNegativeButton(LoginActivity.this.getString(R.string.action_cancel), null)
+          .setNegativeButton(LoginActivity.this.getString(R.string.action_cancel), null)
           .show();
+        /*
         UserName = "";
         Password = "";
         IsAutoLogin = false;
@@ -422,6 +415,7 @@ public class LoginActivity extends BaseAppCompatActivity
         mEmailView.setText(UserName);
         mPasswordView.setText(Password);
         checkbox.setChecked(IsAutoLogin);
+        */
       }
       else
       {
