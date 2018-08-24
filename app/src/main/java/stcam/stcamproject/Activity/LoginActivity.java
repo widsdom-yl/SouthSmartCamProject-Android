@@ -112,11 +112,12 @@ public class LoginActivity extends BaseAppCompatActivity
     {
       mPasswordView.setText(Password);
     }
+    /*
     if (!TextUtils.isEmpty(UserName) && !TextUtils.isEmpty(Password))//zhb
     {
       IsAutoLogin = true;
       checkbox.setChecked(IsAutoLogin);;
-    }
+    }*/
 
     mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener()
     {

@@ -1,1 +1,0 @@
-$(OutDir)\$(ProjectName).dll
