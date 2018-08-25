@@ -113,27 +113,24 @@
                 />
 
 
-
-
             <ImageButton
-                android:background="#99444444"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="35dp"
                 android:layout_toRightOf="@+id/button_slient"
-                />
+                android:background="#99444444"/>
 
             <ImageButton
                 android:id="@+id/button_pix"
-                android:layout_centerVertical="true"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="40dp"
                 android:layout_toRightOf="@+id/button_slient"
                 android:background="@color/transparent"
-                android:src="@drawable/livehd_nor"
                 android:scaleType="fitCenter"
+                android:src="@drawable/livehd_nor"
                 />
             <Button
                 android:textAllCaps="false"
@@ -150,25 +147,25 @@
 
 
             <ImageButton
-                android:background="#99444444"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="35dp"
                 android:layout_toRightOf="@+id/button_pix"
+                android:background="#99444444"
                 />
 
             <ImageButton
                 android:id="@+id/button_setting"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="40dp"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
                 android:layout_toRightOf="@+id/button_pix"
-                android:src="@drawable/livesetting"
-                android:scaleType="centerInside"
                 android:background="@color/transparent"
+                android:scaleType="centerInside"
+                android:src="@drawable/livesetting"
                 />
 
 
@@ -181,9 +178,9 @@
 
     <RelativeLayout
         android:id="@+id/layout_control2"
-        android:layout_width="60dp"
-        android:layout_marginRight="20dp"
+        android:layout_width="80dp"
         android:layout_height="match_parent"
+        android:layout_marginRight="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -191,35 +188,32 @@
         >
 
 
-
-
         <ImageButton
-            android:layout_marginTop="15dp"
-            android:background="#99444444"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentRight="true"
+            android:layout_marginTop="15dp"
+            android:background="#99444444"
             />
 
 
-
-            <stcam.stcamproject.View.VoiceImageButton
-                android:layout_alignParentRight="true"
-                android:id="@+id/button_record"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="5dp"
-                android:background="@color/transparent"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/liverecord_nor"
-                />
+        <stcam.stcamproject.View.VoiceImageButton
+            android:id="@+id/button_record"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/liverecord_nor"
+            />
 
 
         <ImageButton
             android:id="@+id/button_speech_layer"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_alignParentRight="true"
 
             android:layout_centerVertical="true"
@@ -227,42 +221,39 @@
             android:background="#99444444"/>
 
 
-            <ImageButton
-                android:id="@+id/button_speech"
-                android:layout_width="50dp"
-                android:layout_alignParentRight="true"
-                android:layout_height="50dp"
-                android:layout_centerVertical="true"
-                android:scaleType="fitCenter"
-                android:background="@color/transparent"
-                android:src="@drawable/livespeech_nor"
-                />
-
-
+        <ImageButton
+            android:id="@+id/button_speech"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@color/transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/livespeech_nor"/>
 
 
         <ImageButton
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="15dp"
-            android:background="#99444444"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
+            android:layout_marginBottom="15dp"
+            android:background="#99444444"
             />
 
 
-            <stcam.stcamproject.View.VoiceImageButton
-                android:id="@+id/button_snapshot"
-                android:layout_marginRight="5dp"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginBottom="20dp"
-                android:scaleType="fitCenter"
-                android:background="@color/transparent"
-                android:src="@drawable/livesnapshot"
-                />
+        <stcam.stcamproject.View.VoiceImageButton
+            android:id="@+id/button_snapshot"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/livesnapshot"
+            />
     </RelativeLayout>
 
 
