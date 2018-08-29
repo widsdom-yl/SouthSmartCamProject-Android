@@ -246,4 +246,5 @@
     <string name="string_Info_APToSTA">1.在你的移动手机上连接摄像机设备，去设置>wifi,选择“IPCAM_AP_XXXXXXXX”网络.\n2.打开CAMLS这款应用,按照安装向导完成剩下的步骤。</string>
     <string name="string_gotoSetup">去设置</string>
     <string name="action_selectdevice">请选择设备</string>
+    <string name="action_detection">图像侦测</string>
 </resources>

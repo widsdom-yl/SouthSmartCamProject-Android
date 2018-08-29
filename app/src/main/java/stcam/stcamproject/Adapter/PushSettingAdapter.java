@@ -117,6 +117,19 @@ public class PushSettingAdapter extends BaseAdapter<String>
         Str = Str + Config.StrOnNext;
         holder.setText(R.id.detail_text, Str);
       }
+      else if (6 == position)
+      {
+        if (true)
+        {
+          Str = STApplication.getInstance().getString(R.string.action_open);
+        }
+        else
+        {
+          Str = STApplication.getInstance().getString(R.string.action_close);
+        }
+        Str = Str + Config.StrOnNext;
+        holder.setText(R.id.detail_text, Str);
+      }
 
     }
 

@@ -160,6 +160,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     items.add(getString(R.string.action_dev_sound));
     items.add(getString(R.string.action_alarm_time_span));
     items.add(getString(R.string.action_manager_volume));
+    items.add(getString(R.string.action_detection));
     mAdapter = new PushSettingAdapter(items);
 
     mAdapter.setOnItemClickListener(this);
