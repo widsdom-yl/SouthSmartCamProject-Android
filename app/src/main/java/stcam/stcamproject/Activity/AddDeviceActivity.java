@@ -89,9 +89,11 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
       //处理扫描结果（在界面上显示）
       if (null != data)
       {
+        Log.e(tag, "onActivityResult data != null");
         Bundle bundle = data.getExtras();
         if (bundle == null)
         {
+          Log.e(tag, "onActivityResult bundle = null");
           return;
         }
 
@@ -109,6 +111,10 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
         {
           Toast.makeText(AddDeviceActivity.this, getString(R.string.string_decodeQRFail), Toast.LENGTH_LONG).show();
         }
+      }
+      else
+      {
+        Log.e(tag, "onActivityResult data == null");
       }
     }
     super.onActivityResult(requestCode, resultCode, data);
