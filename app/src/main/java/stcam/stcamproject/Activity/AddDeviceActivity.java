@@ -82,30 +82,32 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data)
   {
-    Log.i(tag, "onActivityResult" + "requestCode" + requestCode + "\n resultCode=" + resultCode);
+    int iResultType;
+    Log.e(tag, "onActivityResult requestCode:" + requestCode + " resultCode:" + resultCode);
     if (requestCode == REQUEST_CODE)
     {
-      if (requestCode == REQUEST_CODE)
+      //处理扫描结果（在界面上显示）
+      if (null != data)
       {
-        //处理扫描结果（在界面上显示）
-        if (null != data)
+        Bundle bundle = data.getExtras();
+        if (bundle == null)
         {
-          Bundle bundle = data.getExtras();
-          if (bundle == null)
-          {
-            return;
-          }
-          if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS)
-          {
-            String result = bundle.getString(CodeUtils.RESULT_STRING);
-            // Toast.makeText(this, "解析结果:" + result, Toast.LENGTH_LONG).show();
-            addDevice_share(result);
+          return;
+        }
 
-          }
-          else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED)
-          {
-            Toast.makeText(AddDeviceActivity.this, getString(R.string.string_decodeQRFail), Toast.LENGTH_LONG).show();
-          }
+        iResultType = bundle.getInt(CodeUtils.RESULT_TYPE);
+        Log.e(tag, "onActivityResult iResultType:" + iResultType);
+
+        if (iResultType == CodeUtils.RESULT_SUCCESS)
+        {
+          String result = bundle.getString(CodeUtils.RESULT_STRING);
+          Log.e(tag, "addDevice_share json:" + result);
+          //Toast.makeText(this, "解析结果:" + result, Toast.LENGTH_LONG).show();
+          addDevice_share(result);
+        }
+        else if (iResultType == CodeUtils.RESULT_FAILED)
+        {
+          Toast.makeText(AddDeviceActivity.this, getString(R.string.string_decodeQRFail), Toast.LENGTH_LONG).show();
         }
       }
     }
