@@ -26,7 +26,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
   private TextView tx1, tx2, tx3, tx4;
   ImageButton image_1, image_2, image_3, image_4;
 
-  MainDevListFragment.EnumMainEntry entryType;
+  MainDevListFragment.TUserMode UserMode;
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -37,7 +37,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     Bundle bundle = this.getIntent().getExtras();
     if (bundle != null)
     {
-      entryType = (MainDevListFragment.EnumMainEntry) bundle.getSerializable("entry");
+      UserMode = (MainDevListFragment.TUserMode) bundle.getSerializable("entry");
     }
     setContentView(R.layout.activity_main);
 
@@ -47,7 +47,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     init();
     if (savedInstanceState == null)
     {
-      if (entryType == MainDevListFragment.EnumMainEntry.EnumMainEntry_Login)
+      if (UserMode == MainDevListFragment.TUserMode.UserMode_Login)
       {
         getSupportFragmentManager().beginTransaction()
           .add(R.id.content_container, f1)
@@ -99,7 +99,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     image_4.setOnClickListener(this);
 
 
-    f1 = MainDevListFragment.newInstance(entryType);
+    f1 = MainDevListFragment.newInstance(UserMode);
 
     f2 = AlarmListFragment.newInstance();
 
@@ -203,7 +203,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
   boolean isLoginMode()
   {
-    if (entryType != MainDevListFragment.EnumMainEntry.EnumMainEntry_Login)
+    if (UserMode != MainDevListFragment.TUserMode.UserMode_Login)
     {
       SouthUtil.showDialog(this, getString(R.string.action_visitor_mode_disable_excute));
       return false;

@@ -29,15 +29,15 @@ public class SytstmSettingListAdapter extends BaseAdapter<String>
       boolean alarmSoundOpen = AccountManager.getInstance().getAlarmSoundSetting();
       Str = alarmSoundOpen ? STApplication.getInstance().getString(R.string.action_open) : STApplication
         .getInstance().getString(R.string.action_close);
-      Str = Str + Config.StrOnNext;
+      Str = Str + Config.StrOnNextLevel;
     }
     else if (1 == position)
     {
-      Str = Str + Config.StrOnNext;
+      Str = Str + Config.StrOnNextLevel;
     }
     else if (2 == position)
     {
-      Str = Str + Config.StrOnNext;
+      Str = Str + Config.StrOnNextLevel;
     }
     else if (3 == position)
     {
@@ -47,7 +47,7 @@ public class SytstmSettingListAdapter extends BaseAdapter<String>
           .getPackageManager()
           .getPackageInfo(STApplication.getInstance().getPackageName(), 0);
         Str = packageInfo.versionName;
-        Str = Str + Config.StrOnNext;
+        Str = Str + Config.StrOnNextLevel;
       }
       catch (PackageManager.NameNotFoundException e)
       {
@@ -56,7 +56,7 @@ public class SytstmSettingListAdapter extends BaseAdapter<String>
     }
     else if (4 == position)
     {
-      Str = Str + Config.StrOnNext;
+      Str = Str + Config.StrOnNextLevel;
     }
     holder.setText(R.id.detail_info_text, Str);
   }

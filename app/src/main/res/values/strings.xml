@@ -140,12 +140,12 @@
     <string name="action_Success">Set successful</string>
     <string name="action_Failed">Set failure</string>
     <string name="action_manager_push">Manage push</string>
-    <string name="action_manager_senior">Advanced settings</string>
-    <string name="action_dev_sound">Device prompting sound switch</string>
-    <string name="action_alarm_time_span">Alarm video time</string>
+    <string name="string_DevAdvancedSettings">Advanced settings</string>
+    <string name="string_DevAdvancedSettings_IsSoundPlay">Device prompting sound switch</string>
+    <string name="string_DevAdvancedSettings_AlmTimeLen">Alarm video time</string>
     <string name="action_reset_origin">Reset origin</string>
-    <string name="action_manager_volume">Manage video volume</string>
-    <string name="action_manager_alarm_level">Sensitivity of image detection</string>
+    <string name="string_DevAdvancedSettings_TFManage">Manage video volume</string>
+    <string name="string_DevAdvancedSettings_MotionSensitivity">Sensitivity of image detection</string>
     <string name="action_version">Device Version</string>
     <string name="action_request_ssid">Write wifi information</string>
     <string name="SmartConfigOver">Configuration finish</string>
@@ -163,8 +163,8 @@
     <string name="action_Success_Reboot">Set up successfully and restart the device to take effect</string>
     <string name="action_mine">Me</string>
     <string name="action_push">Push switch</string>
-    <string name="action_push_interval">Message push interval</string>
-    <string name="action_pir_sensitivity">Photosensitivity</string>
+    <string name="string_DevAdvancedSettings_PushInterval">Message push interval</string>
+    <string name="string_DevAdvancedSettings_PIRSensitivity">Photosensitivity</string>
     <string name="action_open">Open</string>
     <string name="action_close">Close</string>
     <string name="string_second">Second</string>
@@ -230,7 +230,7 @@
     <string name="password_length_limit">Password length should not less than 4!</string>
     <string name="confirm_password_nosame">Confirm password is not the same as new password</string>
     <string name="confirm_password_same">The old password is the same as the new password</string>
-    <string name="string_user_logined1">The user has logined in on other phones, are you sure to login?</string>
+    <string name="string_user_logined1">The user has logined in on other phones, Do you want to force login?</string>
     <string name="string_user_logined">The user has logined in on other phones.</string>
     <string name="string_user_logout">The user has logined in on other phones, Forced offline.</string>
     <string name="string_user_IsBind">The device is bind by other users</string>

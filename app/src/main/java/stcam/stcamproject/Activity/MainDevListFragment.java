@@ -17,7 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import com.model.DevModel;
 import com.model.RetModel;
 import com.model.SearchDevModel;
@@ -48,8 +49,8 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
-import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.EnumMainEntry_Login;
-import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor;
+import static stcam.stcamproject.Activity.MainDevListFragment.TUserMode.UserMode_Login;
+import static stcam.stcamproject.Activity.MainDevListFragment.TUserMode.UserMode_Visitor;
 
 public class MainDevListFragment extends Fragment implements DeviceListAdapter.OnItemClickListener, NetworkChangeReceiver
   .OnNetWorkBreakListener, View.OnClickListener
@@ -64,7 +65,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
   List<DevModel> mAccountDevices = new ArrayList<>();//没有连接状态
   // SuperSwipeRefreshLayout refreshLayout;
   SwipeRefreshLayout swipeContainer;
-  EnumMainEntry entryType;
+  TUserMode UserMode;
 
   boolean hasReceivedNetWorkchange;//是否收到网络监听变化，这个变量在进入此fragement页面中，会收到网络回调，这个值会值1，但是考虑到网络请求，当有设备列表或者搜索设备返回时候，这个值为true
   private IntentFilter intentFilter;
@@ -84,7 +85,6 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
       {
         if (tmpNode.IsConnect())
         {
-          //tmpNode.Disconn();
           lib.thNetThreadDisConnFree(tmpNode.NetHandle);
           tmpNode.NetHandle = 0;
         }
@@ -102,26 +102,28 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
   public void OnNetWorkChangeListener(int type)
   {
     Log.e(tag, "---------------------1 OnNetWorkChangeListener");
-    if (entryType == EnumMainEntry_Login)
+    if (UserMode == UserMode_Login)
     {
-      if (0 == type)
+      if (type == ConnectivityManager.TYPE_MOBILE)
       {
         if (mDevices != null)
         {
           mDevices.clear();
         }
-        loadDevList(false);
+        Log.e(tag, "loadDevList网络改变MOBILE");
+        loadDevList(false);//网络改变MOBILE
       }
-      else if (1 == type)
+      else if (type == ConnectivityManager.TYPE_WIFI)
       {
         if (mDevices != null)
         {
           mDevices.clear();
         }
-        loadDevList(false);
+        Log.e(tag, "loadDevList网络改变WIFI");
+        loadDevList(false);//网络改变WIFI
       }
     }
-    else if (entryType == EnumMainEntry_Visitor)
+    else if (UserMode == UserMode_Visitor)
     {
       if (mDevices != null)
       {
@@ -129,8 +131,6 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
       }
       searchDevices();
     }
-
-
   }
 
   @Override
@@ -148,15 +148,15 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
   }
 
-  public enum EnumMainEntry implements Serializable
+  public enum TUserMode implements Serializable
   {
-    EnumMainEntry_Null,
-    EnumMainEntry_Login,
-    EnumMainEntry_Visitor
+    UserMode_NULL,
+    UserMode_Login,
+    UserMode_Visitor
   }
 
   // TODO: Rename and change types and number of parameters
-  public static MainDevListFragment newInstance(EnumMainEntry param)
+  public static MainDevListFragment newInstance(TUserMode param)
   {
     MainDevListFragment fragment = new MainDevListFragment();
     Bundle args = new Bundle();
@@ -177,7 +177,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     Bundle bundle = this.getArguments();
     if (bundle != null)
     {
-      entryType = (EnumMainEntry) bundle.getSerializable("entry");
+      UserMode = (TUserMode) bundle.getSerializable("entry");
     }
     hasReceivedNetWorkchange = false;
 
@@ -233,11 +233,12 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
       if (hasReceivedNetWorkchange)
       {
-        if (entryType == EnumMainEntry.EnumMainEntry_Login)
+        if (UserMode == TUserMode.UserMode_Login)
         {
-          loadDevList(false);
+          Log.e(tag, "loadDevList onMyResume hasReceivedNetWorkchange");
+          loadDevList(false);//onMyResume hasReceivedNetWorkchange
         }
-        else if (entryType == EnumMainEntry_Visitor)
+        else if (UserMode == UserMode_Visitor)
         {
           searchDevices();
         }
@@ -262,7 +263,6 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
       {
         if (tmpNode.IsConnect())
         {
-          //tmpNode.Disconn();
           lib.thNetThreadDisConnFree(tmpNode.NetHandle);
           tmpNode.NetHandle = 0;
         }
@@ -292,49 +292,8 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     mRecyclerView.setLayoutManager(layoutManager);
 
     mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-    if (entryType == EnumMainEntry.EnumMainEntry_Login)
+    if (UserMode == TUserMode.UserMode_Login)
     {
-//            refreshLayout
-//                    .setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
-//
-//                        @Override
-//                        public void onRefresh() {
-//                            //TODO 开始刷新
-//                            loadDevList(true);
-//                        }
-//
-//                        @Override
-//                        public void onPullDistance(int distance) {
-//                            //TODO 下拉距离
-//                        }
-//
-//                        @Override
-//                        public void onPullEnable(boolean enable) {
-//                            //TODO 下拉过程中，下拉的距离是否足够出发刷新
-//                        }
-//                    });
-//            refreshLayout
-//                    .setOnPushLoadMoreListener(new SuperSwipeRefreshLayout.OnPushLoadMoreListener() {
-//
-//                        @Override
-//                        public void onLoadMore() {
-//                            loadDevList(true);
-//                        }
-//
-//                        @Override
-//                        public void onPushEnable(boolean enable) {
-//                            //TODO 上拉过程中，上拉的距离是否足够出发刷新
-//                        }
-//
-//                        @Override
-//                        public void onPushDistance(int distance) {
-//                            // TODO 上拉距离
-//
-//                        }
-//
-//                    });
-//            refreshLayout.setFooterView(createFooterView());
-
       swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
       {
         @Override
@@ -343,7 +302,8 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
           // Your code to refresh the list here.
           // Make sure you call swipeContainer.setRefreshing(false)
           // once the network request has completed successfully.
-          loadDevList(true);
+          Log.e(tag, "loadDevList initView UserMode_Login onRefresh()");
+          loadDevList(true);//initView UserMode_Login onRefresh()
         }
       });
 
@@ -363,7 +323,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     add_text_button.setOnClickListener(this);
     add_text_button.setOnClickListener(this);
     search_button.setOnClickListener(this);
-    if (entryType == EnumMainEntry_Visitor)
+    if (UserMode == UserMode_Visitor)
     {
       add_button.setVisibility(View.GONE);
       search_button.setVisibility(View.VISIBLE);
@@ -392,10 +352,12 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     {
       lod = new LoadingDialog(this.getActivity());
     }
+
     if (!refresh)
     {
       lod.dialogShow();
     }
+
     if (getDevListRequest == null)
     {
       //http://xxx.xxx.xxx.xxx:800/app_user_get_devlst.asp??user=aa@bb.com&psd=12345678
@@ -408,7 +370,6 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
         .build();
     }
 
-
     mHttpClient.newCall(getDevListRequest).enqueue(new Callback()
     {
       @Override
@@ -417,7 +378,6 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
         Activity activity = MainDevListFragment.this.getActivity();
         if (activity == null)
         {
-
           return;
         }
         hasReceivedNetWorkchange = true;
@@ -433,8 +393,6 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
             }
           }
         });
-
-
       }
 
       @Override
@@ -443,7 +401,6 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
         Activity activity = MainDevListFragment.this.getActivity();
         if (activity == null)
         {
-
           return;
         }
         hasReceivedNetWorkchange = true;
@@ -469,12 +426,9 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
             parseGetDevListResponse(gb2312Str);
           }
         });
-
-
-      }
-    });
-
-  }
+      }//onResponse
+    });//mHttpClient
+  }//void loadDevList(boolean refresh)
 
   void parseGetDevListResponse(String response)//zhb from server app_user_get_devlst.asp
   {
@@ -489,7 +443,6 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
         //todo
       }
     }
-
 
     List<DevModel> mlist = GsonUtil.parseJsonArrayWithGson(response, DevModel[].class);
 
@@ -531,13 +484,14 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
         if (!tmpNode.IsConnect())
         {
           Log.e(tag, "---------------------NetConn:sn" + tmpNode.SN);
+          DevModel.threadConnect(ipc, tmpNode);
         }
-        DevModel.threadConnect(ipc, tmpNode);
+        //DevModel.threadConnect(ipc, tmpNode);
       }
 
       if (mAdapter == null)
       {
-        mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(), mlist, entryType);
+        mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(), mlist, UserMode);
         mAdapter.setOnItemClickListener(MainDevListFragment.this);
         if (mRecyclerView != null)
         {
@@ -555,7 +509,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
       //MyContext.getInstance()
       if (mAdapter == null)
       {
-        mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(), mlist, entryType);
+        mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(), mlist, UserMode);
         mAdapter.setOnItemClickListener(MainDevListFragment.this);
         mRecyclerView.setAdapter(mAdapter);
       }
@@ -634,7 +588,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
         if (mAdapter == null)
         {
-          mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(), mlist, entryType);
+          mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(), mlist, UserMode);
           mAdapter.setOnItemClickListener(MainDevListFragment.this);
           mRecyclerView.setAdapter(mAdapter);
         }
@@ -702,7 +656,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
       Bundle bundle = new Bundle();
       bundle.putParcelable("devModel", tmpNode);
-      bundle.putSerializable("entry", entryType);
+      bundle.putSerializable("entry", UserMode);
       intent.putExtras(bundle);
       Log.e(tag, "to vid devModel NetHandle:" + tmpNode.NetHandle);
 
@@ -710,7 +664,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
     }
     else if (1 == tpe)//Item按下分享
     {
-      if (entryType == EnumMainEntry_Login)
+      if (UserMode == UserMode_Login)
       {
         if (tmpNode.IsShare == 0)//去掉？
         {
@@ -745,7 +699,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
     else if (2 == tpe)//Item按下回放
     {
-      if (entryType == EnumMainEntry_Login)
+      if (UserMode == UserMode_Login)
       {
         /*//去掉 zhb add
         if (tmpNode.IsShare == 0)
@@ -776,7 +730,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
       Bundle bundle = new Bundle();
       bundle.putParcelable("devModel", tmpNode);
-      bundle.putSerializable("entry", entryType);
+      bundle.putSerializable("entry", UserMode);
       intent.putExtras(bundle);
       Log.e(tag, "to PlayBackListActivity NetHandle:" + tmpNode.NetHandle);
 
@@ -788,7 +742,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
       Bundle bundle = new Bundle();
       bundle.putParcelable("devModel", tmpNode);
-      bundle.putSerializable("entry", entryType);
+      bundle.putSerializable("entry", UserMode);
       intent.putExtras(bundle);
       Log.e(tag, "to SettingActivity NetHandle:" + tmpNode.NetHandle);
 
@@ -913,7 +867,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
             if (mAdapter == null)
             {
-              mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(), mAccountDevices, entryType);
+              mAdapter = new DeviceListAdapter(MainDevListFragment.this.getActivity(), mAccountDevices, UserMode);
               mAdapter.setOnItemClickListener(MainDevListFragment.this);
               mRecyclerView.setAdapter(mAdapter);
             }

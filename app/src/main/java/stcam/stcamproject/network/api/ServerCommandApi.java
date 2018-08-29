@@ -60,7 +60,8 @@ public interface ServerCommandApi
                                                 @Query("tokenid") String tokenid,
                                                 @Query("mbtype") int mbtype,
                                                 @Query("apptype") int apptype,
-                                                @Query("pushtype") int pushtype
+                                                @Query("pushtype") int pushtype,
+                                                @Query("isforce") int isforce
   );
 
   @GET("app_user_reg.asp")

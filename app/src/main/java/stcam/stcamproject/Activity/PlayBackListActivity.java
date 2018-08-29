@@ -41,7 +41,7 @@ public class PlayBackListActivity extends BaseAppCompatActivity implements BaseA
 
   boolean refresh;//true:执行刷新 false:loadmore
   int page;//当前正在加载的页数
-  MainDevListFragment.EnumMainEntry entryType;
+  MainDevListFragment.TUserMode UserMode;
   LoadingDialog lod;
 
   @Override
@@ -60,7 +60,7 @@ public class PlayBackListActivity extends BaseAppCompatActivity implements BaseA
     if (bundle != null)
     {
       devModel = (DevModel) bundle.getParcelable("devModel");
-      entryType = (MainDevListFragment.EnumMainEntry) bundle.getSerializable("entry");
+      UserMode = (MainDevListFragment.TUserMode) bundle.getSerializable("entry");
       Log.e(tag, "NetHandle:" + devModel.NetHandle + ",SN:" + devModel.SN);
     }
     android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -233,7 +233,7 @@ public class PlayBackListActivity extends BaseAppCompatActivity implements BaseA
     DataManager.getInstance().addSDVideoModel(model);
     bundle.putSerializable("model", model);
     bundle.putParcelable("devModel", devModel);
-    bundle.putSerializable("entry", entryType);
+    bundle.putSerializable("entry", UserMode);
     intent.putExtras(bundle);
 
     Log.e(tag, "to PlayBackActivity sdVideo:" + model.sdVideo);
@@ -263,7 +263,7 @@ public class PlayBackListActivity extends BaseAppCompatActivity implements BaseA
     protected String doInBackground(Integer... params)
     {
       //第二个执行方法,onPreExecute()执行完后执行
-      String url = devModel.getHttpCfg1UsrPwd() + "&MsgID=" + lib.Msg_GetRecFileLst + "&p=" + (page++) + "&l=20";
+      String url = devModel.getDevURL( lib.Msg_GetRecFileLst) + "&p=" + (page++) + "&l=20";
       String ret = lib.thNetHttpGet(devModel.NetHandle, url);
       return ret;
     }

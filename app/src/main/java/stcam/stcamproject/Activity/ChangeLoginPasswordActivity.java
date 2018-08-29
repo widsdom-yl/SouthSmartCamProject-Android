@@ -26,6 +26,9 @@ public class ChangeLoginPasswordActivity extends BaseAppCompatActivity implement
   EditText editText_new_pwd;
   EditText editText_old_pwd;
   Button confirmButton;
+  String PasswordOld = null;
+  String PasswordNew = null;
+  String PasswordNew1 = null;
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
@@ -38,6 +41,7 @@ public class ChangeLoginPasswordActivity extends BaseAppCompatActivity implement
   protected void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
+
     setContentView(R.layout.activity_change_login_password);
 
     android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -72,29 +76,32 @@ public class ChangeLoginPasswordActivity extends BaseAppCompatActivity implement
     confirmButton.setOnClickListener(this);
   }
 
-
   @Override
   public void onClick(View view)
   {
-    if (!editText_old_pwd.getText().toString().equals(AccountManager.getInstance().getDefaultPwd()))
+    PasswordOld = editText_old_pwd.getText().toString();
+    PasswordNew = editText_new_pwd.getText().toString();
+    PasswordNew1 = editText_confirm_pwd.getText().toString();
+
+    if (!PasswordOld.equals(AccountManager.getInstance().getDefaultPwd()))
     {
       //原密码不正确
       SouthUtil.showDialog(ChangeLoginPasswordActivity.this, getString(R.string.old_password_wrong));
       return;
     }
-    else if (editText_new_pwd.getText().toString().equals(editText_old_pwd.getText().toString()))
+    else if (PasswordNew.equals(PasswordOld))
     {
       //新旧密码相同
       SouthUtil.showDialog(ChangeLoginPasswordActivity.this, getString(R.string.confirm_password_same));
       return;
     }
-    else if (editText_new_pwd.getText().length() < 4)
+    else if (PasswordNew.length() < 4)
     {
       //密码小于4位
       SouthUtil.showDialog(ChangeLoginPasswordActivity.this, getString(R.string.password_length_limit));
       return;
     }
-    else if (!editText_new_pwd.getText().toString().equals(editText_confirm_pwd.getText().toString()))
+    else if (!PasswordNew.equals(PasswordNew1))
     {
       SouthUtil.showDialog(ChangeLoginPasswordActivity.this, getString(R.string.confirm_password_nosame));
       //两次密码不一致
@@ -143,6 +150,12 @@ public class ChangeLoginPasswordActivity extends BaseAppCompatActivity implement
       if (ServerNetWork.RESULT_SUCCESS == m.ret)
       {
         SouthUtil.showToast(ChangeLoginPasswordActivity.this, getString(R.string.string_ChangePsdSuccess));
+        AccountManager.getInstance().saveAccount(
+          AccountManager.getInstance().getDefaultUsr(),
+          PasswordNew,
+          AccountManager.getInstance().getIsRemeberAccount()
+        );
+        ChangeLoginPasswordActivity.this.finish();
       }
       else
       {

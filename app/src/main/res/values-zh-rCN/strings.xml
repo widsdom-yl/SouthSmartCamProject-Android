@@ -145,12 +145,12 @@
     <string name="action_Success">设置成功</string>
     <string name="action_Failed">设置失败</string>
     <string name="action_manager_push">推送管理</string>
-    <string name="action_manager_senior">高级设置</string>
-    <string name="action_dev_sound">设备提示音开关</string>
-    <string name="action_alarm_time_span">报警录像时间</string>
+    <string name="string_DevAdvancedSettings">高级设置</string>
+    <string name="string_DevAdvancedSettings_IsSoundPlay">设备提示音开关</string>
+    <string name="string_DevAdvancedSettings_AlmTimeLen">报警录像时间</string>
     <string name="action_reset_origin">恢复出厂设置</string>
-    <string name="action_manager_volume">视频储存管理</string>
-    <string name="action_manager_alarm_level">图像侦测灵敏度</string>
+    <string name="string_DevAdvancedSettings_TFManage">视频储存管理</string>
+    <string name="string_DevAdvancedSettings_MotionSensitivity">图像侦测灵敏度</string>
     <string name="action_version">设备版本</string>
     <string name="action_request_ssid">请填写wifi信息</string>
     <string name="SmartConfigOver">配置成功</string>
@@ -168,8 +168,8 @@
     <string name="action_Success_Reboot">设置成功,重启设备后生效</string>
     <string name="action_mine">我</string>
     <string name="action_push">推送开关</string>
-    <string name="action_push_interval">消息推送间隔</string>
-    <string name="action_pir_sensitivity">PIR灵敏度</string>
+    <string name="string_DevAdvancedSettings_PushInterval">消息推送间隔</string>
+    <string name="string_DevAdvancedSettings_PIRSensitivity">PIR灵敏度</string>
     <string name="action_open">开</string>
     <string name="action_close">关</string>
     <string name="string_second">秒</string>
@@ -234,7 +234,7 @@
     <string name="password_length_limit">密码长度不得小于4位数</string>
     <string name="confirm_password_nosame">两次密码输入不一致</string>
     <string name="confirm_password_same">新旧密码相同</string>
-    <string name="string_user_logined1">该用户已在其它手机登录，是否要重新登录？</string>
+    <string name="string_user_logined1">该用户已在其它手机登录，是否要强制登录？</string>
     <string name="string_user_logined">该用户已在其它手机登录</string>
     <string name="string_user_logout">该用户已在其它手机登录，被强制下线</string>
     <string name="string_user_IsBind">该设备已绑定其它用户</string>

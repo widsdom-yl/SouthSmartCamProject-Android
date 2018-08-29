@@ -101,6 +101,7 @@ extern "C"
   //ʱ�亯��
   EXPORT i32 timeval_dec(struct timeval* tv2, struct timeval* tv1);//ms
   EXPORT i32 GetTime();
+  EXPORT i32 GetTimezoneTime();
   EXPORT i64 getutime();//ȡ��΢�뼶ʱ�� tv.tv_sec*1000000 + tv.tv_usec
 
   EXPORT void Time_tToSystemTime(i32 t, SYSTEMTIME* pst);

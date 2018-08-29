@@ -70,12 +70,12 @@
             android:screenOrientation="portrait" />
         <activity android:name=".Activity.AddDeviceOneStepNext" />
         <activity android:name=".Activity.AddDeviceAP2StaActivity" />
-        <activity android:name=".Activity.ChangeDevicePwdActivity" />
+        <activity android:name=".Activity.DevChangePwdActivity" />
         <activity android:name=".Activity.AddDeviceWlanActivity" />
         <activity android:name=".Activity.AddDeviceAP2StaSetup" />
         <activity android:name=".Activity.SettingActivity" />
         <activity
-            android:name=".Activity.LedControlActivity"
+            android:name=".Activity.DevLedControlActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
@@ -87,7 +87,7 @@
             android:name="io.fabric.ApiKey"
             android:value="d4fed762adbf5636271fae1e9fffd1bad9abf368" />
 
-        <activity android:name=".Activity.PushSettingActivity" />
+        <activity android:name=".Activity.DevAdvancedSettingsActivity" />
         <activity android:name=".Activity.AboutActivity" />
         <activity android:name=".Activity.ResetPwdActivity" />
         <activity android:name=".Activity.ShareManagerActivity" />

@@ -67,9 +67,9 @@ public class SDVolumeManagerActivity extends BaseAppCompatActivity implements Ba
     {
 //            actionBar.setHomeButtonEnabled(true);
 //            actionBar.setDisplayHomeAsUpEnabled(true);
-//            actionBar.setTitle(R.string.action_manager_volume);
+//            actionBar.setTitle(R.string.string_DevAdvancedSettings_TFManage);
 
-      setCustomTitle(getString(R.string.action_manager_volume), true);
+      setCustomTitle(getString(R.string.string_DevAdvancedSettings_TFManage), true);
 
     }
     Bundle bundle = this.getIntent().getExtras();
@@ -236,7 +236,7 @@ public class SDVolumeManagerActivity extends BaseAppCompatActivity implements Ba
     @Override
     protected String doInBackground(String... params)
     {
-      String url = model.getHttpCfg1UsrPwd() + "&MsgID=" + lib.Msg_FormattfCard;
+      String url = model.getDevURL(lib.Msg_FormattfCard);
       String ret = lib.thNetHttpGet(model.NetHandle, url);
       return ret;
     }
@@ -280,7 +280,7 @@ public class SDVolumeManagerActivity extends BaseAppCompatActivity implements Ba
     @Override
     protected String doInBackground(String... params)
     {
-      String url = model.getHttpCfg1UsrPwd() + "&MsgID=" + lib.Msg_GetRecCfg;
+      String url = model.getDevURL(lib.Msg_GetRecCfg);
       String ret = lib.thNetHttpGet(model.NetHandle, url);
       return ret;
     }
@@ -322,10 +322,8 @@ public class SDVolumeManagerActivity extends BaseAppCompatActivity implements Ba
     @Override
     protected String doInBackground(String... params)
     {
-      String url = model.getHttpCfg1UsrPwd() + "&MsgID=" + lib.Msg_GetDiskCfg;
-      Log.e(tag, url + ",NetHandle is " + model.NetHandle);
+      String url = model.getDevURL(lib.Msg_GetDiskCfg);
       String ret = lib.thNetHttpGet(model.NetHandle, url);
-      Log.e(tag, "ret :" + ret);
       return ret;
     }
 
@@ -366,10 +364,8 @@ public class SDVolumeManagerActivity extends BaseAppCompatActivity implements Ba
     @Override
     protected String doInBackground(Integer... params)
     {
-      String url = model.getHttpCfg1UsrPwd() + "&MsgID=" + lib.Msg_SetRecCfg + "&Rec_RecStyle=" + params[0];
-      Log.e(tag, url + ",NetHandle is " + model.NetHandle);
+      String url = model.getDevURL(lib.Msg_SetRecCfg) + "&Rec_RecStyle=" + params[0];
       String ret = lib.thNetHttpGet(model.NetHandle, url);
-      Log.e(tag, "ret :" + ret);
       return ret;
     }
 

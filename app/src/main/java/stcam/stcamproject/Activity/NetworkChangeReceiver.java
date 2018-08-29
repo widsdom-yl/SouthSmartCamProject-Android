@@ -72,7 +72,7 @@ class NetworkChangeReceiver extends BroadcastReceiver
           lib.P2PInit();
           if (mNetWorkBreakListener != null)
           {
-            mNetWorkBreakListener.OnNetWorkChangeListener(0);
+            mNetWorkBreakListener.OnNetWorkChangeListener(TYPE_MOBILE);
           }
           Toast.makeText(context, context.getString(R.string.string_net_4G), Toast.LENGTH_SHORT).show();
           break;
@@ -86,7 +86,7 @@ class NetworkChangeReceiver extends BroadcastReceiver
           lib.P2PInit();
           if (mNetWorkBreakListener != null)
           {
-            mNetWorkBreakListener.OnNetWorkChangeListener(1);
+            mNetWorkBreakListener.OnNetWorkChangeListener(TYPE_WIFI);
           }
           Toast.makeText(context, context.getString(R.string.string_net_Wifi), Toast.LENGTH_SHORT).show();
           break;

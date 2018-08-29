@@ -7,6 +7,77 @@
 #include "../avDecode/thOpenGL_SLES.h"
 #include "../avDecode/thEGL.h"
 
+
+//-----------------------------------------------------------------------------
+typedef struct TInfoThreadOperation
+{
+  HANDLE NetHandle;
+#define Msg_DisconnAndFree 1
+#define Msg_TalkOpen       2
+#define Msg_TalkClose      3
+//#define Msg_AudioPlayOpen  4
+//#define Msg_AudioPlayClose 5
+#define Msg_RemoteFilePlayControl  6
+#define Msg_RemoteFileSetPosition  7
+
+  int MsgID;
+  struct
+  {
+    int PlayCtrl;
+    int Speed;
+    int Pos;
+  } RemoteFilePlayControl;
+
+} TInfoThreadOperation;
+
+//-------------------------------------
+void thread_jniOperation(TInfoThreadOperation *Info)
+{
+  int ret;
+  if (!Info) return;
+  PRINTF("%s(%d) MsgID:%d\n", __FUNCTION__, __LINE__, Info->MsgID);
+  switch (Info->MsgID)
+  {
+    case Msg_DisconnAndFree:
+      ret = thNet_DisConn((HANDLE) Info->NetHandle);
+      if (ret)
+      {
+        thNet_Free(Info->NetHandle);
+      }
+      break;
+
+    case Msg_TalkOpen:
+      thNet_TalkOpen(Info->NetHandle);
+      break;
+
+    case Msg_TalkClose:
+      thNet_TalkClose(Info->NetHandle);
+      break;
+#if 0
+    case Msg_AudioPlayOpen:
+      thNet_AudioPlayOpen(Info->NetHandle);
+
+    case Msg_AudioPlayClose:
+      thNet_AudioPlayClose(Info->NetHandle);
+      break;
+#endif
+
+    case Msg_RemoteFilePlayControl:
+      thNet_RemoteFilePlayControl(Info->NetHandle, Info->RemoteFilePlayControl.PlayCtrl, Info->RemoteFilePlayControl.Speed,
+                                  Info->RemoteFilePlayControl.Pos);
+      break;
+
+    case Msg_RemoteFileSetPosition:
+      thNet_RemoteFileSetPosition(Info->NetHandle, Info->RemoteFilePlayControl.Pos);
+      break;
+
+    default:
+      break;
+  }
+
+  pthread_exit(NULL);
+}
+
 //-----------------------------------------------------------------------------
 typedef void (*pvUcnvFunc)(const char *lpcstrDstEcd, const char *lpcstrSrcEcd, char *dst, unsigned long dstLen, const char *src,
                            unsigned long nInLen, unsigned long *pnErrCode);
@@ -139,21 +210,13 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetDisConn(JNIEnv *env, jclass obj, 
 {
   return thNet_DisConn((HANDLE) NetHandle);
 }
-
-//-----------------------------------------------------------------------------
-void thread_thNetDisConnFree(HANDLE NetHandle)
-{
-  int ret;
-  ret = thNet_DisConn((HANDLE) NetHandle);
-  if (ret)
-  {
-    thNet_Free(NetHandle);
-  }
-}
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetThreadDisConnFree(JNIEnv *env, jclass obj, u64 NetHandle)
 {
-  ThreadCreate((void *) thread_thNetDisConnFree, (void *) NetHandle, true);
+  TInfoThreadOperation *Info = (TInfoThreadOperation *) malloc(sizeof(TInfoThreadOperation));
+  Info->NetHandle = NetHandle;
+  Info->MsgID = Msg_DisconnAndFree;
+  ThreadCreate((void *) thread_jniOperation, (void *) Info, true);
   return true;
 }
 //-----------------------------------------------------------------------------
@@ -231,12 +294,22 @@ Java_com_thSDK_lib_jsmtStart(JNIEnv *env, jclass obj, jstring nSSID, jstring nPa
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetTalkOpen(JNIEnv *env, jclass obj, u64 NetHandle)
 {
-  return thNet_TalkOpen((HANDLE) NetHandle);
+  //return thNet_TalkOpen((HANDLE) NetHandle);
+  TInfoThreadOperation *Info = (TInfoThreadOperation *) malloc(sizeof(TInfoThreadOperation));
+  Info->NetHandle = NetHandle;
+  Info->MsgID = Msg_TalkOpen;
+  ThreadCreate((void *) thread_jniOperation, (void *) Info, true);
+  return true;
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetTalkClose(JNIEnv *env, jclass obj, u64 NetHandle)
 {
-  return thNet_TalkClose((HANDLE) NetHandle);
+  //return thNet_TalkClose((HANDLE) NetHandle);
+  TInfoThreadOperation *Info = (TInfoThreadOperation *) malloc(sizeof(TInfoThreadOperation));
+  Info->NetHandle = NetHandle;
+  Info->MsgID = Msg_TalkClose;
+  ThreadCreate((void *) thread_jniOperation, (void *) Info, true);
+  return true;
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFilePlay(JNIEnv *env, jclass obj, u64 NetHandle, jstring jFileName)
@@ -274,7 +347,13 @@ JNIEXPORT int JNICALL Java_com_thSDK_lib_thNetRemoteFileGetPosition(JNIEnv *env,
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFileSetPosition(JNIEnv *env, jclass obj, u64 NetHandle, int Pos)
 {
   //?¶é?´æ?³ï???ä½?ms
-  return thNet_RemoteFileSetPosition((HANDLE) NetHandle, Pos);
+  //return thNet_RemoteFileSetPosition((HANDLE) NetHandle, Pos);
+  TInfoThreadOperation *Info = (TInfoThreadOperation *) malloc(sizeof(TInfoThreadOperation));
+  Info->NetHandle = NetHandle;
+  Info->MsgID = Msg_RemoteFileSetPosition;
+  Info->RemoteFilePlayControl.Pos = Pos;
+  ThreadCreate((void *) thread_jniOperation, (void *) Info, true);
+  return true;
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT int JNICALL Java_com_thSDK_lib_thNetRemoteFileGetDuration(JNIEnv *env, jclass obj, u64 NetHandle)
@@ -286,17 +365,41 @@ JNIEXPORT int JNICALL Java_com_thSDK_lib_thNetRemoteFileGetDuration(JNIEnv *env,
 JNIEXPORT bool JNICALL
 Java_com_thSDK_lib_thNetRemoteFilePlayControl(JNIEnv *env, jclass obj, u64 NetHandle, int PlayCtrl, int Speed, int Pos)
 {
-  return thNet_RemoteFilePlayControl((HANDLE) NetHandle, PlayCtrl, Speed, Pos);
+  //return thNet_RemoteFilePlayControl((HANDLE) NetHandle, PlayCtrl, Speed, Pos);
+  TInfoThreadOperation *Info = (TInfoThreadOperation *) malloc(sizeof(TInfoThreadOperation));
+  Info->NetHandle = NetHandle;
+  Info->MsgID = Msg_RemoteFilePlayControl;
+  Info->RemoteFilePlayControl.PlayCtrl = PlayCtrl;
+  Info->RemoteFilePlayControl.Speed = Speed;
+  Info->RemoteFilePlayControl.Pos = Pos;
+  ThreadCreate((void *) thread_jniOperation, (void *) Info, true);
+  return true;
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetAudioPlayOpen(JNIEnv *env, jclass obj, u64 NetHandle)
 {
+#if 1
   return thNet_AudioPlayOpen((HANDLE) NetHandle);
+#else
+  TInfoThreadOperation* Info = (TInfoThreadOperation*)malloc(sizeof(TInfoThreadOperation));
+  Info->NetHandle = NetHandle;
+  Info->MsgID = Msg_AudioPlayOpen;
+  ThreadCreate((void *) thread_jniOperation, (void *) Info, true);
+  return true;
+#endif
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetAudioPlayClose(JNIEnv *env, jclass obj, u64 NetHandle)
 {
+#if 1
   return thNet_AudioPlayClose((HANDLE) NetHandle);
+#else
+  TInfoThreadOperation* Info = (TInfoThreadOperation*)malloc(sizeof(TInfoThreadOperation));
+  Info->NetHandle = NetHandle;
+  Info->MsgID = Msg_AudioPlayClose;
+  ThreadCreate((void *) thread_jniOperation, (void *) Info, true);
+  return true;
+#endif
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSetAudioIsMute(JNIEnv *env, jclass obj, u64 NetHandle, int IsAudioMute)

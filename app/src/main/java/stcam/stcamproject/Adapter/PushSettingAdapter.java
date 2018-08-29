@@ -1,8 +1,5 @@
 package stcam.stcamproject.Adapter;
 
-import android.view.View;
-import android.widget.TextView;
-
 import com.model.PushSettingModel;
 import com.model.RecConfigModel;
 
@@ -12,13 +9,13 @@ import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Config.Config;
 import stcam.stcamproject.R;
 
-
 public class PushSettingAdapter extends BaseAdapter<String>
 {
   PushSettingModel mPushSettingModel;
   int MD_Sensitive = -1;
   RecConfigModel mRecConfigModel;
   boolean mAUDIO_IsPlayPromptSound;
+  int MD_Active = 0;
 
   public PushSettingAdapter(List<String> list)
   {
@@ -41,8 +38,9 @@ public class PushSettingAdapter extends BaseAdapter<String>
     mAUDIO_IsPlayPromptSound = AUDIO_IsPlayPromptSound;
   }
 
-  public void setMD_Sensitive(int MD_Sensitive)
+  public void setMD_Sensitive(int MD_Active, int MD_Sensitive)
   {
+    this.MD_Active = MD_Active;
     this.MD_Sensitive = MD_Sensitive;
   }
 
@@ -56,33 +54,42 @@ public class PushSettingAdapter extends BaseAdapter<String>
       if (0 == position)
       {
         Str = mPushSettingModel.getPushIntervalDesc();
-        Str = Str + Config.StrOnNext;
+        Str = Str + Config.StrOnNextLevel;
         holder.setText(R.id.detail_text, Str);
       }
       else if (1 == position)
       {
-        if (MD_Sensitive != -1)
+        if (MD_Active == 0)
         {
-          if (MD_Sensitive <= 100)
-          {
-            Str = STApplication.getInstance().getString(R.string.action_level_high);
-          }
-          else if (MD_Sensitive <= 150)
-          {
-            Str = STApplication.getInstance().getString(R.string.action_level_middle);
-          }
-          else if (MD_Sensitive <= 200)
-          {
-            Str = STApplication.getInstance().getString(R.string.action_level_low);
-          }
-          Str = Str + Config.StrOnNext;
+          Str = STApplication.getInstance().getString(R.string.action_close);
+          Str = Str + Config.StrOnNextLevel;
           holder.setText(R.id.detail_text, Str);
+        }
+        else
+        {
+          if (MD_Sensitive != -1)
+          {
+            if (MD_Sensitive <= 100)
+            {
+              Str = STApplication.getInstance().getString(R.string.action_level_high);
+            }
+            else if (MD_Sensitive <= 150)
+            {
+              Str = STApplication.getInstance().getString(R.string.action_level_middle);
+            }
+            else if (MD_Sensitive <= 200)
+            {
+              Str = STApplication.getInstance().getString(R.string.action_level_low);
+            }
+            Str = Str + Config.StrOnNextLevel;
+            holder.setText(R.id.detail_text, Str);
+          }
         }
       }
       else if (2 == position)
       {
         Str = mPushSettingModel.getPIRSensitiveDesc();
-        Str = Str + Config.StrOnNext;
+        Str = Str + Config.StrOnNextLevel;
         holder.setText(R.id.detail_text, Str);
       }
       else if (3 == position)
@@ -95,7 +102,7 @@ public class PushSettingAdapter extends BaseAdapter<String>
         {
           Str = STApplication.getInstance().getString(R.string.action_close);
         }
-        Str = Str + Config.StrOnNext;
+        Str = Str + Config.StrOnNextLevel;
         holder.setText(R.id.detail_text, Str);
       }
       else if (4 == position)
@@ -106,7 +113,7 @@ public class PushSettingAdapter extends BaseAdapter<String>
           {
             Str = mRecConfigModel.getRec_AlmTimeLen() + STApplication.getInstance().getString(R.string
               .string_second);
-            Str = Str + Config.StrOnNext;
+            Str = Str + Config.StrOnNextLevel;
             holder.setText(R.id.detail_text, Str);
           }
         }
@@ -114,7 +121,7 @@ public class PushSettingAdapter extends BaseAdapter<String>
       else if (5 == position)
       {
         //detailArrow.setVisibility(View.VISIBLE);
-        Str = Str + Config.StrOnNext;
+        Str = Str + Config.StrOnNextLevel;
         holder.setText(R.id.detail_text, Str);
       }
 

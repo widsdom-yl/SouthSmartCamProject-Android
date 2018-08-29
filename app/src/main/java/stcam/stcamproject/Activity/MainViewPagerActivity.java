@@ -18,7 +18,7 @@ public class MainViewPagerActivity extends BaseAppCompatActivity implements View
 {
   private PagerAdapter mPagerAdapter;
   private ViewPager mViewPager;
-  MainDevListFragment.EnumMainEntry entryType;
+  MainDevListFragment.TUserMode UserMode;
 
   private TextView tx1, tx2, tx3, tx4;
   ImageButton image_1, image_2, image_3, image_4;
@@ -31,7 +31,7 @@ public class MainViewPagerActivity extends BaseAppCompatActivity implements View
     Bundle bundle = this.getIntent().getExtras();
     if (bundle != null)
     {
-      entryType = (MainDevListFragment.EnumMainEntry) bundle.getSerializable("entry");
+      UserMode = (MainDevListFragment.TUserMode) bundle.getSerializable("entry");
     }
 
     getSupportActionBar().hide();
@@ -78,7 +78,7 @@ public class MainViewPagerActivity extends BaseAppCompatActivity implements View
     image_3 = findViewById(R.id.image_3);
     image_4 = findViewById(R.id.image_4);
 
-    if (entryType == MainDevListFragment.EnumMainEntry.EnumMainEntry_Login)
+    if (UserMode == MainDevListFragment.TUserMode.UserMode_Login)
     {
       tx1.setOnClickListener(this);
       image_1.setOnClickListener(this);
@@ -201,7 +201,7 @@ public class MainViewPagerActivity extends BaseAppCompatActivity implements View
       switch (position)
       {
         case 0:
-          return MainDevListFragment.newInstance(entryType);
+          return MainDevListFragment.newInstance(UserMode);
         case 1:
           return MediaFragment.newInstance();
         case 2:
@@ -217,7 +217,7 @@ public class MainViewPagerActivity extends BaseAppCompatActivity implements View
     public int getCount()
     {
       // Show 3 total pages.
-      if (entryType == MainDevListFragment.EnumMainEntry.EnumMainEntry_Login)
+      if (UserMode == MainDevListFragment.TUserMode.UserMode_Login)
       {
         return 4;
       }

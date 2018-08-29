@@ -10,8 +10,9 @@
 #include "../include/pthreads/semaphore.h"
 #pragma comment (lib, "Ws2_32.lib")
 #endif
+
 //-----------------------------------------------------------------------------
-void ThreadLockInit(H_THREADLOCK* lock)
+void ThreadLockInit(H_THREADLOCK *lock)
 {
 #ifndef WIN32
   //*lock = PTHREAD_MUTEX_INITIALIZER;
@@ -20,17 +21,19 @@ void ThreadLockInit(H_THREADLOCK* lock)
   InitializeCriticalSection(lock);
 #endif
 }
+
 //-----------------------------------------------------------------------------
-void ThreadLockFree(H_THREADLOCK* lock)
+void ThreadLockFree(H_THREADLOCK *lock)
 {
 #ifndef WIN32
   pthread_mutex_destroy(lock);
 #else
   DeleteCriticalSection(lock);
-#endif  
+#endif
 }
+
 //-----------------------------------------------------------------------------
-void ThreadLock(H_THREADLOCK* lock)
+void ThreadLock(H_THREADLOCK *lock)
 {
 #ifndef WIN32
   pthread_mutex_lock(lock);
@@ -38,8 +41,9 @@ void ThreadLock(H_THREADLOCK* lock)
   EnterCriticalSection(lock);
 #endif
 }
+
 //-----------------------------------------------------------------------------
-void ThreadUnlock(H_THREADLOCK* lock)
+void ThreadUnlock(H_THREADLOCK *lock)
 {
 #ifndef WIN32
   pthread_mutex_unlock(lock);
@@ -48,11 +52,11 @@ void ThreadUnlock(H_THREADLOCK* lock)
 #endif
 }
 //-----------------------------------------------------------------------------
-H_THREAD ThreadCreate(void* funcAddr, void* Param, bool IsCloseHandle)
+H_THREAD ThreadCreate(void *funcAddr, void *Param, bool IsCloseHandle)
 {
   H_THREAD tHandle;
 #ifndef WIN32
-  pthread_create(&tHandle, NULL, (void *(*)(void*))funcAddr, Param);
+  pthread_create(&tHandle, NULL, (void *(*)(void *)) funcAddr, Param);
   if (IsCloseHandle)
   {
     pthread_detach(tHandle);
@@ -112,7 +116,7 @@ return true;
 }
 */
 //-----------------------------------------------------------------------------
-SOCKET FastConnect(char* aIP, i32 aPort, i32 TimeOut)//返回SocketHandle
+SOCKET FastConnect(char *aIP, i32 aPort, i32 TimeOut)//返回SocketHandle
 {
 #define NULLHANDLE  -1
   i32 hSocket = NULLHANDLE;
@@ -122,7 +126,7 @@ SOCKET FastConnect(char* aIP, i32 aPort, i32 TimeOut)//返回SocketHandle
   struct timeval tval;
   struct sockaddr_in CSktAddr;
   u32 tmp = INADDR_NONE;
-  struct hostent* h = NULL;
+  struct hostent *h = NULL;
 
   if (!aIP) return NULLHANDLE;
   if (aPort == 0) return NULLHANDLE;
@@ -131,7 +135,7 @@ SOCKET FastConnect(char* aIP, i32 aPort, i32 TimeOut)//返回SocketHandle
   CSktAddr.sin_family = AF_INET;
   CSktAddr.sin_port = htons(aPort);
   //inet_aton(aIP, &CSktAddr.sin_addr);
-  h = (struct hostent*)gethostbyname(aIP);
+  h = (struct hostent *) gethostbyname(aIP);
   if (h == NULL) return NULLHANDLE;
   memcpy(&CSktAddr.sin_addr, h->h_addr_list[0], h->h_length);
 
@@ -139,13 +143,13 @@ SOCKET FastConnect(char* aIP, i32 aPort, i32 TimeOut)//返回SocketHandle
   //  if (hSocket <= 0) return NULLHANDLE;
   //hSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
   //if (hSocket <= 0) hSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
-  for (i=0; i<10; i++)
+  for (i = 0; i < 10; i++)
   {
     hSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
     if (hSocket > 0) break;
-    usleep(1000*100);
+    usleep(1000 * 100);
   }
-  if (hSocket <= 0) return NULLHANDLE;  	
+  if (hSocket <= 0) return NULLHANDLE;
 
 #ifndef WIN32
   Flag = fcntl(hSocket, F_GETFL, 0);// ==2
@@ -155,22 +159,22 @@ SOCKET FastConnect(char* aIP, i32 aPort, i32 TimeOut)//返回SocketHandle
   ioctlsocket(hSocket, FIONBIO, &Flag);//非阻塞方式
 #endif
 
-  Ret = connect(hSocket, (struct sockaddr*) &CSktAddr, sizeof(struct sockaddr_in));
-  if(Ret == 0) goto Done;
+  Ret = connect(hSocket, (struct sockaddr *) &CSktAddr, sizeof(struct sockaddr_in));
+  if (Ret == 0) goto Done;
 
   FD_ZERO(&rs);
   FD_SET(hSocket, &rs);
   ws = rs;//FD_SET(hSocket, &ws);  
 
-  tval.tv_sec  = TimeOut / 1000;//TimeOut;
+  tval.tv_sec = TimeOut / 1000;//TimeOut;
   tval.tv_usec = (TimeOut % 1000) * 1000;
-  if ((Ret = select(hSocket+1, &rs, &ws, NULL, TimeOut ? &tval: NULL)) == 0) 
+  if ((Ret = select(hSocket + 1, &rs, &ws, NULL, TimeOut ? &tval : NULL)) == 0)
   {
     closesocket(hSocket);
     //errno = ETIMEDOUT;
     return NULLHANDLE;
   }
-  if (FD_ISSET(hSocket, &rs)||FD_ISSET(hSocket, &ws)) 
+  if (FD_ISSET(hSocket, &rs) || FD_ISSET(hSocket, &ws))
   {
     Error = 0;
     Ret = sizeof(i32);
@@ -182,11 +186,11 @@ SOCKET FastConnect(char* aIP, i32 aPort, i32 TimeOut)//返回SocketHandle
     }
   }
 
-Done:
+  Done:
 #ifndef WIN32
   fcntl(hSocket, F_SETFL, Flag);
 #endif
-  if (Error) 
+  if (Error)
   {
     closesocket(hSocket);
     errno = Error;
@@ -195,7 +199,7 @@ Done:
   return hSocket;
 }
 //-----------------------------------------------------------------------------
-SOCKET SktConnect(char* IP, i32 Port, i32 TimeOut)
+SOCKET SktConnect(char *IP, i32 Port, i32 TimeOut)
 {
 #ifndef WIN32
 #define INVALID_SOCKET -1
@@ -206,14 +210,14 @@ SOCKET SktConnect(char* IP, i32 Port, i32 TimeOut)
   struct timeval tval;
   fd_set rs, ws;
   SOCKET hSocket;
-  struct hostent* h = NULL;
+  struct hostent *h = NULL;
   unsigned long flag = 1;
 
-  for (i=0; i<100; i++)
+  for (i = 0; i < 100; i++)
   {
     hSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);//IPPROTO_IP
     if (hSocket > 0) break;
-    usleep(1000*100);
+    usleep(1000 * 100);
   }
 
   if (hSocket <= 0) return 0;
@@ -229,7 +233,7 @@ SOCKET SktConnect(char* IP, i32 Port, i32 TimeOut)
 #if 0
   CSktAddr.sin_addr.s_addr = inet_addr(IP);
 #else
-  h = (struct hostent*)gethostbyname(IP);
+  h = (struct hostent *) gethostbyname(IP);
   if (h == NULL) return NULLHANDLE;
   memcpy(&CSktAddr.sin_addr, h->h_addr_list[0], h->h_length);
 #endif
@@ -239,13 +243,13 @@ SOCKET SktConnect(char* IP, i32 Port, i32 TimeOut)
 #else
   fcntl(hSocket, F_SETFL, O_NONBLOCK);//非阻塞方式
 #endif
-  ret = connect(hSocket, (struct sockaddr*)&CSktAddr, sizeof(CSktAddr));
+  ret = connect(hSocket, (struct sockaddr *) &CSktAddr, sizeof(CSktAddr));
   FD_ZERO(&rs);
   FD_SET(hSocket, &rs);
   ws = rs;
   tval.tv_sec = TimeOut / 1000;
   tval.tv_usec = (TimeOut % 1000) * 1000;
-  IsConn = select(hSocket+1, &rs, &ws, NULL, &tval);
+  IsConn = select(hSocket + 1, &rs, &ws, NULL, &tval);
   if (IsConn != 1)
   {
     closesocket(hSocket);
@@ -271,17 +275,17 @@ i32 SktWaitForData(SOCKET hSocket, i32 TimeOut)
   return (select(0, &rs, NULL, NULL, &tval) > 0);
 }
 //-----------------------------------------------------------------------------
-i32 SktSendBuf(SOCKET hSocket, char* Buf, i32 Len)
+i32 SktSendBuf(SOCKET hSocket, char *Buf, i32 Len)
 {
   return send(hSocket, Buf, Len, 0);
 }
 //-----------------------------------------------------------------------------
-i32 SktRecvBuf(SOCKET hSocket, char* Buf, i32 Len)
+i32 SktRecvBuf(SOCKET hSocket, char *Buf, i32 Len)
 {
   return recv(hSocket, Buf, Len, 0);
 }
 //-----------------------------------------------------------------------------
-bool SendBuf(SOCKET hSocket, char* Buf, i32 BufLen, i32 TimeOut)
+bool SendBuf(SOCKET hSocket, char *Buf, i32 BufLen, i32 TimeOut)
 {
   //  i32 Ret = send(hSocket, Buf, BufLen, 0);
   //  return (Ret >= 0);
@@ -336,14 +340,13 @@ bool SendBuf(SOCKET hSocket, char* Buf, i32 BufLen, i32 TimeOut)
     if (hSocket <=0) return false;
 #endif
 
-    SendLen = send(hSocket, (char*)Buf + k, SendLen, 0);
+    SendLen = send(hSocket, (char *) Buf + k, SendLen, 0);
 
     if (SendLen != -1)
     {
       k = SendLen + k;
-    }
-    else
-    {      
+    } else
+    {
       if (errno == EINTR || errno == EAGAIN)//EWOULDBLOCK = EAGAIN
       {
         t1 = GetTickCount();
@@ -352,24 +355,23 @@ bool SendBuf(SOCKET hSocket, char* Buf, i32 BufLen, i32 TimeOut)
           return false;
         }
         errno = 0;
-        usleep(1000*10);
+        usleep(1000 * 10);
         continue;
-      }
-      else
+      } else
       {
-        if (errno != 0 )
+        if (errno != 0)
         {
           errno = 0;
         }
         return false;
       }
-    }    
+    }
   }
   return true;
 #endif
 }
 //-----------------------------------------------------------------------------
-bool RecvBuf(SOCKET hSocket, char* RecvBuf, i32 BufLen, i32 TimeOut)
+bool RecvBuf(SOCKET hSocket, char *RecvBuf, i32 BufLen, i32 TimeOut)
 {
 #ifdef WIN32
   i32 Len, RecvLen, LastError;
@@ -406,7 +408,7 @@ bool RecvBuf(SOCKET hSocket, char* RecvBuf, i32 BufLen, i32 TimeOut)
   }
   return false;
 #else
-  char* Buf = RecvBuf;
+  char *Buf = RecvBuf;
   i32 Len, RecvLen;
   u32 t, t1;
   RecvLen = 0;
@@ -420,12 +422,11 @@ bool RecvBuf(SOCKET hSocket, char* RecvBuf, i32 BufLen, i32 TimeOut)
 #ifdef __cplusplus
     if (hSocket <=0) return false;
 #endif
-    Len = recv(hSocket, &Buf[RecvLen], BufLen-RecvLen, 0);
+    Len = recv(hSocket, &Buf[RecvLen], BufLen - RecvLen, 0);
     if (Len != -1)
     {
       RecvLen = RecvLen + Len;
-    }
-    else
+    } else
     {
       if (errno == EINTR || errno == EAGAIN)//EWOULDBLOCK = EAGAIN
       {
@@ -435,12 +436,11 @@ bool RecvBuf(SOCKET hSocket, char* RecvBuf, i32 BufLen, i32 TimeOut)
           return false;
         }
         errno = 0;
-        usleep(1000*10);
+        usleep(1000 * 10);
         continue;
-      }
-      else
+      } else
       {
-        if (errno != 0 )
+        if (errno != 0)
         {
           errno = 0;
         }
@@ -476,13 +476,14 @@ i32 myusleep(i32 us)
   do
   {
     ret = select(0, NULL, NULL, NULL, &tv);
-  }
-  while(ret < 0 && errno == EINTR);
+  } while (ret < 0 && errno == EINTR);
   return ret;
 #endif
 }
+
 //-----------------------------------------------------------------------------
-typedef struct TmmTimeInfo{
+typedef struct TmmTimeInfo
+{
   H_THREADLOCK Lock;
   sem_t sem;
   H_THREAD thTimer;
@@ -490,12 +491,13 @@ typedef struct TmmTimeInfo{
   bool IsExit;
 
   u32 uDelayms;
-  TTimerCallBack* callback;
-  void* dwUser;
+  TTimerCallBack *callback;
+  void *dwUser;
 
-}TmmTimeInfo;
+} TmmTimeInfo;
+
 //-----------------------------------------------------------------------------
-void thread_mmTimerEvent(TmmTimeInfo* Info)
+void thread_mmTimerEvent(TmmTimeInfo *Info)
 {
   if (!Info) return;
   while (1)
@@ -506,11 +508,12 @@ void thread_mmTimerEvent(TmmTimeInfo* Info)
 #else
     if (sem_trywait(&Info->sem) != 0) continue;//cpu high
 #endif
-    if (Info->callback) Info->callback((HANDLE)Info, 0, Info->dwUser, 0, 0);
+    if (Info->callback) Info->callback((HANDLE) Info, 0, Info->dwUser, 0, 0);
   }
 }
+
 //-----------------------------------------------------------------------------
-void thread_mmTimer(TmmTimeInfo* Info)
+void thread_mmTimer(TmmTimeInfo *Info)
 {
   if (!Info) return;
   while (1)
@@ -521,12 +524,12 @@ void thread_mmTimer(TmmTimeInfo* Info)
   }
 }
 //-----------------------------------------------------------------------------
-HANDLE mmTimeSetEvent(u32 uDelayms, TTimerCallBack callback, void* dwUser)
+HANDLE mmTimeSetEvent(u32 uDelayms, TTimerCallBack callback, void *dwUser)
 {
 #ifdef WIN32
   return (HANDLE)timeSetEvent(uDelayms, 0, (LPTIMECALLBACK)callback, (u32)dwUser, 1);
 #else
-  TmmTimeInfo* Info = (TmmTimeInfo*)malloc(sizeof(TmmTimeInfo));
+  TmmTimeInfo *Info = (TmmTimeInfo *) malloc(sizeof(TmmTimeInfo));
   memset(Info, 0, sizeof(TmmTimeInfo));
   Info->IsExit = false;
   Info->uDelayms = uDelayms;
@@ -536,7 +539,7 @@ HANDLE mmTimeSetEvent(u32 uDelayms, TTimerCallBack callback, void* dwUser)
   sem_init(&Info->sem, 0, 0);
   Info->thTimer = ThreadCreate(thread_mmTimer, Info, false);
   Info->thTimerEvent = ThreadCreate(thread_mmTimerEvent, Info, false);
-  return (HANDLE)Info;
+  return (HANDLE) Info;
 #endif
 }
 //-----------------------------------------------------------------------------
@@ -546,7 +549,7 @@ i32 mmTimeKillEvent(HANDLE mmHandle)
   return timeKillEvent(mmHandle);
 #else
   u32 ret;
-  TmmTimeInfo* Info = (TmmTimeInfo*)mmHandle;
+  TmmTimeInfo *Info = (TmmTimeInfo *) mmHandle;
   if (!Info) return false;
 
   ThreadLock(&Info->Lock);
@@ -571,11 +574,11 @@ u32 mmTimeGetTime()//add -lrt
 #ifdef WIN32
   return timeGetTime();
 #else
-  u32 uptime = 0;  
-  struct timespec on;  
-  if(clock_gettime(CLOCK_MONOTONIC, &on) == 0)
+  u32 uptime = 0;
+  struct timespec on;
+  if (clock_gettime(CLOCK_MONOTONIC, &on) == 0)
   {
-    uptime = on.tv_sec*1000 + on.tv_nsec/1000000;  
+    uptime = on.tv_sec * 1000 + on.tv_nsec / 1000000;
   }
   return uptime;
 #endif
@@ -609,8 +612,9 @@ u32 GetTickCount()
     t = tv.tv_sec;
 #endif
   }
-  return (u32)(tv.tv_sec - t)*1000 + tv.tv_usec/1000;
+  return (u32) (tv.tv_sec - t) * 1000 + tv.tv_usec / 1000;
 }
+
 #endif
 //-----------------------------------------------------------------------------
 #ifdef WIN32
@@ -940,7 +944,7 @@ bool ShareMemCloseFile(HANDLE FileHandle, HANDLE MapHandle, void* FData)
 }
 #endif
 //-----------------------------------------------------------------------------
-HANDLE FileCreate(char* FileName)//创建一个新文件
+HANDLE FileCreate(char *FileName)//创建一个新文件
 {
 #ifndef WIN32
   return fopen(FileName, "w+b");
@@ -949,7 +953,7 @@ HANDLE FileCreate(char* FileName)//创建一个新文件
 #endif
 }
 //-----------------------------------------------------------------------------
-HANDLE FileOpen(char* FileName)//打开一个文件，可读可写
+HANDLE FileOpen(char *FileName)//打开一个文件，可读可写
 {
   HANDLE ret;
 #ifndef WIN32
@@ -969,7 +973,7 @@ bool FileClose(HANDLE f)//关闭文件
 #endif
 }
 //-----------------------------------------------------------------------------
-bool FileWrite(HANDLE f, void* Buf, i32 Len)//写文件
+bool FileWrite(HANDLE f, void *Buf, i32 Len)//写文件
 {
 #ifndef WIN32
   return (fwrite(Buf, Len, 1, f) != 0);
@@ -980,7 +984,7 @@ bool FileWrite(HANDLE f, void* Buf, i32 Len)//写文件
 #endif
 }
 //-----------------------------------------------------------------------------
-bool FileRead(HANDLE f, void* Buf, i32 Len)//读文件
+bool FileRead(HANDLE f, void *Buf, i32 Len)//读文件
 {
 #ifndef WIN32
   return (fread(Buf, Len, 1, f) != 0);
@@ -1003,8 +1007,7 @@ u32 FileSeek(HANDLE f, i32 Offset, i32 Origin)//文件定位 Origin=0从文件头  =1 当
 #else
     return pos.__pos;
 #endif
-  }
-  else
+  } else
     return -1;
 #else
   return SetFilePointer(f, Offset, NULL, Origin);
@@ -1027,7 +1030,7 @@ u32 FileGetPos(HANDLE f)//取得文件当前位置
 #endif
 }
 //-----------------------------------------------------------------------------
-bool FileDelete(char* FileName)//删除文件
+bool FileDelete(char *FileName)//删除文件
 {
 #ifndef WIN32
   return (unlink(FileName) != -1);
@@ -1035,13 +1038,14 @@ bool FileDelete(char* FileName)//删除文件
   return DeleteFile(FileName);
 #endif
 }
+
 //-----------------------------------------------------------------------------
-char* FileExtName(char* FileName)//'.txt'取得文件扩展名
+char *FileExtName(char *FileName)//'.txt'取得文件扩展名
 {
-  char* Ext = NULL;
+  char *Ext = NULL;
   i32 i, m;
   m = strlen(FileName);
-  for (i=m-1; i>=0; i--)
+  for (i = m - 1; i >= 0; i--)
   {
     if (FileName[i] != '.') continue;
     if (i < m - 1) Ext = &FileName[i];
@@ -1049,26 +1053,27 @@ char* FileExtName(char* FileName)//'.txt'取得文件扩展名
   }
   return Ext;
 }
+
 //-----------------------------------------------------------------------------
-char* ExtractFileName(char* FileName)
+char *ExtractFileName(char *FileName)
 {
-  char* Ext = FileName;
+  char *Ext = FileName;
   i32 i, m;
   m = strlen(FileName);
-  for (i=m-1; i>=0; i--)
+  for (i = m - 1; i >= 0; i--)
   {
-    if ((FileName[i] != '/')&&(FileName[i] != '\\')) continue;
-    if (i < m - 1) Ext = &FileName[i+1];
+    if ((FileName[i] != '/') && (FileName[i] != '\\')) continue;
+    if (i < m - 1) Ext = &FileName[i + 1];
     break;
   }
   return Ext;
 }
 //-----------------------------------------------------------------------------
-bool DirectoryExists(char* Directory)//目录是否存在
+bool DirectoryExists(char *Directory)//目录是否存在
 {
 #ifndef WIN32
   struct stat st;
-  if(stat(Directory, &st) ==  - 1)
+  if (stat(Directory, &st) == -1)
     return false;
   else
     return S_ISDIR(st.st_mode);
@@ -1079,7 +1084,7 @@ bool DirectoryExists(char* Directory)//目录是否存在
 #endif
 }
 //-----------------------------------------------------------------------------
-bool FileExists(char* FileName)//文件是否存在
+bool FileExists(char *FileName)//文件是否存在
 {
 #ifndef WIN32
   struct stat st;
@@ -1093,12 +1098,12 @@ bool FileExists(char* FileName)//文件是否存在
 #endif
 }
 //-----------------------------------------------------------------------------
-u32 FileGetSize(char* FileName)//取得文件大小
+u32 FileGetSize(char *FileName)//取得文件大小
 {
 #ifndef WIN32
   struct stat statbuf;
   i32 i = stat(FileName, &statbuf);
-  if(i<0) return 0;
+  if (i < 0) return 0;
   S_ISDIR(statbuf.st_mode);
   S_ISREG(statbuf.st_mode);
   return statbuf.st_size;
@@ -1114,11 +1119,11 @@ u32 FileGetSize(char* FileName)//取得文件大小
 bool InArray(i32 Value, i32 Count, ...)//数值是否在...之中
 {
   i32 i, m;
-  char* args = (char*)&Count;//定位第一个参数
-  for (i=0; i<Count; i++)
+  char *args = (char *) &Count;//定位第一个参数
+  for (i = 0; i < Count; i++)
   {
     args = args + 4;
-    m = *(i32*)args;
+    m = *(i32 *) args;
     if (Value == m) return true;
   }
   return false;
@@ -1140,30 +1145,31 @@ i32 RandomNum(i32 seed)//随机函数
 #endif
 }
 //-----------------------------------------------------------------------------
-i32 timeval_dec(struct timeval* tv2, struct timeval* tv1)//时间相减，返回毫秒
+i32 timeval_dec(struct timeval *tv2, struct timeval *tv1)//时间相减，返回毫秒
 {
-  return (tv2->tv_sec - tv1->tv_sec)*1000 + (tv2->tv_usec - tv1->tv_usec)/1000;
+  return (tv2->tv_sec - tv1->tv_sec) * 1000 + (tv2->tv_usec - tv1->tv_usec) / 1000;
 }
+
 //-----------------------------------------------------------------------------
-void Time_tToSystemTime(i32 t, SYSTEMTIME* pst)//linux时间到windows时间
+void Time_tToSystemTime(i32 t, SYSTEMTIME *pst)//linux时间到windows时间
 {
 #ifndef WIN32
   struct timeval tv;
-  struct tm* m;
+  struct tm *m;
   gettimeofday(&tv, NULL);
   m = localtime(&tv.tv_sec);
-  pst->wYear   = m->tm_year + 1900;
-  pst->wMonth  = m->tm_mon + 1;
-  pst->wDay    = m->tm_mday;
-  pst->wHour   = m->tm_hour;
+  pst->wYear = m->tm_year + 1900;
+  pst->wMonth = m->tm_mon + 1;
+  pst->wDay = m->tm_mday;
+  pst->wHour = m->tm_hour;
   pst->wMinute = m->tm_min;
   pst->wSecond = m->tm_sec;
   pst->wMilliseconds = tv.tv_usec / 1000;
-  pst->wDayOfWeek =m->tm_wday;
-  printf("pst->wYear:%d,pst->wMonth:%d,pst->wMilliseconds:%d, pst->wDayOfWeek:%d pst->wHour:%d\n",
-    pst->wYear,pst->wMonth,pst->wMilliseconds, pst->wDayOfWeek, pst->wHour);
+  pst->wDayOfWeek = m->tm_wday;
+  printf("pst->wYear:%d,pst->wMonth:%d,pst->wMilliseconds:%d, pst->wDayOfWeek:%d pst->wHour:%d\n", pst->wYear, pst->wMonth,
+         pst->wMilliseconds, pst->wDayOfWeek, pst->wHour);
 #else
-  FILETIME ft; 
+  FILETIME ft;
   LONGLONG ll = Int32x32To64(t, 10000000) + 116444736000000000;
   ft.dwLowDateTime = (u32) ll;
   ft.dwHighDateTime = (u32)(ll >> 32);
@@ -1171,12 +1177,12 @@ void Time_tToSystemTime(i32 t, SYSTEMTIME* pst)//linux时间到windows时间
 #endif
 }
 //-----------------------------------------------------------------------------
-i32 SystemTimeToTime_t(SYSTEMTIME* pst)//windows时间到linux时间
+i32 SystemTimeToTime_t(SYSTEMTIME *pst)//windows时间到linux时间
 {
 #ifndef WIN32
   struct tm m;
   m.tm_year = pst->wYear - 1900;
-  m.tm_mon = pst->wMonth -1;
+  m.tm_mon = pst->wMonth - 1;
   m.tm_mday = pst->wDay;
   m.tm_hour = pst->wHour;
   m.tm_min = pst->wMinute;
@@ -1206,12 +1212,23 @@ i32 GetTime() //取得系统时间
 #endif
 }
 //-----------------------------------------------------------------------------
+i32 GetTimezoneTime()
+{
+  time_t t, iaddsec;
+  struct tm *tm_local;
+
+  t = 0;
+  tm_local = localtime(&t);
+  iaddsec = tm_local->tm_hour * 3600 + tm_local->tm_min * 60 + tm_local->tm_sec;
+  return time(NULL) + iaddsec;
+}
+//-----------------------------------------------------------------------------
 i64 getutime() //取得微秒级时间
 {
 #ifndef WIN32
   struct timeval tv;
   gettimeofday(&tv, NULL);
-  return (i64)(tv.tv_sec)* 1000000+tv.tv_usec;
+  return (i64) (tv.tv_sec) * 1000000 + tv.tv_usec;
 #else
   struct timeval tv;
   SYSTEMTIME st;
@@ -1221,8 +1238,9 @@ i64 getutime() //取得微秒级时间
   return (i64)(tv.tv_sec)* 1000000+tv.tv_usec;
 #endif
 }
+
 //-----------------------------------------------------------------------------
-void QuickSort(i32* Lst, i32 iLo, i32 iHi)//排序
+void QuickSort(i32 *Lst, i32 iLo, i32 iHi)//排序
 {
   i32 Lo, Hi, Mid, T;
   Lo = iLo;
@@ -1230,8 +1248,8 @@ void QuickSort(i32* Lst, i32 iLo, i32 iHi)//排序
   Mid = Lst[(Lo + Hi) / 2];
   while (Lo <= Hi)
   {
-    while (Lst[Lo]<Mid) Lo++;
-    while (Lst[Hi]>Mid) Hi--;
+    while (Lst[Lo] < Mid) Lo++;
+    while (Lst[Hi] > Mid) Hi--;
     if (Lo <= Hi)
     {
       T = Lst[Lo];
@@ -1241,28 +1259,26 @@ void QuickSort(i32* Lst, i32 iLo, i32 iHi)//排序
       Hi--;
     }
   }//until (Lo>Hi);
-  if (Hi>iLo) QuickSort(Lst, iLo, Hi);
-  if (Lo<iHi) QuickSort(Lst, Lo, iHi);
+  if (Hi > iLo) QuickSort(Lst, iLo, Hi);
+  if (Lo < iHi) QuickSort(Lst, Lo, iHi);
 }
 //------------------------------------------------------------------------------
-i32 SearchByDichotomy(i32* Lst, i32 iL, i32 iH, i32 Key)//两分法
+i32 SearchByDichotomy(i32 *Lst, i32 iL, i32 iH, i32 Key)//两分法
 {
   i32 iLow, iHigh, iMid, Result;
-  iLow  = iL;//Low(Lst);
+  iLow = iL;//Low(Lst);
   iHigh = iH;//High(Lst);
   Result = -1;
-  while (iLow<=iHigh)
+  while (iLow <= iHigh)
   {
-    iMid = (iLow+iHigh)/ 2;
-    if (Key<Lst[iMid])
+    iMid = (iLow + iHigh) / 2;
+    if (Key < Lst[iMid])
     {
-      iHigh = iMid-1;
-    }
-    else if (Key>Lst[iMid])
+      iHigh = iMid - 1;
+    } else if (Key > Lst[iMid])
     {
-      iLow =iMid+1;
-    }
-    else if (Key=Lst[iMid])
+      iLow = iMid + 1;
+    } else if (Key = Lst[iMid])
     {
       Result = iMid;
       return Result;
@@ -1281,10 +1297,10 @@ void init_crc32_tab(void)
   u32 crc;
   for (i = 0; i < 256; i++)
   {
-    crc = (u32)i;
+    crc = (u32) i;
     for (j = 0; j < 8; j++)
     {
-      if (crc &0x00000001L)
+      if (crc & 0x00000001L)
         crc = (crc >> 1) ^ P_32;
       else
         crc = crc >> 1;
@@ -1294,35 +1310,35 @@ void init_crc32_tab(void)
   crc_tab32_init = true;
 }
 //-----------------------------------------------------------------------------
-u32 crc32(char* buf, i32 buflen)
+u32 crc32(char *buf, i32 buflen)
 {
-  u32 crc;	
+  u32 crc;
   u32 tmp, long_c;
   char c;
   i32 i;
   if (!crc_tab32_init) init_crc32_tab();
   crc = 0xffffffffL;
-  for (i=0; i<buflen; i++)
+  for (i = 0; i < buflen; i++)
   {
     c = buf[i];
-    long_c = 0x000000ffL & (u32)c;
+    long_c = 0x000000ffL & (u32) c;
     tmp = crc ^ long_c;
-    crc = (crc >> 8) ^ crc_tab32[tmp &0xff];
+    crc = (crc >> 8) ^ crc_tab32[tmp & 0xff];
   }
   return crc ^ 0xffffffffL;
 }
 //-----------------------------------------------------------------------------
-u32 crc32F(char* FileName)
+u32 crc32F(char *FileName)
 {
-  FILE* f;
+  FILE *f;
   i32 buflen;
-  char* buf;
+  char *buf;
   u32 crc;
   buflen = FileGetSize(FileName);
   if (buflen <= 0) return 0;
   f = fopen(FileName, "r+b");
   if (!f) return 0;
-  buf = (char*)malloc(buflen);
+  buf = (char *) malloc(buflen);
   if (!buf) return 0;
   fread(buf, buflen, 1, f);
   fclose(f);
@@ -1331,15 +1347,15 @@ u32 crc32F(char* FileName)
   return crc;
 }
 //-----------------------------------------------------------------------------
-u32 crc32F2(char* FileName, i32 FileSize)
+u32 crc32F2(char *FileName, i32 FileSize)
 {
-  FILE* f;
-  char* buf;
+  FILE *f;
+  char *buf;
   u32 crc;
   if (FileSize <= 0) return 0;
   f = fopen(FileName, "r+b");
   if (!f) return 0;
-  buf = (char*)malloc(FileSize);
+  buf = (char *) malloc(FileSize);
   if (!buf) return 0;
   fread(buf, FileSize, 1, f);
   fclose(f);
@@ -1347,36 +1363,38 @@ u32 crc32F2(char* FileName, i32 FileSize)
   free(buf);
   return crc;
 }
+
 //-----------------------------------------------------------------------------
-char* LowerCase(char* s)//字符串，小写转大写
+char *LowerCase(char *s)//字符串，小写转大写
 {
   i32 i;
-  for (i=0; i<strlen(s); i++) 
+  for (i = 0; i < strlen(s); i++)
   {
-    if (s[i] >='A' && s[i] <='Z')  s[i] = s[i] + 32;
+    if (s[i] >= 'A' && s[i] <= 'Z') s[i] = s[i] + 32;
+  }
+  return s;
+}
+
+//-----------------------------------------------------------------------------
+char *UpperCase(char *s)//字符串，大写转小写
+{
+  i32 i;
+  for (i = 0; i < strlen(s); i++)
+  {
+    if (s[i] >= 'a' && s[i] <= 'z') s[i] = s[i] - 32;
   }
   return s;
 }
 //-----------------------------------------------------------------------------
-char* UpperCase(char* s)//字符串，大写转小写
-{
-  i32 i;
-  for (i=0; i<strlen(s); i++) 
-  {
-    if (s[i] >='a' && s[i] <='z')  s[i] = s[i] - 32;
-  }
-  return s;
-}
-//-----------------------------------------------------------------------------
-i32 CharCount(char c, const char* S)//字符数统计
+i32 CharCount(char c, const char *S)//字符数统计
 {
   i32 Result = 0;
   i32 i;
-  for (i=0; i<strlen(S); i++) if (S[i] == c) Result++;
+  for (i = 0; i < strlen(S); i++) if (S[i] == c) Result++;
   return Result;
 }
 //-----------------------------------------------------------------------------
-bool IsValidIP(const char* IP)//是否是有效的IP地址
+bool IsValidIP(const char *IP)//是否是有效的IP地址
 {
   i32 i, m, len;
   i32 d[4];
@@ -1384,31 +1402,30 @@ bool IsValidIP(const char* IP)//是否是有效的IP地址
   len = strlen(IP);
   if (len > 15) return false;
   strcpy(ip, IP);
-  for (i=0; i<len; i++) 
+  for (i = 0; i < len; i++)
   {
     if (ip[i] == '.')
       ip[i] = 0x20;//space
-    else
-      if ( (ip[i] < '0') || (ip[i] > '9') ) return false;
+    else if ((ip[i] < '0') || (ip[i] > '9')) return false;
   }
-  m = sscanf(ip, "%d %d %d %d",&d[3], &d[2], &d[1], &d[0]);
+  m = sscanf(ip, "%d %d %d %d", &d[3], &d[2], &d[1], &d[0]);
   if (m != 4) return false;
-  for (i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
   {
-    if ( (d[i] < 0) || (d[i] > 255) ) return false;
+    if ((d[i] < 0) || (d[i] > 255)) return false;
   }
   return true;
 }
 //-----------------------------------------------------------------------------
-bool IsValidHost(const char* Host)//是否是有效的域名
+bool IsValidHost(const char *Host)//是否是有效的域名
 {
   i32 i;
-  if (CharCount('.', Host)<1) return false;
-  if (CharCount('@', Host)>0) return false;
-  for (i=0; i<strlen(Host); i++) 
+  if (CharCount('.', Host) < 1) return false;
+  if (CharCount('@', Host) > 0) return false;
+  for (i = 0; i < strlen(Host); i++)
   {
     if (Host[i] < '.') return false;
-    if (Host[i] > 'z') return false;    
+    if (Host[i] > 'z') return false;
     if (Host[i] == '\\') return false;
     if (Host[i] == '[') return false;
     if (Host[i] == ']') return false;
@@ -1420,55 +1437,55 @@ bool IsValidHost(const char* Host)//是否是有效的域名
   return true;
 }
 //-----------------------------------------------------------------------------
-bool IsValidMAC(const char* MAC, char SplitChar)//是否是有效的MAC地址
+bool IsValidMAC(const char *MAC, char SplitChar)//是否是有效的MAC地址
 {
   i32 i, Ret;
   i32 d[6];
   char m[20];
   strcpy(m, MAC);
-  for (i=0; i<strlen(m); i++) 
+  for (i = 0; i < strlen(m); i++)
   {
     if (m[i] == SplitChar)
       m[i] = 0x20;//space
-    else
-      if (!(((m[i]>='0') && (m[i]<='9')) || ((m[i]>='a') && (m[i]<='f')) || ((m[i]>='A') && (m[i]<='F')))) return false;
+    else if (!(((m[i] >= '0') && (m[i] <= '9')) || ((m[i] >= 'a') && (m[i] <= 'f')) || ((m[i] >= 'A') && (m[i] <= 'F')))) return false;
   }
-  Ret = sscanf(m, "%x %x %x %x %x %x",&d[5], &d[4], &d[3], &d[2], &d[1], &d[0]);
+  Ret = sscanf(m, "%x %x %x %x %x %x", &d[5], &d[4], &d[3], &d[2], &d[1], &d[0]);
   if (Ret != 6) return false;
-  for (i=0; i<6; i++)
+  for (i = 0; i < 6; i++)
   {
-    if ( (d[i] < 0) || (d[i] > 0xff) ) return false;
+    if ((d[i] < 0) || (d[i] > 0xff)) return false;
   }
   return true;
 }
 //-----------------------------------------------------------------------------
-bool IsLANIP(char* IP)//是否是内网IP地址
+bool IsLANIP(char *IP)//是否是内网IP地址
 {
   u32 nIP;
   u8 a, b;
 
   nIP = IPToInt(IP);
-  a = (u8)nIP;
-  b = (u8)(nIP >> 8);
-  return (((a==192)&&(b==168))||((a==172)&&(b>=16)&&(b<=31))||(a==0)||(b==10));
+  a = (u8) nIP;
+  b = (u8) (nIP >> 8);
+  return (((a == 192) && (b == 168)) || ((a == 172) && (b >= 16) && (b <= 31)) || (a == 0) || (b == 10));
 }
 //------------------------------------------------------------------------------
-i32 IPToInt(char* IP)
+i32 IPToInt(char *IP)
 {
   return inet_addr(IP);
 }
+
 //------------------------------------------------------------------------------
-char* IntToIP(i32 IP)
+char *IntToIP(i32 IP)
 {
-  return inet_ntoa(*(struct in_addr*)&IP);
+  return inet_ntoa(*(struct in_addr *) &IP);
 }
 //-----------------------------------------------------------------------------
-i32 Base64Encode1(char* src, char* dst)
+i32 Base64Encode1(char *src, char *dst)
 {
-  static const char* lst = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  static const char *lst = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
   i32 len;
-  char* strnew;
-  char* strold;
+  char *strnew;
+  char *strold;
 
   if (!src) return 0;
   if (!dst) return 0;
@@ -1479,72 +1496,73 @@ i32 Base64Encode1(char* src, char* dst)
 
   while ((len - (strold - src)) >= 3)
   {
-    strnew[0] = lst[(strold[0] &(u8)0xFC) >> 2];
-    strnew[1] = lst[((strold[0] &(u8)0x03) << 4) | ((strold[1] &(u8)0xF0) >> 4)];
-    strnew[2] = lst[((strold[1] &(u8)0x0F) << 2) | ((strold[2] &(u8)0xC0) >> 6)];
-    strnew[3] = lst[strold[2] &(u8)0x3F];
+    strnew[0] = lst[(strold[0] & (u8) 0xFC) >> 2];
+    strnew[1] = lst[((strold[0] & (u8) 0x03) << 4) | ((strold[1] & (u8) 0xF0) >> 4)];
+    strnew[2] = lst[((strold[1] & (u8) 0x0F) << 2) | ((strold[2] & (u8) 0xC0) >> 6)];
+    strnew[3] = lst[strold[2] & (u8) 0x3F];
     strnew += 4;
     strold += 3;
   }
 
   switch (len - (strold - src))
   {
-  case 1:
-    strnew[0] = lst[(strold[0] &(u8)0xFC) >> 2];
-    strnew[1] = lst[(strold[0] &(u8)0x03) << 4];
-    strnew[2] = '=';
-    strnew[3] = '=';
-    strnew += 4;
-    break;
+    case 1:
+      strnew[0] = lst[(strold[0] & (u8) 0xFC) >> 2];
+      strnew[1] = lst[(strold[0] & (u8) 0x03) << 4];
+      strnew[2] = '=';
+      strnew[3] = '=';
+      strnew += 4;
+      break;
 
-  case 2:
-    strnew[0] = lst[(strold[0] &(u8)0xFC) >> 2];
-    strnew[1] = lst[((strold[0] &(u8)0x03) << 4) | ((strold[1] &(u8)0xF0) >> 4)];
-    strnew[2] = lst[(strold[1] &(u8)0x0F) << 2];
-    strnew[3] = '=';
-    strnew += 4;
+    case 2:
+      strnew[0] = lst[(strold[0] & (u8) 0xFC) >> 2];
+      strnew[1] = lst[((strold[0] & (u8) 0x03) << 4) | ((strold[1] & (u8) 0xF0) >> 4)];
+      strnew[2] = lst[(strold[1] & (u8) 0x0F) << 2];
+      strnew[3] = '=';
+      strnew += 4;
   }
   return 1;
 }
 //-----------------------------------------------------------------------------
-bool GetIPPortFromAddr(struct sockaddr_in Addr, char* IP, u16* Port)
+bool GetIPPortFromAddr(struct sockaddr_in Addr, char *IP, u16 *Port)
 {
   //  CltAddr.sin_family = AF_INET;
   //  CltAddr.sin_addr.s_addr = inet_addr(DDNSSvrIP);
   //  CltAddr.sin_port = htons(Port);
 
-  char* tmpIP;
-  if(!IP) return false;
+  char *tmpIP;
+  if (!IP) return false;
   tmpIP = inet_ntoa(Addr.sin_addr);
   strcpy(IP, tmpIP);
   *Port = ntohs(Addr.sin_port);
   return true;
 }
+
 //-----------------------------------------------------------------------------
-void __encodeBase64(unsigned char* in, unsigned char* out)  
-{  
+void __encodeBase64(unsigned char *in, unsigned char *out)
+{
   static const unsigned char encodeBase64Map[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
   out[0] = encodeBase64Map[(in[0] >> 2) & 0x3F];
   out[1] = encodeBase64Map[((in[0] << 4) & 0x30) | ((in[1] >> 4) & 0x0F)];
   out[2] = encodeBase64Map[((in[1] << 2) & 0x3C) | ((in[2] >> 6) & 0x03)];
   out[3] = encodeBase64Map[in[2] & 0x3F];
-}  
+}
 //-----------------------------------------------------------------------------
-i32 Base64Encode(unsigned char* inbuf, i32 insize, unsigned char* outbuf, i32 outsize)  
-{  
+i32 Base64Encode(unsigned char *inbuf, i32 insize, unsigned char *outbuf, i32 outsize)
+{
   i32 inpos = 0, outpos = 0;
-  while(inpos != insize)
-  {  
-    if(inpos + 3 <= insize)
-    {  
-      if(outpos + 4 > outsize) return -1;
+  while (inpos != insize)
+  {
+    if (inpos + 3 <= insize)
+    {
+      if (outpos + 4 > outsize) return -1;
       __encodeBase64(inbuf + inpos, outbuf + outpos);
       inpos += 3;
       outpos += 4;
-    }  
+    }
 
-    if(insize - inpos == 2)
-    {  
+    if (insize - inpos == 2)
+    {
       unsigned char tail[3] = {0};
       tail[0] = *(inbuf + inpos);
       tail[1] = *(inbuf + inpos + 1);
@@ -1552,9 +1570,9 @@ i32 Base64Encode(unsigned char* inbuf, i32 insize, unsigned char* outbuf, i32 ou
       *(outbuf + outpos + 3) = '=';
       inpos += 2;
       outpos += 4;
-    }  
-    if(insize - inpos == 1)
-    {  
+    }
+    if (insize - inpos == 1)
+    {
       unsigned char tail[3] = {0};
       tail[0] = *(inbuf + inpos);
       __encodeBase64(tail, outbuf + outpos);
@@ -1562,30 +1580,32 @@ i32 Base64Encode(unsigned char* inbuf, i32 insize, unsigned char* outbuf, i32 ou
       *(outbuf + outpos + 2) = '=';
       inpos += 1;
       outpos += 4;
-    }  
-  }  
+    }
+  }
   return outpos;
-}  
+}
+
 //-----------------------------------------------------------------------------
-unsigned char __decodeBase64Map(unsigned char a)  
-{  
-  if(a >= 'A' && a <= 'Z')  
+unsigned char __decodeBase64Map(unsigned char a)
+{
+  if (a >= 'A' && a <= 'Z')
     return a - 'A';
-  if(a >= 'a' && a <= 'z')  
+  if (a >= 'a' && a <= 'z')
     return 26 + a - 'a';
-  if(a >= '0' && a <= '9')  
+  if (a >= '0' && a <= '9')
     return 52 + a - '0';
-  if(a == '+')  
+  if (a == '+')
     return 62;
-  if(a == '/')  
+  if (a == '/')
     return 63;
-  if(a == '=')  
+  if (a == '=')
     return 0;
   return -1;
-}  
+}
+
 //-----------------------------------------------------------------------------
-void __decodeBase64(unsigned char *in, unsigned char *out)  
-{  
+void __decodeBase64(unsigned char *in, unsigned char *out)
+{
   unsigned char map[4];
   map[0] = __decodeBase64Map(in[0]);
   map[1] = __decodeBase64Map(in[1]);
@@ -1594,37 +1614,35 @@ void __decodeBase64(unsigned char *in, unsigned char *out)
   out[0] = ((map[0] << 2) & 0xFC) | ((map[1] >> 4) & 0x03);
   out[1] = ((map[1] << 4) & 0xF0) | ((map[2] >> 2) & 0x0F);
   out[2] = ((map[2] << 6) & 0xC0) | ((map[3] >> 0) & 0x3F);
-}  
+}
 //-----------------------------------------------------------------------------
-i32 Base64Decode(unsigned char* inbuf, i32 insize, unsigned char* outbuf, i32 outsize)  
-{  
+i32 Base64Decode(unsigned char *inbuf, i32 insize, unsigned char *outbuf, i32 outsize)
+{
   i32 inpos = 0, outpos = 0;
-  if(insize % 4) return -1;
+  if (insize % 4) return -1;
 
-  while(inpos != insize)
-  {  
-    if(outpos + 3 > outsize) return -1;
+  while (inpos != insize)
+  {
+    if (outpos + 3 > outsize) return -1;
     __decodeBase64(inbuf + inpos, outbuf + outpos);
-    if(*(inbuf + inpos + 2) == '=')
-    {  
+    if (*(inbuf + inpos + 2) == '=')
+    {
       outpos += 1;
       break;
-    }
-    else if (*(inbuf + inpos + 3) == '=')
-    {  
+    } else if (*(inbuf + inpos + 3) == '=')
+    {
       outpos += 2;
       break;
-    }
-    else  
+    } else
     {
       outpos += 3;
     }
     inpos += 4;
-  }  
+  }
   return outpos;
 }
 //-----------------------------------------------------------------------------
-bool IsSameSegmentIP(char* IP1, char* IP2)//两个IP是否在同一段
+bool IsSameSegmentIP(char *IP1, char *IP2)//两个IP是否在同一段
 {
   struct sockaddr_in s1;
   struct sockaddr_in s2;
@@ -1633,10 +1651,11 @@ bool IsSameSegmentIP(char* IP1, char* IP2)//两个IP是否在同一段
   int a, b;
   memcpy(&a, &s1.sin_addr, 4);
   memcpy(&b, &s2.sin_addr, 4);
-  return ((int)(a<<8) == (int)(b<<8));
+  return ((int) (a << 8) == (int) (b << 8));
 }
+
 //-----------------------------------------------------------------------------
-char* GetLocalIP()
+char *GetLocalIP()
 {
 #ifdef WIN32
 
@@ -1656,39 +1675,50 @@ char* GetLocalIP()
 #else
 
   struct ifconf conf;
-  struct ifreq* ifr;
+  struct ifreq *ifr;
   char buff[512];
   i32 num;
-  i32 i;
-  i32 hSkt = socket(PF_INET, SOCK_DGRAM, 0);
+  i32 i, hSkt;
+  for (i = 0; i < 9; i++)
+  {
+    hSkt = socket(PF_INET, SOCK_DGRAM, 0);
+    if (hSkt > 0) break;
+  }
+  if (hSkt <= 0) return NULL;
   conf.ifc_len = 512;
   conf.ifc_buf = buff;
   ioctl(hSkt, SIOCGIFCONF, &conf);
   num = conf.ifc_len / sizeof(struct ifreq);
   ifr = conf.ifc_req;
-  for(i = 0; i<num; i ++)
+  for (i = 0; i < num; i++)
   {
-    struct sockaddr_in* sin = (struct sockaddr_in*)(&ifr->ifr_addr);
+    struct sockaddr_in *sin = (struct sockaddr_in *) (&ifr->ifr_addr);
     ioctl(hSkt, SIOCGIFFLAGS, ifr);
-    if(((ifr->ifr_flags &IFF_LOOPBACK) == 0)&&(ifr->ifr_flags &IFF_UP))
+    if (((ifr->ifr_flags & IFF_LOOPBACK) == 0) && (ifr->ifr_flags & IFF_UP))
     {
       closesocket(hSkt);
       return inet_ntoa(sin->sin_addr);
     }
     ifr++;
   }
+
+  closesocket(hSkt);
+  return NULL;
 #endif
 }
+
 //-----------------------------------------------------------------------------
 //SHA1状态数据结构类型
-typedef struct TSHA_State {
+typedef struct TSHA_State
+{
   u32 h[5]; // 5个初始链接变量;保存20字节摘要
   u8 block[64]; // 分组
   i32 blkused;
   u32 lenhi, lenlo; // 长度域
 } TSHA_State;
+
 //-----------------------------------------------
-void SHA_Init(TSHA_State* s)
+void SHA_Init(TSHA_State *s)
 {
   s->h[0] = 0x67452301;
   s->h[1] = 0xefcdab89;
@@ -1698,10 +1728,11 @@ void SHA_Init(TSHA_State* s)
   s->blkused = 0;
   s->lenhi = s->lenlo = 0;
 }
+
 //-----------------------------------------------
-void SHATransform(u32* digest, u32* block)
+void SHATransform(u32 *digest, u32 *block)
 {
-#define rol(x,y) ( ((x) << (y)) | (((u32)x) >> (32-y)) )
+#define rol(x, y) ( ((x) << (y)) | (((u32)x) >> (32-y)) )
   u32 w[80];
   u32 a, b, c, d, e;
   u32 tmp;
@@ -1721,7 +1752,7 @@ void SHATransform(u32* digest, u32* block)
 
   for (t = 0; t < 20; t++)
   {
-    tmp = rol(a, 5) + ((b &c) | (d &~b)) + e+w[t] + 0x5a827999;
+    tmp = rol(a, 5) + ((b & c) | (d & ~b)) + e + w[t] + 0x5a827999;
     e = d;
     d = c;
     c = rol(b, 30);
@@ -1731,7 +1762,7 @@ void SHATransform(u32* digest, u32* block)
 
   for (t = 20; t < 40; t++)
   {
-    tmp = rol(a, 5) + (b ^ c ^ d) + e+w[t] + 0x6ed9eba1;
+    tmp = rol(a, 5) + (b ^ c ^ d) + e + w[t] + 0x6ed9eba1;
     e = d;
     d = c;
     c = rol(b, 30);
@@ -1741,7 +1772,7 @@ void SHATransform(u32* digest, u32* block)
 
   for (t = 40; t < 60; t++)
   {
-    tmp = rol(a, 5) + ((b &c) | (b &d) | (c &d)) + e+w[t] + 0x8f1bbcdc;
+    tmp = rol(a, 5) + ((b & c) | (b & d) | (c & d)) + e + w[t] + 0x8f1bbcdc;
     e = d;
     d = c;
     c = rol(b, 30);
@@ -1751,7 +1782,7 @@ void SHATransform(u32* digest, u32* block)
 
   for (t = 60; t < 80; t++)
   {
-    tmp = rol(a, 5) + (b ^ c ^ d) + e+w[t] + 0xca62c1d6;
+    tmp = rol(a, 5) + (b ^ c ^ d) + e + w[t] + 0xca62c1d6;
     e = d;
     d = c;
     c = rol(b, 30);
@@ -1765,13 +1796,14 @@ void SHATransform(u32* digest, u32* block)
   digest[3] += d;
   digest[4] += e;
 }
+
 //-----------------------------------------------
-void SHA_Bytes(TSHA_State* s, void* p, i32 len)
+void SHA_Bytes(TSHA_State *s, void *p, i32 len)
 {
   i32 i;
   u32 wordblock[16];
   u32 lenw = len;
-  unsigned char* q = (unsigned char*)p;
+  unsigned char *q = (unsigned char *) p;
 
   s->lenlo += lenw;
   s->lenhi += (s->lenlo < lenw);
@@ -1780,21 +1812,18 @@ void SHA_Bytes(TSHA_State* s, void* p, i32 len)
   {
     memcpy(s->block + s->blkused, q, len);
     s->blkused += len;
-  }
-  else
+  } else
   {
     while (s->blkused + len >= 64)
     {
-      memcpy(s->block + s->blkused, q, 64-s->blkused);
-      q += 64-s->blkused;
-      len -= 64-s->blkused;
+      memcpy(s->block + s->blkused, q, 64 - s->blkused);
+      q += 64 - s->blkused;
+      len -= 64 - s->blkused;
 
       for (i = 0; i < 16; i++)
       {
-        wordblock[i] = (((u32)s->block[i* 4+0]) << 24) | 
-          (((u32)s->block[i* 4+1]) << 16) |
-          (((u32)s->block[i* 4+2]) << 8)  |
-          (((u32)s->block[i* 4+3]) << 0);
+        wordblock[i] = (((u32) s->block[i * 4 + 0]) << 24) | (((u32) s->block[i * 4 + 1]) << 16) | (((u32) s->block[i * 4 + 2]) << 8) |
+                       (((u32) s->block[i * 4 + 3]) << 0);
       }
       SHATransform(s->h, wordblock);
       s->blkused = 0;
@@ -1803,41 +1832,42 @@ void SHA_Bytes(TSHA_State* s, void* p, i32 len)
     s->blkused = len;
   }
 }
+
 //-----------------------------------------------
-void SHA_Final(TSHA_State* s, unsigned char* output)
+void SHA_Final(TSHA_State *s, unsigned char *output)
 {
   i32 i, pad;
   unsigned char c[64];
   u32 lenhi, lenlo;
 
-  if (s->blkused >= 56) pad = 56+64-s->blkused; else pad = 56-s->blkused;
-  lenhi = (s->lenhi << 3) | (s->lenlo >> (32-3));
+  if (s->blkused >= 56) pad = 56 + 64 - s->blkused; else pad = 56 - s->blkused;
+  lenhi = (s->lenhi << 3) | (s->lenlo >> (32 - 3));
   lenlo = (s->lenlo << 3);
   memset(c, 0, pad);
   c[0] = 0x80;
   SHA_Bytes(s, &c, pad);
 
-  c[0] = (lenhi >> 24) &0xFF;
-  c[1] = (lenhi >> 16) &0xFF;
-  c[2] = (lenhi >> 8) &0xFF;
-  c[3] = (lenhi >> 0) &0xFF;
-  c[4] = (lenlo >> 24) &0xFF;
-  c[5] = (lenlo >> 16) &0xFF;
-  c[6] = (lenlo >> 8) &0xFF;
-  c[7] = (lenlo >> 0) &0xFF;
+  c[0] = (lenhi >> 24) & 0xFF;
+  c[1] = (lenhi >> 16) & 0xFF;
+  c[2] = (lenhi >> 8) & 0xFF;
+  c[3] = (lenhi >> 0) & 0xFF;
+  c[4] = (lenlo >> 24) & 0xFF;
+  c[5] = (lenlo >> 16) & 0xFF;
+  c[6] = (lenlo >> 8) & 0xFF;
+  c[7] = (lenlo >> 0) & 0xFF;
 
   SHA_Bytes(s, &c, 8);
 
   for (i = 0; i < 5; i++)
   {
-    output[i* 4] = (s->h[i] >> 24) &0xFF;
-    output[i* 4+1] = (s->h[i] >> 16) &0xFF;
-    output[i* 4+2] = (s->h[i] >> 8) &0xFF;
-    output[i* 4+3] = (s->h[i]) &0xFF;
+    output[i * 4] = (s->h[i] >> 24) & 0xFF;
+    output[i * 4 + 1] = (s->h[i] >> 16) & 0xFF;
+    output[i * 4 + 2] = (s->h[i] >> 8) & 0xFF;
+    output[i * 4 + 3] = (s->h[i]) & 0xFF;
   }
 }
 //-----------------------------------------------
-i32 SHA1Encode(unsigned char* inbuf, i32 insize, unsigned char* outbuf, i32 outsize)
+i32 SHA1Encode(unsigned char *inbuf, i32 insize, unsigned char *outbuf, i32 outsize)
 {
   TSHA_State s;
   SHA_Init(&s);
@@ -1846,12 +1876,12 @@ i32 SHA1Encode(unsigned char* inbuf, i32 insize, unsigned char* outbuf, i32 outs
   return strlen(outbuf);
 }
 //-----------------------------------------------------------------------------
-HTTPERROR HttpGet(const char* url, char* OutBuf, i32* OutBufLen, bool IsShowHead, i32 TimeOut)
+HTTPERROR HttpGet(const char *url, char *OutBuf, i32 *OutBufLen, bool IsShowHead, i32 TimeOut)
 {
   return HttpPost(url, NULL, 0, OutBuf, OutBufLen, IsShowHead, TimeOut);
 }
 //-----------------------------------------------------------------------------
-HTTPERROR HttpPost(const char* url, char* InBuf, i32 InBufLen, char* OutBuf, i32* OutBufLen, bool IsShowHead, i32 TimeOut)
+HTTPERROR HttpPost(const char *url, char *InBuf, i32 InBufLen, char *OutBuf, i32 *OutBufLen, bool IsShowHead, i32 TimeOut)
 {
 #ifndef WIN32
 #define SOCKET_ERROR -1
@@ -1865,20 +1895,20 @@ HTTPERROR HttpPost(const char* url, char* InBuf, i32 InBufLen, char* OutBuf, i32
   char SendStr[2048];
   char PageName[1024];
   struct sockaddr_in addr;
-  struct hostent* h;
+  struct hostent *h;
   unsigned long tmp_address = INADDR_NONE;
   i32 recvLen = 0;
   i32 port = 80;
-  i32 m[4]; 
+  i32 m[4];
   SOCKET hSocket = INVALID_SOCKET;
   fd_set fs;
   struct timeval tv;
   time_t t;
   i32 ret, i;
   i32 iContentLength = 0;
-  char* tmpBuf;
+  char *tmpBuf;
   i32 itmp;
-  char* strGetPost = NULL;
+  char *strGetPost = NULL;
 
   iErrorCode = 0;
   if (!OutBuf) return iErrorCode;
@@ -1898,25 +1928,24 @@ HTTPERROR HttpPost(const char* url, char* InBuf, i32 InBufLen, char* OutBuf, i32
   ret = sscanf(SvrName, "%[^:]:%d", HostName, &port);
   if (ret == 2)
   {
-    if ((strlen(HostName) == 0) || (port <= 0) || (port >0xffff)) return iErrorCode;
-  }
-  else
+    if ((strlen(HostName) == 0) || (port <= 0) || (port > 0xffff)) return iErrorCode;
+  } else
   {
     strcpy(HostName, SvrName);
     port = 80;
   }
 
   addr.sin_family = AF_INET;
-  addr.sin_port = htons((u16)port);
+  addr.sin_port = htons((u16) port);
 
   ret = sscanf(HostName, "%d.%d.%d.%d", &m[0], &m[1], &m[2], &m[3]);
-  if ((ret == 4) && (m[0] >= 0) && (m[0] <= 255) && (m[1] >= 0) && (m[1] <= 255) && (m[2] >= 0) && (m[2] <= 255) && (m[3] >= 0) && (m[3] <= 255))
+  if ((ret == 4) && (m[0] >= 0) && (m[0] <= 255) && (m[1] >= 0) && (m[1] <= 255) && (m[2] >= 0) && (m[2] <= 255) && (m[3] >= 0) &&
+      (m[3] <= 255))
   {
     if ((tmp_address = inet_addr(HostName)) != INADDR_NONE)
       memcpy(&addr.sin_addr, &tmp_address, sizeof(unsigned long));
     else return iErrorCode;
-  }
-  else
+  } else
   {
     if ((h = gethostbyname(HostName)) != NULL)
       memcpy(&addr.sin_addr, h->h_addr_list[0], h->h_length);
@@ -1929,22 +1958,20 @@ HTTPERROR HttpPost(const char* url, char* InBuf, i32 InBufLen, char* OutBuf, i32
     {
       memset(b64UserNamePassword, 0, sizeof(b64UserNamePassword));
       Base64Encode(UserNamePassword, strlen(UserNamePassword), b64UserNamePassword, sizeof(b64UserNamePassword));
-      sprintf(SendStr, "POST %s HTTP/1.0\r\nHost: %s\r\nContent-Length: %d\r\nAuthorization: Basic %s\r\n\r\n", PageName, HostName, InBufLen, b64UserNamePassword);
-    }
-    else
+      sprintf(SendStr, "POST %s HTTP/1.0\r\nHost: %s\r\nContent-Length: %d\r\nAuthorization: Basic %s\r\n\r\n", PageName, HostName,
+              InBufLen, b64UserNamePassword);
+    } else
     {
       sprintf(SendStr, "POST %s HTTP/1.0\r\nHost: %s\r\nContent-Length: %d\r\n\r\n", PageName, HostName, InBufLen);
     }
-  }
-  else
+  } else
   {//GET
     if (strlen(UserNamePassword) > 0)
     {
       memset(b64UserNamePassword, 0, sizeof(b64UserNamePassword));
       Base64Encode(UserNamePassword, strlen(UserNamePassword), b64UserNamePassword, sizeof(b64UserNamePassword));
       sprintf(SendStr, "GET %s HTTP/1.0\r\nHost: %s\r\nAuthorization: Basic %s\r\n\r\n", PageName, HostName, b64UserNamePassword);
-    }
-    else
+    } else
     {
       sprintf(SendStr, "GET %s HTTP/1.0\r\nHost: %s\r\n\r\n", PageName, HostName);
     }
@@ -1954,10 +1981,10 @@ HTTPERROR HttpPost(const char* url, char* InBuf, i32 InBufLen, char* OutBuf, i32
   hSocket = socket(AF_INET, SOCK_STREAM, 0);
   if (hSocket == INVALID_SOCKET) return iErrorCode;
 
-  ret = connect(hSocket, (struct sockaddr*) &addr, sizeof(struct sockaddr_in));
+  ret = connect(hSocket, (struct sockaddr *) &addr, sizeof(struct sockaddr_in));
   if (ret == SOCKET_ERROR) goto exits;
 
-  TimeOut =  TimeOut / 1000;
+  TimeOut = TimeOut / 1000;
   tv.tv_sec = TimeOut;
   tv.tv_usec = 0;
   FD_ZERO(&fs);
@@ -1978,7 +2005,7 @@ HTTPERROR HttpPost(const char* url, char* InBuf, i32 InBufLen, char* OutBuf, i32
   //收取头
   t = time(NULL);
   *OutBufLen = 0;
-  do 
+  do
   {
     tv.tv_sec = TimeOut - (time(NULL) - t);
     tv.tv_usec = 0;
@@ -1995,14 +2022,14 @@ HTTPERROR HttpPost(const char* url, char* InBuf, i32 InBufLen, char* OutBuf, i32
 
     if (*OutBufLen > 1024) goto exits;//头太大
 
-    memcpy(&itmp, &OutBuf[*OutBufLen-4], 4);
+    memcpy(&itmp, &OutBuf[*OutBufLen - 4], 4);
     if (itmp != 0x0A0D0A0D) continue;
 
     OutBuf[*OutBufLen] = 0x00;
 
-    for (i=0; i<*OutBufLen; i++) 
+    for (i = 0; i < *OutBufLen; i++)
     {
-      if (OutBuf[i] >='A' && OutBuf[i] <='Z')  OutBuf[i] = OutBuf[i] + 32;
+      if (OutBuf[i] >= 'A' && OutBuf[i] <= 'Z') OutBuf[i] = OutBuf[i] + 32;
     }
     //{$message 'HttpPost要优化'}
     tmpBuf = strstr(OutBuf, "content-length:");
@@ -2016,8 +2043,7 @@ HTTPERROR HttpPost(const char* url, char* InBuf, i32 InBufLen, char* OutBuf, i32
       }
       break;
     }
-  }
-  while ((recvLen > 0) && ((time(NULL) - t) < TimeOut));
+  } while ((recvLen > 0) && ((time(NULL) - t) < TimeOut));
 
   if (iContentLength <= 0) goto exits;
 
@@ -2035,7 +2061,7 @@ HTTPERROR HttpPost(const char* url, char* InBuf, i32 InBufLen, char* OutBuf, i32
 
   //收取数据
   t = time(NULL);
-  do 
+  do
   {
     tv.tv_sec = TimeOut - (time(NULL) - t);
     tv.tv_usec = 0;
@@ -2043,25 +2069,24 @@ HTTPERROR HttpPost(const char* url, char* InBuf, i32 InBufLen, char* OutBuf, i32
     FD_SET(hSocket, &fs);
 
     ret = select(hSocket + 1, &fs, NULL, NULL, &tv);
-    if (ret == SOCKET_ERROR) 
+    if (ret == SOCKET_ERROR)
       goto exits;
     if (ret == 0)
       goto exits;
 
     recvLen = recv(hSocket, &OutBuf[*OutBufLen], iContentLength - *OutBufLen, 0);
     if (recvLen > 0) *OutBufLen = *OutBufLen + recvLen;
-  }
-  while ((recvLen > 0) && ((time(NULL) - t) < TimeOut));
+  } while ((recvLen > 0) && ((time(NULL) - t) < TimeOut));
   if (*OutBufLen <= 0) goto exits;
   //
-exits:
+  exits:
   shutdown(hSocket, SD_SEND);
   closesocket(hSocket);
 
   return iErrorCode;
 }
 //-----------------------------------------------------------------------------
-bool DiskExists(char* Path)//是否存在磁盘
+bool DiskExists(char *Path)//是否存在磁盘
 {
   u32 TotalSpace = 0;
   u32 FreeSpace = 0;
@@ -2069,17 +2094,17 @@ bool DiskExists(char* Path)//是否存在磁盘
   return (TotalSpace > 0);
 }
 //-----------------------------------------------------------------------------
-bool GetDiskSpace(char* Path, u32* TotalSpace, u32* FreeSpace)//取得磁盘空间 M
+bool GetDiskSpace(char *Path, u32 *TotalSpace, u32 *FreeSpace)//取得磁盘空间 M
 {
 #ifndef WIN32
   struct statfs stat;
   *FreeSpace = 0;
   *TotalSpace = 0;
   int Ret = statfs(Path, &stat);
-  if (Ret ==0)
+  if (Ret == 0)
   {
-    *FreeSpace  = (u32)((u32)(stat.f_bsize/1024) * (u32)(stat.f_bfree/1024));
-    *TotalSpace = (u32)((u32)(stat.f_bsize/1024) * (u32)(stat.f_blocks/1024));
+    *FreeSpace = (u32) ((u32) (stat.f_bsize / 1024) * (u32) (stat.f_bfree / 1024));
+    *TotalSpace = (u32) ((u32) (stat.f_bsize / 1024) * (u32) (stat.f_blocks / 1024));
   }
   //printf(" filetype 0x%x \n", stat.f_type);
   return (Ret == 0);
@@ -2100,6 +2125,7 @@ bool GetDiskSpace(char* Path, u32* TotalSpace, u32* FreeSpace)//取得磁盘空间 M
 #endif
 #endif
 }
+
 //------------------------------------------------------------------------------
 void printPI()//打印圆周率
 {
@@ -2107,21 +2133,21 @@ void printPI()//打印圆周率
   static int b, d, e, g;
   static int c = 2800;
   static int f[2801];
-  for(;b - c;)
+  for (; b - c;)
   {
     f[b++] = a / 5;
   }
 
-  for(;d = 0, g = c * 2;)
+  for (; d = 0, g = c * 2;)
   {
     b = c;
-    d = d+f[b]*a;
+    d = d + f[b] * a;
     --g;
     f[b] = d % g;
     d = d / g;
     g--;
 
-    for(;--b;)
+    for (; --b;)
     {
       d = d * b;
       d = d + f[b] * a;
@@ -2131,7 +2157,7 @@ void printPI()//打印圆周率
       g--;
     }
     c = c - 14;
-    printf("%.4d",e + d / a);
+    printf("%.4d", e + d / a);
     e = d % a;
   }
   printf("\n");
@@ -2139,12 +2165,12 @@ void printPI()//打印圆周率
 //-----------------------------------------------------------------------------
 bool IsConnectWLAN()//外网是否已连接
 {
-  struct hostent* h;
-  h = (struct hostent*)gethostbyname("www.google.com");
+  struct hostent *h;
+  h = (struct hostent *) gethostbyname("www.google.com");
   return (h != NULL);
 }
 //-----------------------------------------------------------------------------
-bool RectIsIntersect(TRect* r1, TRect* r2)//区域是否包含
+bool RectIsIntersect(TRect *r1, TRect *r2)//区域是否包含
 {
   int iMaxLeft, iMaxTop, iMinRight, iMinBottom;
   iMaxLeft = max(r1->left, r2->left);
@@ -2152,47 +2178,49 @@ bool RectIsIntersect(TRect* r1, TRect* r2)//区域是否包含
   iMinRight = min(r1->right, r2->right);
   iMinBottom = min(r1->bottom, r2->bottom);
 
-  return !(iMaxLeft > iMinRight || iMaxTop>iMinBottom);
+  return !(iMaxLeft > iMinRight || iMaxTop > iMinBottom);
 }
+
 //-----------------------------------------------------------------------------
-int StrToHex(char* src, int srclen, char* dst)
+int StrToHex(char *src, int srclen, char *dst)
 {
   unsigned char h1, h2;
   unsigned char s1, s2;
   int i, dstlen;
   dstlen = srclen / 2;
 
-  for (i=0; i<dstlen; i++)
+  for (i = 0; i < dstlen; i++)
   {
-    h1 = (unsigned char)src[2*i];
-    h2 = (unsigned char)src[2*i+1];
+    h1 = (unsigned char) src[2 * i];
+    h2 = (unsigned char) src[2 * i + 1];
     s1 = toupper(h1) - 0x30;
     if (s1 > 9) s1 = s1 - 7;
     s2 = toupper(h2) - 0x30;
     if (s2 > 9) s2 = s2 - 7;
-    dst[i] = s1*16 + s2;
+    dst[i] = s1 * 16 + s2;
   }
   dst[dstlen] = 0x00;
   return dstlen;
 }
+
 //-----------------------------------------------------------------------------
-int HexToStr(char* src, int srclen, char* dst)
+int HexToStr(char *src, int srclen, char *dst)
 {
   unsigned char ddl, ddh;
   int i, dstlen;
   dstlen = srclen * 2;
 
-  for (i=0; i<srclen; i++)
+  for (i = 0; i < srclen; i++)
   {
-    ddh = (unsigned char)src[i] / 16;
-    ddl = (unsigned char)src[i] % 16;
+    ddh = (unsigned char) src[i] / 16;
+    ddl = (unsigned char) src[i] % 16;
     if (ddh > 9) ddh = ddh + 7;
     if (ddl > 9) ddl = ddl + 7;
 
-    dst[i*2] = ddh + 0x30;
-    dst[i*2+1] = ddl + 0x30;
+    dst[i * 2] = ddh + 0x30;
+    dst[i * 2 + 1] = ddl + 0x30;
   }
-  dst[srclen*2] = '\0';
+  dst[srclen * 2] = '\0';
   return dstlen;
 }
 //-----------------------------------------------------------------------------

@@ -238,8 +238,8 @@ public class DevModel implements Parcelable
 
   public DevModel()
   {
-    usr = Config.DEFAULTUSERNAME;
-    pwd = Config.DEFAULTPASSWORD;
+    usr = Config.DEFAULT_DEV_USERNAME;
+    pwd = Config.DEFAULT_DEV_PASSWORD;
   }
 
   public void updateUserAndPwd()
@@ -256,27 +256,6 @@ public class DevModel implements Parcelable
   public String GetAllCfg()
   {
     return lib.thNetGetAllCfg(NetHandle);
-  }
-
-  public boolean Disconn()
-  {
-    new Thread()
-    {
-      @Override
-      public void run()
-      {
-        boolean ret = lib.thNetDisConn(NetHandle);
-        if (ret)
-        {
-          lib.thNetFree(NetHandle);
-          NetHandle = 0;
-        }
-
-      }
-    }.start();
-    return true;
-    //return lib.thNetDisConn(NetHandle);
-
   }
 
   public boolean IsConnect()
@@ -305,7 +284,6 @@ public class DevModel implements Parcelable
       return false;
     }
     IsConnecting = true;
-    //Log.e(tag,"NetHandle:"+NetHandle+",usr:"+usr+",pwd:"+pwd+",IPUID:"+IPUID+",DataPort:"+DataPort);
     ret = lib.thNetConnect(NetHandle, usr, pwd, IPUID, DataPort, 10 * 1000);
     if (ret)
     {
@@ -320,10 +298,8 @@ public class DevModel implements Parcelable
     DevModel dbModel = DataManager.getInstance().getSNDev(tmpNode.SN);
     if (dbModel != null)
     {
-
       tmpNode.usr = dbModel.usr;
       tmpNode.pwd = dbModel.pwd;
-      Log.e(tag, "SN:" + tmpNode.SN + ",pwd:" + tmpNode.pwd);
     }
 
     new Thread()
@@ -337,7 +313,7 @@ public class DevModel implements Parcelable
           {
             tmpNode.NetHandle = lib.thNetInit(
               true,
-              false,
+              true,
               false
             );
           }
@@ -354,11 +330,10 @@ public class DevModel implements Parcelable
               ipc.sendMessage(Message.obtain(ipc, TMsg.Msg_NetConnSucceed, tmpNode.Index, 0, tmpNode));
             }
             String tmpStr = tmpNode.GetAllCfg();
-            //Log.e("java", "tmpStr is :" + tmpStr);
             JSONObject json = new JSONObject(tmpStr);
             tmpNode.DevCfg = json;
             tmpNode.ExistSD = json.getJSONObject("DevInfo").getInt("ExistSD");
-            tmpNode.DevType= json.getJSONObject("DevInfo").getInt("DevType");
+            tmpNode.DevType = json.getJSONObject("DevInfo").getInt("DevType");
             tmpNode.Brightness = json.getJSONObject("Video").getInt("Brightness");
             tmpNode.Contrast = json.getJSONObject("Video").getInt("Contrast");
             tmpNode.Sharpness = json.getJSONObject("Video").getInt("Sharpness");
@@ -392,11 +367,6 @@ public class DevModel implements Parcelable
     return lib.thNetPlay(NetHandle, VideoChlMask, AudioChlMask, SubVideoChlMask);
   }
 
-  public boolean Stop()
-  {
-    return lib.thNetStop(NetHandle);
-  }
-
   public static void threadStartPlay(final Handler ipc, final DevModel DevNode)
   {
     new Thread()
@@ -420,7 +390,8 @@ public class DevModel implements Parcelable
       @Override
       public void run()
       {
-        DevNode.Stop();
+        //DevNode.Stop();//zhb
+        lib.thNetStop(DevNode.NetHandle);//zhb
 
         lib.thNetTalkClose(DevNode.NetHandle);
 
@@ -434,10 +405,13 @@ public class DevModel implements Parcelable
     }.start();
   }
 
-  /*获取包含用户名和密码啊的cfg1 url*/
-  public String getHttpCfg1UsrPwd()
+  public String getDevURL(int MsgID)
   {
-    return "http://" + IPUID + ":" + WebPort + "/cfg1.cgi?User=admin&Psd=" + pwd;
+    return String.format("http://%s:%d/cfg1.cgi?User=%s&Psd=%s&MsgID=%d", IPUID, WebPort, usr, pwd, MsgID);
   }
 
+  public String getDevURL(int MsgID, String cmd)
+  {
+    return String.format("http://%s:%d/cfg1.cgi?User=%s&Psd=%s&MsgID=%d%s", IPUID, WebPort, usr, pwd, MsgID, cmd);
+  }
 }

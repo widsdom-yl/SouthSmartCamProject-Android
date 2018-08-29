@@ -228,7 +228,7 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
       //Log.e(tag, "model.uid:" + model.UID);
       DevModel devModel = new DevModel();
       devModel.SN = model.SN;
-      devModel.usr = Config.DEFAULTUSERNAME;//默认填写admin
+      devModel.usr = Config.DEFAULT_DEV_USERNAME;//默认填写admin
       devModel.pwd = model.Pwd;
 
       boolean ret = DataManager.getInstance().addDev(devModel);

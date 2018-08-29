@@ -33,7 +33,7 @@ public class lib extends Activity
 
   public static native boolean thNetDisConn(long NetHandle);
 
-  public static native boolean thNetThreadDisConnFree(long NetHandle);
+  public static native boolean thNetThreadDisConnFree(long NetHandle);//jni thread
 
   public static native boolean thNetIsConnect(long NetHandle);
 
@@ -56,9 +56,9 @@ public class lib extends Activity
 
   public static native String thNetGetAllCfg(long NetHandle);
 
-  public static native boolean thNetTalkOpen(long NetHandle);
+  public static native boolean thNetTalkOpen(long NetHandle);//jni thread
 
-  public static native boolean thNetTalkClose(long NetHandle);
+  public static native boolean thNetTalkClose(long NetHandle);//jni thread
 
   public static native boolean thNetRemoteFilePlay(long NetHandle, String jFileName);
 
@@ -85,7 +85,7 @@ public class lib extends Activity
     thNetRemoteFilePlayControl(222, PS_DragPos, 0, 43423233);//拖动
   }
 
-  public static native boolean thNetRemoteFilePlayControl(long NetHandle, int PlayCtrl, int Speed, int Pos);
+  public static native boolean thNetRemoteFilePlayControl(long NetHandle, int PlayCtrl, int Speed, int Pos);//jni thread
 
   public static native int thNetRemoteFileGetIndexType(long NetHandle);//索引类型 没有=0 按文件大小 = 1 按时长=2
 
@@ -95,7 +95,7 @@ public class lib extends Activity
 
   public static native int thNetRemoteFileGetDuration(long NetHandle);//文件长度，单位ms
 
-  public static native boolean thNetRemoteFileSetPosition(long NetHandle, int Pos);//时间戳，单位ms
+  public static native boolean thNetRemoteFileSetPosition(long NetHandle, int Pos);//时间戳，单位ms //jni thread
 
   public static native boolean thNetAudioPlayOpen(long NetHandle);
 
@@ -249,6 +249,4 @@ public class lib extends Activity
 
   public static native boolean thOpenGLIsRenderSuccess(long NetHandle);
 
-
 }
-//  Foreground Background

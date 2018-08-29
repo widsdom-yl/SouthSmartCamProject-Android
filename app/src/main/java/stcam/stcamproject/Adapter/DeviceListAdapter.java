@@ -22,24 +22,24 @@ import stcam.stcamproject.Activity.MainDevListFragment;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
 
-import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.EnumMainEntry_Login;
-import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor;
+import static stcam.stcamproject.Activity.MainDevListFragment.TUserMode.UserMode_Login;
+import static stcam.stcamproject.Activity.MainDevListFragment.TUserMode.UserMode_Visitor;
 
 public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.MyHolder>
 {
 
   private Context mContext;
   private List<DevModel> mDatas;
-  private MainDevListFragment.EnumMainEntry mEntryType;
+  private MainDevListFragment.TUserMode mEntryType;
 
   public static String tag = "DeviceListAdapter";
 
-  public DeviceListAdapter(Context context, List<DevModel> datas, MainDevListFragment.EnumMainEntry entryType)
+  public DeviceListAdapter(Context context, List<DevModel> datas, MainDevListFragment.TUserMode UserMode)
   {
     super();
     this.mContext = context;
     this.mDatas = datas;
-    mEntryType = entryType;
+    mEntryType = UserMode;
   }
 
   public void setmDatas(List<DevModel> datas)
@@ -88,7 +88,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
     {
       holder.playBackBtn.setVisibility(View.INVISIBLE);
     }
-    if (mEntryType == EnumMainEntry_Visitor)
+    if (mEntryType == UserMode_Visitor)
     {
       holder.playBackBtn.setVisibility(View.VISIBLE);
     }
@@ -234,7 +234,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.My
       settingBtn = view.findViewById(R.id.btn_device_setting);
       online_status_tx = view.findViewById(R.id.online_status_tx);
 
-      if (mEntryType == EnumMainEntry_Login)
+      if (mEntryType == UserMode_Login)
       {
         shareBtn.setVisibility(View.VISIBLE);
       }

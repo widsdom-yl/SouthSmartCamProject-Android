@@ -27,9 +27,9 @@ public class DeviceSettingAdapter extends BaseAdapter<String>
   *  items.add(getString(R.string.device_name));
       items.add(getString(R.string.action_device_pwd));
       items.add(getString(R.string.action_push));
-      items.add(getString(R.string.action_manager_senior));
-      items.add(getString(R.string.action_manager_volume));
-//        items.add(getString(R.string.action_manager_alarm_level));
+      items.add(getString(R.string.string_DevAdvancedSettings));
+      items.add(getString(R.string.string_DevAdvancedSettings_TFManage));
+//        items.add(getString(R.string.string_DevAdvancedSettings_MotionSensitivity));
       items.add(getString(R.string.action_version));
       */
   public void setDevModel(DevModel devModel)
@@ -57,7 +57,7 @@ public class DeviceSettingAdapter extends BaseAdapter<String>
     {
       if (0 == position)//设备设置
       {
-        Str = devModel.GetDevName() + Config.StrOnNext;
+        Str = devModel.GetDevName() + Config.StrOnNextLevel;
       }
       else if (1 == position)//密码管理
       {
@@ -67,22 +67,22 @@ public class DeviceSettingAdapter extends BaseAdapter<String>
         {
           sb.append("*");
         }
-        Str = sb.toString() + Config.StrOnNext;
+        Str = sb.toString() + Config.StrOnNextLevel;
       }
       else if (2 == position)//推送开关
       {
         if (mPushSettingModel != null)
         {
-          Str = mPushSettingModel.getPushActiveDesc() + Config.StrOnNext;
+          Str = mPushSettingModel.getPushActiveDesc() + Config.StrOnNextLevel;
         }
       }
       else if (3 == position)//高级设置
       {
-        Str = Config.StrOnNext;
+        Str = Config.StrOnNextLevel;
       }
       else if (4 == position)//设备版本
       {
-        Str = devModel.SoftVersion + Config.StrOnNext;
+        Str = devModel.SoftVersion + Config.StrOnNextLevel;
       }
       holder.setText(R.id.detail_text, Str);
     }

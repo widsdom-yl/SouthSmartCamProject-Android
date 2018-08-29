@@ -32,10 +32,10 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
-public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements View.OnClickListener
+public class DevChangePwdActivity extends BaseAppCompatActivity implements View.OnClickListener
 {
 
-  final String tag = "ChangeDevicePwdActivity";
+  final String tag = "DevChangePwdActivity";
 
   public enum EnumChangeDevicePwd implements Serializable
   {
@@ -155,23 +155,23 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
 
     if (PasswordNew.equals(PasswordOld))
     {
-      SouthUtil.showDialog(ChangeDevicePwdActivity.this, getString(R.string.confirm_password_same));
+      SouthUtil.showDialog(DevChangePwdActivity.this, getString(R.string.confirm_password_same));
       return;
     }
 
     if (PasswordNew.length() >= 20)
     {
-      SouthUtil.showDialog(ChangeDevicePwdActivity.this, getString(R.string.action_dev_pwd_limit_lessthan_19));
+      SouthUtil.showDialog(DevChangePwdActivity.this, getString(R.string.action_dev_pwd_limit_lessthan_19));
       return;
     }
     if (!PasswordNew.equals(PasswordNew1))
     {
-      SouthUtil.showDialog(ChangeDevicePwdActivity.this, getString(R.string.confirm_password_nosame));
+      SouthUtil.showDialog(DevChangePwdActivity.this, getString(R.string.confirm_password_nosame));
       return;
     }
     if (PasswordNew.length() <= 4)
     {
-      SouthUtil.showDialog(ChangeDevicePwdActivity.this, getString(R.string.password_length_limit));
+      SouthUtil.showDialog(DevChangePwdActivity.this, getString(R.string.password_length_limit));
       return;
     }
 
@@ -179,7 +179,7 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
     {
       DevModel devModel = new DevModel();
       devModel.SN = SN;
-      devModel.usr = Config.DEFAULTPASSWORD;//默认填写admin
+      devModel.usr = Config.DEFAULT_DEV_USERNAME;//默认填写admin
       devModel.pwd = PasswordNew;
       boolean ret = DataManager.getInstance().addDev(devModel);
     }
@@ -269,8 +269,7 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
     @Override
     protected String doInBackground(String... params)
     {
-      String url = "http://" + setModel.IPUID + ":" + setModel.WebPort + "/cfg1.cgi?User=admin&Psd=" + editText_old_pwd.getText()
-        .toString() + "&MsgID=" + lib.Msg_SetUserLst + "&UserName0=admin&Password0=" + editText_new_pwd.getText().toString();
+      String url = setModel.getDevURL(lib.Msg_SetUserLst) + "&UserName0=admin&Password0=" + editText_new_pwd.getText().toString();
       Log.e(tag, url + ",NetHandle is " + setModel.NetHandle);
       String ret = lib.thNetHttpGet(setModel.NetHandle, url);
       Log.e(tag, "ret :" + ret);
@@ -292,8 +291,8 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
         if (retModel.ret == 1)
         {
           lod.dismiss();
-          SouthUtil.showToast(ChangeDevicePwdActivity.this, getString(R.string.action_Success));
-          ChangeDevicePwdActivity.this.finish();
+          SouthUtil.showToast(DevChangePwdActivity.this, getString(R.string.action_Success));
+          DevChangePwdActivity.this.finish();
         }
         else if (retModel.ret == 2)
         {
@@ -303,7 +302,7 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
         else
         {
           lod.dismiss();
-          SouthUtil.showDialog(ChangeDevicePwdActivity.this, getString(R.string.action_Failed));
+          SouthUtil.showDialog(DevChangePwdActivity.this, getString(R.string.action_Failed));
         }
       }
       else
@@ -328,8 +327,7 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
     @Override
     protected String doInBackground(String... params)
     {
-      String url = "http://" + setModel.IPUID + ":" + setModel.WebPort + "/cfg1.cgi?User=admin&Psd=" + editText_old_pwd.getText()
-        .toString() + "&MsgID=" + lib.Msg_SetDevReboot;
+      String url = setModel.getDevURL(lib.Msg_SetDevReboot);
       String ret = lib.thNetHttpGet(setModel.NetHandle, url);
 
       return ret;
@@ -348,12 +346,12 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
       {
         if (retModel.ret == 1)
         {
-          SouthUtil.showToast(ChangeDevicePwdActivity.this, getString(R.string.action_Success));
-          ChangeDevicePwdActivity.this.finish();
+          SouthUtil.showToast(DevChangePwdActivity.this, getString(R.string.action_Success));
+          DevChangePwdActivity.this.finish();
         }
         else
         {
-          SouthUtil.showDialog(ChangeDevicePwdActivity.this, getString(R.string.action_Failed));
+          SouthUtil.showDialog(DevChangePwdActivity.this, getString(R.string.action_Failed));
         }
       }
       super.onPostExecute(result);
@@ -382,7 +380,7 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
       lod.dismiss();
       if (lib.RESULT_SUCCESS == m.ret)
       {
-        SouthUtil.showToast(ChangeDevicePwdActivity.this, getString(R.string.string_devAddSuccess));
+        SouthUtil.showToast(DevChangePwdActivity.this, getString(R.string.string_devAddSuccess));
       }
       else if (ServerNetWork.RESULT_USER_ISBIND == m.ret)
       {
@@ -396,11 +394,11 @@ public class ChangeDevicePwdActivity extends BaseAppCompatActivity implements Vi
         {
           Str = getString(R.string.string_user_IsBind);
         }
-        SouthUtil.showToast(ChangeDevicePwdActivity.this, Str);
+        SouthUtil.showToast(DevChangePwdActivity.this, Str);
       }
       else
       {
-        SouthUtil.showToast(ChangeDevicePwdActivity.this, getString(R.string.string_devAddFail));
+        SouthUtil.showToast(DevChangePwdActivity.this, getString(R.string.string_devAddFail));
       }
 
     }

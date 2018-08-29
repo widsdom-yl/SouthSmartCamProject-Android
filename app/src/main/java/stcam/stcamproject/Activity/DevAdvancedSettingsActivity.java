@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -30,7 +29,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.jpush.android.api.JPushInterface;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -45,7 +43,7 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
-public class PushSettingActivity extends BaseAppCompatActivity implements BaseAdapter.OnItemClickListener, View.OnClickListener
+public class DevAdvancedSettingsActivity extends BaseAppCompatActivity implements BaseAdapter.OnItemClickListener, View.OnClickListener
 {
   List<String> items = new ArrayList<>();
   RecyclerView mRecyclerView;
@@ -54,6 +52,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
   PushSettingModel mPushSettingModel = new PushSettingModel();
   Button button_reset;
   int MD_Sensitive = -1;
+  int MD_Active = 0;
   RecConfigModel mRecConfigModel = new RecConfigModel();
   Handler handler = new Handler();
   boolean AUDIO_IsPlayPromptSound;
@@ -82,11 +81,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     android.support.v7.app.ActionBar actionBar = getSupportActionBar();
     if (actionBar != null)
     {
-//            actionBar.setHomeButtonEnabled(true);
-//            actionBar.setDisplayHomeAsUpEnabled(true);
-//            actionBar.setTitle(R.string.action_manager_senior);
-
-      setCustomTitle(getString(R.string.action_manager_senior), true);
+      setCustomTitle(getString(R.string.string_DevAdvancedSettings), true);
     }
     setContentView(R.layout.activity_push_setting);
 
@@ -117,10 +112,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
   {
     if (keyCode == KeyEvent.KEYCODE_BACK)
     {
-//            SetLedStatusTask task1 = new SetLedStatusTask();
-//            task1.execute(0);
       this.back(); // back button
-
       return true;
     }
     return super.onKeyDown(keyCode, event);
@@ -128,15 +120,12 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
 
   void back()
   {
-
     handler.postDelayed(runnable, 100);
     this.finish(); // back button
   }
 
   void initView()
   {
-
-
     mRecyclerView = findViewById(R.id.push_setting_list_view);
     LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -151,15 +140,12 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
 
   void initValue()
   {
-
-    items.add(getString(R.string.action_push_interval));
-
-    items.add(getString(R.string.action_manager_alarm_level));
-
-    items.add(getString(R.string.action_pir_sensitivity));
-    items.add(getString(R.string.action_dev_sound));
-    items.add(getString(R.string.action_alarm_time_span));
-    items.add(getString(R.string.action_manager_volume));
+    items.add(getString(R.string.string_DevAdvancedSettings_PushInterval));
+    items.add(getString(R.string.string_DevAdvancedSettings_MotionSensitivity));
+    items.add(getString(R.string.string_DevAdvancedSettings_PIRSensitivity));
+    items.add(getString(R.string.string_DevAdvancedSettings_IsSoundPlay));
+    items.add(getString(R.string.string_DevAdvancedSettings_AlmTimeLen));
+    items.add(getString(R.string.string_DevAdvancedSettings_TFManage));
     mAdapter = new PushSettingAdapter(items);
 
     mAdapter.setOnItemClickListener(this);
@@ -188,32 +174,31 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
   @Override
   public void onItemClick(View view, int position)
   {
-
     if (0 == position)
     {
-      dialogChoice2();
+      DevAdvancedSettings_doPush();
     }
     else if (1 == position)
     {
-      dialogChoice();
+      DevAdvancedSettings_doMotion2();
     }
     else if (2 == position)
     {
-      dialogChoice3();
+      DevAdvancedSettings_PIR();
     }
     else if (3 == position)
     {
-      dialogChoice1();
+      DevAdvancedSettings_doIsPlaySound();
     }
     else if (4 == position)
     {
-      dialogChoice_alarm_time();
+      DevAdvancedSettings_doAlmTimeLen();
     }
     else if (5 == position)
     {
       if (model.ExistSD == 0)
       {
-        SouthUtil.showDialog(PushSettingActivity.this, getString(R.string.action_not_exist_sd));
+        SouthUtil.showDialog(DevAdvancedSettingsActivity.this, getString(R.string.action_not_exist_sd));
         return;
       }
       Intent intent = new Intent(this, SDVolumeManagerActivity.class);
@@ -227,29 +212,36 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
   /*报警灵明度*/
   int chooseLevel = -1;
 
-  private void dialogChoice()
+  private void DevAdvancedSettings_doMotion2()
   {
     chooseLevel = -1;
     final String items[] = {
+      getString(R.string.action_close),
       getString(R.string.action_level_low),
       getString(R.string.action_level_middle),
-      getString(R.string
-        .action_level_high)
+      getString(R.string.action_level_high)
     };
     AlertDialog.Builder builder = new AlertDialog.Builder(this, 3);
-    builder.setTitle(getString(R.string.action_manager_alarm_level));
+    builder.setTitle(getString(R.string.string_DevAdvancedSettings_MotionSensitivity));
     builder.setIcon(R.mipmap.ic_launcher);
-    if (MD_Sensitive <= 100)
-    {
-      chooseLevel = 2;
-    }
-    else if (MD_Sensitive <= 150)
-    {
-      chooseLevel = 1;
-    }
-    else if (MD_Sensitive <= 200)
+    if (MD_Active == 0)
     {
       chooseLevel = 0;
+    }
+    else
+    {
+      if (MD_Sensitive <= 100)
+      {
+        chooseLevel = 3;
+      }
+      else if (MD_Sensitive <= 150)
+      {
+        chooseLevel = 2;
+      }
+      else if (MD_Sensitive <= 200)
+      {
+        chooseLevel = 1;
+      }
     }
 
     builder.setSingleChoiceItems(items, chooseLevel,
@@ -271,7 +263,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
         Log.e(tag, "final choose :" + which);
         if (lod == null)
         {
-          lod = new LoadingDialog(PushSettingActivity.this);
+          lod = new LoadingDialog(DevAdvancedSettingsActivity.this);
         }
         lod.dialogShow();
         SetMdSensitiveConfigTask task = new SetMdSensitiveConfigTask();
@@ -282,12 +274,12 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
   }
 
   /*声音开关*/
-  private void dialogChoice1()
+  private void DevAdvancedSettings_doIsPlaySound()
   {
 
     final String items[] = {getString(R.string.action_close), getString(R.string.action_open)};
     AlertDialog.Builder builder = new AlertDialog.Builder(this, 3);
-    builder.setTitle(getString(R.string.action_dev_sound));
+    builder.setTitle(getString(R.string.string_DevAdvancedSettings_IsSoundPlay));
     builder.setIcon(R.mipmap.ic_launcher);
 
 
@@ -325,7 +317,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
   }
 
   /*时间间隔*/
-  private void dialogChoice2()
+  private void DevAdvancedSettings_doPush()
   {
 
     final String items[] = {
@@ -333,7 +325,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
       , 5 + getString(R.string.string_miniute), 10 + getString(R.string.string_miniute)
     };
     AlertDialog.Builder builder = new AlertDialog.Builder(this, 3);
-    builder.setTitle(getString(R.string.action_push_interval));
+    builder.setTitle(getString(R.string.string_DevAdvancedSettings_PushInterval));
     builder.setIcon(R.mipmap.ic_launcher);
 
 
@@ -360,15 +352,17 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
   }
 
   /*灵敏度*/
-  private void dialogChoice3()
+  private void DevAdvancedSettings_PIR()
   {
 
     final String items[] = {
-      getString(R.string.action_level_low), getString(R.string.action_level_middle), getString(R.string
-      .action_level_high)
+      //getString(R.string.action_close),
+      getString(R.string.action_level_low),
+      getString(R.string.action_level_middle),
+      getString(R.string.action_level_high)
     };
     AlertDialog.Builder builder = new AlertDialog.Builder(this, 3);
-    builder.setTitle(getString(R.string.action_pir_sensitivity));
+    builder.setTitle(getString(R.string.string_DevAdvancedSettings_PIRSensitivity));
     builder.setIcon(R.mipmap.ic_launcher);
 
 
@@ -396,7 +390,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
 
 
   /*报警时间间隔*/
-  private void dialogChoice_alarm_time()
+  private void DevAdvancedSettings_doAlmTimeLen()
   {
 
     final String items[] = {
@@ -404,7 +398,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
       , 30 + getString(R.string.string_second), 60 + getString(R.string.string_second)
     };
     AlertDialog.Builder builder = new AlertDialog.Builder(this, 3);
-    builder.setTitle(getString(R.string.action_alarm_time_span));
+    builder.setTitle(getString(R.string.string_DevAdvancedSettings_AlmTimeLen));
     builder.setIcon(R.mipmap.ic_launcher);
 
 
@@ -455,7 +449,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
 
             if (lod == null)
             {
-              lod = new LoadingDialog(PushSettingActivity.this);
+              lod = new LoadingDialog(DevAdvancedSettingsActivity.this);
             }
             lod.dialogShow();
 
@@ -482,8 +476,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(String... params)
     {
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd + "&MsgID=" + lib
-        .Msg_GetPushCfg;
+      String url = model.getDevURL(lib.Msg_GetPushCfg);
       String ret = lib.thNetHttpGet(model.NetHandle, url);
       return ret;
     }
@@ -522,8 +515,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(String... params)
     {
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd +
-        "&MsgID=" + lib.Msg_SetPushCfg + "&PushActive=" +
+      String url = model.getDevURL(lib.Msg_SetPushCfg) + "&PushActive=" +
         mPushSettingModel.getPushActive() + "&PushInterval=" + mPushSettingModel.getPushInterval() + "&PIRSensitive=" + mPushSettingModel
         .getPIRSensitive();
       String ret = lib.thNetHttpGet(model.NetHandle, url);
@@ -533,8 +525,6 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected void onPostExecute(String result)
     {
-
-
       super.onPostExecute(result);
     }
   }
@@ -553,8 +543,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(String... params)
     {
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd + "&MsgID=" + lib
-        .Msg_GetMDCfg;
+      String url = model.getDevURL(lib.Msg_GetMDCfg);
       String ret = lib.thNetHttpGet(model.NetHandle, url);
       return ret;
     }
@@ -573,8 +562,9 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
       try
       {
         JSONObject jsonObject = new JSONObject(result);
+        MD_Active = jsonObject.getInt("MD_Active");
         MD_Sensitive = jsonObject.getInt("MD_Sensitive");
-        mAdapter.setMD_Sensitive(MD_Sensitive);
+        mAdapter.setMD_Sensitive(MD_Active, MD_Sensitive);
         mAdapter.notifyDataSetChanged();
 
       }
@@ -602,8 +592,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(String... params)
     {
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd + "&MsgID=" + lib
-        .Msg_GetRecCfg;
+      String url = model.getDevURL(lib.Msg_GetRecCfg);
       String ret = lib.thNetHttpGet(model.NetHandle, url);
       return ret;
     }
@@ -645,8 +634,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(String... params)
     {
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd +
-        "&MsgID=" + lib.Msg_SetRecCfg + "&Rec_AlmTimeLen=" + mRecConfigModel.getRec_AlmTimeLen();
+      String url = model.getDevURL(lib.Msg_SetRecCfg) + "&Rec_AlmTimeLen=" + mRecConfigModel.getRec_AlmTimeLen();
       String ret = lib.thNetHttpGet(model.NetHandle, url);
       return ret;
     }
@@ -677,21 +665,25 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(Integer... params)
     {
-      if (params[0] == 2)
+      MD_Active = 1;
+      if (params[0] == 3)
       {
         MD_Sensitive = 100;
       }
-      else if (params[0] == 1)
+      else if (params[0] == 2)
       {
         MD_Sensitive = 150;
       }
-      else if (params[0] == 0)
+      else if (params[0] == 1)
       {
         MD_Sensitive = 200;
       }
+      else if (params[0] == 0)
+      {
+        MD_Active = 0;
+      }
 
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd +
-        "&MsgID=" + lib.Msg_SetMDCfg + "&MD_Sensitive=" + MD_Sensitive + "&MD_Active=1";
+      String url = model.getDevURL(lib.Msg_SetMDCfg) + "&MD_Sensitive=" + MD_Sensitive + "&MD_Active=" + MD_Active;
       String ret = lib.thNetHttpGet(model.NetHandle, url);
       return ret;
     }
@@ -710,13 +702,13 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
       {
         if (retModel.ret == 1)
         {
-          mAdapter.setMD_Sensitive(MD_Sensitive);
+          mAdapter.setMD_Sensitive(MD_Active, MD_Sensitive);
           mAdapter.notifyDataSetChanged();
-          SouthUtil.showDialog(PushSettingActivity.this, getString(R.string.action_Success));
+          SouthUtil.showDialog(DevAdvancedSettingsActivity.this, getString(R.string.action_Success));
         }
         else
         {
-          SouthUtil.showDialog(PushSettingActivity.this, getString(R.string.action_STA_T_AP_Failed));
+          SouthUtil.showDialog(DevAdvancedSettingsActivity.this, getString(R.string.action_STA_T_AP_Failed));
         }
       }
       super.onPostExecute(result);
@@ -737,8 +729,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(Integer... params)
     {
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd + "&MsgID=" + lib
-        .Msg_SetDevLoadDefault;
+      String url = model.getDevURL(lib.Msg_SetDevLoadDefault);
       String ret = lib.thNetHttpGet(model.NetHandle, url);
       return ret;
     }
@@ -758,11 +749,11 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
         if (retModel.ret == 0)
         {
 
-          SouthUtil.showDialog(PushSettingActivity.this, getString(R.string.action_Failed));
+          SouthUtil.showDialog(DevAdvancedSettingsActivity.this, getString(R.string.action_Failed));
         }
         else
         {
-          SouthUtil.showToast(PushSettingActivity.this, getString(R.string.action_Success));
+          SouthUtil.showToast(DevAdvancedSettingsActivity.this, getString(R.string.action_Success));
 
 
           finishResetConfig();
@@ -774,7 +765,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
       {
 
 
-        SouthUtil.showToast(PushSettingActivity.this, getString(R.string.action_Success));
+        SouthUtil.showToast(DevAdvancedSettingsActivity.this, getString(R.string.action_Success));
         finishResetConfig();
       }
       super.onPostExecute(result);
@@ -784,19 +775,6 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
   /*结束回复出厂设置*/
   void finishResetConfig()
   {
-//    DataManager.getInstance().deleteDev(model);
-//    for (DevModel tmpNode : MainDevListFragment.mDevices)
-//    {
-//      if (model.SN.equals(tmpNode.SN))
-//      {
-//        tmpNode.Disconn2();
-//        //zhb tmpNode.Disconn();
-//        tmpNode.NetHandle = 0;
-//        MainDevListFragment.mDevices.remove(tmpNode);
-//        break;
-//      }
-//    }
-
     if (lod == null)
     {
       lod = new LoadingDialog(this);
@@ -856,7 +834,6 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
         {
           if (model.SN.equals(tmpNode.SN))
           {
-            //zhb tmpNode.Disconn();
             lib.thNetThreadDisConnFree(tmpNode.NetHandle);
             tmpNode.NetHandle = 0;
             MainDevListFragment.mDevices.remove(tmpNode);
@@ -884,8 +861,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(String... params)
     {
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd + "&MsgID=" + lib
-        .Msg_GetAudioCfg;
+      String url = model.getDevURL(lib.Msg_GetAudioCfg);
       String ret = lib.thNetHttpGet(model.NetHandle, url);
       return ret;
     }
@@ -933,8 +909,7 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
     @Override
     protected String doInBackground(Integer... params)
     {
-      String url = "http://" + model.IPUID + ":" + model.WebPort + "/cfg1.cgi?User=" + model.usr + "&Psd=" + model.pwd +
-        "&MsgID=" + lib.Msg_SetAudioCfg + "&AUDIO_IsPlayPromptSound=" + params[0];
+      String url = model.getDevURL(lib.Msg_SetAudioCfg) + "&AUDIO_IsPlayPromptSound=" + params[0];
       String ret = lib.thNetHttpGet(model.NetHandle, url);
       return ret;
     }
@@ -954,11 +929,11 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
         if (retModel.ret == 1)
         {
 
-          // SouthUtil.showDialog(PushSettingActivity.this,getString(R.string.action_Success));
+          // SouthUtil.showDialog(DevAdvancedSettingsActivity.this,getString(R.string.action_Success));
         }
         else
         {
-          // SouthUtil.showDialog(PushSettingActivity.this,getString(R.string.action_Failed));
+          // SouthUtil.showDialog(DevAdvancedSettingsActivity.this,getString(R.string.action_Failed));
         }
       }
       super.onPostExecute(result);
@@ -976,5 +951,5 @@ public class PushSettingActivity extends BaseAppCompatActivity implements BaseAd
 
 
   LoadingDialog lod;
-  final String tag = "PushSettingActivity";
+  final String tag = "DevAdvancedSettingsActivity";
 }

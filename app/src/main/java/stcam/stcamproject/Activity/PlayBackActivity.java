@@ -43,7 +43,7 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
   DevModel devModel;
   ImageButton imagebutton_back;
 
-  MainDevListFragment.EnumMainEntry entryType;
+  MainDevListFragment.TUserMode UserMode;
   ProgressBar load_progress;
 
   SeekBar seekBarTimer;
@@ -80,7 +80,7 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
     {
       model = (SDVideoModel) bundle.getSerializable("model");
       devModel = (DevModel) bundle.getParcelable("devModel");
-      entryType = (MainDevListFragment.EnumMainEntry) bundle.getSerializable("entry");
+      UserMode = (MainDevListFragment.TUserMode) bundle.getSerializable("entry");
       Log.e(tag, "play sdVideo:" + model.sdVideo);
     }
     android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -259,7 +259,7 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
     load_progress = findViewById(R.id.load_progress);
 
     imagebutton_back.setOnClickListener(this);
-//        if (entryType == MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor){
+//        if (UserMode == MainDevListFragment.TUserMode.UserMode_Visitor){
 //            button_record.setVisibility(View.INVISIBLE);
 //
 //            button_snapshot.setVisibility(View.INVISIBLE);

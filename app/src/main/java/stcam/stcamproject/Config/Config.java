@@ -11,13 +11,13 @@ public class Config
   public static final int apptype = 0;//APP类型，IPCAM=0
   public static final int pushtype = 0;//推送服务商 极光(jPush=0)  google=1
 
-  public static final String DEFAULTUSERNAME = "admin";
-  public static final String DEFAULTPASSWORD = "admin";
+  public static final String DEFAULT_DEV_USERNAME = "admin";
+  public static final String DEFAULT_DEV_PASSWORD = "admin";
   public static final String stPath = "/stIPCAM";
 
   public static final int greenColor = Color.parseColor("#2197d8");
-  public static final String StrOnNext = "  >";
+  public static final String StrOnNextLevel = "  >";
 
   public static final int TIMEOUT_SMARTLINKSEARCH = 40 * 1000;
-  public static final int TIMEOUT_APToSTA = 40;
+  public static final int TIMEOUT_APToSTA = 45;
 }

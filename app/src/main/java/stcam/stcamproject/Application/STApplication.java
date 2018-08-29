@@ -133,7 +133,6 @@ public class STApplication extends Application
     {
       if (tmpNode.IsConnect())
       {
-        //zhb devModel.Disconn();
         lib.thNetThreadDisConnFree(tmpNode.NetHandle);//离开应用 压入后台或者退出应用
         tmpNode.NetHandle = 0;
       }

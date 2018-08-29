@@ -29,11 +29,11 @@ import stcam.stcamproject.R;
 import stcam.stcamproject.Util.GsonUtil;
 import stcam.stcamproject.View.LoadingDialog;
 
-public class LedControlActivity extends BaseAppCompatActivity implements RadioGroup.OnCheckedChangeListener, SeekBar
+public class DevLedControlActivity extends BaseAppCompatActivity implements RadioGroup.OnCheckedChangeListener, SeekBar
   .OnSeekBarChangeListener, View.OnClickListener
 {
   DevModel devModel;
-  static final String tag = "LedControlActivity";
+  static final String tag = "DevLedControlActivity";
 
   RadioButton btn_mode_1;
   RadioButton btn_mode_2;
@@ -47,7 +47,7 @@ public class LedControlActivity extends BaseAppCompatActivity implements RadioGr
   RelativeLayout layout_brintness;
 
   TextView light_time_span;
-  SeekBar seekBar;//亮灯时间
+  SeekBar seekBarLightTime;//亮灯时间
   SegmentedGroup segmented3;//光感灵敏度
   RadioButton btn_sensitive_1;
   RadioButton btn_sensitive_2;
@@ -224,9 +224,10 @@ public class LedControlActivity extends BaseAppCompatActivity implements RadioGr
     modeGroup.setOnCheckedChangeListener(this);
 
 
-    seekBar = findViewById(R.id.seekBar);
+    seekBarLightTime = findViewById(R.id.seekBarLightTime);
+    //seekBarLightTime.setMin(minLightSpan);
+    seekBarLightTime.setOnSeekBarChangeListener(this);
     light_time_span = findViewById(R.id.light_time_span);
-    seekBar.setOnSeekBarChangeListener(this);
 
     segmented3 = findViewById(R.id.segmented3);
     btn_sensitive_1 = findViewById(R.id.btn_sensitive_1);
@@ -356,7 +357,7 @@ public class LedControlActivity extends BaseAppCompatActivity implements RadioGr
       {
         case 1:
           modeGroup.check(R.id.btn_mode_1);
-          seekBar.setProgress(statusModel.getAuto().getDelay() - minLightSpan);
+          seekBarLightTime.setProgress(statusModel.getAuto().getDelay() - minLightSpan);
           light_time_span.setText("" + statusModel.getAuto().getDelay());
           if (statusModel.getAuto().getLux() == 0)
           {
@@ -414,7 +415,7 @@ public class LedControlActivity extends BaseAppCompatActivity implements RadioGr
   @Override
   public void onProgressChanged(SeekBar bar, int i, boolean b)
   {
-    if (bar == seekBar)
+    if (bar == seekBarLightTime)
     {
       int value = i + minLightSpan;
       statusModel.getAuto().setDelay(value);
@@ -527,7 +528,7 @@ public class LedControlActivity extends BaseAppCompatActivity implements RadioGr
     protected String doInBackground(Integer... params)
     {
       //第二个执行方法,onPreExecute()执行完后执行
-      String url = devModel.getHttpCfg1UsrPwd() + "&MsgID=" + lib.Msg_GetLightCfg;
+      String url = devModel.getDevURL(lib.Msg_GetLightCfg);
       Log.e(tag, "url " + url);
       String ret = lib.thNetHttpGet(devModel.NetHandle, url);
       return ret;
@@ -577,7 +578,7 @@ public class LedControlActivity extends BaseAppCompatActivity implements RadioGr
     protected String doInBackground(Integer... params)
     {
       //第二个执行方法,onPreExecute()执行完后执行
-      String url = devModel.getHttpCfg1UsrPwd() + "&MsgID=" + lib.Msg_GetLightCfg;
+      String url = devModel.getDevURL(lib.Msg_GetLightCfg);
       Log.e(tag, "url " + url);
       String ret = lib.thNetHttpGet(devModel.NetHandle, url);
       return ret;
@@ -617,7 +618,7 @@ public class LedControlActivity extends BaseAppCompatActivity implements RadioGr
     protected String doInBackground(Integer... params)
     {
       //第二个执行方法,onPreExecute()执行完后执行
-      String url = devModel.getHttpCfg1UsrPwd() + "&MsgID=" + lib.Msg_SetLightCfg;
+      String url = devModel.getDevURL(lib.Msg_SetLightCfg);
       if (statusModel.getMode() == 1)
       {
         url += "&Mode=1&Delay=" + statusModel.getAuto().getDelay() + "&Lux=" + statusModel.getAuto().getLux() + "&Brightness=" +
@@ -664,17 +665,17 @@ public class LedControlActivity extends BaseAppCompatActivity implements RadioGr
           params.putBoolean("SetLedResultModel", true);
           if (retmodel.ret == 1)
           {
-            // SouthUtil.showDialog(LedControlActivity.this,"set successfully");
+            // SouthUtil.showDialog(DevLedControlActivity.this,"set successfully");
           }
           else
           {
-            // SouthUtil.showDialog(LedControlActivity.this,"set failed");
+            // SouthUtil.showDialog(DevLedControlActivity.this,"set failed");
           }
         }
         else
         {
           params.putBoolean("SetLedResultModel", false);
-          // SouthUtil.showDialog(LedControlActivity.this,"set failed");
+          // SouthUtil.showDialog(DevLedControlActivity.this,"set failed");
         }
 
         mFirebaseAnalytics.logEvent("SetLed", params);

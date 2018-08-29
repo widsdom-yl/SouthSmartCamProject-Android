@@ -4,7 +4,7 @@
                                              xmlns:tools="http://schemas.android.com/tools"
                                              android:layout_width="match_parent"
                                              android:layout_height="match_parent"
-                                             tools:context=".Activity.LedControlActivity">
+                                             tools:context=".Activity.DevLedControlActivity">
 
     <ImageView
         android:id="@+id/imageView_light"
@@ -116,16 +116,16 @@
                 />
 
             <SeekBar
-                android:id="@+id/seekBar"
+                android:id="@+id/seekBarLightTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/textView4"
                 android:layout_marginEnd="45dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="45dp"
                 android:layout_marginStart="10dp"
-                android:layout_below="@id/textView4"
                 android:layout_marginTop="8dp"
-                android:max="600"/>
+                android:max="580"/>
 
         </RelativeLayout>
 

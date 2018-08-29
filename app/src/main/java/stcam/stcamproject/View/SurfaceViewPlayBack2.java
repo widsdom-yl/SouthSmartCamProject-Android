@@ -53,8 +53,17 @@ public class SurfaceViewPlayBack2 extends SurfaceView implements SurfaceHolder.C
 
   public void Play()
   {
-    lib.thNetRemoteFilePlay(mDevModel.NetHandle, mSDVideoModel.sdVideo);
-    lib.thNetAudioPlayOpen(mDevModel.NetHandle);
+    //lib.thNetRemoteFilePlay(mDevModel.NetHandle, mSDVideoModel.sdVideo);
+    //lib.thNetAudioPlayOpen(mDevModel.NetHandle);
+    new Thread()
+    {
+      @Override
+      public void run()
+      {
+        lib.thNetRemoteFilePlay(mDevModel.NetHandle, mSDVideoModel.sdVideo);
+        lib.thNetAudioPlayOpen(mDevModel.NetHandle);
+      }
+    }.start();
   }
 
   public void Stop()

@@ -26,13 +26,8 @@ import com.model.PushSettingModel;
 import com.model.RetModel;
 import com.model.UpdateDevModel;
 import com.thSDK.lib;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -49,7 +44,7 @@ import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.View.LoadingDialog;
 import stcam.stcamproject.network.ServerNetWork;
 
-import static stcam.stcamproject.Activity.MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor;
+import static stcam.stcamproject.Activity.MainDevListFragment.TUserMode.UserMode_Visitor;
 
 public class SettingActivity extends BaseAppCompatActivity implements View.OnClickListener, BaseAdapter.OnItemClickListener
 {
@@ -57,13 +52,12 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
   TextView textview_uid;
   Button button_ap_sta;
   Button button_delete_device;
-  MainDevListFragment.EnumMainEntry entryType;
+  MainDevListFragment.TUserMode UserMode;
 
   RecyclerView mRecyclerView;
   DeviceSettingAdapter mAdapter;
   DevModel devNode;
   PushSettingModel mPushSettingModel;
-  int MD_Sensitive = -1;
 
   List<String> items = new ArrayList<>();
 
@@ -82,18 +76,13 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     android.support.v7.app.ActionBar actionBar = getSupportActionBar();
     if (actionBar != null)
     {
-//            actionBar.setHomeButtonEnabled(true);
-//            actionBar.setDisplayHomeAsUpEnabled(true);
-//            actionBar.setTitle(R.string.action_dev_setting);
-
       setCustomTitle(getString(R.string.action_dev_setting), true);
-
     }
     Bundle bundle = this.getIntent().getExtras();
     if (bundle != null)
     {
       devNode = bundle.getParcelable("devModel");
-      entryType = (MainDevListFragment.EnumMainEntry) bundle.getSerializable("entry");
+      UserMode = (MainDevListFragment.TUserMode) bundle.getSerializable("entry");
     }
     initView();
     initValue();
@@ -105,15 +94,9 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
         lod = new LoadingDialog(this);
       }
       lod.dialogShow();
-
-//            getConfigTask configTask = new getConfigTask();
-//            configTask.execute();
-
       getPushConfigTask pushConfigTask = new getPushConfigTask();
       pushConfigTask.execute();
     }
-
-
   }
 
   @Override
@@ -142,7 +125,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     textview_uid = findViewById(R.id.textview_uid);
     button_delete_device = findViewById(R.id.button_delete_device);
     button_ap_sta = findViewById(R.id.button_ap_sta);
-    if (entryType == EnumMainEntry_Visitor)
+    if (UserMode == UserMode_Visitor)
     {
       button_ap_sta.setText(R.string.action_AP_T_STA);
     }
@@ -151,11 +134,10 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       button_ap_sta.setText(R.string.action_STA_T_AP);
     }
 
-    if (entryType == EnumMainEntry_Visitor)
+    if (UserMode == UserMode_Visitor)
     {
       button_delete_device.setVisibility(View.INVISIBLE);
     }
-
 
     button_delete_device.setOnClickListener(this);
     button_ap_sta.setOnClickListener(this);
@@ -166,7 +148,6 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     mRecyclerView.setLayoutManager(layoutManager);
     mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
   }
 
   void initValue()
@@ -174,17 +155,13 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     items.add(getString(R.string.device_name));
     items.add(getString(R.string.action_device_pwd));
     items.add(getString(R.string.action_push));
-    items.add(getString(R.string.action_manager_senior));
-
-//        items.add(getString(R.string.action_manager_alarm_level));
+    items.add(getString(R.string.string_DevAdvancedSettings));
     items.add(getString(R.string.action_version));
 
     mAdapter = new DeviceSettingAdapter(items);
     mAdapter.setDevModel(devNode);
     mAdapter.setOnItemClickListener(this);
     mRecyclerView.setAdapter(mAdapter);
-
-
   }
 
   void refreshView()
@@ -222,7 +199,6 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     builder.setPositiveButton(getString(R.string.OK),
       new DialogInterface.OnClickListener()
       {
-
         public void onClick(DialogInterface dialog, int which)
         {
           if (lod == null)
@@ -280,13 +256,10 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
           })
           .setNegativeButton(this.getString(R.string.action_cancel), null)
           .show();
-
-
         break;
 
-//                break;
       case R.id.button_ap_sta:
-        if (entryType == EnumMainEntry_Visitor)
+        if (UserMode == UserMode_Visitor)
         {
           //设置ap转sta
           Intent intent1 = new Intent(STApplication.getInstance(), AddDeviceAP2StaSetup.class);
@@ -312,11 +285,6 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
               lod = new LoadingDialog(this);
             }
             lod.dialogShow();
-//                        Network.getCommandApi(model)
-//                                .STA2AP_keepValue(model.usr,model.pwd,38,1,1,0)
-//                                .subscribeOn(Schedulers.io())
-//                                .observeOn(AndroidSchedulers.mainThread())
-//                                .subscribe(observer_sta_ap);
             Sta2ApTask task = new Sta2ApTask();
             task.execute();
           }
@@ -334,7 +302,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
   @Override
   public void onItemClick(View view, int position)
   {
-    if (entryType == EnumMainEntry_Visitor)
+    if (UserMode == UserMode_Visitor)
     {
       SouthUtil.showDialog(this, getString(R.string.string_mode_visitor));
       return;
@@ -365,10 +333,10 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
         return;
       }
 
-      Intent intent = new Intent(this, ChangeDevicePwdActivity.class);
+      Intent intent = new Intent(this, DevChangePwdActivity.class);
       Bundle bundle = new Bundle();
       bundle.putParcelable("model", devNode);
-      bundle.putSerializable("type", ChangeDevicePwdActivity.EnumChangeDevicePwd.DEVICE_SETTING);
+      bundle.putSerializable("type", DevChangePwdActivity.EnumChangeDevicePwd.DEVICE_SETTING);
 
       intent.putExtras(bundle);
       startActivity(intent);
@@ -392,7 +360,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
         return;
       }
 
-      Intent intent = new Intent(this, PushSettingActivity.class);
+      Intent intent = new Intent(this, DevAdvancedSettingsActivity.class);
       Bundle bundle = new Bundle();
       bundle.putParcelable("devModel", devNode);
       intent.putExtras(bundle);
@@ -461,68 +429,9 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     builder.create().show();
   }
 
-
-  /*报警灵明度*/
-  int chooseLevel = -1;
-
-  private void dialogChoice()//未用到 zhb
-  {
-    chooseLevel = -1;
-    final String items[] = {
-      getString(R.string.action_level_low),
-      getString(R.string.action_level_middle),
-      getString(R.string.action_level_high)
-    };
-    AlertDialog.Builder builder = new AlertDialog.Builder(this, 3);
-    builder.setTitle(getString(R.string.action_manager_alarm_level));
-    builder.setIcon(R.mipmap.ic_launcher);
-    if (MD_Sensitive <= 100)
-    {
-      chooseLevel = 0;
-    }
-    else if (MD_Sensitive <= 150)
-    {
-      chooseLevel = 1;
-    }
-    else if (MD_Sensitive <= 200)
-    {
-      chooseLevel = 2;
-    }
-
-    builder.setSingleChoiceItems(items, chooseLevel,
-      new DialogInterface.OnClickListener()
-      {
-        @Override
-        public void onClick(DialogInterface dialog, int which)
-        {
-          Log.e(tag, "choose :" + which);
-          chooseLevel = which;
-        }
-      });
-    builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener()
-    {
-      @Override
-      public void onClick(DialogInterface dialog, int which)
-      {
-        dialog.dismiss();
-        Log.e(tag, "final choose :" + which);
-        if (lod == null)
-        {
-          lod = new LoadingDialog(SettingActivity.this);
-        }
-        lod.dialogShow();
-        SetMdSensitiveConfigTask task = new SetMdSensitiveConfigTask();
-        task.execute(chooseLevel);
-      }
-    });
-    builder.create().show();
-  }
-
-
   @Override
   public void onLongClick(View view, int position)
   {
-
   }
 
   class ChangeDeviceNameTask extends AsyncTask<String, Void, String>
@@ -539,10 +448,8 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected String doInBackground(String... params)
     {
-      String url = devNode.getHttpCfg1UsrPwd() + "&MsgID=" + lib.Msg_SetDevInfo + "&DevName=" + params[0];
-      Log.e(tag, url + ",NetHandle is " + devNode.NetHandle);
+      String url = devNode.getDevURL(lib.Msg_SetDevInfo,"&DevName=" + params[0]);
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
-      Log.e(tag, "ret :" + ret);
       RetModel retModel = GsonUtil.parseJsonWithGson(ret, RetModel.class);
       if (retModel != null)
       {
@@ -605,10 +512,8 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected String doInBackground(String... params)
     {
-      String url = devNode.getHttpCfg1UsrPwd() + "&MsgID=" + lib.Msg_SetWiFiCfg + "&wifi_Active=1&wifi_IsAPMode=1&s=0";
-      Log.e(tag, url + ",NetHandle is " + devNode.NetHandle);
+      String url = devNode.getDevURL(lib.Msg_SetWiFiCfg,"&wifi_Active=1&wifi_IsAPMode=1");
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
-      Log.e(tag, "ret :" + ret);
       return ret;
     }
 
@@ -631,7 +536,6 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
           {
             if (tmpNode.SN.equals(tmpNode.SN))
             {
-              //tmpNode.Disconn();
               lib.thNetThreadDisConnFree(tmpNode.NetHandle);
               tmpNode.NetHandle = 0;
             }
@@ -666,7 +570,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected String doInBackground(String... params)
     {
-      String url = devNode.getHttpCfg1UsrPwd() + "&MsgID=" + lib.Msg_SetDevReboot;
+      String url = devNode.getDevURL(lib.Msg_SetDevReboot);
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       return ret;
     }
@@ -690,7 +594,6 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
           {
             if (tmpNode.SN.equals(tmpNode.SN))
             {
-              //tmpNode.Disconn();
               lib.thNetThreadDisConnFree(tmpNode.NetHandle);
               tmpNode.NetHandle = 0;
             }
@@ -704,152 +607,6 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
       super.onPostExecute(result);
     }
   }
-
-
-  class getConfigTask extends AsyncTask<String, Void, String>
-  {
-    // AsyncTask<Params, Progress, Result>
-    //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
-    @Override
-    protected void onPreExecute()
-    {
-      //第一个执行方法
-      super.onPreExecute();
-    }
-
-    @Override
-    protected String doInBackground(String... params)
-    {
-      String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User=" + devNode.usr + "&Psd=" + devNode.pwd +
-        "&MsgID=" + lib.Msg_GetMDCfg;
-      String ret = lib.thNetHttpGet(devNode.NetHandle, url);
-      Log.e(tag, "ret :" + ret);
-      return ret;
-    }
-
-    @Override
-    protected void onPostExecute(String result)
-    {
-      //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
-      //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
-      //Log.e(tag,"get playback list :"+result);
-      lod.dismiss();
-      if (result == null)
-      {
-        return;
-      }
-      try
-      {
-        JSONObject jsonObject = new JSONObject(result);
-        MD_Sensitive = jsonObject.getInt("MD_Sensitive");
-        mAdapter.setMD_Sensitive(MD_Sensitive);
-        mAdapter.notifyDataSetChanged();
-
-      }
-      catch (JSONException e)
-      {
-        e.printStackTrace();
-      }
-
-
-      super.onPostExecute(result);
-    }
-  }
-
-  class SetMdSensitiveConfigTask extends AsyncTask<Integer, Void, String>
-  {
-    // AsyncTask<Params, Progress, Result>
-    //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值类型
-    @Override
-    protected void onPreExecute()
-    {
-      //第一个执行方法
-      super.onPreExecute();
-    }
-
-    @Override
-    protected String doInBackground(Integer... params)
-    {
-      if (params[0] == 0)
-      {
-        MD_Sensitive = 100;
-      }
-      else if (params[0] == 1)
-      {
-        MD_Sensitive = 150;
-      }
-      else if (params[0] == 2)
-      {
-        MD_Sensitive = 200;
-      }
-
-      String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User=" + devNode.usr + "&Psd=" + devNode.pwd +
-        "&MsgID=" + lib.Msg_SetMDCfg + "&MD_Sensitive=" + MD_Sensitive + "&MD_Active=1";
-      Log.e(tag, url + ",MD_Sensitive,NetHandle is " + devNode.NetHandle);
-      String ret = lib.thNetHttpGet(devNode.NetHandle, url);
-      Log.e(tag, "ret :" + ret);
-      return ret;
-    }
-
-    @Override
-    protected void onPostExecute(String result)
-    {
-      //doInBackground返回时触发，换句话说，就是doInBackground执行完后触发
-      //这里的result就是上面doInBackground执行后的返回值，所以这里是"执行完毕"
-      //Log.e(tag,"get playback list :"+result);
-      lod.dismiss();
-
-
-      RetModel retModel = GsonUtil.parseJsonWithGson(result, RetModel.class);
-      if (retModel != null)
-      {
-        if (retModel.ret == 1)
-        {
-          mAdapter.setMD_Sensitive(MD_Sensitive);
-          mAdapter.notifyDataSetChanged();
-          SouthUtil.showDialog(SettingActivity.this, getString(R.string.action_Success));
-        }
-        else
-        {
-          SouthUtil.showDialog(SettingActivity.this, getString(R.string.action_STA_T_AP_Failed));
-        }
-      }
-      super.onPostExecute(result);
-    }
-  }
-
-  Observer<RetModel> observer_sta_ap = new Observer<RetModel>()
-  {
-    @Override
-    public void onCompleted()
-    {
-      lod.dismiss();
-      Log.e(tag, "---------------------2");
-    }
-
-    @Override
-    public void onError(Throwable e)
-    {
-      lod.dismiss();
-      Log.e(tag, "---------------------1:" + e.getLocalizedMessage());
-    }
-
-    @Override
-    public void onNext(RetModel m)
-    {
-      lod.dismiss();
-      if (lib.RESULT_FAIL == m.ret)
-      {
-        SouthUtil.showDialog(SettingActivity.this, getString(R.string.action_STA_T_AP_Failed));
-      }
-      else
-      {
-        SouthUtil.showDialog(SettingActivity.this, getString(R.string.action_STA_T_AP_Success));
-      }
-
-    }
-  };
-
 
   Observer<UpdateDevModel> observer_check_dev_update = new Observer<UpdateDevModel>()
   {
@@ -998,10 +755,8 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected String doInBackground(String... params)
     {
-      String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User=" + devNode.usr + "&Psd=" + devNode.pwd +
-        "&MsgID=" + lib.Msg_GetPushCfg;
+      String url = devNode.getDevURL(lib.Msg_GetPushCfg);
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
-      Log.e(tag, "ret :" + ret);
       return ret;
     }
 
@@ -1034,10 +789,9 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected String doInBackground(String... params)
     {
-      String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User=" + devNode.usr + "&Psd=" + devNode.pwd +
-        "&MsgID=" + lib.Msg_SetPushCfg + "&PushActive=" +
-        mPushSettingModel.getPushActive() + "&PushInterval=" + mPushSettingModel.getPushInterval() + "&PIRSensitive=" + mPushSettingModel
-        .getPIRSensitive();
+      String url = devNode.getDevURL(lib.Msg_SetPushCfg) + "&PushActive=" +
+        mPushSettingModel.getPushActive() + "&PushInterval=" + mPushSettingModel.getPushInterval() +
+        "&PIRSensitive=" + mPushSettingModel.getPIRSensitive();
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       return ret;
     }
@@ -1066,8 +820,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected String doInBackground(String... params)
     {
-      String url = "http://" + devNode.IPUID + ":" + devNode.WebPort + "/cfg1.cgi?User="
-        + devNode.usr + "&Psd=" + devNode.pwd + "&MsgID=" + lib.Msg_CheckUpgradeBin + "&ver="
+      String url = devNode.getDevURL(lib.Msg_CheckUpgradeBin) + "&ver="
         + params[0] + "&crc=" + params[1] + "&url=" + params[2];
       String ret = lib.thNetHttpGet(devNode.NetHandle, url);
       return ret;

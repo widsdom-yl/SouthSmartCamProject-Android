@@ -65,7 +65,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
   ImageButton imagebutton_to_lanscape;
 
   private GestureDetector mygesture;
-  MainDevListFragment.EnumMainEntry entryType;
+  MainDevListFragment.TUserMode UserMode;
 
   //定时刷新列表
   public int TIME = 1000;
@@ -110,7 +110,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
     if (bundle != null)
     {
       devModel = (DevModel) bundle.getParcelable("devModel");
-      entryType = (MainDevListFragment.EnumMainEntry) bundle.getSerializable("entry");
+      UserMode = (MainDevListFragment.TUserMode) bundle.getSerializable("entry");
       Log.e(tag, "NetHandle:" + devModel.NetHandle + ",SN:" + devModel.SN);
     }
     android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -356,7 +356,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
         "devModel.IsPush" + devModel.IsPush +
         "devModel.IsControl" + devModel.IsControl);
 //devModel.IsVideo 0 devModel.IsHistory 0 devModel.IsPush 0 devModel.IsControl0
-    if (devModel.IsVideo == 0 && entryType != MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor)
+    if (devModel.IsVideo == 0 && UserMode != MainDevListFragment.TUserMode.UserMode_Visitor)
     {
       //音频
       button_speech.setVisibility(View.INVISIBLE);
@@ -374,7 +374,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
       }
     }
 
-    if (devModel.IsControl == 0 && entryType != MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor)
+    if (devModel.IsControl == 0 && UserMode != MainDevListFragment.TUserMode.UserMode_Visitor)
     {
       button_led.setVisibility(View.INVISIBLE);//zhb
       button_led_layer = findViewById(R.id.button_led_layer);//zhb
@@ -451,7 +451,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
     });
 
 
-//        if (entryType == MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor){
+//        if (UserMode == MainDevListFragment.TUserMode.UserMode_Visitor){
 //            button_record.setVisibility(View.INVISIBLE);
 //            button_record_o.setVisibility(View.INVISIBLE);
 //            button_snapshot.setVisibility(View.INVISIBLE);
@@ -590,7 +590,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
         break;
       case R.id.button_led:
 
-        Intent intent = new Intent(this, LedControlActivity.class);
+        Intent intent = new Intent(this, DevLedControlActivity.class);
         intent.putExtra("devModel", devModel);
         startActivity(intent);
         break;
@@ -636,7 +636,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
           @Override
           public void run()
           {
-            devModel.Stop();
+            //devModel.Stop();
             devModel.Play(pix_low ? 1 : 0);
           }
         }.start();
@@ -661,7 +661,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
 
         Bundle bundle = new Bundle();
         bundle.putParcelable("devModel", devModel);
-        bundle.putSerializable("entry", entryType);
+        bundle.putSerializable("entry", UserMode);
         intentSetting.putExtras(bundle);
         Log.e(tag, "to SettingActivity NetHandle:" + devModel.NetHandle);
 
@@ -757,8 +757,8 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
     protected String doInBackground(Integer... params)
     {
       //第二个执行方法,onPreExecute()执行完后执行
-      String url = devModel.getHttpCfg1UsrPwd() + "&MsgID=" + lib.Msg_PTZControl + "&cmd=" + params[0] + "&sleep=500&s=23231";
-
+      String url = devModel.getDevURL(lib.Msg_PTZControl)  + "&cmd=" + params[0] + "&sleep=500&s=23231";
+      Log.e(tag, "PtzControlTask url :" + url);
       String ret = lib.thNetHttpGet(devModel.NetHandle, url);
       Log.e(tag, "PtzControlTask ret :" + ret);
       return ret;

@@ -352,7 +352,7 @@ bool net_GetAllCfg(HANDLE NetHandle)//not export
     Pkt.CmdPkt.PktHead = Head_CmdPkt;
     Pkt.CmdPkt.MsgID = Msg_GetAllCfg;
     Pkt.CmdPkt.Session = Play->Session;
-    if (Play->IsAdjustTime) Pkt.CmdPkt.Value = GetTime();
+    if (Play->IsAdjustTime) Pkt.CmdPkt.Value = GetTimezoneTime();
     ret = SendBuf(Play->hSocket, (char *) &Pkt, sizeof(TNetCmdPkt), NET_TIMEOUT);
 
     for (i = 0; i < 5; i++)
@@ -376,7 +376,7 @@ bool net_GetAllCfg(HANDLE NetHandle)//not export
     Pkt.MsgID = Msg_GetAllCfg;
     Pkt.Result = 0;
     Pkt.PktSize = 4;
-    if (Play->IsAdjustTime) Pkt.Value = GetTime();
+    if (Play->IsAdjustTime) Pkt.Value = GetTimezoneTime();
     ioType = Head_CmdPkt;
     ret = avSendIOCtrl(Play->p2p_avIndex, ioType, (char *) &Pkt, 8 + Pkt.PktSize);
     if (ret < 0) return false;
@@ -395,7 +395,7 @@ bool net_GetAllCfg(HANDLE NetHandle)//not export
 //-----------------------------------------------------------------------------
 void thread_QueueVideo(HANDLE NetHandle)
 {
-  struct timeval tv1, tv2;
+  //struct timeval tv1, tv2;
   int idec;
   int iYUVSize;
   char *newBuf;
@@ -406,7 +406,7 @@ void thread_QueueVideo(HANDLE NetHandle)
   TPlayParam *Play = (TPlayParam *) NetHandle;
   if (NetHandle == 0) return;
 
-  gettimeofday(&tv1, NULL);
+  //gettimeofday(&tv1, NULL);
   while (1)
   {
     if (Play->IsExit) break;
@@ -535,10 +535,10 @@ void thread_QueueVideo(HANDLE NetHandle)
 #endif
     labReadEnd:
     avQueue_ReadEnd(Play->hQueueVideo, tmpNode);
-    gettimeofday(&tv2, NULL);
-    idec = timeval_dec(&tv2, &tv1);
-    tv1 = tv2;
-    PRINTF("iVideoPktCount:%d idec:%03d\n", iCount, idec);
+    //gettimeofday(&tv2, NULL);
+    //idec = timeval_dec(&tv2, &tv1);
+    //tv1 = tv2;
+    //PRINTF("iVideoPktCount:%d idec:%03d\n", iCount, idec);
   }
 }
 
@@ -973,7 +973,8 @@ bool net_Connect_IP(HANDLE NetHandle, bool IsCreateRecvThread)
 
   Play->IsTaskRec = false;
 
-  strcpy(Play->LocalIP, GetLocalIP());
+  //strcpy(Play->LocalIP, GetLocalIP());
+  sprintf(Play->LocalIP, "%s", GetLocalIP());
 
   Play->hSocket = SktConnect(Play->IPUID, Play->DataPort, Play->TimeOut);//ok
   if (Play->hSocket <= 0) return false;
@@ -1249,7 +1250,7 @@ bool net_Connect_P2P(HANDLE NetHandle, bool IsCreateRecvThread)
   P2P_Init();
   PlayLst.Isp2pInit = true;
 }
-sprintf(sLocalIP, GetLocalIP());
+sprintf(sLocalIP, "%s", GetLocalIP());
 strcpy(Play->LocalIP, sLocalIP);
 #endif
 

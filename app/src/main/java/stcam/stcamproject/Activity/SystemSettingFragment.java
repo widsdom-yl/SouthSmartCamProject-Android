@@ -92,26 +92,26 @@ public class SystemSettingFragment extends Fragment implements BaseAdapter.OnIte
   @Override
   public void onItemClick(View view, int position)
   {
-    if (0 == position)
+    if (0 == position)//报警声音
     {
       dialogChoice1();
     }
 
-    else if (1 == position)
+    else if (1 == position)//账号密码管理
     {
       Intent intent = new Intent(STApplication.getInstance(), ChangeLoginPasswordActivity.class);
       startActivity(intent);
     }
-    else if (2 == position)
+    else if (2 == position)//分享管理
     {
       Intent intent = new Intent(STApplication.getInstance(), ShareManagerActivity.class);
       startActivity(intent);
     }
-    else if (3 == position)
+    else if (3 == position)//App版本
     {
       checkUpdate();
     }
-    else if (4 == position)
+    else if (4 == position)//关于
     {
 
       Intent intent = new Intent(STApplication.getInstance(), AboutActivity.class);

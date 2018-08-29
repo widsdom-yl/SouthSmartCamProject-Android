@@ -289,7 +289,6 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
       {
         if (devModel.SN.equals(tmpNode.SN))
         {
-          //tmpNode.Disconn();
           lib.thNetThreadDisConnFree(tmpNode.NetHandle);
           tmpNode.NetHandle = 0;
           MainDevListFragment.mDevices.remove(tmpNode);
@@ -311,7 +310,6 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
         {
           if (devModel.SN.equals(tmpNode.SN))
           {
-            //tmpNode.Disconn();
             lib.thNetThreadDisConnFree(tmpNode.NetHandle);
             tmpNode.NetHandle = 0;
           }
@@ -325,7 +323,6 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
         {
           if (devModel.SN.equals(tmpNode.SN))
           {
-            //tmpNode.Disconn();
             lib.thNetThreadDisConnFree(tmpNode.NetHandle);
             tmpNode.NetHandle = 0;
           }
@@ -367,8 +364,8 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
     @Override
     protected String doInBackground(String... params)
     {
-      String url = devModel.getHttpCfg1UsrPwd() +
-        "&MsgID=" + lib.Msg_SetWiFiCfg + "&wifi_Active=1&wifi_IsAPMode=0&wifi_SSID_STA" +
+      String url = devModel.getDevURL(lib.Msg_SetWiFiCfg) +
+        "&wifi_Active=1&wifi_IsAPMode=0&wifi_SSID_STA" +
         "=" + params[0] + "&wifi_Password_STA=" + params[1];
       Log.e(tag, url + ",NetHandle is " + devModel.NetHandle);
       String ret = lib.thNetHttpGet(devModel.NetHandle, url);

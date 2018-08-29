@@ -60,7 +60,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         if (isRemeber && usr.length() > 0 && pwd.length() > 0)
         {
           Intent intent = new Intent(STApplication.getInstance(), MainViewPagerActivity.class);
-          intent.putExtra("entry", MainDevListFragment.EnumMainEntry.EnumMainEntry_Login);
+          intent.putExtra("entry", MainDevListFragment.TUserMode.UserMode_Login);
           startActivity(intent);
           finish();
         }

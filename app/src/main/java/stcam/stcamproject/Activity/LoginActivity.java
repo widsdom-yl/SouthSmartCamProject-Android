@@ -160,7 +160,7 @@ public class LoginActivity extends BaseAppCompatActivity
       public void onClick(View view)
       {
         Intent intent = new Intent(STApplication.getInstance(), MainViewPagerActivity.class);
-        intent.putExtra("entry", MainDevListFragment.EnumMainEntry.EnumMainEntry_Visitor);
+        intent.putExtra("entry", MainDevListFragment.TUserMode.UserMode_Visitor);
         startActivity(intent);
       }
     });
@@ -277,6 +277,7 @@ public class LoginActivity extends BaseAppCompatActivity
    * If there are form errors (invalid email, missing fields, etc.), the
    * errors are presented and no actual login attempt is made.
    */
+  int iIsForce = 0;
   private void attemptLogin()
   {
 
@@ -338,7 +339,8 @@ public class LoginActivity extends BaseAppCompatActivity
           JPushManager.getJPushRegisterID(),
           Config.mbtype,
           Config.apptype,
-          Config.pushtype)
+          Config.pushtype,
+          iIsForce)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(observer_login);
@@ -388,7 +390,7 @@ public class LoginActivity extends BaseAppCompatActivity
         String password = mPasswordView.getText().toString();
         AccountManager.getInstance().saveAccount(email, password, IsAutoLogin);
         Intent intent = new Intent(STApplication.getInstance(), MainViewPagerActivity.class);
-        intent.putExtra("entry", MainDevListFragment.EnumMainEntry.EnumMainEntry_Login);
+        intent.putExtra("entry", MainDevListFragment.TUserMode.UserMode_Login);
         startActivity(intent);
         LoginActivity.this.finish();
       }
@@ -402,6 +404,7 @@ public class LoginActivity extends BaseAppCompatActivity
             @Override
             public void onClick(DialogInterface dialogInterface, int i)
             {
+              iIsForce = 1;//强制登录
               attemptLogin();
             }
           })
