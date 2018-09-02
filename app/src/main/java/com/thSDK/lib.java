@@ -25,26 +25,26 @@ public class lib extends Activity
 
   public static native long thNetInit(boolean IsQueue, boolean IsAdjustTime, boolean IsAutoReConn);
 
-  public static native boolean thNetSetDecodeStyle(long NetHandle, int DecodeStyle);
+  public static native boolean thNetSetDecodeStyle(long NetHandle, int DecodeStyle);//未用到
 
-  public static native boolean thNetFree(long NetHandle);
+  public static native boolean thNetFree(long NetHandle);//未用到
 
   public static native boolean thNetConnect(long NetHandle, String jUserName, String jPassword, String jIPUID, int DataPort, int TimeOut);
 
-  public static native boolean thNetDisConn(long NetHandle);
+  public static native boolean thNetDisConn(long NetHandle);//未用到
 
   public static native boolean thNetThreadDisConnFree(long NetHandle);//jni thread
 
   public static native boolean thNetIsConnect(long NetHandle);
 
-  public static native boolean thNetSendSensePkt(long NetHandle);
+  public static native boolean thNetSendSensePkt(long NetHandle);//未用到
 
   public final static int THNET_CONNSTATUS_NO = 0;
   public final static int THNET_CONNSTATUS_CONNING = 1;
   public final static int THNET_CONNSTATUS_SUCCESS = 2;
   public final static int THNET_CONNSTATUS_FAIL = 3;
 
-  public static native int thNetGetConnectStatus(long NetHandle);
+  public static native int thNetGetConnectStatus(long NetHandle);//未用到
 
   public static native String thNetGetConnIPUID(long NetHandle);
 
