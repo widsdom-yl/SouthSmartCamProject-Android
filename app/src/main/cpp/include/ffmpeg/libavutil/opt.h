@@ -262,7 +262,7 @@ typedef struct AVOption {
      * the default value for scalar options
      */
     union {
-        int64_t i64;
+        int64_t ii64;
         double dbl;
         const char *str;
         /* TODO those are unused now */
@@ -281,7 +281,7 @@ typedef struct AVOption {
 #define AV_OPT_FLAG_VIDEO_PARAM     16
 #define AV_OPT_FLAG_SUBTITLE_PARAM  32
 /**
- * The option is inteded for exporting values to the caller.
+ * The option is intended for exporting values to the caller.
  */
 #define AV_OPT_FLAG_EXPORT          64
 /**

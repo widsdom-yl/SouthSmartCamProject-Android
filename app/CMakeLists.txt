@@ -17,12 +17,6 @@ set_target_properties(ffmpeg PROPERTIES IMPORTED_LOCATION ${LIB_DIR}/libffmpeg.s
 add_library(IOTCAPIs SHARED IMPORTED)
 set_target_properties(IOTCAPIs PROPERTIES IMPORTED_LOCATION ${LIB_DIR}/libIOTCAPIs.so)
 
-add_library(SDL2 SHARED IMPORTED)
-set_target_properties(SDL2 PROPERTIES IMPORTED_LOCATION ${LIB_DIR}/libSDL2.so)
-
-add_library(SDL2main SHARED IMPORTED)
-set_target_properties(SDL2main PROPERTIES IMPORTED_LOCATION ${LIB_DIR}/libSDL2main.so)
-
 add_library(SmartConnection STATIC IMPORTED)
 set_target_properties(SmartConnection PROPERTIES IMPORTED_LOCATION ${LIB_DIR}/libSmartConnection.a)
 
@@ -80,19 +74,16 @@ find_library( # Sets the name of the path variable.
 
 target_link_libraries( # Specifies the target library.
                        thSDK
-
                        ffmpeg
+                       AVAPIs
+                       IOTCAPIs
                        SmartConnection
                        vo-aacenc
-                        GLESv1_CM
-                        GLESv2
-                        EGL
-                        OpenSLES
-                        android
-                        AVAPIs
-                        IOTCAPIs
-                        SDL2
-                        SDL2main
+                       GLESv1_CM
+                       GLESv2
+                       EGL
+                       OpenSLES
+                       android
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )

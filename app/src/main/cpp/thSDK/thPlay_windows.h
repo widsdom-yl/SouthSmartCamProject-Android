@@ -5,6 +5,7 @@
 // Description : www.southipcam.com
 //-----------------------------------------------------------------------------
 #include "axdll.h"
+#include "TFun.h"
 #include "../include/avDecode.h"
 #include "../include/libthSDK.h"
 #include "../include/av_Queue.h"

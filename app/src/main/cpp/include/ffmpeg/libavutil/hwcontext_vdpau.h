@@ -1,7 +1,4 @@
 /*
- * Filter graphs
- * copyright (c) 2007 Bobby Bingham
- *
  * This file is part of FFmpeg.
  *
  * FFmpeg is free software; you can redistribute it and/or
@@ -19,10 +16,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVFILTER_AVFILTERGRAPH_H
-#define AVFILTER_AVFILTERGRAPH_H
+#ifndef AVUTIL_HWCONTEXT_VDPAU_H
+#define AVUTIL_HWCONTEXT_VDPAU_H
 
-#include "avfilter.h"
-#include "libavutil/log.h"
+#include <vdpau/vdpau.h>
 
-#endif /* AVFILTER_AVFILTERGRAPH_H */
+/**
+ * @file
+ * An API-specific header for AV_HWDEVICE_TYPE_VDPAU.
+ *
+ * This API supports dynamic frame pools. AVHWFramesContext.pool must return
+ * AVBufferRefs whose data pointer is a VdpVideoSurface.
+ */
+
+/**
+ * This struct is allocated as AVHWDeviceContext.hwctx
+ */
+typedef struct AVVDPAUDeviceContext {
+    VdpDevice          device;
+    VdpGetProcAddress *get_proc_address;
+} AVVDPAUDeviceContext;
+
+/**
+ * AVHWFramesContext.hwctx is currently not used
+ */
+
+#endif /* AVUTIL_HWCONTEXT_VDPAU_H */
