@@ -55,6 +55,7 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
   int IndexType = 0;
   int iPosition = 0;
   int iMax = 0;
+  boolean IsClose = false;
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
@@ -131,8 +132,25 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
     {
       //获取播放的时常，并调节seekbar
       IndexType = lib.thNetRemoteFileGetIndexType(devModel.NetHandle);
+
+      if (IndexType != lib.REMOTEFILE_INDEX_TIMESTAMP)
+      {
+        BtnPlay.setVisibility(View.INVISIBLE);
+        seekBarTimer.setVisibility(View.INVISIBLE);
+        return;
+      }
+      IsClose = lib.thNetRemoteFileIsClose(devModel.NetHandle);
       iPosition = lib.thNetRemoteFileGetPosition(devModel.NetHandle);
       iMax = lib.thNetRemoteFileGetDuration(devModel.NetHandle);
+
+      if (IsClose)
+      {
+        BtnPlay.setImageResource(R.drawable.play0);
+        isPlay = false;
+        iPosition = 0;
+        //return;
+      }
+      TFun.printf("IsClose:" + IsClose + "IndexType:" + IndexType + "iPosition:" + iPosition + "iMax:" + iMax);
 
       if (iMax > 0 && IndexType > 0)
       {
@@ -151,14 +169,14 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
           }
         }
 
-        if (IndexType == 1)//按文件长度
+        if (IndexType == lib.REMOTEFILE_INDEX_FILESIZE)//按文件长度
         {
           String StrPosition = String.format("%d %", iPosition * 100 / iMax);
           String StrDuration = String.format("%d %", 100);
           txtTimePosition.setText(StrPosition);
           txtTimeDuration.setText(StrDuration);
         }
-        else if (IndexType == 2)//按时间戳
+        else if (IndexType == lib.REMOTEFILE_INDEX_TIMESTAMP)//按时间戳
         {
           int iHour, iMinute, iSecond;
 
@@ -177,6 +195,13 @@ public class PlayBackActivity extends BaseAppCompatActivity implements View.OnCl
           txtTimeDuration.setText(StrDuration);
         }
       }//if (iMax > 0 && IndexType > 0)
+
+      if (IsClose)
+      {
+        BtnPlay.setImageResource(R.drawable.play0);
+        isPlay = false;
+        //return;
+      }
       handler_refresh.postDelayed(runnable_refresh, 1000);
     }
   };

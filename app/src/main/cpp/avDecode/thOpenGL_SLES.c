@@ -38,8 +38,8 @@ typedef struct TOpenGLInfo
 //-----------------------------------------------------------------------------
 HANDLE thOpenGLVideo_Init()
 {
-  TOpenGLInfo *Info;
-  Info = (TOpenGLInfo *) malloc(sizeof(TOpenGLInfo));
+  TOpenGLInfo* Info;
+  Info = (TOpenGLInfo*) malloc(sizeof(TOpenGLInfo));
   if (!Info) return NULL;
   memset(Info, 0, sizeof(TOpenGLInfo));
   Info->IsExit = false;
@@ -49,7 +49,7 @@ HANDLE thOpenGLVideo_Init()
 //-----------------------------------------------------------------------------
 bool thOpenGLVideo_Free(HANDLE Handle)
 {
-  TOpenGLInfo *Info = (TOpenGLInfo *) Handle;
+  TOpenGLInfo* Info = (TOpenGLInfo*) Handle;
   if (!Info) return false;
   Info->IsExit = true;
   ThreadLockFree(&Info->Lock);
@@ -59,7 +59,7 @@ bool thOpenGLVideo_Free(HANDLE Handle)
 //-----------------------------------------------------------------------------
 bool thOpenGLVideo_FillMem(HANDLE Handle, TavPicture FrameV420, i32 ImgWidth, i32 ImgHeight)
 {
-  TOpenGLInfo *Info = (TOpenGLInfo *) Handle;
+  TOpenGLInfo* Info = (TOpenGLInfo*) Handle;
   if (!Info) return false;
   if (FrameV420.data[0] == NULL) return false;
   if (ImgWidth == 0 || ImgHeight == 0) return false;
@@ -71,7 +71,7 @@ bool thOpenGLVideo_FillMem(HANDLE Handle, TavPicture FrameV420, i32 ImgWidth, i3
 //-----------------------------------------------------------------------------
 bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
 {
-  TOpenGLInfo *Info = (TOpenGLInfo *) Handle;
+  TOpenGLInfo* Info = (TOpenGLInfo*) Handle;
   if (!Info) return false;
 
   Info->ScreenWidth = dspRect.right - dspRect.left;
@@ -81,12 +81,12 @@ bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
   if (Info->ScreenWidth <= 0) return false;
   if (Info->ScreenHeight <= 0) return false;
 
-  static GLuint s_disable_caps[] = {GL_FOG, GL_LIGHTING, GL_CULL_FACE, GL_ALPHA_TEST, GL_BLEND, GL_COLOR_LOGIC_OP,
-                                    GL_DITHER, GL_STENCIL_TEST, GL_DEPTH_TEST, GL_COLOR_MATERIAL, 0};
+  static GLuint s_disable_caps[] = {GL_FOG, GL_LIGHTING, GL_CULL_FACE, GL_ALPHA_TEST, GL_BLEND, GL_COLOR_LOGIC_OP, GL_DITHER,
+                                    GL_STENCIL_TEST, GL_DEPTH_TEST, GL_COLOR_MATERIAL, 0};
   int rect[4] = {0, TEXTURE_HEIGHT, TEXTURE_WIDTH, -TEXTURE_HEIGHT};
 
   glDeleteTextures(1, &Info->gl_texture);
-  GLuint *start = s_disable_caps;
+  GLuint* start = s_disable_caps;
   while (*start) glDisable(*start++);
   glEnable(GL_TEXTURE_2D);
 
@@ -107,7 +107,7 @@ bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
 
   glClear(GL_COLOR_BUFFER_BIT);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5,
-               (char *) Info->FrameV565.data[0]//App.Video[Chl].bufferRGB565
+               (char*) Info->FrameV565.data[0]//App.Video[Chl].bufferRGB565
   );
 
   int left, top, viewWidth, viewHeight;
@@ -117,7 +117,8 @@ bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
     viewWidth = Info->ScreenWidth;
     viewHeight = (int) (Info->ImgHeight * 1.0f / Info->ImgWidth * viewWidth);
     top = (Info->ScreenHeight - viewHeight) / 2;
-  } else
+  }
+  else
   {
     top = 0;
     left = 0;
@@ -144,16 +145,16 @@ bool thOpenGLVideo_Display(HANDLE Handle, HWND DspHandle, TRect dspRect)
 //-----------------------------------------------------------------------------
 typedef struct TAudioQueuePkt
 {
-  char *buffer;
+  char* buffer;
   int size;
   int WritePos;
   int ReadPos;
 } TAudioQueuePkt;
 
 //-----------------------------------------------------------------------------
-TAudioQueuePkt *AudioQueue_Create(int bytes)
+TAudioQueuePkt* AudioQueue_Create(int bytes)
 {
-  TAudioQueuePkt *p;
+  TAudioQueuePkt* p;
   if ((p = calloc(1, sizeof(TAudioQueuePkt))) == NULL) return NULL;
 
   p->size = bytes;
@@ -168,7 +169,7 @@ TAudioQueuePkt *AudioQueue_Create(int bytes)
 }
 
 //-----------------------------------------------------------------------------
-int AudioQueue_Check(TAudioQueuePkt *p, int writeCheck)
+int AudioQueue_Check(TAudioQueuePkt* p, int writeCheck)
 {
   int WritePos = p->WritePos, ReadPos = p->ReadPos, size = p->size;
   if (writeCheck)
@@ -176,7 +177,8 @@ int AudioQueue_Check(TAudioQueuePkt *p, int writeCheck)
     if (WritePos > ReadPos) return ReadPos - WritePos + size - 1;
     else if (WritePos < ReadPos) return ReadPos - WritePos - 1;
     else return size - 1;
-  } else
+  }
+  else
   {
     if (WritePos > ReadPos) return WritePos - ReadPos;
     else if (WritePos < ReadPos) return WritePos - ReadPos + size;
@@ -185,12 +187,12 @@ int AudioQueue_Check(TAudioQueuePkt *p, int writeCheck)
 }
 
 //-----------------------------------------------------------------------------
-int AudioQueue_Read(TAudioQueuePkt *p, char *out, int bytes)
+int AudioQueue_Read(TAudioQueuePkt* p, char* out, int bytes)
 {
   int remaining;
   int bytesread, size = p->size;
   int i = 0, ReadPos = p->ReadPos;
-  char *buffer = p->buffer;
+  char* buffer = p->buffer;
   if ((remaining = AudioQueue_Check(p, 0)) == 0) return 0;
 
   bytesread = bytes > remaining ? remaining : bytes;
@@ -204,12 +206,12 @@ int AudioQueue_Read(TAudioQueuePkt *p, char *out, int bytes)
 }
 
 //-----------------------------------------------------------------------------
-int AudioQueue_Write(TAudioQueuePkt *p, const char *in, int bytes)
+int AudioQueue_Write(TAudioQueuePkt* p, const char* in, int bytes)
 {
   int remaining;
   int byteswrite, size = p->size;
   int i = 0, WritePos = p->WritePos;
-  char *buffer = p->buffer;
+  char* buffer = p->buffer;
   if ((remaining = AudioQueue_Check(p, 1)) == 0) return 0;
   byteswrite = bytes > remaining ? remaining : bytes;
   for (i = 0; i < byteswrite; i++)
@@ -222,7 +224,7 @@ int AudioQueue_Write(TAudioQueuePkt *p, const char *in, int bytes)
 }
 
 //-----------------------------------------------------------------------------
-int AudioQueue_Free(TAudioQueuePkt *p)
+int AudioQueue_Free(TAudioQueuePkt* p)
 {
   if (p == NULL) return 0;
   free(p->buffer);
@@ -237,7 +239,7 @@ typedef struct TSLESAudioPlayInfo
   SLPlayItf SLPlay;
   SLAndroidSimpleBufferQueueItf SLBufferQueuePlay;
   SLEffectSendItf SLEffectSendPlay;
-  TAudioQueuePkt *AudioQueuePlayPkt;
+  TAudioQueuePkt* AudioQueuePlayPkt;
   short BufferPlay[2048];
   unsigned BufferPlaySize;
   int _isplay;
@@ -253,8 +255,8 @@ typedef struct TSLESAudioTalkInfo
   char BufferTalk[AUDIO_COLLECT_SIZE * 2];
 
 
-  TAudioTalkCallBack *callback;
-  void *UserCustom;
+  TAudioTalkCallBack* callback;
+  void* UserCustom;
 
 } TSLESAudioTalkInfo;
 //-----------------------------------------------------------------------------
@@ -263,17 +265,18 @@ SLEngineItf engineEngine;
 SLObjectItf outputMixObject;
 
 //-----------------------------------------------------------------------------
-void callback_AudioQueuePlay(SLAndroidSimpleBufferQueueItf bq, void *context)
+void callback_AudioQueuePlay(SLAndroidSimpleBufferQueueItf bq, void* context)
 {
-  TSLESAudioPlayInfo *Info = (TSLESAudioPlayInfo *) context;
+  TSLESAudioPlayInfo* Info = (TSLESAudioPlayInfo*) context;
   if (!Info) return;
 
-  int len = AudioQueue_Read(Info->AudioQueuePlayPkt, (char *) Info->BufferPlay, Info->BufferPlaySize);
+  int len = AudioQueue_Read(Info->AudioQueuePlayPkt, (char*) Info->BufferPlay, Info->BufferPlaySize);
   if (len > 0)
   {
     (*Info->SLBufferQueuePlay)->Enqueue(Info->SLBufferQueuePlay, Info->BufferPlay, Info->BufferPlaySize);
     Info->_isplay = 1;
-  } else
+  }
+  else
   {
     Info->_isplay = 0;
     usleep(1000 * 500);
@@ -302,7 +305,7 @@ HANDLE thSLESAudioPlay_Init()
 {
   PRINTF("========================== thSLESAudioPlay_Init");
   SLresult result;
-  TSLESAudioPlayInfo *Info = (TSLESAudioPlayInfo *) malloc(sizeof(TSLESAudioPlayInfo));
+  TSLESAudioPlayInfo* Info = (TSLESAudioPlayInfo*) malloc(sizeof(TSLESAudioPlayInfo));
   memset(Info, 0, sizeof(TSLESAudioPlayInfo));
   PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
 
@@ -322,8 +325,8 @@ HANDLE thSLESAudioPlay_Init()
   if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
 
   SLDataLocator_AndroidSimpleBufferQueue loc_bufq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
-  SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_8, SL_PCMSAMPLEFORMAT_FIXED_16,
-                                 SL_PCMSAMPLEFORMAT_FIXED_16, SL_SPEAKER_FRONT_CENTER, SL_BYTEORDER_LITTLEENDIAN};
+  SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_8, SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
+                                 SL_SPEAKER_FRONT_CENTER, SL_BYTEORDER_LITTLEENDIAN};
   SLDataSource audioSrc = {&loc_bufq, &format_pcm};
 
   SLDataLocator_OutputMix loc_outmix = {SL_DATALOCATOR_OUTPUTMIX, outputMixObject};
@@ -356,30 +359,30 @@ HANDLE thSLESAudioPlay_Init()
   return NULL;
 }
 //-----------------------------------------------------------------------------
-bool thSLESAudioPlay_SetFormat(HANDLE audioHandle, i32 nChannels, i32 wBitsPerSample, i32 nSamplesPerSec,
-                               i32 AudioPacketSize)
+bool thSLESAudioPlay_SetFormat(HANDLE audioHandle, i32 nChannels, i32 wBitsPerSample, i32 nSamplesPerSec, i32 AudioPacketSize)
 {
-  TSLESAudioPlayInfo *Info = (TSLESAudioPlayInfo *) audioHandle;
+  TSLESAudioPlayInfo* Info = (TSLESAudioPlayInfo*) audioHandle;
   if (!Info) return false;
   PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
   return true;
 }
 //-----------------------------------------------------------------------------
-bool thSLESAudioPlay_PlayFrame(HANDLE audioHandle, char *Buf, i32 BufLen)
+bool thSLESAudioPlay_PlayFrame(HANDLE audioHandle, char* Buf, i32 BufLen)
 {
   int space, len, size;
-  TSLESAudioPlayInfo *Info = (TSLESAudioPlayInfo *) audioHandle;
+  TSLESAudioPlayInfo* Info = (TSLESAudioPlayInfo*) audioHandle;
   if (!Info) return false;
   if (Info->_isplay == 0)
   {
     AudioQueue_Write(Info->AudioQueuePlayPkt, Buf, BufLen);
     space = AudioQueue_Check(Info->AudioQueuePlayPkt, 0);
     if (space < 4096) return false;
-    len = AudioQueue_Read(Info->AudioQueuePlayPkt, (char *) Info->BufferPlay, Info->BufferPlaySize);
+    len = AudioQueue_Read(Info->AudioQueuePlayPkt, (char*) Info->BufferPlay, Info->BufferPlaySize);
     Info->_isplay = 1;
     (*Info->SLBufferQueuePlay)->Enqueue(Info->SLBufferQueuePlay, Info->BufferPlay, Info->BufferPlaySize);
     return true;
-  } else
+  }
+  else
   {
     space = AudioQueue_Check(Info->AudioQueuePlayPkt, 0);
     size = AudioQueue_Write(Info->AudioQueuePlayPkt, Buf, BufLen);
@@ -390,7 +393,7 @@ bool thSLESAudioPlay_PlayFrame(HANDLE audioHandle, char *Buf, i32 BufLen)
 bool thSLESAudioPlay_Free(HANDLE audioHandle)
 {
   PRINTF("========================== thSLESAudioPlay_Free");
-  TSLESAudioPlayInfo *Info = (TSLESAudioPlayInfo *) audioHandle;
+  TSLESAudioPlayInfo* Info = (TSLESAudioPlayInfo*) audioHandle;
   if (!Info) return false;
   PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
   if (Info->SLObjectPlay != NULL)
@@ -419,14 +422,14 @@ bool thSLESAudioPlay_Free(HANDLE audioHandle)
 }
 
 //-----------------------------------------------------------------------------
-void callback_AudioQueueTalk(SLAndroidSimpleBufferQueueItf bq, void *context)
+void callback_AudioQueueTalk(SLAndroidSimpleBufferQueueItf bq, void* context)
 {
-  TSLESAudioTalkInfo *Info = (TSLESAudioTalkInfo *) context;
+  TSLESAudioTalkInfo* Info = (TSLESAudioTalkInfo*) context;
   if (!Info) return;
   (*Info->SLBufferQueueTalk)->Enqueue(Info->SLBufferQueueTalk, Info->BufferTalk, AUDIO_COLLECT_SIZE);
   if (Info->callback)
   {
-    Info->callback(Info->UserCustom, (char *) Info->BufferTalk, AUDIO_COLLECT_SIZE);
+    Info->callback(Info->UserCustom, (char*) Info->BufferTalk, AUDIO_COLLECT_SIZE);
   }
 }
 //-----------------------------------------------------------------------------
@@ -435,16 +438,15 @@ HANDLE thSLESAudioTalk_Init()
   thSLESCreateEngine();
   PRINTF("========================== talk init");
   SLresult result;
-  TSLESAudioTalkInfo *Info = (TSLESAudioTalkInfo *) malloc(sizeof(TSLESAudioTalkInfo));
+  TSLESAudioTalkInfo* Info = (TSLESAudioTalkInfo*) malloc(sizeof(TSLESAudioTalkInfo));
   memset(Info, 0, sizeof(TSLESAudioTalkInfo));
 
-  SLDataLocator_IODevice loc_dev = {SL_DATALOCATOR_IODEVICE, SL_IODEVICE_AUDIOINPUT, SL_DEFAULTDEVICEID_AUDIOINPUT,
-                                    NULL};
+  SLDataLocator_IODevice loc_dev = {SL_DATALOCATOR_IODEVICE, SL_IODEVICE_AUDIOINPUT, SL_DEFAULTDEVICEID_AUDIOINPUT, NULL};
   SLDataSource audioSrc = {&loc_dev, NULL};
 
   SLDataLocator_AndroidSimpleBufferQueue loc_bq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
-  SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_8, SL_PCMSAMPLEFORMAT_FIXED_16,
-                                 SL_PCMSAMPLEFORMAT_FIXED_16, SL_SPEAKER_FRONT_CENTER, SL_BYTEORDER_LITTLEENDIAN};
+  SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_8, SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
+                                 SL_SPEAKER_FRONT_CENTER, SL_BYTEORDER_LITTLEENDIAN};
   SLDataSink audioSnk = {&loc_bq, &format_pcm};
 
   const SLInterfaceID id[1] = {SL_IID_ANDROIDSIMPLEBUFFERQUEUE};
@@ -458,12 +460,10 @@ HANDLE thSLESAudioTalk_Init()
   result = (*Info->SLObjectTalk)->GetInterface(Info->SLObjectTalk, SL_IID_RECORD, &Info->SLTalk);
   if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
   PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
-  result = (*Info->SLObjectTalk)->GetInterface(Info->SLObjectTalk, SL_IID_ANDROIDSIMPLEBUFFERQUEUE,
-                                               &Info->SLBufferQueueTalk);
+  result = (*Info->SLObjectTalk)->GetInterface(Info->SLObjectTalk, SL_IID_ANDROIDSIMPLEBUFFERQUEUE, &Info->SLBufferQueueTalk);
   if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
   PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
-  result = (*Info->SLBufferQueueTalk)->RegisterCallback(Info->SLBufferQueueTalk, callback_AudioQueueTalk,
-                                                        (void *) Info);
+  result = (*Info->SLBufferQueueTalk)->RegisterCallback(Info->SLBufferQueueTalk, callback_AudioQueueTalk, (void*) Info);
   if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
   PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
 
@@ -485,11 +485,10 @@ HANDLE thSLESAudioTalk_Init()
   return NULL;
 }
 //-----------------------------------------------------------------------------
-bool
-thSLESAudioTalk_SetFormat(HANDLE talkHandle, i32 nChannels, i32 wBitsPerSample, i32 nSamplesPerSec, i32 AudioPacketSize,
-                          TAudioTalkCallBack callback, void *UserCustom)
+bool thSLESAudioTalk_SetFormat(HANDLE talkHandle, i32 nChannels, i32 wBitsPerSample, i32 nSamplesPerSec, i32 AudioPacketSize,
+                               TAudioTalkCallBack callback, void* UserCustom)
 {
-  TSLESAudioTalkInfo *Info = (TSLESAudioTalkInfo *) talkHandle;
+  TSLESAudioTalkInfo* Info = (TSLESAudioTalkInfo*) talkHandle;
   if (!Info) return false;
   PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
   Info->callback = callback;
@@ -501,7 +500,7 @@ bool thSLESAudioTalk_Free(HANDLE talkHandle)
 {
   PRINTF("========================== thSLESAudioTalk_Free");
   SLresult result;
-  TSLESAudioTalkInfo *Info = (TSLESAudioTalkInfo *) talkHandle;
+  TSLESAudioTalkInfo* Info = (TSLESAudioTalkInfo*) talkHandle;
   if (!Info) return false;
   PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
   result = (*Info->SLTalk)->SetRecordState(Info->SLTalk, SL_RECORDSTATE_STOPPED);

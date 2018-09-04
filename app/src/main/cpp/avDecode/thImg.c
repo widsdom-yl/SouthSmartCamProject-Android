@@ -16,13 +16,10 @@ bool thImgConvertScale(char* d, int dfmt, int dw, int dh, char* s, int sfmt, int
   avpicture_fill(&dst, (uint8_t*)d, (AVPixelFormat)dfmt, dw, dh);
   avpicture_fill(&src, (uint8_t*)s, (AVPixelFormat)sfmt, sw, sh);
 #else
-  avpicture_fill(&dst, (uint8_t*)d, dfmt, dw, dh);
-  avpicture_fill(&src, (uint8_t*)s, sfmt, sw, sh);
+  avpicture_fill(&dst, (uint8_t*) d, dfmt, dw, dh);
+  avpicture_fill(&src, (uint8_t*) s, sfmt, sw, sh);
 #endif
-  return thImgConvertScale1(
-    (TavPicture*)&dst, dfmt, dw, dh, 
-    (TavPicture*)&src, sfmt, sw, sh,
-    IsFlip);
+  return thImgConvertScale1((TavPicture*) &dst, dfmt, dw, dh, (TavPicture*) &src, sfmt, sw, sh, IsFlip);
 }
 //-----------------------------------------------------------------------------
 bool thImgConvertScale1(TavPicture* dst, int dfmt, int dw, int dh, TavPicture* src, int sfmt, int sw, int sh, int IsFlip)
@@ -53,7 +50,7 @@ bool thImgConvertScale2(char* d, int dfmt, int dw, int dh, TavPicture* src, int 
 #ifdef __cplusplus
   avpicture_fill(&dst, (uint8_t*)d, (AVPixelFormat)dfmt, dw, dh);
 #else
-  avpicture_fill(&dst, (uint8_t*)d, dfmt, dw, dh);
+  avpicture_fill(&dst, (uint8_t*) d, dfmt, dw, dh);
 #endif
 
   if (IsFlip)
@@ -71,9 +68,10 @@ bool thImgConvertScale2(char* d, int dfmt, int dw, int dh, TavPicture* src, int 
   sws_freeContext(sws);
   return true;
 }
+
 //-----------------------------------------------------------------------------
 int thImgConvertFill(TavPicture* pFrame, char* Buf, int fmt, int Width, int Height)
 {
-  return avpicture_fill((AVPicture*)pFrame, (uint8_t*)Buf, fmt, Width, Height);
+  return avpicture_fill((AVPicture*) pFrame, (uint8_t*) Buf, fmt, Width, Height);
 }
 

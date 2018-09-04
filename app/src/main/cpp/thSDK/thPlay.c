@@ -35,6 +35,7 @@
 
 #if defined(ANDROID)
 #define ANDROID_IS_QUEUEDRAW
+
 #include "thPlay_android.h"
 
 #endif
@@ -61,11 +62,11 @@ typedef struct TPlayManggeParam
 TPlayManggeParam PlayLst;
 
 //*****************************************************************************
-void callback_AudioTalk(void *UserCustom, char *Buf, i32 Len);
+void callback_AudioTalk(void* UserCustom, char* Buf, i32 Len);
 
-void OnRecvDataNotify_Search(void *Sender, char *Buf, i32 BufLen);
+void OnRecvDataNotify_Search(void* Sender, char* Buf, i32 BufLen);
 
-void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo *PInfo, char *Buf, int BufLen);
+void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo* PInfo, char* Buf, int BufLen);
 
 void thread_RecvData_TCP(HANDLE NetHandle);
 
@@ -75,7 +76,7 @@ bool net_Login(HANDLE NetHandle);
 
 bool net_GetAllCfg(HANDLE NetHandle);
 
-bool net_SetTalk(HANDLE NetHandle, char *Buf, i32 BufLen);
+bool net_SetTalk(HANDLE NetHandle, char* Buf, i32 BufLen);
 
 bool net_Connect_IP(HANDLE NetHandle, bool IsCreateRecvThread);
 
@@ -89,19 +90,19 @@ void thread_QueueRec(HANDLE NetHandle);
 
 //*****************************************************************************
 //-----------------------------------------------------------------------------
-void OnRecvDataNotify_Search(void *Sender, char *Buf, i32 BufLen)
+void OnRecvDataNotify_Search(void* Sender, char* Buf, i32 BufLen)
 {
-  TNetCmdPkt *PPkt;
-  TMulticastInfoPkt *PInfo;
+  TNetCmdPkt* PPkt;
+  TMulticastInfoPkt* PInfo;
   i32 i;
   u32 iFromAddr;
-  TSearchDevCallBack *SearchEvent;
-  TudpParam *Info = (TudpParam *) Sender;
+  TSearchDevCallBack* SearchEvent;
+  TudpParam* Info = (TudpParam*) Sender;
   if (!Info) return;
 //PRINTF("****OnRecvDataNotify_Search*******BufLen:%d\n", BufLen);
   if (strstr(Buf, "M-SEARCH") != NULL) return;
   if (BufLen != sizeof(TNetCmdPkt)) return;
-  PPkt = (TNetCmdPkt *) Buf;
+  PPkt = (TNetCmdPkt*) Buf;
   if (PPkt->HeadPkt.VerifyCode != Head_CmdPkt) return;
   if (PPkt->HeadPkt.PktSize != sizeof(TCmdPkt)) return;
 
@@ -118,7 +119,7 @@ void OnRecvDataNotify_Search(void *Sender, char *Buf, i32 BufLen)
     }
   }
 
-  SearchEvent = (TSearchDevCallBack *) Info->Flag;
+  SearchEvent = (TSearchDevCallBack*) Info->Flag;
   if (SearchEvent)
   {
     PInfo = &PPkt->CmdPkt.MulticastInfo;
@@ -129,15 +130,15 @@ void OnRecvDataNotify_Search(void *Sender, char *Buf, i32 BufLen)
   }
 }
 //-----------------------------------------------------------------------------
-HANDLE thSearch_Init(TSearchDevCallBack SearchEvent, void *UserCustom)
+HANDLE thSearch_Init(TSearchDevCallBack SearchEvent, void* UserCustom)
 {
   int ret;
-  TudpParam *Info;
+  TudpParam* Info;
 #ifdef WIN32
   WSADATA wsaData;
 WSAStartup(MAKEWORD(2, 2), &wsaData);
 #endif
-  Info = (TudpParam *) malloc(sizeof(TudpParam));
+  Info = (TudpParam*) malloc(sizeof(TudpParam));
   memset(Info, 0, sizeof(TudpParam));
   Info->UserCustom = UserCustom;
   Info->Port = Port_Ax_Search_Local;//RandomNum(Port_Ax_Search_Local);//
@@ -165,7 +166,7 @@ bool thSearch_SearchDevice(HANDLE SearchHandle)
   i32 flag = 1;
   struct sockaddr_in Addr;
   TNetCmdPkt Pkt;
-  TudpParam *Info = (TudpParam *) SearchHandle;
+  TudpParam* Info = (TudpParam*) SearchHandle;
   if (!Info) return false;
   PRINTF("%s(%d)\n", __FUNCTION__, __LINE__);
   //if (!LocalIP) Info->LocalIP = GetLocalIP();
@@ -181,23 +182,23 @@ bool thSearch_SearchDevice(HANDLE SearchHandle)
   //Addr.sin_port = htons(Port_Ax_Multicast);
   //sendto(Info->SockeHANDLE, &Pkt, sizeof(Pkt), 0, (struct sockaddr*)&Addr, sizeof(Addr));
 
-  setsockopt(Info->SocketHandle, SOL_SOCKET, SO_BROADCAST, (char *) &flag, sizeof(flag));
+  setsockopt(Info->SocketHandle, SOL_SOCKET, SO_BROADCAST, (char*) &flag, sizeof(flag));
 #ifdef WIN32
   Addr.sin_addr.S_un.S_addr = inet_addr("255.255.255.255");
 #else
   inet_aton("255.255.255.255", &Addr.sin_addr);
 #endif
   Addr.sin_port = htons(Port_Ax_Multicast);
-  sendto(Info->SocketHandle, (char *) &Pkt, sizeof(Pkt), 0, (struct sockaddr *) &Addr, sizeof(Addr));
+  sendto(Info->SocketHandle, (char*) &Pkt, sizeof(Pkt), 0, (struct sockaddr*) &Addr, sizeof(Addr));
   return true;
 }
 //-----------------------------------------------------------------------------
-bool thSearch_SetWiFiCfg(HANDLE SearchHandle, char *SSID, char *Password)
+bool thSearch_SetWiFiCfg(HANDLE SearchHandle, char* SSID, char* Password)
 {
   i32 flag = 1;
   struct sockaddr_in Addr;
   TNetCmdPkt Pkt;
-  TudpParam *Info = (TudpParam *) SearchHandle;
+  TudpParam* Info = (TudpParam*) SearchHandle;
   if (!Info) return false;
   PRINTF("%s(%d)\n", __FUNCTION__, __LINE__);
   //if (LocalIP) Info->LocalIP = GetLocalIP();
@@ -213,21 +214,21 @@ bool thSearch_SetWiFiCfg(HANDLE SearchHandle, char *SSID, char *Password)
   memset(&Addr, 0, sizeof(struct sockaddr_in));
   Addr.sin_family = AF_INET;
 
-  setsockopt(Info->SocketHandle, SOL_SOCKET, SO_BROADCAST, (char *) &flag, sizeof(flag));
+  setsockopt(Info->SocketHandle, SOL_SOCKET, SO_BROADCAST, (char*) &flag, sizeof(flag));
 #ifdef WIN32
   Addr.sin_addr.S_un.S_addr = inet_addr("255.255.255.255");
 #else
   inet_aton("255.255.255.255", &Addr.sin_addr);
 #endif
   Addr.sin_port = htons(Port_Ax_Multicast);
-  sendto(Info->SocketHandle, (char *) &Pkt, sizeof(Pkt), 0, (struct sockaddr *) &Addr, sizeof(Addr));
+  sendto(Info->SocketHandle, (char*) &Pkt, sizeof(Pkt), 0, (struct sockaddr*) &Addr, sizeof(Addr));
   return true;
 }
 //-----------------------------------------------------------------------------
 bool thSearch_Free(HANDLE SearchHandle)
 {
   int ret;
-  TudpParam *Info = (TudpParam *) SearchHandle;
+  TudpParam* Info = (TudpParam*) SearchHandle;
   if (!Info) return false;
   PRINTF("%s(%d)\n", __FUNCTION__, __LINE__);
   ret = udp_Free(Info);
@@ -240,7 +241,7 @@ HANDLE thNet_Init(bool IsQueue, bool IsAdjustTime, bool IsAutoReConn)
 #ifdef WIN32
   WSADATA wsaData;
 #endif
-  TPlayParam *Play = (TPlayParam *) malloc(sizeof(TPlayParam));
+  TPlayParam* Play = (TPlayParam*) malloc(sizeof(TPlayParam));
   if (!Play) return NULL;
   PRINTF("%s(%d) IsQueue:%d IsAdjustTime:%d IsAutoReConn:%d\n", __FUNCTION__, __LINE__, IsQueue, IsAdjustTime, IsAutoReConn);
 #ifdef WIN32
@@ -268,9 +269,9 @@ HANDLE thNet_Init(bool IsQueue, bool IsAdjustTime, bool IsAutoReConn)
   return (HANDLE) Play;
 }
 //-----------------------------------------------------------------------------
-bool thNet_SetCallBack(HANDLE NetHandle, TvideoCallBack videoEvent, TaudioCallBack audioEvent, TalarmCallBack AlmEvent, void *UserCustom)
+bool thNet_SetCallBack(HANDLE NetHandle, TvideoCallBack videoEvent, TaudioCallBack audioEvent, TalarmCallBack AlmEvent, void* UserCustom)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   PRINTF("%s(%s)(%s)\n", __FUNCTION__, Play->IPUID, Play->LocalIP);
   Play->videoEvent = videoEvent;
@@ -282,7 +283,7 @@ bool thNet_SetCallBack(HANDLE NetHandle, TvideoCallBack videoEvent, TaudioCallBa
 //-----------------------------------------------------------------------------
 bool thNet_Free(HANDLE NetHandle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   u32 SN;
   if (NetHandle == 0) return false;
   SN = Play->SN;
@@ -301,10 +302,10 @@ bool thNet_Free(HANDLE NetHandle)
 //-----------------------------------------------------------------------------
 bool net_Login(HANDLE NetHandle)//not export
 {
-  TVideoFormat *fmtv;
+  TVideoFormat* fmtv;
   i32 ret;
   TNetCmdPkt Pkt;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
 
   if (!Play->Isp2pConn)
@@ -320,9 +321,9 @@ bool net_Login(HANDLE NetHandle)//not export
     //strcpy(Pkt.CmdPkt.LoginPkt.DevIP, Play->DevIP);
 
     //Pkt.CmdPkt.LoginPkt.SendSensePkt = true;
-    ret = SendBuf(Play->hSocket, (char *) &Pkt, sizeof(Pkt), NET_TIMEOUT);
+    ret = SendBuf(Play->hSocket, (char*) &Pkt, sizeof(Pkt), NET_TIMEOUT);
     memset(&Pkt, 0, sizeof(Pkt));
-    ret = RecvBuf(Play->hSocket, (char *) &Pkt, sizeof(Pkt), NET_TIMEOUT);
+    ret = RecvBuf(Play->hSocket, (char*) &Pkt, sizeof(Pkt), NET_TIMEOUT);
     if (Pkt.CmdPkt.Value == 0) return false;
     Play->Session = Pkt.CmdPkt.Session;
     Play->DevCfg.DevInfoPkt = Pkt.CmdPkt.LoginPkt.DevInfoPkt;
@@ -338,7 +339,7 @@ bool net_Login(HANDLE NetHandle)//not export
 //-----------------------------------------------------------------------------
 bool net_GetAllCfg(HANDLE NetHandle)//not export
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
 
   if (!Play->Isp2pConn)
@@ -353,20 +354,21 @@ bool net_GetAllCfg(HANDLE NetHandle)//not export
     Pkt.CmdPkt.MsgID = Msg_GetAllCfg;
     Pkt.CmdPkt.Session = Play->Session;
     if (Play->IsAdjustTime) Pkt.CmdPkt.Value = GetTimezoneTime();
-    ret = SendBuf(Play->hSocket, (char *) &Pkt, sizeof(TNetCmdPkt), NET_TIMEOUT);
+    ret = SendBuf(Play->hSocket, (char*) &Pkt, sizeof(TNetCmdPkt), NET_TIMEOUT);
 
     for (i = 0; i < 5; i++)
     {
-      ret = RecvBuf(Play->hSocket, (char *) &Head, sizeof(THeadPkt), NET_TIMEOUT);
+      ret = RecvBuf(Play->hSocket, (char*) &Head, sizeof(THeadPkt), NET_TIMEOUT);
       if (Head.VerifyCode == Head_CfgPkt) break;
     }
 
     if (Head.VerifyCode != Head_CfgPkt) return false;
     if (Head.PktSize != sizeof(TDevCfg)) return false;
-    ret = RecvBuf(Play->hSocket, (char *) &Play->DevCfg, sizeof(TDevCfg), NET_TIMEOUT);
+    ret = RecvBuf(Play->hSocket, (char*) &Play->DevCfg, sizeof(TDevCfg), NET_TIMEOUT);
 
     return ret;
-  } else
+  }
+  else
   {
 #ifdef IsUsedP2P
     i32 ioType, ret;
@@ -378,9 +380,9 @@ bool net_GetAllCfg(HANDLE NetHandle)//not export
     Pkt.PktSize = 4;
     if (Play->IsAdjustTime) Pkt.Value = GetTimezoneTime();
     ioType = Head_CmdPkt;
-    ret = avSendIOCtrl(Play->p2p_avIndex, ioType, (char *) &Pkt, 8 + Pkt.PktSize);
+    ret = avSendIOCtrl(Play->p2p_avIndex, ioType, (char*) &Pkt, 8 + Pkt.PktSize);
     if (ret < 0) return false;
-    ret = avRecvIOCtrl(Play->p2p_avIndex, (u32 *) &ioType, (char *) &Pkt, sizeof(Pkt), 3000);
+    ret = avRecvIOCtrl(Play->p2p_avIndex, (u32*) &ioType, (char*) &Pkt, sizeof(Pkt), 3000);
     if (ret < 0) return false;
     if (Pkt.VerifyCode == Head_CmdPkt && Pkt.MsgID == Msg_GetAllCfg)
     {
@@ -398,12 +400,12 @@ void thread_QueueVideo(HANDLE NetHandle)
   //struct timeval tv1, tv2;
   int idec;
   int iYUVSize;
-  char *newBuf;
+  char* newBuf;
   TavPicture newFrameV;
   int i, iCount, ret;
-  TavNode *tmpNode;
-  TDataFrameInfo *PInfo;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TavNode* tmpNode;
+  TDataFrameInfo* PInfo;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return;
 
   //gettimeofday(&tv1, NULL);
@@ -465,7 +467,7 @@ void thread_QueueVideo(HANDLE NetHandle)
           Play->IsIFrameFlag = false;
           break;
         }
-        PInfo = (TDataFrameInfo *) tmpNode->Buf1;
+        PInfo = (TDataFrameInfo*) tmpNode->Buf1;
         if (PInfo)
         {
           if (PInfo->Frame.IsIFrame) goto labDecode;
@@ -486,7 +488,7 @@ void thread_QueueVideo(HANDLE NetHandle)
     if (tmpNode->Buf == NULL || tmpNode->BufLen <= 0) goto labReadEnd;
 
     labDecode:
-    PInfo = (TDataFrameInfo *) tmpNode->Buf1;
+    PInfo = (TDataFrameInfo*) tmpNode->Buf1;
     if (!PInfo) goto labReadEnd;
     if (Play->DecodeStyle == Decode_None) goto labReadEnd;
     if (Play->DecodeStyle == Decode_IFrame && !PInfo->Frame.IsIFrame) goto labReadEnd;
@@ -505,7 +507,7 @@ void thread_QueueVideo(HANDLE NetHandle)
     }
 #ifdef ANDROID_IS_QUEUEDRAW
     iYUVSize = Play->ImgWidth * Play->ImgHeight * 2;//AV_PIX_FMT_YUV420P //WIN32 ios
-    newBuf = (char *) malloc(iYUVSize);
+    newBuf = (char*) malloc(iYUVSize);
     if (!newBuf) goto labReadEnd;
     thImgConvertFill(&newFrameV, newBuf, AV_PIX_FMT_YUV420P, Play->ImgWidth, Play->ImgHeight);
     thImgConvertScale1(//only copy ?
@@ -528,7 +530,7 @@ void thread_QueueVideo(HANDLE NetHandle)
 }
 #endif
 #ifdef ANDROID_IS_QUEUEDRAW
-    if (avQueue_Write(Play->hQueueDraw, (char *) &newFrameV, sizeof(TavPicture), newBuf, iYUVSize) == NULL)
+    if (avQueue_Write(Play->hQueueDraw, (char*) &newFrameV, sizeof(TavPicture), newBuf, iYUVSize) == NULL)
     {
       free(newBuf);
     }
@@ -545,9 +547,9 @@ void thread_QueueVideo(HANDLE NetHandle)
 //-----------------------------------------------------------------------------
 void thread_QueueAudio(HANDLE NetHandle)
 {
-  TavNode *tmpNode;
-  TDataFrameInfo *PInfo;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TavNode* tmpNode;
+  TDataFrameInfo* PInfo;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return;
   while (1)
   {
@@ -567,7 +569,7 @@ void thread_QueueAudio(HANDLE NetHandle)
       continue;
     }
 
-    PInfo = (TDataFrameInfo *) tmpNode->Buf1;
+    PInfo = (TDataFrameInfo*) tmpNode->Buf1;
     if (PInfo)
     {
       if (!Play->IsAudioMute && Play->audioHandle)
@@ -581,9 +583,9 @@ void thread_QueueAudio(HANDLE NetHandle)
 //-----------------------------------------------------------------------------
 void thread_QueueRec(HANDLE NetHandle)
 {
-  TavNode *tmpNode;
-  TDataFrameInfo *PInfo;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TavNode* tmpNode;
+  TDataFrameInfo* PInfo;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return;
   while (1)
   {
@@ -603,14 +605,15 @@ void thread_QueueRec(HANDLE NetHandle)
       continue;
     }
 
-    PInfo = (TDataFrameInfo *) tmpNode->Buf1;
+    PInfo = (TDataFrameInfo*) tmpNode->Buf1;
     if (PInfo)
     {
       if (PInfo->Head.VerifyCode == Head_VideoPkt)
       {
         u64 pts = PInfo->Frame.FrameTime / 1000 * 90;
         if (Play->RecHandle) thRecordWriteVideo(Play->RecHandle, tmpNode->Buf, tmpNode->BufLen, -1);
-      } else if (PInfo->Head.VerifyCode == Head_AudioPkt)
+      }
+      else if (PInfo->Head.VerifyCode == Head_AudioPkt)
       {
         if (Play->RecHandle)
         {
@@ -624,23 +627,25 @@ void thread_QueueRec(HANDLE NetHandle)
 }
 
 //-----------------------------------------------------------------------------
-void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo *PInfo, char *Buf, int BufLen)
+void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo* PInfo, char* Buf, int BufLen)
 {
   int i, ret;
   u64 pts;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return;
 
   if (PInfo->Head.VerifyCode == Head_VideoPkt)
   {
     if (Play->videoEvent)
+    {
       Play->videoEvent(Play->UserCustom, PInfo->Frame.StreamType, Buf, BufLen, PInfo->Frame.IsIFrame);
-
+    }
     if (Play->IsQueue)
     {
-      avQueue_Write(Play->hQueueRec, Buf, BufLen, (char *) PInfo, sizeof(TDataFrameInfo));
-      avQueue_Write(Play->hQueueVideo, Buf, BufLen, (char *) PInfo, sizeof(TDataFrameInfo));
-    } else
+      avQueue_Write(Play->hQueueRec, Buf, BufLen, (char*) PInfo, sizeof(TDataFrameInfo));
+      avQueue_Write(Play->hQueueVideo, Buf, BufLen, (char*) PInfo, sizeof(TDataFrameInfo));
+    }
+    else
     {
       if (Play->GroupType != pt_PlayHistory)
       {
@@ -701,14 +706,16 @@ void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo *PInfo, char *Buf, int
 #endif
       }
     }
-  } else if (PInfo->Head.VerifyCode == Head_AudioPkt)
+  }
+  else if (PInfo->Head.VerifyCode == Head_AudioPkt)
   {
     if (Play->audioEvent) Play->audioEvent(Play->UserCustom, PInfo->Frame.StreamType, Buf, BufLen);
     if (Play->IsQueue)
     {
-      avQueue_Write(Play->hQueueRec, Buf, BufLen, (char *) PInfo, sizeof(TDataFrameInfo));
-      avQueue_Write(Play->hQueueAudio, Buf, BufLen, (char *) PInfo, sizeof(TDataFrameInfo));
-    } else
+      avQueue_Write(Play->hQueueRec, Buf, BufLen, (char*) PInfo, sizeof(TDataFrameInfo));
+      avQueue_Write(Play->hQueueAudio, Buf, BufLen, (char*) PInfo, sizeof(TDataFrameInfo));
+    }
+    else
     {
       if (Play->RecHandle)
       {
@@ -723,7 +730,7 @@ bool thNet_SendSensePkt(HANDLE NetHandle)
 {
   int ret;
   THeadPkt Head;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
   Head.VerifyCode = Head_SensePkt;
@@ -731,10 +738,11 @@ bool thNet_SendSensePkt(HANDLE NetHandle)
 
   if (!Play->Isp2pConn)
   {
-    ret = SendBuf(Play->hSocket, (char *) &Head, sizeof(THeadPkt), NET_TIMEOUT);
-  } else
+    ret = SendBuf(Play->hSocket, (char*) &Head, sizeof(THeadPkt), NET_TIMEOUT);
+  }
+  else
   {
-    ret = (avSendIOCtrl(Play->p2p_avIndex, Head_CmdPkt, (char *) &Head, sizeof(THeadPkt)) >= 0);
+    ret = (avSendIOCtrl(Play->p2p_avIndex, Head_CmdPkt, (char*) &Head, sizeof(THeadPkt)) >= 0);
   }
   PRINTF("%s(%s)(%s) ret:%d\n", __FUNCTION__, Play->IPUID, Play->LocalIP, ret);
   ThreadLock(&Play->Lock);
@@ -750,15 +758,15 @@ void thread_RecvData_TCP(HANDLE NetHandle)
   time_t t, t1;
   bool ret;
   i32 HEADPKTSIZE;
-  THeadPkt *PHead;
-  char *RecvBuffer;
-  TPlayParam *Play;
+  THeadPkt* PHead;
+  char* RecvBuffer;
+  TPlayParam* Play;
   if (NetHandle == 0) return;
-  Play = (TPlayParam *) NetHandle;
+  Play = (TPlayParam*) NetHandle;
   if (!Play) return;
 
   RecvBuffer = Play->RecvBuffer;
-  PHead = (THeadPkt *) (Play->RecvBuffer);
+  PHead = (THeadPkt*) (Play->RecvBuffer);
   HEADPKTSIZE = sizeof(THeadPkt);
   ret = false;
 
@@ -843,7 +851,7 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
       continue;
     }
     //3
-    ret = RecvBuf(Play->hSocket, (char *) PHead, HEADPKTSIZE, NET_TIMEOUT / 2);
+    ret = RecvBuf(Play->hSocket, (char*) PHead, HEADPKTSIZE, NET_TIMEOUT / 2);
     if (!ret) continue;
 
     if (PHead->VerifyCode != Head_VideoPkt && PHead->VerifyCode != Head_AudioPkt && PHead->VerifyCode != Head_SensePkt &&
@@ -867,8 +875,8 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
       case Head_VideoPkt:
       case Head_AudioPkt:
       {
-        TDataFrameInfo *PInfo = (TDataFrameInfo *) RecvBuffer;
-        char *Buf = &RecvBuffer[sizeof(TDataFrameInfo)];
+        TDataFrameInfo* PInfo = (TDataFrameInfo*) RecvBuffer;
+        char* Buf = &RecvBuffer[sizeof(TDataFrameInfo)];
         i32 BufLen = PHead->PktSize - 16;
 
         if (Play->GroupType == pt_PlayHistory && PHead->VerifyCode == Head_VideoPkt)
@@ -877,17 +885,19 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
           Play->HistoryIndexType = Play->HistoryHead.IndexType;
           if (Play->HistoryIndexType == 1)//没有=0 按文件大小 = 1 按时长=2
           {
-            Play->HistoryTimestampPosition = PInfo->Frame.PrevIFramePos + PInfo->Head.PktSize;
-            Play->HistoryTimestampDuration = Play->HistoryHead.FileSize;
-          } else if (Play->HistoryHead.IndexType == 2)
+            Play->HistoryTimestampDuration = 0;//Play->HistoryHead.FileSize;
+            Play->HistoryTimestampPosition = 0;//PInfo->Frame.PrevIFramePos + PInfo->Head.PktSize;
+          }
+          else if (Play->HistoryHead.IndexType == 2)
           {
             i64 iFrameTimeStart = (i64) (Play->HistoryHead.StartTime) * 1000;//ms
-            Play->HistoryTimestampPosition = (PInfo->Frame.FrameTime / 1000 - iFrameTimeStart);//ms
             Play->HistoryTimestampDuration = (Play->HistoryHead.EndTime - Play->HistoryHead.StartTime) * 1000;//ms
-          } else
+            Play->HistoryTimestampPosition = (PInfo->Frame.FrameTime / 1000 - iFrameTimeStart);//ms
+          }
+          else
           {
-            Play->HistoryTimestampPosition = 0;
             Play->HistoryTimestampDuration = 0;
+            Play->HistoryTimestampPosition = 0;
           }
           ThreadUnlock(&Play->Lock);
         }
@@ -915,15 +925,17 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
           if (!Play->IsIFrameFlag) continue;
 
           OnRecvDataNotify_av(NetHandle, PInfo, Buf, BufLen);
-        } else if (PHead->VerifyCode == Head_AudioPkt)
+        }
+        else if (PHead->VerifyCode == Head_AudioPkt)
         {
           if (Play->DevCfg.AudioCfgPkt.AudioFormat.wFormatTag == G711)
           {
             char dstBuf[4096];
             i32 dstBufLen;
-            dstBufLen = g711_decode(dstBuf, (unsigned char *) Buf, BufLen);
+            dstBufLen = g711_decode(dstBuf, (unsigned char*) Buf, BufLen);
             OnRecvDataNotify_av(NetHandle, PInfo, dstBuf, dstBufLen);
-          } else//PCM
+          }
+          else//PCM
           {
             OnRecvDataNotify_av(NetHandle, PInfo, Buf, BufLen);
           }
@@ -933,7 +945,7 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
 
       case Head_CmdPkt://网络命令包
       {
-        TNetCmdPkt *PPkt = (TNetCmdPkt *) RecvBuffer;
+        TNetCmdPkt* PPkt = (TNetCmdPkt*) RecvBuffer;
         if (PPkt->CmdPkt.MsgID == Msg_Alarm)
         {
           if (Play->AlmEvent)
@@ -941,19 +953,23 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
             Play->AlmEvent(PPkt->CmdPkt.AlmSendPkt.AlmType, PPkt->CmdPkt.AlmSendPkt.AlmTime, PPkt->CmdPkt.AlmSendPkt.AlmPort,
                            Play->UserCustom);
           }
-        } else if (PPkt->CmdPkt.MsgID == Msg_GetDevRecFileHead)
+        }
+        else if (PPkt->CmdPkt.MsgID == Msg_GetDevRecFileHead)
         {
           Play->HistoryHead = PPkt->CmdPkt.FileHead;
-        } else if (PPkt->CmdPkt.MsgID == Msg_StopPlayRecFile)
+        }
+        else if (PPkt->CmdPkt.MsgID == Msg_StopPlayRecFile)
         {
+          ThreadLock(&Play->Lock);
           Play->HistoryIsClose = true;
+          ThreadUnlock(&Play->Lock);
         }
       }
         break;
 
       case Head_CfgPkt:
       {
-        THeadPkt *PHead = (THeadPkt *) RecvBuffer;
+        THeadPkt* PHead = (THeadPkt*) RecvBuffer;
         memcpy(&Play->DevCfg, &RecvBuffer[sizeof(THeadPkt)], PHead->PktSize);
         Play->DevCfg.DevInfoPkt.SN = Play->DevCfg.DevInfoPkt.SN;
       }
@@ -965,7 +981,7 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
 bool net_Connect_IP(HANDLE NetHandle, bool IsCreateRecvThread)
 {
   bool ret = false;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (Play->IsConnect) return true;
   Play->IsConnect = false;
@@ -993,7 +1009,7 @@ bool net_Connect_IP(HANDLE NetHandle, bool IsCreateRecvThread)
   }
 
   Play->IsExit = false;
-  if (IsCreateRecvThread) Play->thRecv = ThreadCreate((void *) thread_RecvData_TCP, (void *) NetHandle, false);
+  if (IsCreateRecvThread) Play->thRecv = ThreadCreate((void*) thread_RecvData_TCP, (void*) NetHandle, false);
 
   Play->IsConnect = ret;
 
@@ -1015,9 +1031,9 @@ void thread_RecvData_P2P(HANDLE NetHandle)
   u32 frmNo;
   i32 flag = 0, cnt = 0;
 
-  TPlayParam *Play = (TPlayParam *) NetHandle;
-  TNewCmdPkt *PPkt;
-  TDataFrameInfo *PInfo;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
+  TNewCmdPkt* PPkt;
+  TDataFrameInfo* PInfo;
   i32 BufLen;
   BufLen = 0;
   Play->RecvLen = 0;
@@ -1113,14 +1129,15 @@ void thread_RecvData_P2P(HANDLE NetHandle)
       }
     }
 
-    BufLen = avRecvFrameData2(Play->p2p_avIndex, Play->RecvBuffer, MAX_BUF_SIZE, &outBufSize, &outFrmSize, (char *) &frameInfo,
+    BufLen = avRecvFrameData2(Play->p2p_avIndex, Play->RecvBuffer, MAX_BUF_SIZE, &outBufSize, &outFrmSize, (char*) &frameInfo,
                               sizeof(FRAMEINFO_t), &outFrmInfoSize, &frmNo);
 
     if (BufLen == AV_ER_DATA_NOREADY)
     {
       usleep(1000 * 1);
       continue;
-    } else if (BufLen == AV_ER_LOSED_THIS_FRAME) continue;
+    }
+    else if (BufLen == AV_ER_LOSED_THIS_FRAME) continue;
     else if (BufLen == AV_ER_INCOMPLETE_FRAME) continue;
     else if (BufLen == AV_ER_SESSION_CLOSE_BY_REMOTE) break;
     else if (BufLen == AV_ER_REMOTE_TIMEOUT_DISCONNECT)break;
@@ -1131,7 +1148,7 @@ void thread_RecvData_P2P(HANDLE NetHandle)
     t = t1;
 
     Play->RecvLen = BufLen;
-    PPkt = (TNewCmdPkt *) (Play->RecvBuffer);
+    PPkt = (TNewCmdPkt*) (Play->RecvBuffer);
     if (PPkt->VerifyCode == Head_CmdPkt)
     {
       switch (PPkt->MsgID)
@@ -1142,11 +1159,15 @@ void thread_RecvData_P2P(HANDLE NetHandle)
           break;
 
         case Msg_GetDevRecFileHead:
+          ThreadLock(&Play->Lock);
           Play->HistoryHead = PPkt->FileHead;
+          ThreadUnlock(&Play->Lock);
           break;
 
         case Msg_StopPlayRecFile:
+          ThreadLock(&Play->Lock);
           Play->HistoryIsClose = true;
+          ThreadUnlock(&Play->Lock);
           break;
 
       }//switch (PPkt->MsgID)
@@ -1154,7 +1175,7 @@ void thread_RecvData_P2P(HANDLE NetHandle)
       continue;
     }
 
-    PInfo = (TDataFrameInfo *) (Play->RecvBuffer);
+    PInfo = (TDataFrameInfo*) (Play->RecvBuffer);
 
     if (PInfo->Head.VerifyCode == Head_VideoPkt)
     {
@@ -1177,17 +1198,19 @@ void thread_RecvData_P2P(HANDLE NetHandle)
         Play->HistoryIndexType = Play->HistoryHead.IndexType;
         if (Play->HistoryIndexType == 1)//没有=0 按文件大小 = 1 按时长=2
         {
-          Play->HistoryTimestampPosition = PInfo->Frame.PrevIFramePos + PInfo->Head.PktSize;
-          Play->HistoryTimestampDuration = Play->HistoryHead.FileSize;
-        } else if (Play->HistoryHead.IndexType == 2)
+          Play->HistoryTimestampDuration = 0;//Play->HistoryHead.FileSize;
+          Play->HistoryTimestampPosition = 0;//PInfo->Frame.PrevIFramePos + PInfo->Head.PktSize;
+        }
+        else if (Play->HistoryHead.IndexType == 2)
         {
           i64 iFrameTimeStart = (i64) (Play->HistoryHead.StartTime) * 1000;//ms
-          Play->HistoryTimestampPosition = (PInfo->Frame.FrameTime / 1000 - iFrameTimeStart);//ms
           Play->HistoryTimestampDuration = (Play->HistoryHead.EndTime - Play->HistoryHead.StartTime) * 1000;//ms
-        } else
+          Play->HistoryTimestampPosition = (PInfo->Frame.FrameTime / 1000 - iFrameTimeStart);//ms
+        }
+        else
         {
-          Play->HistoryTimestampPosition = 0;
           Play->HistoryTimestampDuration = 0;
+          Play->HistoryTimestampPosition = 0;
         }
         ThreadUnlock(&Play->Lock);
       }
@@ -1199,22 +1222,26 @@ void thread_RecvData_P2P(HANDLE NetHandle)
       if (!Play->IsIFrameFlag) continue;
 
       OnRecvDataNotify_av(NetHandle, PInfo, Play->RecvBuffer + 24, Play->RecvLen - 24);
-    } else if (PInfo->Head.VerifyCode == Head_AudioPkt)
+    }
+    else if (PInfo->Head.VerifyCode == Head_AudioPkt)
     {
       if (Play->DevCfg.AudioCfgPkt.AudioFormat.wFormatTag == G711)
       {
-        dstBufLen = g711_decode(dstBuf, (unsigned char *) Play->RecvBuffer + 24, Play->RecvLen - 24);
+        dstBufLen = g711_decode(dstBuf, (unsigned char*) Play->RecvBuffer + 24, Play->RecvLen - 24);
         OnRecvDataNotify_av(NetHandle, PInfo, dstBuf, dstBufLen);
-      } else//PCM
+      }
+      else//PCM
       {
         OnRecvDataNotify_av(NetHandle, PInfo, Play->RecvBuffer + 24, Play->RecvLen - 24);
       }
-    } else if (PInfo->Head.VerifyCode == Head_DownloadPkt)
+    }
+    else if (PInfo->Head.VerifyCode == Head_DownloadPkt)
     {
       memcpy(Play->RecvDownloadBuf, Play->RecvBuffer + sizeof(PInfo->Head), PInfo->Head.PktSize);
       Play->RecvDownloadLen = PInfo->Head.PktSize;
       //if (Play->semHttpDownload) sem_post(&Play->semHttpDownload);
-    } else if (PInfo->Head.VerifyCode == Head_CfgPkt)
+    }
+    else if (PInfo->Head.VerifyCode == Head_CfgPkt)
     {
       memcpy(&Play->DevCfg, &Play->RecvBuffer[sizeof(PInfo->Head)], PInfo->Head.PktSize);
       Play->DevCfg.DevInfoPkt.SN = Play->DevCfg.DevInfoPkt.SN;
@@ -1232,11 +1259,11 @@ bool net_Connect_P2P(HANDLE NetHandle, bool IsCreateRecvThread)
   unsigned long nServType;
   i32 nResend = -1;
   struct st_SInfo Sinfo;
-  char *mode[] = {"P2P", "RLY", "LAN"};
+  char* mode[] = {"P2P", "RLY", "LAN"};
   u16 val = 0;
   i32 tmpSID;
   i32 ret = false;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
 
   if (NetHandle == 0) return false;
   if (Play->IsConnect) return true;
@@ -1280,7 +1307,7 @@ strcpy(Play->LocalIP, sLocalIP);
   if (Play->DevCfg.p2pCfgPkt.Version > 1) Play->p2pSoftVersion = Play->DevCfg.p2pCfgPkt.Version;//由StreamType改过来的
   PRINTF("p2pSoftVersion:%d\n", Play->p2pSoftVersion);
 
-  if (IsCreateRecvThread) Play->thRecv = ThreadCreate((void *) thread_RecvData_P2P, (void *) NetHandle, false);
+  if (IsCreateRecvThread) Play->thRecv = ThreadCreate((void*) thread_RecvData_P2P, (void*) NetHandle, false);
 
   Play->IsConnect = true;
   return Play->IsConnect;
@@ -1293,10 +1320,10 @@ strcpy(Play->LocalIP, sLocalIP);
 #endif
 }
 //-----------------------------------------------------------------------------
-bool thNet_Connect(HANDLE NetHandle, char *UserName, char *Password, char *IPUID, i32 DataPort, u32 TimeOut)
+bool thNet_Connect(HANDLE NetHandle, char* UserName, char* Password, char* IPUID, i32 DataPort, u32 TimeOut)
 {
   bool ret;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   PRINTF("connect ,IPUID is %s\n", IPUID);
 
@@ -1327,7 +1354,8 @@ bool thNet_Connect(HANDLE NetHandle, char *UserName, char *Password, char *IPUID
   if (Play->Isp2pConn == false)
   {
     ret = net_Connect_IP(NetHandle, true);
-  } else
+  }
+  else
   {
     ret = net_Connect_P2P(NetHandle, true);
   }
@@ -1343,13 +1371,13 @@ bool thNet_Connect(HANDLE NetHandle, char *UserName, char *Password, char *IPUID
       Play->hQueueAudio = avQueue_Init(MAX_QUEUE_COUNT, true, true);
       Play->hQueueRec = avQueue_Init(MAX_QUEUE_COUNT, true, true);
 
-      Play->thQueueVideo = ThreadCreate((void *) thread_QueueVideo, Play, false);
-      Play->thQueueAudio = ThreadCreate((void *) thread_QueueAudio, Play, false);
-      Play->thQueueRec = ThreadCreate((void *) thread_QueueRec, Play, false);
+      Play->thQueueVideo = ThreadCreate((void*) thread_QueueVideo, Play, false);
+      Play->thQueueAudio = ThreadCreate((void*) thread_QueueAudio, Play, false);
+      Play->thQueueRec = ThreadCreate((void*) thread_QueueRec, Play, false);
     }
 
     TMediaType MediaType = CODEC_NONE;
-    TVideoFormat *vfmt = &Play->DevCfg.VideoCfgPkt.VideoFormat;
+    TVideoFormat* vfmt = &Play->DevCfg.VideoCfgPkt.VideoFormat;
     if (vfmt->VideoType == MPEG4) vfmt->VideoType = H264;
 
     if (vfmt->VideoType == MJPEG) MediaType = CODEC_MJPEG;
@@ -1371,8 +1399,8 @@ bool thNet_Connect(HANDLE NetHandle, char *UserName, char *Password, char *IPUID
 bool thNet_DisConn(HANDLE NetHandle)
 {
   int i, iCount;
-  TavNode *tmpNode;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TavNode* tmpNode;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return true;
   PRINTF("%s(%s)(%s)\n", __FUNCTION__, Play->IPUID, Play->LocalIP);
@@ -1398,7 +1426,8 @@ bool thNet_DisConn(HANDLE NetHandle)
       closesocket(Play->hSocket);
       Play->hSocket = 0;
     }
-  } else
+  }
+  else
   {
 #ifdef IsUsedP2P
     ThreadExit(Play->thRecv, 0);//1000;
@@ -1501,7 +1530,7 @@ bool thNet_DisConn(HANDLE NetHandle)
 //-----------------------------------------------------------------------------
 bool thNet_IsConnect(HANDLE NetHandle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
 
   return Play->IsConnect;
@@ -1510,7 +1539,7 @@ bool thNet_IsConnect(HANDLE NetHandle)
 //-----------------------------------------------------------------------------
 int thNet_GetConnectStatus(HANDLE NetHandle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   return Play->iConnectStatus;
 }
@@ -1519,7 +1548,7 @@ bool thNet_Play(HANDLE NetHandle, u32 VideoChlMask, u32 AudioChlMask, u32 SubVid
 {
 
   bool Result = false;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
 
@@ -1542,7 +1571,8 @@ bool thNet_Play(HANDLE NetHandle, u32 VideoChlMask, u32 AudioChlMask, u32 SubVid
     Play->FrameRate = Play->DevCfg.VideoCfgPkt.VideoFormat.FrameRate;
     Play->DisplayStreamType = 0;
 
-  } else if (Play->SubVideoChlMask)
+  }
+  else if (Play->SubVideoChlMask)
   {
     //GetWidthHeightFromStandard(Play->DevCfg.VideoCfgPkt.VideoFormat.Sub.StandardEx, &Play->ImgWidth, &Play->ImgHeight);
     Play->FrameRate = Play->DevCfg.VideoCfgPkt.VideoFormat.Sub.FrameRate;
@@ -1564,8 +1594,9 @@ bool thNet_Play(HANDLE NetHandle, u32 VideoChlMask, u32 AudioChlMask, u32 SubVid
     Pkt.CmdPkt.LivePkt.VideoChlMask = VideoChlMask;//主码流
     Pkt.CmdPkt.LivePkt.AudioChlMask = AudioChlMask;
     Pkt.CmdPkt.LivePkt.SubVideoChlMask = SubVideoChlMask;
-    Result = (SendBuf(Play->hSocket, (char *) &Pkt, sizeof(Pkt), NET_TIMEOUT) == true);
-  } else
+    Result = (SendBuf(Play->hSocket, (char*) &Pkt, sizeof(Pkt), NET_TIMEOUT) == true);
+  }
+  else
   {
 #ifdef IsUsedP2P
     i32 ret;
@@ -1579,7 +1610,7 @@ bool thNet_Play(HANDLE NetHandle, u32 VideoChlMask, u32 AudioChlMask, u32 SubVid
     Pkt.LivePkt.AudioChlMask = AudioChlMask;
     Pkt.LivePkt.SubVideoChlMask = SubVideoChlMask;
 
-    ret = avSendIOCtrl(Play->p2p_avIndex, Head_CmdPkt, (char *) &Pkt, 8 + Pkt.PktSize);
+    ret = avSendIOCtrl(Play->p2p_avIndex, Head_CmdPkt, (char*) &Pkt, 8 + Pkt.PktSize);
     if (ret < 0) return false;
     Result = true;
 #endif
@@ -1598,7 +1629,7 @@ bool thNet_Play(HANDLE NetHandle, u32 VideoChlMask, u32 AudioChlMask, u32 SubVid
 //-----------------------------------------------------------------------------
 bool thNet_Stop(HANDLE NetHandle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
   PRINTF("%s(%s)(%s)\n", __FUNCTION__, Play->IPUID, Play->LocalIP);
@@ -1608,15 +1639,15 @@ bool thNet_Stop(HANDLE NetHandle)
 //-----------------------------------------------------------------------------
 bool thNet_IsPlay(HANDLE NetHandle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
   return (Play->VideoChlMask == 1 || Play->SubVideoChlMask == 1 || Play->AudioChlMask == 1);
 }
 //-----------------------------------------------------------------------------
-bool net_SetTalk(HANDLE NetHandle, char *Buf, i32 BufLen)
+bool net_SetTalk(HANDLE NetHandle, char* Buf, i32 BufLen)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
   if (!Play->Isp2pConn)
@@ -1626,9 +1657,10 @@ bool net_SetTalk(HANDLE NetHandle, char *Buf, i32 BufLen)
     if (Play->Session == 0) return false;
     Head.VerifyCode = Head_TalkPkt;
     Head.PktSize = BufLen + 24;
-    ret = SendBuf(Play->hSocket, (char *) &Head, sizeof(TTalkHeadPkt), NET_TIMEOUT);
+    ret = SendBuf(Play->hSocket, (char*) &Head, sizeof(TTalkHeadPkt), NET_TIMEOUT);
     if (ret) return (SendBuf(Play->hSocket, Buf, BufLen, NET_TIMEOUT) == true);
-  } else
+  }
+  else
   {
 #ifdef IsUsedP2P
     i32 i, idiv, imod, iMaxSize, ret;
@@ -1660,7 +1692,7 @@ bool net_SetTalk(HANDLE NetHandle, char *Buf, i32 BufLen)
 }
 
 //-----------------------------------------------------------------------------
-void callback_AudioTalk(void *UserCustom, char *Buf, i32 Len)
+void callback_AudioTalk(void* UserCustom, char* Buf, i32 Len)
 {
   HANDLE NetHandle = (HANDLE) UserCustom;
   if (NetHandle == 0) return;
@@ -1669,10 +1701,10 @@ void callback_AudioTalk(void *UserCustom, char *Buf, i32 Len)
 //-----------------------------------------------------------------------------
 bool thNet_TalkOpen(HANDLE NetHandle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
-  PRINTF("%s(%s)(%s)\n", __FUNCTION__, Play->IPUID, Play->LocalIP);
+  PRINTF("%s(%d)(%s)(%s)\n", __FUNCTION__, __LINE__, Play->IPUID, Play->LocalIP);
 
   if (Play->Isp2pConn && Play->p2p_talkIndex < 0)
   {
@@ -1680,11 +1712,15 @@ bool thNet_TalkOpen(HANDLE NetHandle)
     Play->p2p_talkIndex = avServStart(Play->p2p_SessionID, NULL, NULL, Play->TimeOut, 0, AUDIO_SPEAKER_CHANNEL);
     if (Play->p2p_talkIndex < 0) return false;
   }
-
+  PRINTF("%s(%d) talkHandle:%d\n", __FUNCTION__, __LINE__, Play->talkHandle);
   ThreadLock(&Play->Lock);
   Play->talkHandle = thAudioTalk_Init();
+  PRINTF("%s(%d) talkHandle:%d\n", __FUNCTION__, __LINE__, Play->talkHandle);
   if (Play->talkHandle)
   {
+    PRINTF("%s(%d) nChannels:%d wBitsPerSample:%d nSamplesPerSec:%d\n", __FUNCTION__, __LINE__,
+           Play->DevCfg.AudioCfgPkt.AudioFormat.nChannels, Play->DevCfg.AudioCfgPkt.AudioFormat.wBitsPerSample,
+           Play->DevCfg.AudioCfgPkt.AudioFormat.nSamplesPerSec);
     thAudioTalk_SetFormat(Play->talkHandle, Play->DevCfg.AudioCfgPkt.AudioFormat.nChannels,
                           Play->DevCfg.AudioCfgPkt.AudioFormat.wBitsPerSample, Play->DevCfg.AudioCfgPkt.AudioFormat.nSamplesPerSec,
                           AUDIO_COLLECT_SIZE, callback_AudioTalk, Play);
@@ -1695,7 +1731,7 @@ bool thNet_TalkOpen(HANDLE NetHandle)
 //-----------------------------------------------------------------------------
 bool thNet_TalkClose(HANDLE NetHandle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
   PRINTF("%s(%s)(%s)\n", __FUNCTION__, Play->IPUID, Play->LocalIP);
@@ -1710,9 +1746,9 @@ bool thNet_TalkClose(HANDLE NetHandle)
   return true;
 }
 //-----------------------------------------------------------------------------
-bool thNet_RemoteFilePlay(HANDLE NetHandle, char *FileName)
+bool thNet_RemoteFilePlay(HANDLE NetHandle, char* FileName)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
   PRINTF("%s(%s) FileName:%s\n", Play->IPUID, Play->LocalIP, FileName);
@@ -1722,12 +1758,14 @@ bool thNet_RemoteFilePlay(HANDLE NetHandle, char *FileName)
     TNetCmdPkt Pkt;
     bool ret = false;
     if (Play->Session == 0) return false;
+
+    ThreadLock(&Play->Lock);
     Play->VideoChlMask = 1;
     Play->AudioChlMask = 1;
     Play->SubVideoChlMask = 1;
     Play->GroupType = pt_PlayHistory;
-
     Play->HistoryIsClose = false;
+    ThreadUnlock(&Play->Lock);
 
     memset(&Pkt, 0, sizeof(Pkt));
     Pkt.HeadPkt.VerifyCode = Head_CmdPkt;
@@ -1736,9 +1774,10 @@ bool thNet_RemoteFilePlay(HANDLE NetHandle, char *FileName)
     Pkt.CmdPkt.MsgID = Msg_StartPlayRecFile;
     Pkt.CmdPkt.Session = Play->Session;
     strcpy(Pkt.CmdPkt.RecFilePkt.FileName, FileName);
-    ret = SendBuf(Play->hSocket, (char *) &Pkt, sizeof(Pkt), NET_TIMEOUT);
+    ret = SendBuf(Play->hSocket, (char*) &Pkt, sizeof(Pkt), NET_TIMEOUT);
     return ret;
-  } else
+  }
+  else
   {
 #ifdef IsUsedP2P
     i32 ret = false;
@@ -1747,6 +1786,7 @@ bool thNet_RemoteFilePlay(HANDLE NetHandle, char *FileName)
     Play->AudioChlMask = 1;
     Play->SubVideoChlMask = 1;
     Play->GroupType = pt_PlayHistory;
+    Play->HistoryIsClose = false;
 
     memset(&Pkt, 0, sizeof(Pkt));
     Pkt.VerifyCode = Head_CmdPkt;
@@ -1754,7 +1794,7 @@ bool thNet_RemoteFilePlay(HANDLE NetHandle, char *FileName)
     Pkt.Result = false;
     Pkt.PktSize = sizeof(Pkt.RecFilePkt);
     strcpy(Pkt.RecFilePkt.FileName, FileName);
-    ret = avSendIOCtrl(Play->p2p_avIndex, Head_CmdPkt, (char *) &Pkt, 8 + Pkt.PktSize);
+    ret = avSendIOCtrl(Play->p2p_avIndex, Head_CmdPkt, (char*) &Pkt, 8 + Pkt.PktSize);
     if (ret < 0) return false;
 #endif
     return true;
@@ -1763,7 +1803,7 @@ bool thNet_RemoteFilePlay(HANDLE NetHandle, char *FileName)
 //-----------------------------------------------------------------------------
 bool thNet_RemoteFileStop(HANDLE NetHandle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
   PRINTF("%s(%s)(%s)\n", __FUNCTION__, Play->IPUID, Play->LocalIP);
@@ -1783,9 +1823,10 @@ bool thNet_RemoteFileStop(HANDLE NetHandle)
     Pkt.CmdPkt.PktHead = Pkt.HeadPkt.VerifyCode;
     Pkt.CmdPkt.Session = Play->Session;
     Pkt.CmdPkt.MsgID = Msg_StopPlayRecFile;
-    ret = SendBuf(Play->hSocket, (char *) &Pkt, sizeof(Pkt), NET_TIMEOUT);
+    ret = SendBuf(Play->hSocket, (char*) &Pkt, sizeof(Pkt), NET_TIMEOUT);
     return ret;
-  } else
+  }
+  else
   {
 #ifdef IsUsedP2P
     TNewCmdPkt Pkt;
@@ -1799,7 +1840,7 @@ bool thNet_RemoteFileStop(HANDLE NetHandle)
     Pkt.MsgID = Msg_StopPlayRecFile;
     Pkt.Result = false;
     Pkt.PktSize = 0;
-    ret = avSendIOCtrl(Play->p2p_avIndex, Head_CmdPkt, (char *) &Pkt, 8 + Pkt.PktSize);
+    ret = avSendIOCtrl(Play->p2p_avIndex, Head_CmdPkt, (char*) &Pkt, 8 + Pkt.PktSize);
     if (ret < 0) return false;
 #endif
     return true;
@@ -1808,12 +1849,23 @@ bool thNet_RemoteFileStop(HANDLE NetHandle)
 //-----------------------------------------------------------------------------
 bool thNet_RemoteFilePlayControl(HANDLE NetHandle, i32 PlayCtrl, i32 Speed, i32 Pos)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
   PRINTF("%s(%s)(%s) PlayCtrl:%d Speed:%d Pos:%d\n", __FUNCTION__, Play->IPUID, Play->LocalIP, PlayCtrl, Speed, Pos);
 
+  ThreadLock(&Play->Lock);
   Play->IsVideoDecodeSuccessFlag = false;
+  if (PlayCtrl == PS_Play)
+  {
+    Play->HistoryIsClose = false;
+  }
+  Play->VideoChlMask = 1;
+  Play->AudioChlMask = 1;
+  Play->SubVideoChlMask = 1;
+  Play->GroupType = pt_PlayHistory;
+  ThreadUnlock(&Play->Lock);
+
   if (!Play->Isp2pConn)
   {
     i32 ret;
@@ -1828,9 +1880,10 @@ bool thNet_RemoteFilePlayControl(HANDLE NetHandle, i32 PlayCtrl, i32 Speed, i32 
     Pkt.CmdPkt.PlayCtrlPkt.PlayCtrl = (TPlayCtrl) PlayCtrl;
     Pkt.CmdPkt.PlayCtrlPkt.Speed = Speed;
     Pkt.CmdPkt.PlayCtrlPkt.Pos = Pos;
-    ret = SendBuf(Play->hSocket, (char *) &Pkt, sizeof(Pkt), NET_TIMEOUT);
+    ret = SendBuf(Play->hSocket, (char*) &Pkt, sizeof(Pkt), NET_TIMEOUT);
     return ret;
-  } else
+  }
+  else
   {
 #ifdef IsUsedP2P
     i32 ret = false;
@@ -1843,7 +1896,7 @@ bool thNet_RemoteFilePlayControl(HANDLE NetHandle, i32 PlayCtrl, i32 Speed, i32 
     Pkt.PlayCtrlPkt.PlayCtrl = (TPlayCtrl) PlayCtrl;
     Pkt.PlayCtrlPkt.Speed = Speed;
     Pkt.PlayCtrlPkt.Pos = Pos;
-    ret = avSendIOCtrl(Play->p2p_avIndex, Head_CmdPkt, (char *) &Pkt, 8 + Pkt.PktSize);
+    ret = avSendIOCtrl(Play->p2p_avIndex, Head_CmdPkt, (char*) &Pkt, 8 + Pkt.PktSize);
     if (ret < 0) return false;
     return true;
 #endif
@@ -1851,37 +1904,51 @@ bool thNet_RemoteFilePlayControl(HANDLE NetHandle, i32 PlayCtrl, i32 Speed, i32 
 
   return false;
 }
-
 //-----------------------------------------------------------------------------
 int thNet_RemoteFileIsClose(HANDLE NetHandle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  int ret;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
-  return Play->HistoryIsClose;
+  ThreadLock(&Play->Lock);
+  ret = Play->HistoryIsClose;
+  ThreadUnlock(&Play->Lock);
+  return ret;
 }
 
 //-----------------------------------------------------------------------------
 int thNet_RemoteFileGetIndexType(HANDLE NetHandle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  int ret;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
-  return Play->HistoryIndexType;
+  ThreadLock(&Play->Lock);
+  ret = Play->HistoryIndexType;
+  ThreadUnlock(&Play->Lock);
+  return ret;
 }
-
 //-----------------------------------------------------------------------------
 int thNet_RemoteFileGetPosition(HANDLE NetHandle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  int ret;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
-  return Play->HistoryTimestampPosition;
+  ThreadLock(&Play->Lock);
+  ret = Play->HistoryTimestampPosition;
+  if (ret > Play->HistoryTimestampDuration) ret = 0;
+  ThreadUnlock(&Play->Lock);
+  return ret;
 }
-
 //-----------------------------------------------------------------------------
 int thNet_RemoteFileGetDuration(HANDLE NetHandle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  int ret;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
-  return Play->HistoryTimestampDuration;
+  ThreadLock(&Play->Lock);
+  ret = Play->HistoryTimestampDuration;
+  ThreadUnlock(&Play->Lock);
+  return ret;
 }
 //-----------------------------------------------------------------------------
 bool thNet_RemoteFileSetPosition(HANDLE NetHandle, int Pos)
@@ -1891,7 +1958,7 @@ bool thNet_RemoteFileSetPosition(HANDLE NetHandle, int Pos)
 //-----------------------------------------------------------------------------
 bool thNet_HttpGetStop(HANDLE NetHandle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   PRINTF("%s(%s)(%s)\n", __FUNCTION__, Play->IPUID, Play->LocalIP);
   ThreadLock(&Play->Lock);
@@ -1901,10 +1968,10 @@ bool thNet_HttpGetStop(HANDLE NetHandle)
   return true;
 }
 //-----------------------------------------------------------------------------
-bool thNet_HttpGet(HANDLE NetHandle, char *url, char *Buf, i32 *BufLen)
+bool thNet_HttpGet(HANDLE NetHandle, char* url, char* Buf, i32* BufLen)
 {
   bool Result = false;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   *BufLen = 0;
   if (NetHandle == 0) return Result;
   if (!Play->IsConnect) return Result;
@@ -1929,10 +1996,10 @@ bool thNet_HttpGet(HANDLE NetHandle, char *url, char *Buf, i32 *BufLen)
       Pkt.CmdPkt.PktHead = Head_CmdPkt;
       Pkt.CmdPkt.MsgID = Msg_HttpGet;
       strcpy(Pkt.CmdPkt.ValueStr, url);
-      ret = SendBuf(hSocket, (char *) &Pkt, sizeof(TNetCmdPkt), Play->TimeOut);
+      ret = SendBuf(hSocket, (char*) &Pkt, sizeof(TNetCmdPkt), Play->TimeOut);
       for (i = 0; i < 5; i++)
       {
-        ret = RecvBuf(hSocket, (char *) &Head, sizeof(THeadPkt), Play->TimeOut);
+        ret = RecvBuf(hSocket, (char*) &Head, sizeof(THeadPkt), Play->TimeOut);
         if (Head.VerifyCode == Head_DownloadPkt) break;
       }
       if (Head.VerifyCode != Head_DownloadPkt)
@@ -1940,7 +2007,7 @@ bool thNet_HttpGet(HANDLE NetHandle, char *url, char *Buf, i32 *BufLen)
         if (hSocket) closesocket(hSocket);
         goto exits;
       }
-      Result = RecvBuf(hSocket, (char *) Buf, Head.PktSize, NET_TIMEOUT);
+      Result = RecvBuf(hSocket, (char*) Buf, Head.PktSize, NET_TIMEOUT);
       if (Result)
       {
         *BufLen = Head.PktSize;
@@ -1948,14 +2015,16 @@ bool thNet_HttpGet(HANDLE NetHandle, char *url, char *Buf, i32 *BufLen)
       }
 
       if (hSocket) closesocket(hSocket);
-    } else
+    }
+    else
     {
       i32 iErrorCode;
       iErrorCode = HttpGet(url, Buf, BufLen, false, Play->TimeOut);
       Result = (iErrorCode == 200);
       if (Result) Buf[*BufLen] = 0x00;
     }
-  } else
+  }
+  else
   {
 #ifdef IsUsedP2P
     char1024 SvrName, HostName, UserNamePassword;
@@ -1980,7 +2049,8 @@ bool thNet_HttpGet(HANDLE NetHandle, char *url, char *Buf, i32 *BufLen)
         PRINTF("------------------------- httpget p2p aaaa,HostName is %s,port is %d\n", HostName, port);
         goto exits;
       }
-    } else
+    }
+    else
     {
       strcpy(HostName, SvrName);
       port = 80;
@@ -1996,7 +2066,7 @@ bool thNet_HttpGet(HANDLE NetHandle, char *url, char *Buf, i32 *BufLen)
 
     Play->RecvDownloadLen = 0;
     ioType = Head_CmdPkt;
-    ret = avSendIOCtrl(Play->p2p_avIndex, ioType, (char *) &SendPkt, 8 + SendPkt.PktSize);
+    ret = avSendIOCtrl(Play->p2p_avIndex, ioType, (char*) &SendPkt, 8 + SendPkt.PktSize);
     PRINTF("------------------------- httpget p2p 1,ret is %d\n", ret);
     if (ret < 0) goto exits;
 
@@ -2029,14 +2099,15 @@ bool thNet_HttpGet(HANDLE NetHandle, char *url, char *Buf, i32 *BufLen)
           break;
         }
       }
-    } else
+    }
+    else
     {
       PRINTF("------------------------- httpget p2p 3\n");
       while (1)
       {
         if (Play->IsExit) goto exits;
         if (Play->IsStopHttpGet) goto exits;
-        ret = avRecvIOCtrl(Play->p2p_avIndex, (u32 *) &ioType, (char *) &recvPkt, sizeof(recvPkt), Play->TimeOut);
+        ret = avRecvIOCtrl(Play->p2p_avIndex, (u32*) &ioType, (char*) &recvPkt, sizeof(recvPkt), Play->TimeOut);
         if (ret < 0) goto exits;
         if (!(recvPkt.VerifyCode == Head_CmdPkt && recvPkt.MsgID == Msg_HttpGet)) goto exits;
 
@@ -2061,10 +2132,10 @@ bool thNet_HttpGet(HANDLE NetHandle, char *url, char *Buf, i32 *BufLen)
   return Result;
 }
 //-----------------------------------------------------------------------------
-bool thNet_SetRecPath(HANDLE NetHandle, char *RecPath)
+bool thNet_SetRecPath(HANDLE NetHandle, char* RecPath)
 {
   int len;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
   PRINTF("%s(%s) RecPath:%s\n", __FUNCTION__, Play->IPUID, RecPath);
@@ -2078,11 +2149,11 @@ bool thNet_SetRecPath(HANDLE NetHandle, char *RecPath)
   return true;
 }
 //-----------------------------------------------------------------------------
-bool thNet_StartRec(HANDLE NetHandle, char *RecFileName/*FileName=NULL,配合thNet_SetRecPath使用*/)
+bool thNet_StartRec(HANDLE NetHandle, char* RecFileName/*FileName=NULL,配合thNet_SetRecPath使用*/)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
-  TVideoFormat *vfmt;
-  TAudioFormat *afmt;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
+  TVideoFormat* vfmt;
+  TAudioFormat* afmt;
   TMediaType MediaType = CODEC_NONE;
   SYSTEMTIME st;
   char1024 PathFileName;//录像
@@ -2107,7 +2178,8 @@ bool thNet_StartRec(HANDLE NetHandle, char *RecFileName/*FileName=NULL,配合thNet
 #else
     sprintf(PathFileName, "%s%.4d%.2d%.2d_%.2d%.2d%.2d.mp4", Play->RecPath, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 #endif
-  } else
+  }
+  else
   {
     strcpy(PathFileName, RecFileName);
   }
@@ -2118,7 +2190,8 @@ bool thNet_StartRec(HANDLE NetHandle, char *RecFileName/*FileName=NULL,配合thNet
                                     CODEC_PCM, afmt->nChannels, afmt->nSamplesPerSec, afmt->wBitsPerSample);
     PRINTF("%s(%d) Play->RecHandle:%p\n", __FUNCTION__, __LINE__, Play->RecHandle);
     return (Play->RecHandle != NULL);
-  } else
+  }
+  else
   {
     Play->IsTaskRec = true;
     return false;
@@ -2127,7 +2200,7 @@ bool thNet_StartRec(HANDLE NetHandle, char *RecFileName/*FileName=NULL,配合thNet
 //-----------------------------------------------------------------------------
 bool thNet_IsRec(HANDLE NetHandle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
   PRINTF("%s(%s)\n", __FUNCTION__, Play->IPUID);
@@ -2137,7 +2210,7 @@ bool thNet_IsRec(HANDLE NetHandle)
 bool thNet_StopRec(HANDLE NetHandle)
 {
   int ret;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
   PRINTF("%s(%s)\n", __FUNCTION__, Play->IPUID);
@@ -2152,7 +2225,7 @@ bool thNet_StopRec(HANDLE NetHandle)
 //-----------------------------------------------------------------------------
 bool thNet_SetDecodeStyle(HANDLE NetHandle, int DecodeStyle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
   if ((u32) DecodeStyle > Decode_All) return false;
@@ -2165,7 +2238,7 @@ bool thNet_SetDecodeStyle(HANDLE NetHandle, int DecodeStyle)
 //-----------------------------------------------------------------------------
 bool thNet_AudioPlayOpen(HANDLE NetHandle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   PRINTF("%s(%s)\n", __FUNCTION__, Play->IPUID);
 
@@ -2184,7 +2257,7 @@ bool thNet_AudioPlayOpen(HANDLE NetHandle)
 //-----------------------------------------------------------------------------
 bool thNet_AudioPlayClose(HANDLE NetHandle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   PRINTF("%s(%s)\n", __FUNCTION__, Play->IPUID);
 
@@ -2201,7 +2274,7 @@ bool thNet_AudioPlayClose(HANDLE NetHandle)
 //-----------------------------------------------------------------------------
 bool thNet_SetAudioIsMute(HANDLE NetHandle, int IsAudioMute)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   PRINTF("%s(%s) IsAudioMute:%d\n", __FUNCTION__, Play->IPUID, IsAudioMute);
 
@@ -2211,10 +2284,10 @@ bool thNet_SetAudioIsMute(HANDLE NetHandle, int IsAudioMute)
   return true;
 }
 //-----------------------------------------------------------------------------
-bool thNet_AddDspInfo(HANDLE NetHandle, TDspInfo *PDspInfo)
+bool thNet_AddDspInfo(HANDLE NetHandle, TDspInfo* PDspInfo)
 {
   int i;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
 
   for (i = 0; i < MAX_DSPINFO_COUNT; i++)
@@ -2238,10 +2311,10 @@ bool thNet_AddDspInfo(HANDLE NetHandle, TDspInfo *PDspInfo)
   return false;
 }
 //-----------------------------------------------------------------------------
-bool thNet_DelDspInfo(HANDLE NetHandle, TDspInfo *PDspInfo)
+bool thNet_DelDspInfo(HANDLE NetHandle, TDspInfo* PDspInfo)
 {
   int i;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   for (i = 0; i < MAX_DSPINFO_COUNT; i++)
   {
@@ -2254,10 +2327,10 @@ bool thNet_DelDspInfo(HANDLE NetHandle, TDspInfo *PDspInfo)
   return false;
 }
 //-----------------------------------------------------------------------------
-bool thNet_SetJpgPath(HANDLE NetHandle, char *JpgPath)
+bool thNet_SetJpgPath(HANDLE NetHandle, char* JpgPath)
 {
   int len;
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
   PRINTF("%s(%s) JpgPath:%s\n", __FUNCTION__, Play->IPUID, JpgPath);
@@ -2271,11 +2344,11 @@ bool thNet_SetJpgPath(HANDLE NetHandle, char *JpgPath)
   return true;
 }
 //-----------------------------------------------------------------------------
-bool thNet_SaveToJpg(HANDLE NetHandle, char *JpgFileName)
+bool thNet_SaveToJpg(HANDLE NetHandle, char* JpgFileName)
 {
   SYSTEMTIME st;
   char1024 PathFileName;//录像
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   PRINTF("%s(%s) JpgFileName:%s\n", __FUNCTION__, Play->IPUID, JpgFileName);
   if (JpgFileName == NULL)
@@ -2287,7 +2360,8 @@ bool thNet_SaveToJpg(HANDLE NetHandle, char *JpgFileName)
 #else
     sprintf(PathFileName, "%s%.4d%.2d%.2d_%.2d%.2d%.2d.jpg", Play->JpgPath, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 #endif
-  } else
+  }
+  else
   {
     strcpy(PathFileName, JpgFileName);
   }
@@ -2300,9 +2374,9 @@ bool thNet_SaveToJpg(HANDLE NetHandle, char *JpgFileName)
 }
 
 //-----------------------------------------------------------------------------
-char *thNet_GetAllCfg(HANDLE NetHandle)
+char* thNet_GetAllCfg(HANDLE NetHandle)
 {
-  TPlayParam *Play = (TPlayParam *) NetHandle;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return NULL;
   if (!Play->IsConnect) return NULL;
   PRINTF("%s(%s)\n", __FUNCTION__, Play->IPUID);

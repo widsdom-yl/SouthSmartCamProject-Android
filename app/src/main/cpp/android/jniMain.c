@@ -31,7 +31,7 @@ typedef struct TInfoThreadOperation
 } TInfoThreadOperation;
 
 //-------------------------------------
-void thread_jniOperation(TInfoThreadOperation *Info)
+void thread_jniOperation(TInfoThreadOperation* Info)
 {
   int ret;
   if (!Info) return;
@@ -79,13 +79,13 @@ void thread_jniOperation(TInfoThreadOperation *Info)
 }
 
 //-----------------------------------------------------------------------------
-typedef void (*pvUcnvFunc)(const char *lpcstrDstEcd, const char *lpcstrSrcEcd, char *dst, unsigned long dstLen, const char *src,
-                           unsigned long nInLen, unsigned long *pnErrCode);
+typedef void (* pvUcnvFunc)(const char* lpcstrDstEcd, const char* lpcstrSrcEcd, char* dst, unsigned long dstLen, const char* src,
+                            unsigned long nInLen, unsigned long* pnErrCode);
 
-void UcnvConvert_GB2312toUTF8(char *dst, unsigned long dstLen, const char *src, unsigned long *pnErrC)
+void UcnvConvert_GB2312toUTF8(char* dst, unsigned long dstLen, const char* src, unsigned long* pnErrC)
 {
   pvUcnvFunc g_pvUcnvConvert = NULL;
-  void *g_pvUcnvDll = NULL;
+  void* g_pvUcnvDll = NULL;
   char sFuncName[256];
   int i;
 
@@ -107,10 +107,10 @@ void UcnvConvert_GB2312toUTF8(char *dst, unsigned long dstLen, const char *src, 
 }
 
 //-----------------------------------------------------------------------------
-void UcnvConvert_UTF8toGB2312(char *dst, unsigned long dstLen, const char *src, unsigned long *pnErrC)
+void UcnvConvert_UTF8toGB2312(char* dst, unsigned long dstLen, const char* src, unsigned long* pnErrC)
 {
   pvUcnvFunc g_pvUcnvConvert = NULL;
-  void *g_pvUcnvDll = NULL;
+  void* g_pvUcnvDll = NULL;
   char sFuncName[256];
   int i;
 
@@ -137,43 +137,43 @@ void UcnvConvert_UTF8toGB2312(char *dst, unsigned long dstLen, const char *src, 
 //-----------------------------------------------------------------------------
 //*****************************************************************************
 //-----------------------------------------------------------------------------
-int JNICALL JNI_OnLoad(JavaVM *vm, void *Reserved)
+int JNICALL JNI_OnLoad(JavaVM* vm, void* Reserved)
 {
-  JNIEnv *env = NULL;
-  if ((*vm)->GetEnv(vm, (void **) &env, JNI_VERSION_1_4) != JNI_OK) return -1;
+  JNIEnv* env = NULL;
+  if ((*vm)->GetEnv(vm, (void**) &env, JNI_VERSION_1_4) != JNI_OK) return -1;
   assert(env != NULL);
   return JNI_VERSION_1_4;
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_P2PInit(JNIEnv *env, jclass obj)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_P2PInit(JNIEnv* env, jclass obj)
 {
   return P2P_Init();
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_P2PFree(JNIEnv *env, jclass obj)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_P2PFree(JNIEnv* env, jclass obj)
 {
   return P2P_Free();
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_IsConnectWLAN(JNIEnv *env, jclass obj)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_IsConnectWLAN(JNIEnv* env, jclass obj)
 {
   return IsConnectWLAN();
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT jstring JNICALL Java_com_thSDK_lib_GetLocalIP(JNIEnv *env, jclass obj)
+JNIEXPORT jstring JNICALL Java_com_thSDK_lib_GetLocalIP(JNIEnv* env, jclass obj)
 {
   jstring jtmpBuf = NULL;
   jtmpBuf = (*env)->NewStringUTF(env, GetLocalIP());
   return jtmpBuf;
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT int JNICALL Java_com_thSDK_lib_GetTime(JNIEnv *env, jclass obj)
+JNIEXPORT int JNICALL Java_com_thSDK_lib_GetTime(JNIEnv* env, jclass obj)
 {
   return time(NULL);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT u64 JNICALL
-Java_com_thSDK_lib_thNetInit(JNIEnv *env, jclass obj, bool IsQueue, bool IsAdjustTime, bool IsAutoReConn)
+Java_com_thSDK_lib_thNetInit(JNIEnv* env, jclass obj, bool IsQueue, bool IsAdjustTime, bool IsAutoReConn)
 {
   u64 NetHandle = 0;
   u32 iSN = 0;
@@ -181,24 +181,24 @@ Java_com_thSDK_lib_thNetInit(JNIEnv *env, jclass obj, bool IsQueue, bool IsAdjus
   return NetHandle;
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSetDecodeStyle(JNIEnv *env, jclass obj, u64 NetHandle, int DecodeStyle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSetDecodeStyle(JNIEnv* env, jclass obj, u64 NetHandle, int DecodeStyle)
 {
   return thNet_SetDecodeStyle((HANDLE) NetHandle, DecodeStyle);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetFree(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetFree(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   return thNet_Free((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL
-Java_com_thSDK_lib_thNetConnect(JNIEnv *env, jclass obj, u64 NetHandle, jstring jUserName, jstring jPassword, jstring jIPUID, int DataPort,
+Java_com_thSDK_lib_thNetConnect(JNIEnv* env, jclass obj, u64 NetHandle, jstring jUserName, jstring jPassword, jstring jIPUID, int DataPort,
                                 int TimeOut)
 {
   int ret;
-  char *UserName = (char *) (*env)->GetStringUTFChars(env, jUserName, NULL);
-  char *Password = (char *) (*env)->GetStringUTFChars(env, jPassword, NULL);
-  char *IPUID = (char *) (*env)->GetStringUTFChars(env, jIPUID, NULL);
+  char* UserName = (char*) (*env)->GetStringUTFChars(env, jUserName, NULL);
+  char* Password = (char*) (*env)->GetStringUTFChars(env, jPassword, NULL);
+  char* IPUID = (char*) (*env)->GetStringUTFChars(env, jIPUID, NULL);
   ret = thNet_Connect((HANDLE) NetHandle, UserName, Password, IPUID, DataPort, TimeOut);
   (*env)->ReleaseStringUTFChars(env, jUserName, UserName);
   (*env)->ReleaseStringUTFChars(env, jPassword, Password);
@@ -206,56 +206,56 @@ Java_com_thSDK_lib_thNetConnect(JNIEnv *env, jclass obj, u64 NetHandle, jstring 
   return ret;
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetDisConn(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetDisConn(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   return thNet_DisConn((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetThreadDisConnFree(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetThreadDisConnFree(JNIEnv* env, jclass obj, u64 NetHandle)
 {
-  TInfoThreadOperation *Info = (TInfoThreadOperation *) malloc(sizeof(TInfoThreadOperation));
+  TInfoThreadOperation* Info = (TInfoThreadOperation*) malloc(sizeof(TInfoThreadOperation));
   Info->NetHandle = NetHandle;
   Info->MsgID = Msg_DisconnAndFree;
-  ThreadCreate((void *) thread_jniOperation, (void *) Info, true);
+  ThreadCreate((void*) thread_jniOperation, (void*) Info, true);
   return true;
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetIsConnect(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetIsConnect(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   return thNet_IsConnect((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSendSensePkt(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSendSensePkt(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   return thNet_SendSensePkt((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetGetConnectStatus(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetGetConnectStatus(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   return thNet_GetConnectStatus((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL
-Java_com_thSDK_lib_thNetPlay(JNIEnv *env, jclass obj, u64 NetHandle, int VideoChlMask, int AudioChlMask, int SubVideoChlMask)
+Java_com_thSDK_lib_thNetPlay(JNIEnv* env, jclass obj, u64 NetHandle, int VideoChlMask, int AudioChlMask, int SubVideoChlMask)
 {
   return thNet_Play((HANDLE) NetHandle, VideoChlMask, AudioChlMask, SubVideoChlMask);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetStop(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetStop(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   return thNet_Stop((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetIsPlay(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetIsPlay(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   return thNet_IsPlay((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetGetAllCfg(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetGetAllCfg(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   unsigned long pnErrC;
   char conv[1024 * 64];
-  char *tmpBuf = NULL;
+  char* tmpBuf = NULL;
   jstring jtmpBuf = NULL;
   conv[0] = 0x00;
   tmpBuf = thNet_GetAllCfg((HANDLE) NetHandle);
@@ -265,25 +265,25 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetGetAllCfg(JNIEnv *env, jclass 
   return jtmpBuf;
 }
 
-JNIEXPORT jint Java_com_thSDK_lib_jsmtInit(JNIEnv *env, jclass obj)
+JNIEXPORT jint Java_com_thSDK_lib_jsmtInit(JNIEnv* env, jclass obj)
 {
   return InitSmartConnection();
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT jint Java_com_thSDK_lib_jsmtStop(JNIEnv *env, jclass obj)
+JNIEXPORT jint Java_com_thSDK_lib_jsmtStop(JNIEnv* env, jclass obj)
 {
   return StopSmartConnection();
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT jint
-Java_com_thSDK_lib_jsmtStart(JNIEnv *env, jclass obj, jstring nSSID, jstring nPassword, jstring nTlv, jstring nTarget, int nAuthMode)
+Java_com_thSDK_lib_jsmtStart(JNIEnv* env, jclass obj, jstring nSSID, jstring nPassword, jstring nTlv, jstring nTarget, int nAuthMode)
 {
-  const char *SSID = (*env)->GetStringUTFChars(env, nSSID, NULL);
-  const char *Password = (*env)->GetStringUTFChars(env, nPassword, NULL);
-  const char *Tlv = (*env)->GetStringUTFChars(env, nTlv, NULL);
-  const char *Target = (*env)->GetStringUTFChars(env, nTarget, NULL);
+  const char* SSID = (*env)->GetStringUTFChars(env, nSSID, NULL);
+  const char* Password = (*env)->GetStringUTFChars(env, nPassword, NULL);
+  const char* Tlv = (*env)->GetStringUTFChars(env, nTlv, NULL);
+  const char* Target = (*env)->GetStringUTFChars(env, nTarget, NULL);
   char AuthMode = nAuthMode;
-  int ret = StartSmartConnection(SSID, Password, (unsigned char *) Tlv, strlen(Tlv), Target, AuthMode);
+  int ret = StartSmartConnection(SSID, Password, (unsigned char*) Tlv, strlen(Tlv), Target, AuthMode);
   (*env)->ReleaseStringUTFChars(env, nSSID, SSID);
   (*env)->ReleaseStringUTFChars(env, nPassword, Password);
   (*env)->ReleaseStringUTFChars(env, nTlv, Tlv);
@@ -292,91 +292,91 @@ Java_com_thSDK_lib_jsmtStart(JNIEnv *env, jclass obj, jstring nSSID, jstring nPa
 }
 
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetTalkOpen(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetTalkOpen(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   //return thNet_TalkOpen((HANDLE) NetHandle);
-  TInfoThreadOperation *Info = (TInfoThreadOperation *) malloc(sizeof(TInfoThreadOperation));
+  TInfoThreadOperation* Info = (TInfoThreadOperation*) malloc(sizeof(TInfoThreadOperation));
   Info->NetHandle = NetHandle;
   Info->MsgID = Msg_TalkOpen;
-  ThreadCreate((void *) thread_jniOperation, (void *) Info, true);
+  ThreadCreate((void*) thread_jniOperation, (void*) Info, true);
   return true;
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetTalkClose(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetTalkClose(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   //return thNet_TalkClose((HANDLE) NetHandle);
-  TInfoThreadOperation *Info = (TInfoThreadOperation *) malloc(sizeof(TInfoThreadOperation));
+  TInfoThreadOperation* Info = (TInfoThreadOperation*) malloc(sizeof(TInfoThreadOperation));
   Info->NetHandle = NetHandle;
   Info->MsgID = Msg_TalkClose;
-  ThreadCreate((void *) thread_jniOperation, (void *) Info, true);
+  ThreadCreate((void*) thread_jniOperation, (void*) Info, true);
   return true;
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFilePlay(JNIEnv *env, jclass obj, u64 NetHandle, jstring jFileName)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFilePlay(JNIEnv* env, jclass obj, u64 NetHandle, jstring jFileName)
 {
   int ret;
-  char *FileName = (char *) (*env)->GetStringUTFChars(env, jFileName, NULL);
+  char* FileName = (char*) (*env)->GetStringUTFChars(env, jFileName, NULL);
   ret = thNet_RemoteFilePlay((HANDLE) NetHandle, FileName);
   (*env)->ReleaseStringUTFChars(env, jFileName, FileName);
   return ret;
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFileStop(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFileStop(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   return thNet_RemoteFileStop((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFileIsClose(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFileIsClose(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   //?¶é?´æ?³ï???ä½?ms
   return thNet_RemoteFileIsClose((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT int JNICALL Java_com_thSDK_lib_thNetRemoteFileGetIndexType(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT int JNICALL Java_com_thSDK_lib_thNetRemoteFileGetIndexType(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   //?¶é?´æ?³ï???ä½?ms
   return thNet_RemoteFileGetIndexType((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT int JNICALL Java_com_thSDK_lib_thNetRemoteFileGetPosition(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT int JNICALL Java_com_thSDK_lib_thNetRemoteFileGetPosition(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   //?¶é?´æ?³ï???ä½?ms
   return thNet_RemoteFileGetPosition((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFileSetPosition(JNIEnv *env, jclass obj, u64 NetHandle, int Pos)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFileSetPosition(JNIEnv* env, jclass obj, u64 NetHandle, int Pos)
 {
   //?¶é?´æ?³ï???ä½?ms
   //return thNet_RemoteFileSetPosition((HANDLE) NetHandle, Pos);
-  TInfoThreadOperation *Info = (TInfoThreadOperation *) malloc(sizeof(TInfoThreadOperation));
+  TInfoThreadOperation* Info = (TInfoThreadOperation*) malloc(sizeof(TInfoThreadOperation));
   Info->NetHandle = NetHandle;
   Info->MsgID = Msg_RemoteFileSetPosition;
   Info->RemoteFilePlayControl.Pos = Pos;
-  ThreadCreate((void *) thread_jniOperation, (void *) Info, true);
+  ThreadCreate((void*) thread_jniOperation, (void*) Info, true);
   return true;
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT int JNICALL Java_com_thSDK_lib_thNetRemoteFileGetDuration(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT int JNICALL Java_com_thSDK_lib_thNetRemoteFileGetDuration(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   //??ä»¶é?¿åº¦ï¼???ä½?ms
   return thNet_RemoteFileGetDuration((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL
-Java_com_thSDK_lib_thNetRemoteFilePlayControl(JNIEnv *env, jclass obj, u64 NetHandle, int PlayCtrl, int Speed, int Pos)
+Java_com_thSDK_lib_thNetRemoteFilePlayControl(JNIEnv* env, jclass obj, u64 NetHandle, int PlayCtrl, int Speed, int Pos)
 {
   //return thNet_RemoteFilePlayControl((HANDLE) NetHandle, PlayCtrl, Speed, Pos);
-  TInfoThreadOperation *Info = (TInfoThreadOperation *) malloc(sizeof(TInfoThreadOperation));
+  TInfoThreadOperation* Info = (TInfoThreadOperation*) malloc(sizeof(TInfoThreadOperation));
   Info->NetHandle = NetHandle;
   Info->MsgID = Msg_RemoteFilePlayControl;
   Info->RemoteFilePlayControl.PlayCtrl = PlayCtrl;
   Info->RemoteFilePlayControl.Speed = Speed;
   Info->RemoteFilePlayControl.Pos = Pos;
-  ThreadCreate((void *) thread_jniOperation, (void *) Info, true);
+  ThreadCreate((void*) thread_jniOperation, (void*) Info, true);
   return true;
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetAudioPlayOpen(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetAudioPlayOpen(JNIEnv* env, jclass obj, u64 NetHandle)
 {
 #if 1
   return thNet_AudioPlayOpen((HANDLE) NetHandle);
@@ -389,7 +389,7 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetAudioPlayOpen(JNIEnv *env, jclass
 #endif
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetAudioPlayClose(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetAudioPlayClose(JNIEnv* env, jclass obj, u64 NetHandle)
 {
 #if 1
   return thNet_AudioPlayClose((HANDLE) NetHandle);
@@ -402,12 +402,12 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetAudioPlayClose(JNIEnv *env, jclas
 #endif
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSetAudioIsMute(JNIEnv *env, jclass obj, u64 NetHandle, int IsAudioMute)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSetAudioIsMute(JNIEnv* env, jclass obj, u64 NetHandle, int IsAudioMute)
 {
   return thNet_SetAudioIsMute((HANDLE) NetHandle, IsAudioMute);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetHttpGet(JNIEnv *env, jclass obj, u64 NetHandle, jstring jurl)
+JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetHttpGet(JNIEnv* env, jclass obj, u64 NetHandle, jstring jurl)
 {
   unsigned long pnErrC;
   int ret;
@@ -415,7 +415,7 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetHttpGet(JNIEnv *env, jclass ob
   static char Buf[1024 * 64];
   static char conv[1024 * 64];
   jstring Result = NULL;
-  char *url = (char *) (*env)->GetStringUTFChars(env, jurl, NULL);
+  char* url = (char*) (*env)->GetStringUTFChars(env, jurl, NULL);
   Buf[0] = 0x00;
   conv[0] = 0x00;
 
@@ -434,54 +434,54 @@ JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetHttpGet(JNIEnv *env, jclass ob
   return Result;
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetHttpGetStop(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetHttpGetStop(JNIEnv* env, jclass obj, u64 NetHandle)
 {
 
   return thNet_HttpGetStop((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSetRecPath(JNIEnv *env, jclass obj, u64 NetHandle, jstring jRecPath)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSetRecPath(JNIEnv* env, jclass obj, u64 NetHandle, jstring jRecPath)
 {
   int ret;
-  char *RecPath = (char *) (*env)->GetStringUTFChars(env, jRecPath, NULL);
+  char* RecPath = (char*) (*env)->GetStringUTFChars(env, jRecPath, NULL);
   ret = thNet_SetRecPath((HANDLE) NetHandle, RecPath);
   (*env)->ReleaseStringUTFChars(env, jRecPath, RecPath);
   return ret;
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetStartRec(JNIEnv *env, jclass obj, u64 NetHandle, jstring jRecFileName)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetStartRec(JNIEnv* env, jclass obj, u64 NetHandle, jstring jRecFileName)
 {
   int ret;
-  char *RecFileName = (char *) (*env)->GetStringUTFChars(env, jRecFileName, NULL);
+  char* RecFileName = (char*) (*env)->GetStringUTFChars(env, jRecFileName, NULL);
   if (strlen(RecFileName) == 0) RecFileName = NULL;
   ret = thNet_StartRec((HANDLE) NetHandle, RecFileName);
   (*env)->ReleaseStringUTFChars(env, jRecFileName, RecFileName);
   return ret;
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetIsRec(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetIsRec(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   return thNet_IsRec((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetStopRec(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetStopRec(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   return thNet_StopRec((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSetJpgPath(JNIEnv *env, jclass obj, u64 NetHandle, jstring jJpgPath)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSetJpgPath(JNIEnv* env, jclass obj, u64 NetHandle, jstring jJpgPath)
 {
   int ret;
-  char *JpgPath = (char *) (*env)->GetStringUTFChars(env, jJpgPath, NULL);
+  char* JpgPath = (char*) (*env)->GetStringUTFChars(env, jJpgPath, NULL);
   ret = thNet_SetJpgPath((HANDLE) NetHandle, JpgPath);
   (*env)->ReleaseStringUTFChars(env, jJpgPath, JpgPath);
   return ret;
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSaveToJpg(JNIEnv *env, jclass obj, u64 NetHandle, jstring jJpgFileName)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSaveToJpg(JNIEnv* env, jclass obj, u64 NetHandle, jstring jJpgFileName)
 {
   int ret;
-  char *JpgFileName = (char *) (*env)->GetStringUTFChars(env, jJpgFileName, NULL);
+  char* JpgFileName = (char*) (*env)->GetStringUTFChars(env, jJpgFileName, NULL);
   if (strlen(JpgFileName) == 0) JpgFileName = NULL;
   ret = thNet_SaveToJpg((HANDLE) NetHandle, JpgFileName);
   (*env)->ReleaseStringUTFChars(env, jJpgFileName, JpgFileName);
@@ -503,9 +503,9 @@ typedef struct TSearchInfo
 static TSearchInfo Search;
 
 //-------------------------------------
-void callback_SearchDev(void *UserCustom, u32 SN, int DevType, char *DevModal, char *SoftVersion, int DataPort, int HttpPort, int rtspPort,
-                        char *DevName, char *DevIP, char *DevMAC, char *SubMask, char *Gateway, char *DNS1, char *DDNSServer,
-                        char *DDNSHost, char *UID)
+void callback_SearchDev(void* UserCustom, u32 SN, int DevType, char* DevModal, char* SoftVersion, int DataPort, int HttpPort, int rtspPort,
+                        char* DevName, char* DevIP, char* DevMAC, char* SubMask, char* Gateway, char* DNS1, char* DDNSServer,
+                        char* DDNSHost, char* UID)
 {
   unsigned long pnErrC;
   char Str[1000];
@@ -572,7 +572,8 @@ void callback_SearchDev(void *UserCustom, u32 SN, int DevType, char *DevModal, c
     strcat(Search.tmpBuf, Str);
     sprintf(Str, "},");
     strcat(Search.tmpBuf, Str);
-  } else
+  }
+  else
   {
     if (Search.SearchCount != 0) strcat(Search.tmpBuf, "@");
     sprintf(Str, "%s,%.8x,%d,%d,%s,%s,%s,%s,%s", DevIP, SN, DataPort, HttpPort, DevMAC, uDevName, DDNSServer, DDNSHost, UID);
@@ -581,7 +582,7 @@ void callback_SearchDev(void *UserCustom, u32 SN, int DevType, char *DevModal, c
   Search.SearchCount++;
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetSearchDevice(JNIEnv *env, jclass obj, int TimeOut, int IsJson)
+JNIEXPORT jstring JNICALL Java_com_thSDK_lib_thNetSearchDevice(JNIEnv* env, jclass obj, int TimeOut, int IsJson)
 {
   int len;
   HANDLE SearchHandle;
@@ -685,7 +686,7 @@ Java_com_thSDK_lib_thManageForeBackgroundSwitch(JNIEnv *env, jclass obj, int IsF
 */
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL
-Java_com_thSDK_lib_thOpenGLSurfaceChanged(JNIEnv *env, jclass obj, u64 NetHandle, int Width, int Height)
+Java_com_thSDK_lib_thOpenGLSurfaceChanged(JNIEnv* env, jclass obj, u64 NetHandle, int Width, int Height)
 {
   TDspInfo DspInfo;
   DspInfo.DspHandle = (HWND) 12345;
@@ -697,23 +698,23 @@ Java_com_thSDK_lib_thOpenGLSurfaceChanged(JNIEnv *env, jclass obj, u64 NetHandle
   return thNet_AddDspInfo((HANDLE) NetHandle, &DspInfo);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thOpenGLRenderRGB565(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thOpenGLRenderRGB565(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   return thOpenGL_RenderRGB565((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thOpenGLCreateEGL(JNIEnv *env, jclass obj, u64 NetHandle, jobject surface)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thOpenGLCreateEGL(JNIEnv* env, jclass obj, u64 NetHandle, jobject surface)
 {
-  ANativeWindow *Window = ANativeWindow_fromSurface(env, surface);
+  ANativeWindow* Window = ANativeWindow_fromSurface(env, surface);
   return thOpenGL_CreateEGL((HANDLE) NetHandle, Window);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thOpenGLFreeEGL(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thOpenGLFreeEGL(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   return thOpenGL_FreeEGL((HANDLE) NetHandle);
 }
 //-----------------------------------------------------------------------------
-JNIEXPORT bool JNICALL Java_com_thSDK_lib_thOpenGLIsRenderSuccess(JNIEnv *env, jclass obj, u64 NetHandle)
+JNIEXPORT bool JNICALL Java_com_thSDK_lib_thOpenGLIsRenderSuccess(JNIEnv* env, jclass obj, u64 NetHandle)
 {
   return thOpenGL_IsRenderSuccess((HANDLE) NetHandle);
 }

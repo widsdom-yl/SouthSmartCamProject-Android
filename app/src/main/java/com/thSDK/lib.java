@@ -87,6 +87,9 @@ public class lib extends Activity
 
   public static native boolean thNetRemoteFilePlayControl(long NetHandle, int PlayCtrl, int Speed, int Pos);//jni thread
 
+  public static final int REMOTEFILE_INDEX_FILESIZE = 1;
+  public static final int REMOTEFILE_INDEX_TIMESTAMP = 2;
+
   public static native int thNetRemoteFileGetIndexType(long NetHandle);//索引类型 没有=0 按文件大小 = 1 按时长=2
 
   public static native boolean thNetRemoteFileIsClose(long NetHandle);

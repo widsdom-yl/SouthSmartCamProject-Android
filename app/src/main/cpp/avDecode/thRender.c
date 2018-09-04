@@ -129,11 +129,8 @@ HANDLE thAudioTalk_Init()
 #endif
 }
 //-----------------------------------------------------------------------------
-bool thAudioTalk_SetFormat(HANDLE talkHandle,
-                           i32 nChannels, i32 wBitsPerSample, i32 nSamplesPerSec,
-                           i32 AudioPacketSize,
-                           TAudioTalkCallBack callback,
-                           void* UserCustom)
+bool thAudioTalk_SetFormat(HANDLE talkHandle, i32 nChannels, i32 wBitsPerSample, i32 nSamplesPerSec, i32 AudioPacketSize,
+                           TAudioTalkCallBack callback, void* UserCustom)
 {
 #ifdef IS_AUDIOTALK_MMSYSTEM
   return thWaveIn_SetFormat(talkHandle, nChannels, wBitsPerSample, nSamplesPerSec, AudioPacketSize, callback, UserCustom);
