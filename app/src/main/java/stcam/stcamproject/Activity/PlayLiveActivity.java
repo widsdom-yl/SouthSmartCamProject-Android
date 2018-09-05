@@ -1,5 +1,6 @@
 package stcam.stcamproject.Activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -8,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -70,6 +72,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
   //定时刷新列表
   public int TIME = 1000;
   boolean isTalk = false;
+  boolean IsOpenLEDControl = false;//是否已打开过DevLedControlActivity界面
 
   Handler handler_refresh = new Handler();
   Runnable runnable_fresh = new Runnable()
@@ -161,6 +164,30 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
     return super.onOptionsItemSelected(item);
   }
 
+  public static void threadSendPlay(final DevModel DevNode)//让IPCAM MCU再次进入视频模式
+  {
+    new Thread()
+    {
+      @Override
+      public void run()
+      {
+        lib.thNetPlay(DevNode.NetHandle, DevNode.VideoChlMask, DevNode.AudioChlMask, DevNode.SubVideoChlMask);
+      }
+    }.start();
+  }
+
+  public static void threadSendStop(final DevModel DevNode)//让IPCAM MCU再次进入视频模式
+  {
+    new Thread()
+    {
+      @Override
+      public void run()
+      {
+        lib.thNetStop(DevNode.NetHandle);
+      }
+    }.start();
+  }
+
   @Override
   protected void onResume()
   {
@@ -179,6 +206,11 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
     if (isPlayAudio)
     {
       lib.thNetAudioPlayOpen(devModel.NetHandle);
+    }
+
+    if (IsOpenLEDControl == true)//第一次不执行
+    {
+      threadSendPlay(devModel);
     }
   }
 
@@ -521,30 +553,25 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
           lib.thNetSaveToJpg(devModel.NetHandle, fileName);
         }
         break;
+
       case R.id.button_speech:
         enableBtnAfterSeconds();
         if (isTalk)
         {
           button_speech.setSelected(false);
           button_speech.setImageResource(R.drawable.livespeech_nor);
-//                    if (isPlayAudio){
-//                        lib.thNetAudioPlayOpen(devModel.NetHandle);
-//                    }
           isTalk = false;
           lib.thNetTalkClose(devModel.NetHandle);
         }
         else
         {
           button_speech.setSelected(true);
-
           button_speech.setImageResource(R.drawable.livespeech_sel);
-//                    if (isPlayAudio){
-//                        lib.thNetAudioPlayClose(devModel.NetHandle);
-//                    }
           isTalk = true;
           lib.thNetTalkOpen(devModel.NetHandle);
         }
         break;
+
       case R.id.button_slient:
         enableBtnAfterSeconds();
         if (button_slient.isSelected())
@@ -562,11 +589,11 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
           lib.thNetAudioPlayOpen(devModel.NetHandle);
         }
         break;
+
       case R.id.button_record:
         enableBtnAfterSeconds();
         if (lib.thNetIsRec(devModel.NetHandle))
         {
-
           isRecording = false;
           recordTotalTime = 0;
           tx_record.setVisibility(View.INVISIBLE);
@@ -588,32 +615,72 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
         }
 
         break;
-      case R.id.button_led:
 
-        Intent intent = new Intent(this, DevLedControlActivity.class);
-        intent.putExtra("devModel", devModel);
-        startActivity(intent);
+      case R.id.button_led:
+        if (lib.thNetIsRec(devModel.NetHandle))
+        {
+          new AlertDialog.Builder(this)
+            .setTitle(this.getString(R.string.string_Recording))
+            .setPositiveButton(getString(R.string.action_ok), new DialogInterface.OnClickListener()
+            {
+              @Override
+              public void onClick(DialogInterface dialogInterface, int i)
+              {
+                isRecording = false;
+                recordTotalTime = 0;
+                tx_record.setVisibility(View.INVISIBLE);
+                lib.thNetStopRec(devModel.NetHandle);
+                if (FileUtil.isFileEmpty(recordfileName))
+                {
+                  FileUtil.delFiles(recordfileName);
+                }
+                button_record.setImageResource(R.drawable.liverecord_nor);
+
+
+                IsOpenLEDControl = true;
+                threadSendStop(devModel);
+                Intent intent = new Intent(PlayLiveActivity.this, DevLedControlActivity.class);
+                intent.putExtra("devModel", devModel);
+                startActivity(intent);
+              }
+            })
+            .setNegativeButton(getString(R.string.action_cancel), null)
+            .show();
+        }
+        else
+        {
+          IsOpenLEDControl = true;
+          threadSendStop(devModel);
+          Intent intent = new Intent(PlayLiveActivity.this, DevLedControlActivity.class);
+          intent.putExtra("devModel", devModel);
+          startActivity(intent);
+        }
         break;
+
       case R.id.button_ptz_left:
         Log.e(tag, "left");
         PtzControlTask task = new PtzControlTask();
         task.execute(5);
         break;
+
       case R.id.button_ptz_right:
         PtzControlTask task1 = new PtzControlTask();
         Log.e(tag, "right");
         task1.execute(7);
         break;
+
       case R.id.button_ptz_up:
         PtzControlTask task2 = new PtzControlTask();
         Log.e(tag, "up");
         task2.execute(1);
         break;
+
       case R.id.button_ptz_down:
         PtzControlTask task3 = new PtzControlTask();
         Log.e(tag, "down");
         task3.execute(3);
         break;
+
       case R.id.ptz_control_layout:
       case R.id.glPlayLive:
         if (ptz_layout.getVisibility() == View.VISIBLE)
@@ -625,6 +692,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
           ptz_layout.setVisibility(View.VISIBLE);
         }
         break;
+
       case R.id.button_pix:
         enableBtnAfterSeconds();
         pix_low = !pix_low;
@@ -640,33 +708,31 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
             devModel.Play(pix_low ? 1 : 0);
           }
         }.start();
-
-
         break;
+
       case R.id.button_back:
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
         {
           setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         break;
+
       case R.id.button_fullscreen:
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
         {
           setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
         break;
-      case R.id.button_setting:
-      {
-        Intent intentSetting = new Intent(STApplication.getInstance(), SettingActivity.class);
 
+      case R.id.button_setting:
+        Intent intentSetting = new Intent(STApplication.getInstance(), SettingActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable("devModel", devModel);
         bundle.putSerializable("entry", UserMode);
         intentSetting.putExtras(bundle);
         Log.e(tag, "to SettingActivity NetHandle:" + devModel.NetHandle);
-
         startActivity(intentSetting);
-      }
+        break;
 
       default:
         break;
@@ -757,7 +823,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
     protected String doInBackground(Integer... params)
     {
       //第二个执行方法,onPreExecute()执行完后执行
-      String url = devModel.getDevURL(lib.Msg_PTZControl)  + "&cmd=" + params[0] + "&sleep=500&s=23231";
+      String url = devModel.getDevURL(lib.Msg_PTZControl) + "&cmd=" + params[0] + "&sleep=500&s=23231";
       Log.e(tag, "PtzControlTask url :" + url);
       String ret = lib.thNetHttpGet(devModel.NetHandle, url);
       Log.e(tag, "PtzControlTask ret :" + ret);

@@ -241,4 +241,5 @@
     <string name="string_Info_APToSTA">1.commect to the Camera device on your mobie device, go to setings>wifi and select“IPCAM_AP_XXXXXXXX”network.\n2.Open the CAMLS app and follow the installation wizard to complete the rest of the steps.</string>
     <string name="string_gotoSetup">go to setings</string>
     <string name="action_selectdevice">Select Camera Device</string>
+    <string name="string_Recording">Recording, Do you want to stop record?</string>
 </resources>

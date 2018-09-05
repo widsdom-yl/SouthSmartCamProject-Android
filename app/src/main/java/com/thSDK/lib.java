@@ -69,10 +69,6 @@ public class lib extends Activity
   public static final int PS_Play = 1;          //播放
   public static final int PS_Pause = 2;         //暂停
   public static final int PS_Stop = 3;          //停止
-  public static final int PS_FastBackward = 4;  //快退
-  public static final int PS_FastForward = 5;   //快进
-  public static final int PS_StepBackward = 6;  //步退
-  public static final int PS_StepForward = 7;   //步进
   public static final int PS_DragPos = 8;       //拖动
 
   private void thNetRemoteFilePlayControlSample()
@@ -80,8 +76,6 @@ public class lib extends Activity
     thNetRemoteFilePlayControl(222, PS_Play, 0, 0);//正常播放
     thNetRemoteFilePlayControl(222, PS_Pause, 0, 0);//暂停
     thNetRemoteFilePlayControl(222, PS_Stop, 0, 0);//停止
-    thNetRemoteFilePlayControl(222, PS_FastBackward, 2, 0);//2倍速快退
-    thNetRemoteFilePlayControl(222, PS_FastForward, 4, 0);//4倍速快进
     thNetRemoteFilePlayControl(222, PS_DragPos, 0, 43423233);//拖动
   }
 

@@ -436,7 +436,6 @@ void callback_AudioQueueTalk(SLAndroidSimpleBufferQueueItf bq, void* context)
 HANDLE thSLESAudioTalk_Init()
 {
   thSLESCreateEngine();
-  PRINTF("========================== talk init");
   SLresult result;
   TSLESAudioTalkInfo* Info = (TSLESAudioTalkInfo*) malloc(sizeof(TSLESAudioTalkInfo));
   memset(Info, 0, sizeof(TSLESAudioTalkInfo));
@@ -453,19 +452,19 @@ HANDLE thSLESAudioTalk_Init()
   const SLboolean req[1] = {SL_BOOLEAN_TRUE};
   result = (*engineEngine)->CreateAudioRecorder(engineEngine, &Info->SLObjectTalk, &audioSrc, &audioSnk, 1, id, req);
   if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
-  PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
+  //PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
   result = (*Info->SLObjectTalk)->Realize(Info->SLObjectTalk, SL_BOOLEAN_FALSE);
   if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
-  PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
+  //PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
   result = (*Info->SLObjectTalk)->GetInterface(Info->SLObjectTalk, SL_IID_RECORD, &Info->SLTalk);
   if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
-  PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
+  //PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
   result = (*Info->SLObjectTalk)->GetInterface(Info->SLObjectTalk, SL_IID_ANDROIDSIMPLEBUFFERQUEUE, &Info->SLBufferQueueTalk);
   if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
-  PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
+  //PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
   result = (*Info->SLBufferQueueTalk)->RegisterCallback(Info->SLBufferQueueTalk, callback_AudioQueueTalk, (void*) Info);
   if (SL_RESULT_SUCCESS != result) goto errors;//assert(SL_RESULT_SUCCESS == result);
-  PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
+  //PRINTF("%s(%d) ret:%d\n", __FUNCTION__, __LINE__, 0);
 
 
   result = (*Info->SLTalk)->SetRecordState(Info->SLTalk, SL_RECORDSTATE_STOPPED);

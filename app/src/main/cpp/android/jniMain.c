@@ -294,22 +294,28 @@ Java_com_thSDK_lib_jsmtStart(JNIEnv* env, jclass obj, jstring nSSID, jstring nPa
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetTalkOpen(JNIEnv* env, jclass obj, u64 NetHandle)
 {
-  //return thNet_TalkOpen((HANDLE) NetHandle);
+#if 0
+  return thNet_TalkOpen((HANDLE) NetHandle);
+#else
   TInfoThreadOperation* Info = (TInfoThreadOperation*) malloc(sizeof(TInfoThreadOperation));
   Info->NetHandle = NetHandle;
   Info->MsgID = Msg_TalkOpen;
   ThreadCreate((void*) thread_jniOperation, (void*) Info, true);
   return true;
+#endif
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetTalkClose(JNIEnv* env, jclass obj, u64 NetHandle)
 {
-  //return thNet_TalkClose((HANDLE) NetHandle);
+#if 0
+  return thNet_TalkClose((HANDLE) NetHandle);
+#else
   TInfoThreadOperation* Info = (TInfoThreadOperation*) malloc(sizeof(TInfoThreadOperation));
   Info->NetHandle = NetHandle;
   Info->MsgID = Msg_TalkClose;
   ThreadCreate((void*) thread_jniOperation, (void*) Info, true);
   return true;
+#endif
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetRemoteFilePlay(JNIEnv* env, jclass obj, u64 NetHandle, jstring jFileName)

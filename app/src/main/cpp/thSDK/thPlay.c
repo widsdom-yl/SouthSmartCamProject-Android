@@ -1407,6 +1407,7 @@ bool thNet_DisConn(HANDLE NetHandle)
 
   memset(Play->LocalIP, 0, sizeof(Play->LocalIP));
 
+  thNet_Stop(NetHandle);
   thNet_AudioPlayClose(NetHandle);//free audio player
   thNet_TalkClose(NetHandle);
 
@@ -1701,26 +1702,36 @@ void callback_AudioTalk(void* UserCustom, char* Buf, i32 Len)
 //-----------------------------------------------------------------------------
 bool thNet_TalkOpen(HANDLE NetHandle)
 {
+  int i, tmpSID;
+  unsigned long nServType;
+  i32 nResend = -1;
   TPlayParam* Play = (TPlayParam*) NetHandle;
   if (NetHandle == 0) return false;
   if (!Play->IsConnect) return false;
   PRINTF("%s(%d)(%s)(%s)\n", __FUNCTION__, __LINE__, Play->IPUID, Play->LocalIP);
 
-  if (Play->Isp2pConn && Play->p2p_talkIndex < 0)
+  if (Play->Isp2pConn)
   {
+    if (Play->p2p_talkIndex < 0)
+    {
 #define AUDIO_SPEAKER_CHANNEL 5
-    Play->p2p_talkIndex = avServStart(Play->p2p_SessionID, NULL, NULL, Play->TimeOut, 0, AUDIO_SPEAKER_CHANNEL);
+      Play->p2p_talkIndex = avServStart(Play->p2p_SessionID, NULL, NULL, Play->TimeOut, 0, AUDIO_SPEAKER_CHANNEL);
+    }
+    PRINTF("%s(%d) p2p_talkIndex:%d\n", __FUNCTION__, __LINE__, Play->p2p_talkIndex);
     if (Play->p2p_talkIndex < 0) return false;
   }
-  PRINTF("%s(%d) talkHandle:%d\n", __FUNCTION__, __LINE__, Play->talkHandle);
+
   ThreadLock(&Play->Lock);
-  Play->talkHandle = thAudioTalk_Init();
-  PRINTF("%s(%d) talkHandle:%d\n", __FUNCTION__, __LINE__, Play->talkHandle);
+  if (Play->talkHandle == NULL)
+  {
+    Play->talkHandle = thAudioTalk_Init();
+  }
   if (Play->talkHandle)
   {
-    PRINTF("%s(%d) nChannels:%d wBitsPerSample:%d nSamplesPerSec:%d\n", __FUNCTION__, __LINE__,
-           Play->DevCfg.AudioCfgPkt.AudioFormat.nChannels, Play->DevCfg.AudioCfgPkt.AudioFormat.wBitsPerSample,
-           Play->DevCfg.AudioCfgPkt.AudioFormat.nSamplesPerSec);
+    if (Play->DevCfg.AudioCfgPkt.AudioFormat.nChannels == 0) Play->DevCfg.AudioCfgPkt.AudioFormat.nChannels = 1;
+    if (Play->DevCfg.AudioCfgPkt.AudioFormat.wBitsPerSample == 0) Play->DevCfg.AudioCfgPkt.AudioFormat.wBitsPerSample = 16;
+    if (Play->DevCfg.AudioCfgPkt.AudioFormat.nSamplesPerSec == 0) Play->DevCfg.AudioCfgPkt.AudioFormat.nSamplesPerSec = 8000;
+
     thAudioTalk_SetFormat(Play->talkHandle, Play->DevCfg.AudioCfgPkt.AudioFormat.nChannels,
                           Play->DevCfg.AudioCfgPkt.AudioFormat.wBitsPerSample, Play->DevCfg.AudioCfgPkt.AudioFormat.nSamplesPerSec,
                           AUDIO_COLLECT_SIZE, callback_AudioTalk, Play);
@@ -1904,6 +1915,7 @@ bool thNet_RemoteFilePlayControl(HANDLE NetHandle, i32 PlayCtrl, i32 Speed, i32 
 
   return false;
 }
+
 //-----------------------------------------------------------------------------
 int thNet_RemoteFileIsClose(HANDLE NetHandle)
 {
@@ -1927,6 +1939,7 @@ int thNet_RemoteFileGetIndexType(HANDLE NetHandle)
   ThreadUnlock(&Play->Lock);
   return ret;
 }
+
 //-----------------------------------------------------------------------------
 int thNet_RemoteFileGetPosition(HANDLE NetHandle)
 {
@@ -1939,6 +1952,7 @@ int thNet_RemoteFileGetPosition(HANDLE NetHandle)
   ThreadUnlock(&Play->Lock);
   return ret;
 }
+
 //-----------------------------------------------------------------------------
 int thNet_RemoteFileGetDuration(HANDLE NetHandle)
 {
