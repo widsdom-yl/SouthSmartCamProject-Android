@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 // Author      : Öìºì²¨
-// Date        : 2012.01.18
+// Date        : 2018.01.18
 // Version     : V 1.00
 // Description : 
 //-----------------------------------------------------------------------------
@@ -23,15 +23,15 @@ bool DevCfg_to_NewDevCfg(TDevCfg* DevCfg, TNewDevCfg* NewDevCfg)
   NewDevCfg->DevInfo.DevType = DevCfg->DevInfoPkt.DevType;
   NewDevCfg->DevInfo.ExistWiFi = DevCfg->DevInfoPkt.Info.ExistWiFi;
   NewDevCfg->DevInfo.ExistSD = DevCfg->DevInfoPkt.Info.ExistSD;
-  NewDevCfg->DevInfo.ethLinkStatus = DevCfg->DevInfoPkt.Info.ethLinkStatus;
+  NewDevCfg->DevInfo.IsEtherLink = DevCfg->DevInfoPkt.Info.IsEtherLink;
   NewDevCfg->DevInfo.wifiStatus = DevCfg->DevInfoPkt.Info.wifiStatus;
   NewDevCfg->DevInfo.upnpStatus = DevCfg->DevInfoPkt.Info.upnpStatus;
-  NewDevCfg->DevInfo.WlanStatus = DevCfg->DevInfoPkt.Info.WlanStatus;
+  NewDevCfg->DevInfo.IsConnWLAN = DevCfg->DevInfoPkt.Info.IsConnWLAN;
   NewDevCfg->DevInfo.p2pStatus = DevCfg->DevInfoPkt.Info.p2pStatus;
   NewDevCfg->DevInfo.HardType = DevCfg->DevInfoPkt.Info.HardType;
   NewDevCfg->DevInfo.TimeZone = DevCfg->DevInfoPkt.TimeZone;
   NewDevCfg->DevInfo.DoubleStream = DevCfg->DevInfoPkt.DoubleStream;
-  NewDevCfg->DevInfo.ExistFlash = DevCfg->DevInfoPkt.Info.ExistFlash;
+  //NewDevCfg->DevInfo.ExistFlash = DevCfg->DevInfoPkt.Info.ExistFlash;
   NewDevCfg->DevInfo.SDKVersion = DevCfg->DevInfoPkt.Info.SDKVersion;//20171108
   //NetCfg
   NewDevCfg->NetCfg.DataPort = DevCfg->NetCfgPkt.DataPort;
@@ -50,7 +50,7 @@ bool DevCfg_to_NewDevCfg(TDevCfg* DevCfg, TNewDevCfg* NewDevCfg)
   strcpy(NewDevCfg->NetCfg.DDNSServer, DevCfg->NetCfgPkt.DDNS.DDNSServer);
   //wifiCfg
   NewDevCfg->wifiCfg.ActiveWIFI = DevCfg->WiFiCfgPkt.Active;
-  NewDevCfg->wifiCfg.IsAPMode = DevCfg->WiFiCfgPkt.IsAPMode;
+  NewDevCfg->wifiCfg.WifiMode = DevCfg->WiFiCfgPkt.WifiMode;
   strcpy(NewDevCfg->wifiCfg.SSID_AP, DevCfg->WiFiCfgPkt.SSID_AP);
   strcpy(NewDevCfg->wifiCfg.Password_AP, DevCfg->WiFiCfgPkt.Password_AP);
   strcpy(NewDevCfg->wifiCfg.SSID_STA, DevCfg->WiFiCfgPkt.SSID_STA);
@@ -209,15 +209,15 @@ bool NewDevCfg_to_DevCfg(TNewDevCfg* NewDevCfg, TDevCfg* DevCfg)
   DevCfg->DevInfoPkt.DevType = NewDevCfg->DevInfo.DevType;
   DevCfg->DevInfoPkt.Info.ExistWiFi = NewDevCfg->DevInfo.ExistWiFi;
   DevCfg->DevInfoPkt.Info.ExistSD = NewDevCfg->DevInfo.ExistSD;
-  DevCfg->DevInfoPkt.Info.ethLinkStatus = NewDevCfg->DevInfo.ethLinkStatus;
+  DevCfg->DevInfoPkt.Info.IsEtherLink = NewDevCfg->DevInfo.IsEtherLink;
   DevCfg->DevInfoPkt.Info.wifiStatus = NewDevCfg->DevInfo.wifiStatus;
   DevCfg->DevInfoPkt.Info.upnpStatus = NewDevCfg->DevInfo.upnpStatus;
-  DevCfg->DevInfoPkt.Info.WlanStatus = NewDevCfg->DevInfo.WlanStatus;
+  DevCfg->DevInfoPkt.Info.IsConnWLAN = NewDevCfg->DevInfo.IsConnWLAN;
   DevCfg->DevInfoPkt.Info.p2pStatus = NewDevCfg->DevInfo.p2pStatus;
   DevCfg->DevInfoPkt.Info.HardType = NewDevCfg->DevInfo.HardType;
   DevCfg->DevInfoPkt.TimeZone = NewDevCfg->DevInfo.TimeZone;
   DevCfg->DevInfoPkt.DoubleStream = NewDevCfg->DevInfo.DoubleStream;
-  DevCfg->DevInfoPkt.Info.ExistFlash = NewDevCfg->DevInfo.ExistFlash;
+  //DevCfg->DevInfoPkt.Info.ExistFlash = NewDevCfg->DevInfo.ExistFlash;
   DevCfg->DevInfoPkt.Info.SDKVersion = NewDevCfg->DevInfo.SDKVersion;//20171108
   //NetCfg
   DevCfg->NetCfgPkt.DataPort = NewDevCfg->NetCfg.DataPort;
@@ -236,7 +236,7 @@ bool NewDevCfg_to_DevCfg(TNewDevCfg* NewDevCfg, TDevCfg* DevCfg)
   strcpy(DevCfg->NetCfgPkt.DDNS.DDNSServer, NewDevCfg->NetCfg.DDNSServer);
   //wifiCfg
   DevCfg->WiFiCfgPkt.Active = NewDevCfg->wifiCfg.ActiveWIFI;
-  DevCfg->WiFiCfgPkt.IsAPMode = NewDevCfg->wifiCfg.IsAPMode;
+  DevCfg->WiFiCfgPkt.WifiMode = NewDevCfg->wifiCfg.WifiMode;
   strcpy(DevCfg->WiFiCfgPkt.SSID_AP, NewDevCfg->wifiCfg.SSID_AP);
   strcpy(DevCfg->WiFiCfgPkt.Password_AP, NewDevCfg->wifiCfg.Password_AP);
   strcpy(DevCfg->WiFiCfgPkt.SSID_STA, NewDevCfg->wifiCfg.SSID_STA);
@@ -481,14 +481,14 @@ void Json_cgi_GetDevInfo(char* cgiBuf, TDevCfg* DevCfg)//Í¨¹ýÍøÒ³µ÷ÓÃ£¬È¡µÃÉè±¸Ð
   sprintf(Str, "\"FileVersion\":\"%s\",", DevCfg->DevInfoPkt.FileVersion); strcat(cgiBuf, Str);
   sprintf(Str, "\"ExistWiFi\":%d,", DevCfg->DevInfoPkt.Info.ExistWiFi); strcat(cgiBuf, Str);
   sprintf(Str, "\"ExistSD\":%d,", DevCfg->DevInfoPkt.Info.ExistSD); strcat(cgiBuf, Str);
-  sprintf(Str, "\"ExistFlash\":%d,", DevCfg->DevInfoPkt.Info.ExistFlash); strcat(cgiBuf, Str);
+  //sprintf(Str, "\"ExistFlash\":%d,", DevCfg->DevInfoPkt.Info.ExistFlash); strcat(cgiBuf, Str);
   sprintf(Str, "\"HardType\":%d,", DevCfg->DevInfoPkt.Info.HardType); strcat(cgiBuf, Str);
   sprintf(Str, "\"TimeZone\":%d,", DevCfg->DevInfoPkt.TimeZone); strcat(cgiBuf, Str);
 
-  sprintf(Str, "\"ethLinkStatus\":%d,", DevCfg->DevInfoPkt.Info.ethLinkStatus); strcat(cgiBuf, Str);
+  sprintf(Str, "\"ethLinkStatus\":%d,", DevCfg->DevInfoPkt.Info.IsEtherLink); strcat(cgiBuf, Str);
   sprintf(Str, "\"wifiStatus\":%d,", DevCfg->DevInfoPkt.Info.wifiStatus); strcat(cgiBuf, Str);//20171215 add
   sprintf(Str, "\"upnpStatus\":%d,", DevCfg->DevInfoPkt.Info.upnpStatus); strcat(cgiBuf, Str);
-  sprintf(Str, "\"WlanStatus\":%d,", DevCfg->DevInfoPkt.Info.WlanStatus); strcat(cgiBuf, Str);
+  sprintf(Str, "\"WlanStatus\":%d,", DevCfg->DevInfoPkt.Info.IsConnWLAN); strcat(cgiBuf, Str);
   sprintf(Str, "\"p2pStatus\":%d,", DevCfg->DevInfoPkt.Info.p2pStatus); strcat(cgiBuf, Str);
   sprintf(Str, "\"DoubleStream\":%d,", DevCfg->DevInfoPkt.DoubleStream); strcat(cgiBuf, Str);//20171215 add
 
@@ -583,9 +583,9 @@ void Json_cgi_GetNetCfg(char* cgiBuf, TDevCfg* DevCfg)//Í¨¹ýÍøÒ³µ÷ÓÃ£¬È¡µÃÍøÂçÅä
   sprintf(Str, "\"DDNSType\":%d,", DevCfg->NetCfgPkt.DDNS.DDNSType); strcat(cgiBuf, Str);
   sprintf(Str, "\"DDNSDomain\":\"%s\",", DevCfg->NetCfgPkt.DDNS.DDNSDomain); strcat(cgiBuf, Str);
   sprintf(Str, "\"DDNSDDNSServer\":\"%s\",", DevCfg->NetCfgPkt.DDNS.DDNSServer); strcat(cgiBuf, Str);
-  sprintf(Str, "\"PPPOEActive\":%d,", DevCfg->NetCfgPkt.PPPOE.Active); strcat(cgiBuf, Str);
-  sprintf(Str, "\"PPPOEAccount\":\"%s\",", DevCfg->NetCfgPkt.PPPOE.Account); strcat(cgiBuf, Str);
-  sprintf(Str, "\"PPPOEPassword\":\"%s\",", DevCfg->NetCfgPkt.PPPOE.Password); strcat(cgiBuf, Str);
+//  sprintf(Str, "\"PPPOEActive\":%d,", DevCfg->NetCfgPkt.PPPOE.Active); strcat(cgiBuf, Str);
+//  sprintf(Str, "\"PPPOEAccount\":\"%s\",", DevCfg->NetCfgPkt.PPPOE.Account); strcat(cgiBuf, Str);
+//  sprintf(Str, "\"PPPOEPassword\":\"%s\",", DevCfg->NetCfgPkt.PPPOE.Password); strcat(cgiBuf, Str);
   len = strlen(cgiBuf);
   if (cgiBuf[len - 1] == ',') cgiBuf[len - 1] = 0x00;
   sprintf(Str, "}"); strcat(cgiBuf, Str);
@@ -598,7 +598,7 @@ void Json_cgi_GetWiFiCfg(char* cgiBuf, TDevCfg* DevCfg)//Í¨¹ýÍøÒ³µ÷ÓÃ£¬È¡µÃWIFIÅ
   TWiFiCfgPkt* wPkt = &DevCfg->WiFiCfgPkt;
   sprintf(Str, "{"); strcat(cgiBuf, Str);
   sprintf(Str, "\"wifi_Active\":%d,", wPkt->Active); strcat(cgiBuf, Str);
-  sprintf(Str, "\"wifi_IsAPMode\":%d,", wPkt->IsAPMode); strcat(cgiBuf, Str);
+  sprintf(Str, "\"wifi_IsAPMode\":%d,", wPkt->WifiMode); strcat(cgiBuf, Str);
   sprintf(Str, "\"wifi_SSID_AP\":\"%s\",", wPkt->SSID_AP); strcat(cgiBuf, Str);
   sprintf(Str, "\"wifi_Password_AP\":\"%s\",", wPkt->Password_AP); strcat(cgiBuf, Str);
 
@@ -610,6 +610,7 @@ void Json_cgi_GetWiFiCfg(char* cgiBuf, TDevCfg* DevCfg)//Í¨¹ýÍøÒ³µ÷ÓÃ£¬È¡µÃWIFIÅ
 //-----------------------------------------------------------------------------
 void Json_cgi_GetWiFiSTALst(char* cgiBuf, TDevCfg* DevCfg)//Í¨¹ýÍøÒ³µ÷ÓÃ£¬È¡µÃ±£´æÔÚÅäÖÃÖÐWIFIÂ·ÓÉÆ÷ÁÐ±í
 {
+#ifdef WIFI_SAVE_SSID_LIST
   //http://192.168.0.169/cfg1.cgi?User=admin&Psd=admin&MsgID=70
   int i, len;
   char Str[1024];
@@ -624,6 +625,7 @@ void Json_cgi_GetWiFiSTALst(char* cgiBuf, TDevCfg* DevCfg)//Í¨¹ýÍøÒ³µ÷ÓÃ£¬È¡µÃ±£
   len = strlen(cgiBuf);
   if (cgiBuf[len - 1] == ',') cgiBuf[len - 1] = 0x00;
   sprintf(Str, "]"); strcat(cgiBuf, Str);
+#endif
 }
 //-----------------------------------------------------------------------------
 void Json_cgi_GetVideoCfg(char* cgiBuf, TDevCfg* DevCfg)//Í¨¹ýÍøÒ³µ÷ÓÃ£¬È¡µÃÊÓÆµÅäÖÃ
@@ -711,6 +713,7 @@ void Json_cgi_GetAudioCfg(char* cgiBuf, TDevCfg* DevCfg)//Í¨¹ýÍøÒ³µ÷ÓÃ£¬È¡µÃÒôÆµ
   //http://192.168.0.169/cfg1.cgi?User=admin&Psd=admin&MsgID=41
   sprintf(Str, "{"); strcat(cgiBuf, Str);
   sprintf(Str, "\"AUDIO_Active\":%d,", DevCfg->AudioCfgPkt.Active); strcat(cgiBuf, Str);
+  sprintf(Str, "\"AUDIO_IsPlayPromptSound\":%d,", DevCfg->AudioCfgPkt.IsPlayPromptSound); strcat(cgiBuf, Str);
   sprintf(Str, "\"AUDIO_InputType\":%d,", DevCfg->AudioCfgPkt.InputType); strcat(cgiBuf, Str);
   //sprintf(Str, "\"AUDIO_VolumeMicIn\":%d,", DevCfg->AudioCfgPkt.VolumeMicIn); strcat(cgiBuf, Str);//20171215 del
   sprintf(Str, "\"AUDIO_VolumeLineIn\":%d,", DevCfg->AudioCfgPkt.VolumeLineIn); strcat(cgiBuf, Str);

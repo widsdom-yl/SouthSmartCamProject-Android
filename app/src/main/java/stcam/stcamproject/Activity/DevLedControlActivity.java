@@ -527,6 +527,8 @@ public class DevLedControlActivity extends BaseAppCompatActivity implements Radi
     @Override
     protected String doInBackground(Integer... params)
     {
+      //return "1";
+      //http://192.168.0.100/cfg1.cgi?User=admin&Psd=admin&MsgID=73&Chl=0&Value=0 开灯关灯
       //第二个执行方法,onPreExecute()执行完后执行
       String url = devModel.getDevURL(lib.Msg_GetLightCfg);
       Log.e(tag, "url " + url);
@@ -537,7 +539,18 @@ public class DevLedControlActivity extends BaseAppCompatActivity implements Radi
     @Override
     protected void onPostExecute(String result)
     {
-
+      /*
+      int Status = lib.thNetGetGPIOStatus(devModel.NetHandle, 0);
+      Log.e(tag, "thNetGetGPIOStatus:"+ Status);
+      if (Status == 1)
+      {
+        imageView_light.setImageResource(R.drawable.light_open);
+      }
+      else
+      {
+        imageView_light.setImageResource(R.drawable.light_close);
+      }
+*/
       LedStatusModel model = GsonUtil.parseJsonWithGson(result, LedStatusModel.class);
       Log.e(tag, "RefreshLedStatusTask status model is " + result);
 
@@ -556,7 +569,6 @@ public class DevLedControlActivity extends BaseAppCompatActivity implements Radi
       }
       // get status model is {"Mode":1,"Auto":{"Delay":90,"Lux":2},"Manual":{"Brightness":0},
       // "Timer":{"Brightness":0,"StartH":0,"StartM":0,"StopH":0,"StopM":0},"D2D":{"Brightness":0,"Lux":0}}
-
 
       super.onPostExecute(result);
     }

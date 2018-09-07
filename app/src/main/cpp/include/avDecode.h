@@ -176,6 +176,8 @@ typedef struct TPlayParam
   i32 HistoryIndexType;
   i32 HistoryIsClose;
 
+  u64 DOStatus000_063;
+
   TavPicture FrameV420;
 
   TvideoCallBack *videoEvent;

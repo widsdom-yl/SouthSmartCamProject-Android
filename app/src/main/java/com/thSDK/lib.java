@@ -114,6 +114,8 @@ public class lib extends Activity
 
   public static native boolean thNetSaveToJpg(long NetHandle, String jJpgFileName);
 
+  public static native int thNetGetGPIOStatus(long NetHandle, int Channel);
+
   public static native String thNetSearchDevice(int TimeOut, int IsJson);
 
   //---------------------------------------------------------------------------

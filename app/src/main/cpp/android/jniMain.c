@@ -493,7 +493,11 @@ JNIEXPORT bool JNICALL Java_com_thSDK_lib_thNetSaveToJpg(JNIEnv* env, jclass obj
   (*env)->ReleaseStringUTFChars(env, jJpgFileName, JpgFileName);
   return ret;
 }
-
+//-----------------------------------------------------------------------------
+JNIEXPORT int JNICALL Java_com_thSDK_lib_thNetGetGPIOStatus(JNIEnv* env, jclass obj, u64 NetHandle, int Channel)
+{
+  return thNet_GetGPIOStatus((HANDLE) NetHandle, Channel);
+}
 //-----------------------------------------------------------------------------
 typedef struct TSearchInfo
 {

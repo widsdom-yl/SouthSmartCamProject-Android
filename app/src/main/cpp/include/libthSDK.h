@@ -304,6 +304,8 @@ EXPORT bool thNet_StopRec(HANDLE NetHandle);
 
 EXPORT bool thNet_SetJpgPath(HANDLE NetHandle, char *JpgPath);//linux 以"/"结束，windows以 "\"结束
 EXPORT bool thNet_SaveToJpg(HANDLE NetHandle, char *JpgFileName/*JpgFileName=NULL,配合thNet_SetJpgPath使用*/);
+
+EXPORT int thNet_GetGPIOStatus(HANDLE NetHandle, int Channel);
 /*-------------------------------------------------------------------------------
 函数描述：保存为JPG图片
 参数说明：

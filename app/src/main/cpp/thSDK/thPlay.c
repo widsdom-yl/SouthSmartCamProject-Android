@@ -207,7 +207,7 @@ bool thSearch_SetWiFiCfg(HANDLE SearchHandle, char* SSID, char* Password)
   Pkt.HeadPkt.PktSize = sizeof(TCmdPkt);
   Pkt.CmdPkt.MsgID = Msg_SetWiFiCfg;
   Pkt.CmdPkt.WiFiCfgPkt.Active = true;
-  Pkt.CmdPkt.WiFiCfgPkt.IsAPMode = false;
+  Pkt.CmdPkt.WiFiCfgPkt.WifiMode = WIFIMODE_STA;
   strcpy(Pkt.CmdPkt.WiFiCfgPkt.SSID_STA, SSID);
   strcpy(Pkt.CmdPkt.WiFiCfgPkt.Password_STA, Password);
 
@@ -854,10 +854,16 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
     ret = RecvBuf(Play->hSocket, (char*) PHead, HEADPKTSIZE, NET_TIMEOUT / 2);
     if (!ret) continue;
 
-    if (PHead->VerifyCode != Head_VideoPkt && PHead->VerifyCode != Head_AudioPkt && PHead->VerifyCode != Head_SensePkt &&
-        PHead->VerifyCode != Head_TalkPkt && PHead->VerifyCode != Head_UploadPkt && PHead->VerifyCode != Head_DownloadPkt &&
-        PHead->VerifyCode != Head_CfgPkt && PHead->VerifyCode != Head_MotionInfoPkt &&  //add at 20130506
-        PHead->VerifyCode != Head_CmdPkt)
+    if (PHead->VerifyCode != Head_VideoPkt
+        && PHead->VerifyCode != Head_AudioPkt
+        && PHead->VerifyCode != Head_SensePkt
+        && PHead->VerifyCode != Head_TalkPkt
+        && PHead->VerifyCode != Head_UploadPkt
+        && PHead->VerifyCode != Head_DownloadPkt
+        && PHead->VerifyCode != Head_CfgPkt
+        && PHead->VerifyCode != Head_MotionInfoPkt
+        && PHead->VerifyCode != Head_GPIOStatusPkt
+        && PHead->VerifyCode != Head_CmdPkt)
     {
       continue;
     }
@@ -943,6 +949,16 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
       }
         break;
 
+      case Head_GPIOStatusPkt:
+      {
+        TGPIOStatusPkt* PPkt = (TGPIOStatusPkt*) RecvBuffer;
+        ThreadLock(&Play->Lock);
+        Play->DOStatus000_063 = PPkt->DOStatus000_063;
+        ThreadUnlock(&Play->Lock);
+        PRINTF("DOStatus000_063:%lld", PPkt->DOStatus000_063);
+      }
+        break;
+
       case Head_CmdPkt://网络命令包
       {
         TNetCmdPkt* PPkt = (TNetCmdPkt*) RecvBuffer;
@@ -974,6 +990,7 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
         Play->DevCfg.DevInfoPkt.SN = Play->DevCfg.DevInfoPkt.SN;
       }
         break;
+
     }//end switch
   }//end for (;;)
 }
@@ -1245,6 +1262,14 @@ void thread_RecvData_P2P(HANDLE NetHandle)
     {
       memcpy(&Play->DevCfg, &Play->RecvBuffer[sizeof(PInfo->Head)], PInfo->Head.PktSize);
       Play->DevCfg.DevInfoPkt.SN = Play->DevCfg.DevInfoPkt.SN;
+    }
+    else if (PInfo->Head.VerifyCode == Head_GPIOStatusPkt)
+    {
+      TGPIOStatusPkt* PPkt = (TGPIOStatusPkt*) Play->RecvBuffer;
+      ThreadLock(&Play->Lock);
+      Play->DOStatus000_063 = PPkt->DOStatus000_063;
+      ThreadUnlock(&Play->Lock);
+      PRINTF("DOStatus000_063:%lld", PPkt->DOStatus000_063);
     }
   }
 }
@@ -2386,7 +2411,18 @@ bool thNet_SaveToJpg(HANDLE NetHandle, char* JpgFileName)
   ThreadUnlock(&Play->Lock);
   return true;
 }
-
+//-----------------------------------------------------------------------------
+int thNet_GetGPIOStatus(HANDLE NetHandle, int Channel)
+{
+  int Result;
+  TPlayParam* Play = (TPlayParam*) NetHandle;
+  if (NetHandle == 0) return 0;
+  if (!Play->IsConnect) return 0;
+  ThreadLock(&Play->Lock);
+  Result = BitValue(Play->DOStatus000_063,Channel);
+  ThreadUnlock(&Play->Lock);
+  return Result;
+}
 //-----------------------------------------------------------------------------
 char* thNet_GetAllCfg(HANDLE NetHandle)
 {

@@ -247,4 +247,5 @@
     <string name="string_gotoSetup">去设置</string>
     <string name="action_selectdevice">请选择设备</string>
     <string name="string_Recording">当前正在录像，是否停止录像？</string>
+    <string name="string_LeftTimeSmartLinkOver">离设置完成还有 %d 秒</string>
 </resources>
