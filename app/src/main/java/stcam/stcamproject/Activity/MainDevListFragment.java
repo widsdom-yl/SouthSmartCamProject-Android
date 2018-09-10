@@ -69,7 +69,7 @@ public class MainDevListFragment extends Fragment implements DeviceListAdapter.O
 
   boolean hasReceivedNetWorkchange;//是否收到网络监听变化，这个变量在进入此fragement页面中，会收到网络回调，这个值会值1，但是考虑到网络请求，当有设备列表或者搜索设备返回时候，这个值为true
   private IntentFilter intentFilter;
-  private NetworkChangeReceiver networkChangeReceiver;
+  public static NetworkChangeReceiver networkChangeReceiver;
 
 
   Request getDevListRequest;//

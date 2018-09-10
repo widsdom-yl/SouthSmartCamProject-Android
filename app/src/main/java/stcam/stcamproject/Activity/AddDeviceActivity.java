@@ -1,6 +1,7 @@
 package stcam.stcamproject.Activity;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -139,28 +140,36 @@ public class AddDeviceActivity extends BaseAppCompatActivity implements View.OnC
   {
     switch (view.getId())
     {
+      case R.id.btn_add_device_one_key:
+        if (MainDevListFragment.networkChangeReceiver.NetConnType != ConnectivityManager.TYPE_WIFI)
+        {
+          SouthUtil.showToast(STApplication.getInstance(), getString(R.string.string_OperationMustWifi));
+          return;
+        }
+        Intent intent1 = new Intent(STApplication.getInstance(), AddDeviceOneStepActivity.class);
+        startActivity(intent1);
+        break;
+
+      case R.id.btn_add_device_ap_sta:
+        Intent intent2 = new Intent(STApplication.getInstance(), AddDeviceAP2StaActivity.class);
+        startActivity(intent2);
+        break;
+
       case R.id.btn_add_device_search:
+        if (MainDevListFragment.networkChangeReceiver.NetConnType != ConnectivityManager.TYPE_WIFI)
+        {
+          SouthUtil.showToast(STApplication.getInstance(), getString(R.string.string_OperationMustWifi));
+          return;
+        }
         Intent intent4 = new Intent(STApplication.getInstance(), AddDeviceWlanActivity.class);
         startActivity(intent4);
         break;
+
       case R.id.btn_add_device_share:
         Intent intent = new Intent(AddDeviceActivity.this, CaptureActivity.class);
         startActivityForResult(intent, REQUEST_CODE);
         break;
-      case R.id.btn_add_device_one_key:
-        Intent intent1 = new Intent(STApplication.getInstance(), AddDeviceOneStepActivity.class);
-        startActivity(intent1);
-        break;
-      case R.id.btn_add_device_ap_sta:
-        Intent intent2 = new Intent(STApplication.getInstance(), AddDeviceAP2StaActivity.class);
-        intent2.putExtra("type", 1);
-        startActivity(intent2);
-        break;
-//            case R.id.btn_add_device_ap:
-//                Intent intent3 = new Intent(STApplication.getInstance(), AddDeviceAP2StaActivity.class);
-//                intent3.putExtra("type",2);
-//                startActivity(intent3);
-//                break;
+
       default:
         break;
     }

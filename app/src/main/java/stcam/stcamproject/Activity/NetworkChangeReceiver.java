@@ -30,6 +30,8 @@ class NetworkChangeReceiver extends BroadcastReceiver
 
   boolean switchingNetwork = false;
 
+  public int NetConnType = -1;
+
   Handler handler_reset = new Handler();
   Runnable runnable_reset = new Runnable()
   {
@@ -64,6 +66,7 @@ class NetworkChangeReceiver extends BroadcastReceiver
       switch (networkInfo.getType())
       {
         case TYPE_MOBILE:
+          this.NetConnType = TYPE_MOBILE;
           if (mNetWorkBreakListener != null)
           {
             mNetWorkBreakListener.OnNetWorkBreakListener();
@@ -78,6 +81,7 @@ class NetworkChangeReceiver extends BroadcastReceiver
           break;
 
         case TYPE_WIFI:
+          this.NetConnType = TYPE_WIFI;
           if (mNetWorkBreakListener != null)
           {
             mNetWorkBreakListener.OnNetWorkBreakListener();
@@ -90,12 +94,15 @@ class NetworkChangeReceiver extends BroadcastReceiver
           }
           Toast.makeText(context, context.getString(R.string.string_net_Wifi), Toast.LENGTH_SHORT).show();
           break;
+
         default:
+          this.NetConnType = -1;
           break;
       }
     }
     else
     {
+      this.NetConnType = -1;
       //断开所有连接
       Toast.makeText(context, context.getString(R.string.string_net_None), Toast.LENGTH_SHORT).show();
       if (mNetWorkBreakListener != null)
