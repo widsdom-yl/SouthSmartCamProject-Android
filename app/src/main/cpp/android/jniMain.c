@@ -173,11 +173,11 @@ JNIEXPORT int JNICALL Java_com_thSDK_lib_GetTime(JNIEnv* env, jclass obj)
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT u64 JNICALL
-Java_com_thSDK_lib_thNetInit(JNIEnv* env, jclass obj, bool IsQueue, bool IsAdjustTime, bool IsAutoReConn)
+Java_com_thSDK_lib_thNetInit(JNIEnv* env, jclass obj, bool IsAdjustTime, bool IsAutoReConn)
 {
   u64 NetHandle = 0;
   u32 iSN = 0;
-  NetHandle = (u64) thNet_Init(IsQueue, IsAdjustTime, IsAutoReConn);
+  NetHandle = (u64) thNet_Init(IsAdjustTime, IsAutoReConn);
   return NetHandle;
 }
 //-----------------------------------------------------------------------------

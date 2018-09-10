@@ -62,18 +62,14 @@ public class AddDeviceAP2StaActivity extends BaseAppCompatActivity implements Ba
       actionBar.setHomeButtonEnabled(true);
       actionBar.setDisplayHomeAsUpEnabled(true);
       actionBar.setTitle(R.string.action_add_ap_sta);
-
       setCustomTitle(getString(R.string.action_add_ap_sta), true);
-
     }
-
 
     rv = findViewById(R.id.device_list_view);
     rv.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     rv.setLayoutManager(new LinearLayoutManager(this));
 
     selectTitleTextView = findViewById(R.id.textView_select);
-
 
     //zhb add wwwwwwwwwwww
     new AlertDialog.Builder(AddDeviceAP2StaActivity.this)

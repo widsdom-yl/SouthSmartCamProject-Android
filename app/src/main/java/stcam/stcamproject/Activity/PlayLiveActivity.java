@@ -35,17 +35,14 @@ import stcam.stcamproject.Util.FileUtil;
 import stcam.stcamproject.Util.PlayVoice;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.Util.TFun;
-import stcam.stcamproject.View.SurfaceViewLive1;
-import stcam.stcamproject.View.SurfaceViewLive2;
+import stcam.stcamproject.View.SurfaceViewLive;
 import stcam.stcamproject.View.VoiceImageButton;
 
 public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnClickListener, GestureDetector.OnGestureListener, View
   .OnTouchListener
 {
-  //SurfaceViewLive1 glView;
-  //int iActivityPlayLive = R.layout.activity_play_live1;
-  SurfaceViewLive2 glView;
-  int iActivityPlayLive = R.layout.activity_play_live2;
+  SurfaceViewLive glView;
+  int iActivityPlayLive = R.layout.activity_play_live;
 
   DevModel devModel;
   VoiceImageButton button_snapshot;

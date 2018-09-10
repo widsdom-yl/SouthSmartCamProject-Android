@@ -313,7 +313,6 @@ public class DevModel implements Parcelable
           {
             tmpNode.NetHandle = lib.thNetInit(
               true,
-              true,
               false
             );
           }

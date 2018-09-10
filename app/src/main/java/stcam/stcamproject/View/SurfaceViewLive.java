@@ -19,7 +19,7 @@ import stcam.stcamproject.Util.FileUtil;
  * Created by gyl
  */
 
-public class SurfaceViewLive2 extends SurfaceView implements SurfaceHolder.Callback
+public class SurfaceViewLive extends SurfaceView implements SurfaceHolder.Callback
 {
   public SurfaceHolder surfaceHolder;
   DevModel model;
@@ -27,7 +27,7 @@ public class SurfaceViewLive2 extends SurfaceView implements SurfaceHolder.Callb
   boolean hasGotFirstFrame;
   private Handler mHandler;
 
-  public SurfaceViewLive2(Context context)
+  public SurfaceViewLive(Context context)
   {
     super(context);
     init();
@@ -44,7 +44,7 @@ public class SurfaceViewLive2 extends SurfaceView implements SurfaceHolder.Callb
   }
 
 
-  public SurfaceViewLive2(Context context, AttributeSet attributeSet)
+  public SurfaceViewLive(Context context, AttributeSet attributeSet)
   {
     super(context, attributeSet);
     init();

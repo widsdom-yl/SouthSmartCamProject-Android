@@ -223,6 +223,7 @@
     <string name="string_net_None">当前无网络连接</string>
     <string name="string_nodev">没有设备</string>
     <string name="string_delsuccess">删除成功</string>
+    <string name="string_delfail">删除失败</string>
     <string name="string_ChangePsdSuccess">修改密码成功</string>
     <string name="string_ChangePsdFail">修改密码失败</string>
     <string name="string_devAddSuccess">设备增加成功</string>

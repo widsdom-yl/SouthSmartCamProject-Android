@@ -23,7 +23,7 @@ public class lib extends Activity
   public static final int RESULT_SUCCESS = 1;//成功
   public static final int RESULT_SUCCESS_REBOOT = 2;//成功，需要重启
 
-  public static native long thNetInit(boolean IsQueue, boolean IsAdjustTime, boolean IsAutoReConn);
+  public static native long thNetInit(boolean IsAdjustTime, boolean IsAutoReConn);
 
   public static native boolean thNetSetDecodeStyle(long NetHandle, int DecodeStyle);//未用到
 

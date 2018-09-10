@@ -236,19 +236,18 @@ bool thSearch_Free(HANDLE SearchHandle)
   return ret;
 }
 //-----------------------------------------------------------------------------
-HANDLE thNet_Init(bool IsQueue, bool IsAdjustTime, bool IsAutoReConn)
+HANDLE thNet_Init(bool IsAdjustTime, bool IsAutoReConn)
 {
 #ifdef WIN32
   WSADATA wsaData;
 #endif
   TPlayParam* Play = (TPlayParam*) malloc(sizeof(TPlayParam));
   if (!Play) return NULL;
-  PRINTF("%s(%d) IsQueue:%d IsAdjustTime:%d IsAutoReConn:%d\n", __FUNCTION__, __LINE__, IsQueue, IsAdjustTime, IsAutoReConn);
+  PRINTF("%s(%d) IsAdjustTime:%d IsAutoReConn:%d\n", __FUNCTION__, __LINE__, IsAdjustTime, IsAutoReConn);
 #ifdef WIN32
   WSAStartup(MAKEWORD(2, 2), &wsaData);
 #endif
   memset(Play, 0, sizeof(TPlayParam));
-  Play->IsQueue = IsQueue;
   Play->IsAdjustTime = IsAdjustTime;
   Play->IsAutoReConn = IsAutoReConn;
 
@@ -640,89 +639,16 @@ void OnRecvDataNotify_av(HANDLE NetHandle, TDataFrameInfo* PInfo, char* Buf, int
     {
       Play->videoEvent(Play->UserCustom, PInfo->Frame.StreamType, Buf, BufLen, PInfo->Frame.IsIFrame);
     }
-    if (Play->IsQueue)
-    {
-      avQueue_Write(Play->hQueueRec, Buf, BufLen, (char*) PInfo, sizeof(TDataFrameInfo));
-      avQueue_Write(Play->hQueueVideo, Buf, BufLen, (char*) PInfo, sizeof(TDataFrameInfo));
-    }
-    else
-    {
-      if (Play->GroupType != pt_PlayHistory)
-      {
-        if (PInfo->Frame.StreamType != Play->DisplayStreamType) return;
-      }
-      //1
-      if (Play->DisplayStreamTypeOld != Play->DisplayStreamType)
-      {
-        ThreadLock(&Play->Lock);
-        Play->DisplayStreamTypeOld = Play->DisplayStreamType;
-        if (thNet_IsRec(NetHandle))//1.1
-        {
-          thNet_StopRec(NetHandle);
-          thNet_StartRec(NetHandle, NULL);
-        }
-        if (Play->decHandle)//1.2
-        {
-          thDecodeVideoFree(Play->decHandle);
-          Play->decHandle = NULL;
-        }
-        Play->decHandle = thDecodeVideoInit(Play->VideoMediaType);//1.3
-        ThreadUnlock(&Play->Lock);
-      }
-      //2
-      pts = PInfo->Frame.FrameTime / 1000 * 90;
-      if (Play->RecHandle) thRecordWriteVideo(Play->RecHandle, Buf, BufLen, -1);
-      //3
-#ifdef ANDROID
-      ThreadLock(&Play->Lock);
-      ret = thDecodeVideoFrame(Play->decHandle, Buf, BufLen, &Play->ImgWidth, &Play->ImgHeight, &Play->FrameV420);//yuv420
-      ThreadUnlock(&Play->Lock);
-      if (!ret) return;
-      pthread_cond_signal(&Play->SyncCond);
-#else
-      ret = thDecodeVideoFrame(Play->decHandle, Buf, BufLen, &Play->ImgWidth, &Play->ImgHeight, &Play->FrameV420);//yuv420
-      if (!ret) return;
-#endif
 
-      Play->IsVideoDecodeSuccessFlag = true;
-
-      if (Play->IsSnapShot)
-      {
-        thDecodeVideoSaveToJpg(Play->decHandle, Play->FileName_Jpg);
-        Play->IsSnapShot = false;
-      }
-
-      if (Play->ImgWidth > 0 && Play->ImgHeight > 0)
-      {
-#if defined(WIN32)
-        ret = thRender_FillMem(Play->RenderHandle, Play->FrameV420, Play->ImgWidth,
-                                   Play->ImgHeight);//ddraw yuv420->rgb32
-            for (i = 0; i < MAX_DSPINFO_COUNT; i++)
-            {
-              TDspInfo *PDspInfo = &Play->DspInfoLst[i];
-              if (PDspInfo->DspHandle == NULL) continue;
-              ret = thRender_Display(Play->RenderHandle, PDspInfo->DspHandle, PDspInfo->DspRect);
-            }
-#endif
-      }
-    }
+    avQueue_Write(Play->hQueueRec, Buf, BufLen, (char*) PInfo, sizeof(TDataFrameInfo));
+    avQueue_Write(Play->hQueueVideo, Buf, BufLen, (char*) PInfo, sizeof(TDataFrameInfo));
   }
   else if (PInfo->Head.VerifyCode == Head_AudioPkt)
   {
     if (Play->audioEvent) Play->audioEvent(Play->UserCustom, PInfo->Frame.StreamType, Buf, BufLen);
-    if (Play->IsQueue)
-    {
-      avQueue_Write(Play->hQueueRec, Buf, BufLen, (char*) PInfo, sizeof(TDataFrameInfo));
-      avQueue_Write(Play->hQueueAudio, Buf, BufLen, (char*) PInfo, sizeof(TDataFrameInfo));
-    }
-    else
-    {
-      if (Play->RecHandle)
-      {
-        thRecordWriteAudio(Play->RecHandle, Buf, BufLen, -1);
-      }
-      if (!Play->IsAudioMute && Play->audioHandle) thAudioPlay_PlayFrame(Play->audioHandle, Buf, BufLen);
-    }
+
+    avQueue_Write(Play->hQueueRec, Buf, BufLen, (char*) PInfo, sizeof(TDataFrameInfo));
+    avQueue_Write(Play->hQueueAudio, Buf, BufLen, (char*) PInfo, sizeof(TDataFrameInfo));
   }
 }
 //-----------------------------------------------------------------------------
@@ -854,16 +780,10 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
     ret = RecvBuf(Play->hSocket, (char*) PHead, HEADPKTSIZE, NET_TIMEOUT / 2);
     if (!ret) continue;
 
-    if (PHead->VerifyCode != Head_VideoPkt
-        && PHead->VerifyCode != Head_AudioPkt
-        && PHead->VerifyCode != Head_SensePkt
-        && PHead->VerifyCode != Head_TalkPkt
-        && PHead->VerifyCode != Head_UploadPkt
-        && PHead->VerifyCode != Head_DownloadPkt
-        && PHead->VerifyCode != Head_CfgPkt
-        && PHead->VerifyCode != Head_MotionInfoPkt
-        && PHead->VerifyCode != Head_GPIOStatusPkt
-        && PHead->VerifyCode != Head_CmdPkt)
+    if (PHead->VerifyCode != Head_VideoPkt && PHead->VerifyCode != Head_AudioPkt && PHead->VerifyCode != Head_SensePkt &&
+        PHead->VerifyCode != Head_TalkPkt && PHead->VerifyCode != Head_UploadPkt && PHead->VerifyCode != Head_DownloadPkt &&
+        PHead->VerifyCode != Head_CfgPkt && PHead->VerifyCode != Head_MotionInfoPkt && PHead->VerifyCode != Head_GPIOStatusPkt &&
+        PHead->VerifyCode != Head_CmdPkt)
     {
       continue;
     }
@@ -955,7 +875,7 @@ ioctlsocket(Play->hSocket, FIONBIO, (u_long*)&optsize);//非阻塞方式
         ThreadLock(&Play->Lock);
         Play->DOStatus000_063 = PPkt->DOStatus000_063;
         ThreadUnlock(&Play->Lock);
-        PRINTF("DOStatus000_063:%lld", PPkt->DOStatus000_063);
+        //PRINTF("DOStatus000_063:%lld", PPkt->DOStatus000_063);
       }
         break;
 
@@ -1269,7 +1189,7 @@ void thread_RecvData_P2P(HANDLE NetHandle)
       ThreadLock(&Play->Lock);
       Play->DOStatus000_063 = PPkt->DOStatus000_063;
       ThreadUnlock(&Play->Lock);
-      PRINTF("DOStatus000_063:%lld", PPkt->DOStatus000_063);
+      //PRINTF("DOStatus000_063:%lld", PPkt->DOStatus000_063);
     }
   }
 }
@@ -1387,19 +1307,16 @@ bool thNet_Connect(HANDLE NetHandle, char* UserName, char* Password, char* IPUID
 
   if (Play->IsConnect)
   {
-    if (Play->IsQueue)
-    {
 #ifdef ANDROID_IS_QUEUEDRAW
-      Play->hQueueDraw = avQueue_Init(MAX_QUEUE_COUNT, true, false);//newBuf在Time_QueueDraw或thread_eglRender中释放
+    Play->hQueueDraw = avQueue_Init(MAX_QUEUE_COUNT, true, false);//newBuf在Time_QueueDraw或thread_eglRender中释放
 #endif
-      Play->hQueueVideo = avQueue_Init(MAX_QUEUE_COUNT, true, true);
-      Play->hQueueAudio = avQueue_Init(MAX_QUEUE_COUNT, true, true);
-      Play->hQueueRec = avQueue_Init(MAX_QUEUE_COUNT, true, true);
+    Play->hQueueVideo = avQueue_Init(MAX_QUEUE_COUNT, true, true);
+    Play->hQueueAudio = avQueue_Init(MAX_QUEUE_COUNT, true, true);
+    Play->hQueueRec = avQueue_Init(MAX_QUEUE_COUNT, true, true);
 
-      Play->thQueueVideo = ThreadCreate((void*) thread_QueueVideo, Play, false);
-      Play->thQueueAudio = ThreadCreate((void*) thread_QueueAudio, Play, false);
-      Play->thQueueRec = ThreadCreate((void*) thread_QueueRec, Play, false);
-    }
+    Play->thQueueVideo = ThreadCreate((void*) thread_QueueVideo, Play, false);
+    Play->thQueueAudio = ThreadCreate((void*) thread_QueueAudio, Play, false);
+    Play->thQueueRec = ThreadCreate((void*) thread_QueueRec, Play, false);
 
     TMediaType MediaType = CODEC_NONE;
     TVideoFormat* vfmt = &Play->DevCfg.VideoCfgPkt.VideoFormat;
@@ -1482,54 +1399,51 @@ bool thNet_DisConn(HANDLE NetHandle)
   Play->IsConnect = false;
   Play->iConnectStatus = THNET_CONNSTATUS_NO;
 
-  if (Play->IsQueue)
-  {
 #ifdef WIN32
-    if (Play->hTimerIDQueueDraw)
-    {
-      mmTimeKillEvent(Play->hTimerIDQueueDraw);
-      Play->hTimerIDQueueDraw = NULL;
-      Play->iSleepTime = 0;
-    }
+  if (Play->hTimerIDQueueDraw)
+  {
+    mmTimeKillEvent(Play->hTimerIDQueueDraw);
+    Play->hTimerIDQueueDraw = NULL;
+    Play->iSleepTime = 0;
+  }
 #endif
 #ifdef ANDROID_IS_QUEUEDRAW
-    if (Play->hQueueDraw)
+  if (Play->hQueueDraw)
+  {
+    iCount = avQueue_GetCount(Play->hQueueDraw);
+    for (i = 0; i < iCount; i++)
     {
-      iCount = avQueue_GetCount(Play->hQueueDraw);
-      for (i = 0; i < iCount; i++)
-      {
-        tmpNode = avQueue_ReadBegin(Play->hQueueDraw);
-        if (!tmpNode) continue;
-        if (tmpNode->Buf1) free(tmpNode->Buf1);//render malloc buf
-        avQueue_ReadEnd(Play->hQueueDraw, tmpNode);
-      }
-      avQueue_Free(Play->hQueueDraw);
-      Play->hQueueDraw = NULL;
+      tmpNode = avQueue_ReadBegin(Play->hQueueDraw);
+      if (!tmpNode) continue;
+      if (tmpNode->Buf1) free(tmpNode->Buf1);//render malloc buf
+      avQueue_ReadEnd(Play->hQueueDraw, tmpNode);
     }
+    avQueue_Free(Play->hQueueDraw);
+    Play->hQueueDraw = NULL;
+  }
 #endif
-    ThreadExit(Play->thQueueVideo, 0);//1000;
+  ThreadExit(Play->thQueueVideo, 0);//1000;
 
-    if (Play->hQueueVideo)
-    {
-      avQueue_Free(Play->hQueueVideo);
-      Play->hQueueVideo = NULL;
-    }
+  if (Play->hQueueVideo)
+  {
+    avQueue_Free(Play->hQueueVideo);
+    Play->hQueueVideo = NULL;
+  }
 
-    ThreadExit(Play->thQueueAudio, 0);//1000;
+  ThreadExit(Play->thQueueAudio, 0);//1000;
 
-    if (Play->hQueueAudio)
-    {
-      avQueue_Free(Play->hQueueAudio);
-      Play->hQueueAudio = 0;
-    }
+  if (Play->hQueueAudio)
+  {
+    avQueue_Free(Play->hQueueAudio);
+    Play->hQueueAudio = 0;
+  }
 
-    ThreadExit(Play->thQueueRec, 0);//1000;
+  ThreadExit(Play->thQueueRec, 0);//1000;
 
-    if (Play->hQueueRec)
-    {
-      avQueue_Free(Play->hQueueRec);
-      Play->hQueueRec = NULL;
-    }
+  if (Play->hQueueRec)
+  {
+    avQueue_Free(Play->hQueueRec);
+    Play->hQueueRec = NULL;
   }
 
   if (Play->decHandle)
@@ -2411,6 +2325,7 @@ bool thNet_SaveToJpg(HANDLE NetHandle, char* JpgFileName)
   ThreadUnlock(&Play->Lock);
   return true;
 }
+
 //-----------------------------------------------------------------------------
 int thNet_GetGPIOStatus(HANDLE NetHandle, int Channel)
 {
@@ -2419,10 +2334,11 @@ int thNet_GetGPIOStatus(HANDLE NetHandle, int Channel)
   if (NetHandle == 0) return 0;
   if (!Play->IsConnect) return 0;
   ThreadLock(&Play->Lock);
-  Result = BitValue(Play->DOStatus000_063,Channel);
+  Result = BitValue(Play->DOStatus000_063, Channel);
   ThreadUnlock(&Play->Lock);
   return Result;
 }
+
 //-----------------------------------------------------------------------------
 char* thNet_GetAllCfg(HANDLE NetHandle)
 {

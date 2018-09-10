@@ -14,12 +14,7 @@ import stcam.stcamproject.R;
 
 public class SplashActivity extends AppCompatActivity implements View.OnClickListener
 {
-
-  // Used to load the 'native-lib' library on application startup.
-
-
   Button btnNext;
-
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -31,14 +26,12 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
     btnNext = (Button) findViewById(R.id.next_btn);
     btnNext.setOnClickListener(this);
 
-    // Example of a call to a native method
     TextView tv = (TextView) findViewById(R.id.sample_text);
     try
     {
       PackageInfo packageInfo = this.getApplicationContext()
         .getPackageManager()
         .getPackageInfo(this.getPackageName(), 0);
-      //int localVersion = packageInfo.versionCode;
       String localVersion = packageInfo.versionName;
       tv.setText("Version:" + localVersion);
     }
@@ -47,38 +40,15 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
       e.printStackTrace();
     }
 
-
     new Handler().postDelayed(new Runnable()
     {
       public void run()
       {
-//zhb
-        /*
-        boolean isRemeber = AccountManager.getInstance().getIsRemeberAccount();
-        String usr = AccountManager.getInstance().getDefaultUsr();
-        String pwd = AccountManager.getInstance().getDefaultPwd();
-        if (isRemeber && usr.length() > 0 && pwd.length() > 0)
-        {
-          Intent intent = new Intent(STApplication.getInstance(), MainViewPagerActivity.class);
-          intent.putExtra("entry", MainDevListFragment.TUserMode.UserMode_Login);
-          startActivity(intent);
-          finish();
-        }
-        else
-        {
-          Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-          startActivity(intent);
-          finish();
-        }
-*/
         Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();
       }
-
     }, 1 * 1000);
-
-
   }
 
   @Override

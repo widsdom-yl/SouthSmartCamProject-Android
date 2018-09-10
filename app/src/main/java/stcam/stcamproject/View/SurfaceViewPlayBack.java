@@ -10,7 +10,7 @@ import com.model.SDVideoModel;
 import com.thSDK.TMsg;
 import com.thSDK.lib;
 
-public class SurfaceViewPlayBack2 extends SurfaceView implements SurfaceHolder.Callback
+public class SurfaceViewPlayBack extends SurfaceView implements SurfaceHolder.Callback
 {
   public SurfaceHolder surfaceHolder;
   boolean isSurfaceExist = false;
@@ -19,7 +19,7 @@ public class SurfaceViewPlayBack2 extends SurfaceView implements SurfaceHolder.C
   boolean hasGotFirstFrame;
   private Handler mHandler;
   SDVideoModel mSDVideoModel;
-  public SurfaceViewPlayBack2(Context context)
+  public SurfaceViewPlayBack(Context context)
   {
     super(context);
     init();
@@ -37,7 +37,7 @@ public class SurfaceViewPlayBack2 extends SurfaceView implements SurfaceHolder.C
     mSDVideoModel = sdVideoModel;
   }
 
-  public SurfaceViewPlayBack2(Context context, AttributeSet attributeSet)
+  public SurfaceViewPlayBack(Context context, AttributeSet attributeSet)
   {
     super(context, attributeSet);
     init();

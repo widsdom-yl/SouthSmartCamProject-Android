@@ -75,22 +75,39 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
   {
-    getMenuInflater().inflate(R.menu.blank_menu, menu);
+    //getMenuInflater().inflate(R.menu.blank_menu, menu);
+    getMenuInflater().inflate(R.menu.menu_search, menu);
     return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item)
+  {
+    switch (item.getItemId())
+    {
+      case android.R.id.home:
+        this.finish(); // back button
+        return true;
+
+      case R.id.action_search://zhb add
+        getSSIDList();
+        break;
+
+      default:
+        break;
+    }
+    return super.onOptionsItemSelected(item);
   }
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
+
     setContentView(R.layout.activity_add_device_ap2_sta_setup);
-
-
     android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-    if (actionBar != null)
+    if (actionBar != null)//AP转STA添加
     {
-
-
       setCustomTitle(getString(R.string.action_add_ap_sta), true);
     }
 
@@ -113,36 +130,16 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
     handler_refresh.removeCallbacks(runnable_fresh);
   }
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item)
-  {
-    switch (item.getItemId())
-    {
-      case android.R.id.home:
-        this.finish(); // back button
-        return true;
-
-      default:
-        break;
-    }
-    return super.onOptionsItemSelected(item);
-  }
-
   void initView()
   {
     spiner_ssid_name = findViewById(R.id.spiner_ssid_name);
-
     edittext_ssid_pwd = findViewById(R.id.edittext_ssid_pwd);
-
     button_next = findViewById(R.id.button_next);
     button_next.setOnClickListener(this);
-
     textView_uid = findViewById(R.id.textView_uid);
     textView_ip = findViewById(R.id.textView_ip);
-
     textView_uid.setText(devModel.DevName);
     textView_ip.setText(devModel.IPUID);
-
     spiner_ssid_name.setOnItemSelectedListener(this);
   }
 
@@ -157,7 +154,7 @@ public class AddDeviceAP2StaSetup extends BaseAppCompatActivity implements View.
 //            task.execute(edittext_ssid_name.getText().toString(),edittext_ssid_pwd.getText().toString());
 
     Network.getCommandApi(devModel)
-      .getSSIDList(devModel.usr, devModel.pwd, 36, 0)
+      .getSSIDList(devModel.usr, devModel.pwd, lib.Msg_WiFiSearch, 0)
       .subscribeOn(Schedulers.io())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(observer_SSIDList);
