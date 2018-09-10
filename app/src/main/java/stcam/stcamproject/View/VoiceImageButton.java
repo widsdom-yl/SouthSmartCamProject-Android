@@ -2,7 +2,6 @@ package stcam.stcamproject.View;
 
 import android.content.Context;
 import android.util.AttributeSet;
-
 import stcam.stcamproject.Util.PlayVoice;
 
 /**
