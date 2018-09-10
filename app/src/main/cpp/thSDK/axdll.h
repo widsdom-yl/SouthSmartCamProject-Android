@@ -8,6 +8,7 @@
 #define thPlayaxdll_H
 
 #include "../include/th_protocol.h"
+#include "../include/TFun.h"
 
 #ifdef __cplusplus
 extern "C" {

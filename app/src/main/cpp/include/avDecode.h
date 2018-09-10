@@ -144,7 +144,6 @@ typedef struct TPlayParam
 #define MAX_DSPINFO_COUNT  10
   TDspInfo DspInfoLst[MAX_DSPINFO_COUNT];//显示区域
 
-  bool IsQueue;//是否队列解码显示
   bool IsAdjustTime;//是否校准设备时间
 
 #define MAX_QUEUE_COUNT    120
@@ -175,6 +174,8 @@ typedef struct TPlayParam
   i64 HistoryTimestampDuration;//回放文件时长
   i32 HistoryIndexType;
   i32 HistoryIsClose;
+
+  u64 DOStatus000_063;
 
   TavPicture FrameV420;
 

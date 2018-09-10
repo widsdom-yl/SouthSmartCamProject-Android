@@ -223,6 +223,7 @@
     <string name="string_net_None">当前无网络连接</string>
     <string name="string_nodev">没有设备</string>
     <string name="string_delsuccess">删除成功</string>
+    <string name="string_delfail">删除失败</string>
     <string name="string_ChangePsdSuccess">修改密码成功</string>
     <string name="string_ChangePsdFail">修改密码失败</string>
     <string name="string_devAddSuccess">设备增加成功</string>
@@ -247,4 +248,6 @@
     <string name="string_gotoSetup">去设置</string>
     <string name="action_selectdevice">请选择设备</string>
     <string name="string_Recording">当前正在录像，是否停止录像？</string>
+    <string name="string_LeftTimeSmartLinkOver">离设置完成还有 %d 秒</string>
+    <string name="string_OperationMustWifi">此操作需要手机连接到WIFI</string>
 </resources>

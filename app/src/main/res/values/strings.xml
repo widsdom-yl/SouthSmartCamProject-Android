@@ -242,4 +242,6 @@
     <string name="string_gotoSetup">go to setings</string>
     <string name="action_selectdevice">Select Camera Device</string>
     <string name="string_Recording">Recording, Do you want to stop record?</string>
+    <string name="string_LeftTimeSmartLinkOver">Setup is complete after %d seconds</string>
+    <string name="string_OperationMustWifi">You need your phone to connect to WIFi</string>
 </resources>

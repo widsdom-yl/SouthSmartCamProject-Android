@@ -35,17 +35,14 @@ import stcam.stcamproject.Util.FileUtil;
 import stcam.stcamproject.Util.PlayVoice;
 import stcam.stcamproject.Util.SouthUtil;
 import stcam.stcamproject.Util.TFun;
-import stcam.stcamproject.View.SurfaceViewLive1;
-import stcam.stcamproject.View.SurfaceViewLive2;
+import stcam.stcamproject.View.SurfaceViewLive;
 import stcam.stcamproject.View.VoiceImageButton;
 
 public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnClickListener, GestureDetector.OnGestureListener, View
   .OnTouchListener
 {
-  //SurfaceViewLive1 glView;
-  //int iActivityPlayLive = R.layout.activity_play_live1;
-  SurfaceViewLive2 glView;
-  int iActivityPlayLive = R.layout.activity_play_live2;
+  SurfaceViewLive glView;
+  int iActivityPlayLive = R.layout.activity_play_live;
 
   DevModel devModel;
   VoiceImageButton button_snapshot;
@@ -54,7 +51,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
   ImageButton button_slient;
   RelativeLayout ptz_layout;
   ImageButton button_led, button_pix;
-  ImageButton button_led_layer, button_speech_layer, button_slient_layer;
+  //ImageButton button_led_layer, button_speech_layer, button_slient_layer;
   boolean pix_low = true;
   ImageButton button_ptz_left, button_ptz_right, button_ptz_up, button_ptz_down;
   ImageButton button_back;
@@ -393,6 +390,7 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
       //音频
       button_speech.setVisibility(View.INVISIBLE);
       button_slient.setVisibility(View.INVISIBLE);
+      /*
       button_led_layer = findViewById(R.id.button_led_layer);//zhb
       button_speech_layer = findViewById(R.id.button_speech_layer);//zhb
       if (button_speech_layer != null)
@@ -403,17 +401,18 @@ public class PlayLiveActivity extends BaseAppCompatActivity implements View.OnCl
       if (button_slient_layer != null)
       {
         button_slient_layer.setVisibility(View.INVISIBLE);//zhb
-      }
+      }*/
     }
 
     if (devModel.IsControl == 0 && UserMode != MainDevListFragment.TUserMode.UserMode_Visitor)
     {
       button_led.setVisibility(View.INVISIBLE);//zhb
+      /*
       button_led_layer = findViewById(R.id.button_led_layer);//zhb
       if (button_led_layer != null)
       {
         button_led_layer.setVisibility(View.INVISIBLE);//zhb
-      }
+      }*/
     }
 
     if (!isRecording)

@@ -9,14 +9,15 @@
     <RelativeLayout
         android:id="@+id/layout_tip"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         android:layout_marginEnd="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/button_shape_white_nor"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -27,7 +28,7 @@
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:text="@string/string_tip"
-            android:textColor="@color/appGreenColor" />
+            android:textColor="@color/appGreenColor"/>
 
         <View
             android:id="@+id/spilt"
@@ -36,20 +37,25 @@
             android:layout_below="@id/textView_tip"
             android:background="#969696"
             android:gravity="center"
-            android:text="@string/string_tip" />
+            android:text="@string/string_tip"/>
 
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/spilt"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="20dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
+            android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="@string/action_one_key_setting_desc1" />
+            android:text="@string/action_one_key_setting_desc1"/>
+
+
+        <TextView
+            android:id="@+id/txtSmartLinkLeftTime"
+            android:layout_width="match_parent"
+            android:layout_height="29dp"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:textColor="@color/appGreenColor"/>
     </RelativeLayout>
 
 

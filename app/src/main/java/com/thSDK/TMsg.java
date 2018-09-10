@@ -4,6 +4,7 @@ public class TMsg
 {
     public final static int Msg_SmartConfigOver = 0;
     public final static int Msg_SmartConfigClose = 1;
+    public final static int Msg_SmartConfiging = 2;
 
     public static final int Msg_Search = 2;
     public static final int Msg_SearchOver = 0;

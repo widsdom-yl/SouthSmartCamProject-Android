@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -27,17 +26,14 @@ import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.R;
 import stcam.stcamproject.Util.FileUtil;
 import stcam.stcamproject.Util.TFun;
-import stcam.stcamproject.View.SurfaceViewPlayBack1;
-import stcam.stcamproject.View.SurfaceViewPlayBack2;
+import stcam.stcamproject.View.SurfaceViewPlayBack;
 
 public class PlayBackActivity extends BaseAppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener
 {
   static final String tag = "PlayBackActivity";
 
-  //SurfaceViewPlayBack1 glView;
-  //int IActivityPlayBack = R.layout.activity_play_back1;
-  SurfaceViewPlayBack2 glView;
-  int IActivityPlayBack = R.layout.activity_play_back2;
+  SurfaceViewPlayBack glView;
+  int IActivityPlayBack = R.layout.activity_play_back;
 
   SDVideoModel model;
   DevModel devModel;

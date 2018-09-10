@@ -18,12 +18,10 @@ extern "C"
 
 //*****************************************************************************
 //-----------------------------------------------------------------------------
-EXPORT HANDLE thNet_Init(bool IsQueue, bool IsAdjustTime, bool IsAutoReConn);
+EXPORT HANDLE thNet_Init(bool IsAdjustTime, bool IsAutoReConn);
 /*-----------------------------------------------------------------------------
 函数描述：初始化网络播放
 参数说明：
-IsInsideDecode:是否SDK内部解码显示
-IsQueue:是否缓存队列
 IsAdjustTime:是否校准设备时间为客户端时间
 返 回 值：NetHandle:返回网络句柄
 ------------------------------------------------------------------------------*/
@@ -304,6 +302,8 @@ EXPORT bool thNet_StopRec(HANDLE NetHandle);
 
 EXPORT bool thNet_SetJpgPath(HANDLE NetHandle, char *JpgPath);//linux 以"/"结束，windows以 "\"结束
 EXPORT bool thNet_SaveToJpg(HANDLE NetHandle, char *JpgFileName/*JpgFileName=NULL,配合thNet_SetJpgPath使用*/);
+
+EXPORT int thNet_GetGPIOStatus(HANDLE NetHandle, int Channel);
 /*-------------------------------------------------------------------------------
 函数描述：保存为JPG图片
 参数说明：

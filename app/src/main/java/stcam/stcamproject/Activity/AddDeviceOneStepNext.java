@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.ybq.android.spinkit.SpinKitView;
@@ -19,15 +20,17 @@ import com.thSDK.lib;
 import stcam.stcamproject.Application.STApplication;
 import stcam.stcamproject.Config.Config;
 import stcam.stcamproject.R;
+import stcam.stcamproject.Activity.AddDeviceOneStepActivity;
 
 public class AddDeviceOneStepNext extends BaseAppCompatActivity implements View.OnClickListener
 {
-  Button button_cancel;
+  Button BtnCancel;
   final static String tag = "AddDeviceOneStepNext";
   String SSID;
   String Password;
   SpinKitView spin_kit;
-  boolean isConfig;
+  boolean IsSmartLinkIng = true;
+  TextView edtLeftTime;
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
@@ -45,11 +48,9 @@ public class AddDeviceOneStepNext extends BaseAppCompatActivity implements View.
     android.support.v7.app.ActionBar actionBar = getSupportActionBar();
     if (actionBar != null)
     {
-
       setCustomTitle(getString(R.string.SmartConfig_connect), true);
-
-
     }
+
     Bundle bundle = this.getIntent().getExtras();
     if (bundle != null)
     {
@@ -57,10 +58,11 @@ public class AddDeviceOneStepNext extends BaseAppCompatActivity implements View.
       Password = bundle.getString("ssid_pwd");
     }
 
-    button_cancel = findViewById(R.id.button_cancel);
-    button_cancel.setOnClickListener(this);
+    BtnCancel = findViewById(R.id.button_cancel);
+    BtnCancel.setOnClickListener(this);
     spin_kit = findViewById(R.id.spin_kit);
-    smartConfig();
+    edtLeftTime = findViewById(R.id.txtSmartLinkLeftTime);
+    smartConfigStart();
   }
 
   @Override
@@ -69,9 +71,7 @@ public class AddDeviceOneStepNext extends BaseAppCompatActivity implements View.
     switch (item.getItemId())
     {
       case android.R.id.home:
-        isConfig = false;
-        this.finish(); // back button
-
+        this.onClick(null);//zhb add
         return true;
     }
     return super.onOptionsItemSelected(item);
@@ -82,57 +82,17 @@ public class AddDeviceOneStepNext extends BaseAppCompatActivity implements View.
   {
     if (keyCode == KeyEvent.KEYCODE_BACK)
     {
-      Log.e(tag, "---------------------onKeyDown");
-      isConfig = false;
-      this.finish(); // back button
+      this.onClick(null);//zhb add
       return true;
     }
     return super.onKeyDown(keyCode, event);
   }
 
-  public void SmartConfigStop()
+  @Override
+  public void onClick(View view)//退出按键
   {
-    isConfig = false;
-    spin_kit.setVisibility(View.INVISIBLE);
-    lib.jsmtStop();
-
-  }
-
-  void smartConfig()
-  {
-    isConfig = true;
-    lib.jsmtInit();
-    lib.jsmtStart(SSID, Password, "", "", 0);
-    new Thread()
-    {
-      public void run()
-      {
-        long dt = System.currentTimeMillis();
-
-        while (true)
-        {
-          try
-          {
-            sleep(500);
-          }
-          catch (InterruptedException e)
-          {
-          }
-          if (!isConfig)
-          {
-            handler.sendEmptyMessage(TMsg.Msg_SmartConfigClose);
-          }
-
-
-          if (System.currentTimeMillis() - dt > Config.TIMEOUT_SMARTLINKSEARCH)
-          {
-            handler.sendEmptyMessage(TMsg.Msg_SmartConfigOver);
-            break;
-          }
-        }
-      }
-    }.start();
-
+    AddDeviceOneStepNext.this.SmartConfigStop();//zhb add
+    this.finish();
   }
 
   Handler handler = new Handler()
@@ -141,17 +101,20 @@ public class AddDeviceOneStepNext extends BaseAppCompatActivity implements View.
     {
       switch (msg.what)
       {
-
+        case TMsg.Msg_SmartConfiging:
+          String sFormat = getString(R.string.string_LeftTimeSmartLinkOver);
+          String Str = String.format(sFormat, msg.arg1);
+          edtLeftTime.setText(Str);
+          break;
 
         case TMsg.Msg_SmartConfigClose:
-          //AddDeviceOneStepNext.this.mydialog.dismiss();
           AddDeviceOneStepNext.this.SmartConfigStop();
           break;
 
         case TMsg.Msg_SmartConfigOver:
           AddDeviceOneStepNext.this.SmartConfigStop();
-          //actSmartConfig.this.mydialog.dismiss();
           Toast.makeText(AddDeviceOneStepNext.this, R.string.SmartConfigOver, Toast.LENGTH_SHORT).show();
+          AddDeviceOneStepNext.this.finish();
           Intent intent4 = new Intent(STApplication.getInstance(), AddDeviceWlanActivity.class);
           startActivity(intent4);
           break;
@@ -160,10 +123,59 @@ public class AddDeviceOneStepNext extends BaseAppCompatActivity implements View.
     }
   };
 
-  @Override
-  public void onClick(View view)
+  public void SmartConfigStop()
   {
-    isConfig = false;
-    this.finish();
+    IsSmartLinkIng = false;
+    spin_kit.setVisibility(View.INVISIBLE);
+    lib.jsmtStop();
+    Log.e(tag, "jsmtStop: ");
+
   }
+
+  public void smartConfigStart()
+  {
+    IsSmartLinkIng = true;
+    lib.jsmtStop();
+    lib.jsmtInit();
+    lib.jsmtStart(SSID, Password, "", "", 0);
+    Log.e(tag, "jsmtInit jsmtStart: ");
+    new Thread()
+    {
+      public void run()
+      {
+        long iTimeOut = Config.TIMEOUT_SMARTLINKSEARCH;
+        long dt1 = System.currentTimeMillis();
+        long dt2;
+        int iLeftTime;
+
+        while (true)
+        {
+          if (!IsSmartLinkIng)
+          {
+            break;
+          }
+
+          dt2 = System.currentTimeMillis();
+          iLeftTime = (int) (iTimeOut / 1000) - (int) ((dt2 - dt1) / 1000);
+          handler.sendMessage(Message.obtain(handler, TMsg.Msg_SmartConfiging, iLeftTime, 0));
+          try
+          {
+            sleep(500);
+          }
+          catch (InterruptedException e)
+          {
+          }
+          Log.e(tag, "IsSmartLinkIng:" + IsSmartLinkIng + " run: " + (dt2 - dt1));
+
+          if (dt2 - dt1 > iTimeOut)//超时
+          {
+            handler.sendEmptyMessage(TMsg.Msg_SmartConfigOver);
+            break;
+          }
+        }
+      }
+    }.start();
+  }
+
+
 }
