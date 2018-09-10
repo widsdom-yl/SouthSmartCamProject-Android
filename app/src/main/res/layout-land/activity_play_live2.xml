@@ -73,14 +73,6 @@
 
 
             <ImageButton
-                android:id="@+id/button_led_layer"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="35dp"
-                android:background="#99444444"/>
-
-            <ImageButton
                 android:id="@+id/button_led"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -90,15 +82,6 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/liveled"
                 />
-
-            <ImageButton
-                android:id="@+id/button_slient_layer"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="35dp"
-                android:layout_toRightOf="@+id/button_led"
-                android:background="#99444444"/>
 
             <ImageButton
                 android:id="@+id/button_slient"
@@ -112,14 +95,6 @@
                 android:scaleType="fitCenter"
                 />
 
-
-            <ImageButton
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="35dp"
-                android:layout_toRightOf="@+id/button_slient"
-                android:background="#99444444"/>
 
             <ImageButton
                 android:id="@+id/button_pix"
@@ -145,15 +120,6 @@
                 android:text="@string/action_ptz"
                 />
 
-
-            <ImageButton
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="35dp"
-                android:layout_toRightOf="@+id/button_pix"
-                android:background="#99444444"
-                />
 
             <ImageButton
                 android:id="@+id/button_setting"
@@ -188,15 +154,6 @@
         >
 
 
-        <ImageButton
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="15dp"
-            android:background="#99444444"
-            />
-
-
         <stcam.stcamproject.View.VoiceImageButton
             android:id="@+id/button_record"
             android:layout_width="40dp"
@@ -211,17 +168,6 @@
 
 
         <ImageButton
-            android:id="@+id/button_speech_layer"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_alignParentRight="true"
-
-            android:layout_centerVertical="true"
-            android:layout_marginTop="15dp"
-            android:background="#99444444"/>
-
-
-        <ImageButton
             android:id="@+id/button_speech"
             android:layout_width="70dp"
             android:layout_height="70dp"
@@ -230,16 +176,6 @@
             android:background="@color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/livespeech_nor"/>
-
-
-        <ImageButton
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="15dp"
-            android:background="#99444444"
-            />
 
 
         <stcam.stcamproject.View.VoiceImageButton
