@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".Activity.PlayLiveActivity">
 
-    <stcam.stcamproject.View.SurfaceViewLive2
+    <stcam.stcamproject.View.SurfaceViewLive
         android:id="@+id/glPlayLive"
         android:layout_width="0dp"
         android:layout_height="0dp"
